@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_HOST=database
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=chore-management
+      - WAIT_FOR_IT_ADDRESS=database:3306
+    ports:
+      - "8000:8000"
+
+  database:
+    image: mysql:oracle
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=chore-management
