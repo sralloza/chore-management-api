@@ -29,7 +29,6 @@ public class DateUtils {
         int year = localDate.getYear();
 
         int newYearsEveWeekdayNumber = getWeekDayNumberByDate(LocalDate.of(year, 12, 31));
-        System.out.println(newYearsEveWeekdayNumber + " - " + weekNumber);
 
         if (newYearsEveWeekdayNumber <= 3 && weekNumber > 52) {
             weekNumber = 1;
