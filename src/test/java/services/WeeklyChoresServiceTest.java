@@ -1,21 +1,21 @@
 package services;
 
-import exceptions.NotImplementedException;
-import models.custom.Chore;
-import models.custom.Flatmate;
-import models.custom.WeeklyChores;
-import models.db.DBChoreType;
-import org.junit.jupiter.api.Assertions;
+import es.sralloza.choremanagementbot.exceptions.NotImplementedException;
+import es.sralloza.choremanagementbot.models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.Flatmate;
+import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
+import es.sralloza.choremanagementbot.models.db.DBChoreType;
+import es.sralloza.choremanagementbot.repositories.custom.FlatmatesRepository;
+import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
+import es.sralloza.choremanagementbot.services.WeeklyChoresService;
+import es.sralloza.choremanagementbot.utils.ChoreUtils;
+import es.sralloza.choremanagementbot.utils.DateUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import repositories.custom.FlatmatesRepository;
-import repositories.custom.WeeklyChoresRepository;
-import repositories.db.DBChoreTypesRepository;
-import utils.ChoreUtils;
-import utils.DateUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -103,7 +103,7 @@ public class WeeklyChoresServiceTest {
                 new DBChoreType("type2", null),
                 new DBChoreType("type3", null)
         );
-        when(choreTypesRepository.getAll()).thenReturn(choreTypes);
+        when(choreTypesRepository.findAll()).thenReturn(choreTypes);
         when(dateUtils.getCurentWeekId()).thenReturn(WEEK_3);
 
         // When
@@ -127,7 +127,7 @@ public class WeeklyChoresServiceTest {
                 new DBChoreType("type2", null),
                 new DBChoreType("type3", null)
         );
-        when(choreTypesRepository.getAll()).thenReturn(choreTypes);
+        when(choreTypesRepository.findAll()).thenReturn(choreTypes);
 
         // When
         Executable action = () -> service.createWeeklyChores();

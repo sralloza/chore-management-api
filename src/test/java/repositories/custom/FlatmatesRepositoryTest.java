@@ -1,14 +1,16 @@
 package repositories.custom;
 
-import builders.FlatmateMapper;
-import models.custom.Chore;
-import models.custom.Flatmate;
-import models.db.DBFlatmate;
+import es.sralloza.choremanagementbot.builders.FlatmateMapper;
+import es.sralloza.choremanagementbot.models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.Flatmate;
+import es.sralloza.choremanagementbot.models.db.DBFlatmate;
+import es.sralloza.choremanagementbot.repositories.custom.ChoresRepository;
+import es.sralloza.choremanagementbot.repositories.custom.FlatmatesRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBFlatmatesRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import repositories.db.DBFlatmatesRepository;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class FlatmatesRepositoryTest extends CustomRepositoryTestBase {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        flatmatesRepository = new FlatmatesRepositoryImp(choresRepository, dbFlatmatesRepository, new FlatmateMapper());
+        flatmatesRepository = new FlatmatesRepository(choresRepository, dbFlatmatesRepository, new FlatmateMapper());
 
         List<Chore> choreList = List.of(
                 buildChore(WEEK_1, TYPE_1, List.of(1), true),
@@ -48,7 +50,7 @@ public class FlatmatesRepositoryTest extends CustomRepositoryTestBase {
                 new DBFlatmate(2, USERNAME_2, UUID_2),
                 new DBFlatmate(3, USERNAME_3, UUID_3)
         );
-        when(dbFlatmatesRepository.getAll()).thenReturn(flatmateList);
+        when(dbFlatmatesRepository.findAll()).thenReturn(flatmateList);
     }
 
     @Test

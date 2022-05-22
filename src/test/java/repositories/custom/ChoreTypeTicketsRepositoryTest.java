@@ -1,15 +1,16 @@
 package repositories.custom;
 
-import builders.ChoreTypeTicketsMapper;
-import models.custom.ChoreTypeTickets;
-import models.db.DBChoreType;
-import models.db.DBTicket;
+import es.sralloza.choremanagementbot.builders.ChoreTypeTicketsMapper;
+import es.sralloza.choremanagementbot.models.custom.ChoreTypeTickets;
+import es.sralloza.choremanagementbot.models.db.DBChoreType;
+import es.sralloza.choremanagementbot.models.db.DBTicket;
+import es.sralloza.choremanagementbot.repositories.custom.ChoreTypeTicketsRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBTicketsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import repositories.db.DBChoreTypesRepository;
-import repositories.db.DBTicketsRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -39,16 +40,14 @@ public class ChoreTypeTicketsRepositoryTest {
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        repository = new ChoreTypeTicketsRepositoryImp(dbChoreTypesRepository,
-                dbTicketsRepository,
-                new ChoreTypeTicketsMapper());
+        repository = new ChoreTypeTicketsRepository();
 
         List<DBChoreType> dbChoreList = List.of(
                 new DBChoreType(TYPE_1, TYPE_1_DESCRIPTION),
                 new DBChoreType(TYPE_2, TYPE_2_DESCRIPTION),
                 new DBChoreType(TYPE_3, TYPE_3_DESCRIPTION)
         );
-        when(dbChoreTypesRepository.getAll()).thenReturn(dbChoreList);
+        when(dbChoreTypesRepository.findAll()).thenReturn(dbChoreList);
 
         List<DBTicket> dbTicketList = List.of(
                 new DBTicket(1L, TYPE_1, USER_1, 0),
@@ -56,7 +55,7 @@ public class ChoreTypeTicketsRepositoryTest {
                 new DBTicket(3L, TYPE_2, USER_1, 1),
                 new DBTicket(4L, TYPE_2, USER_2, -1)
         );
-        when(dbTicketsRepository.getAll()).thenReturn(dbTicketList);
+        when(dbTicketsRepository.findAll()).thenReturn(dbTicketList);
     }
 
     @Test

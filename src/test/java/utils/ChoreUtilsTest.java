@@ -1,6 +1,7 @@
 package utils;
 
-import models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.Chore;
+import es.sralloza.choremanagementbot.utils.ChoreUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

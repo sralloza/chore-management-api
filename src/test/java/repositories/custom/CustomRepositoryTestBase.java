@@ -1,6 +1,6 @@
 package repositories.custom;
 
-import models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.Chore;
 
 import java.util.List;
 import java.util.UUID;
@@ -22,7 +22,7 @@ public class CustomRepositoryTestBase {
     protected static final UUID UUID_2 = UUID.fromString("5148b184-c9eb-4079-b2f1-b88f86794010");
     protected static final UUID UUID_3 = UUID.fromString("a513e811-90a5-40d4-a6ec-f78feeef36b1");
 
-    protected Chore buildChore(String week, String type, List<Integer> assigned, boolean done){
+    protected Chore buildChore(String week, String type, List<Integer> assigned, boolean done) {
         List<Integer> originalAssigned;
         switch (type) {
             case TYPE_1:

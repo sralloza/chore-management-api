@@ -1,8 +1,9 @@
 package repositories.custom;
 
-import models.custom.Chore;
-import models.custom.WeeklyChores;
-import org.junit.jupiter.api.Assertions;
+import es.sralloza.choremanagementbot.models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
+import es.sralloza.choremanagementbot.repositories.custom.ChoresRepository;
+import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.mockito.Mockito.when;
 
-public class WeeklyChoresRepositoryTest extends CustomRepositoryTestBase{
+public class WeeklyChoresRepositoryTest extends CustomRepositoryTestBase {
     @Mock
     private ChoresRepository choresRepository;
 
@@ -23,7 +24,7 @@ public class WeeklyChoresRepositoryTest extends CustomRepositoryTestBase{
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        weeklyChoresRepository = new WeeklyChoresRepositoryImp(choresRepository);
+        weeklyChoresRepository = new WeeklyChoresRepository(choresRepository);
 
         List<Chore> choreList = List.of(
                 buildChore(WEEK_1, TYPE_1, List.of(1), true),
