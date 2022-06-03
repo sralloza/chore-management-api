@@ -14,4 +14,5 @@ import java.util.List;
 public class WeeklyChores {
     private String weekId;
     private List<Chore> chores;
+    private Integer rotation;
 }

@@ -3,10 +3,8 @@ package repositories.custom;
 import es.sralloza.choremanagementbot.builders.ChoreMapper;
 import es.sralloza.choremanagementbot.models.custom.Chore;
 import es.sralloza.choremanagementbot.models.db.DBChore;
-import es.sralloza.choremanagementbot.models.db.DBOriginalChore;
 import es.sralloza.choremanagementbot.repositories.custom.ChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoresRepository;
-import es.sralloza.choremanagementbot.repositories.db.DBOriginalChoresRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,16 +19,13 @@ public class ChoresRepositoryTest extends CustomRepositoryTestBase {
     @Mock
     private DBChoresRepository dbChoresRepository;
 
-    @Mock
-    private DBOriginalChoresRepository dbOriginalChoresRepository;
-
     private ChoresRepository choresRepository;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        choresRepository = new ChoresRepository(dbChoresRepository, dbOriginalChoresRepository, new ChoreMapper());
+        choresRepository = new ChoresRepository(dbChoresRepository, new ChoreMapper());
 
         var dbChoreList = List.of(
                 new DBChore(1L, TYPE_1, 1, WEEK_1, true),
@@ -46,19 +41,6 @@ public class ChoresRepositoryTest extends CustomRepositoryTestBase {
                 new DBChore(11L, TYPE_3, 2, WEEK_3, true)
         );
         when(dbChoresRepository.findAll()).thenReturn(dbChoreList);
-
-        var dbOriginalChoreList = List.of(
-                new DBOriginalChore(1L, TYPE_1, 1, WEEK_1),
-                new DBOriginalChore(2L, TYPE_2, 2, WEEK_1),
-                new DBOriginalChore(3L, TYPE_3, 3, WEEK_1),
-                new DBOriginalChore(4L, TYPE_1, 1, WEEK_2),
-                new DBOriginalChore(5L, TYPE_2, 2, WEEK_2),
-                new DBOriginalChore(6L, TYPE_3, 3, WEEK_2),
-                new DBOriginalChore(7L, TYPE_1, 1, WEEK_3),
-                new DBOriginalChore(8L, TYPE_2, 2, WEEK_3),
-                new DBOriginalChore(9L, TYPE_3, 3, WEEK_3)
-        );
-        when(dbOriginalChoresRepository.findAll()).thenReturn(dbOriginalChoreList);
 
     }
 

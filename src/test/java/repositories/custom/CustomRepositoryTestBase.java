@@ -23,20 +23,6 @@ public class CustomRepositoryTestBase {
     protected static final UUID UUID_3 = UUID.fromString("a513e811-90a5-40d4-a6ec-f78feeef36b1");
 
     protected Chore buildChore(String week, String type, List<Integer> assigned, boolean done) {
-        List<Integer> originalAssigned;
-        switch (type) {
-            case TYPE_1:
-                originalAssigned = List.of(1);
-                break;
-            case TYPE_2:
-                originalAssigned = List.of(2);
-                break;
-            case TYPE_3:
-                originalAssigned = List.of(3);
-                break;
-            default:
-                originalAssigned = List.of();
-        }
-        return new Chore(week, type, assigned, originalAssigned, done);
+        return new Chore(week, type, assigned, done);
     }
 }

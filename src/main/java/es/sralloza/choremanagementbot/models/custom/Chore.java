@@ -15,6 +15,5 @@ public class Chore {
     private String weekId;
     private String type;
     private List<Integer> assigned;
-    private List<Integer> originalAssigned;
     private Boolean done;
 }

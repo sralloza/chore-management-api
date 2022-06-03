@@ -5,9 +5,11 @@ import es.sralloza.choremanagementbot.models.custom.Chore;
 import es.sralloza.choremanagementbot.models.custom.Flatmate;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChoreType;
+import es.sralloza.choremanagementbot.models.db.DBRotation;
 import es.sralloza.choremanagementbot.repositories.custom.FlatmatesRepository;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
 import es.sralloza.choremanagementbot.utils.ChoreUtils;
 import es.sralloza.choremanagementbot.utils.DateUtils;
@@ -58,22 +60,22 @@ public class WeeklyChoresServiceTest {
         // Given
         var weeklyChores = List.of(
                 new WeeklyChores(WEEK_1, List.of(
-                        new Chore(WEEK_1, TYPE_1, List.of(1), List.of(1), true),
-                        new Chore(WEEK_1, TYPE_2, List.of(2), List.of(2), true),
-                        new Chore(WEEK_1, TYPE_3, List.of(3), List.of(3), true)
-                )),
+                        new Chore(WEEK_1, TYPE_1, List.of(1), true),
+                        new Chore(WEEK_1, TYPE_2, List.of(2), true),
+                        new Chore(WEEK_1, TYPE_3, List.of(3), true)
+                ), 0),
                 new WeeklyChores(WEEK_2, List.of(
-                        new Chore(WEEK_2, TYPE_1, List.of(1, 3), List.of(2), false),
-                        new Chore(WEEK_2, TYPE_2, List.of(3), List.of(3), false),
-                        new Chore(WEEK_2, TYPE_3, List.of(1), List.of(1), false)
-                ))
+                        new Chore(WEEK_2, TYPE_1, List.of(1, 3), false),
+                        new Chore(WEEK_2, TYPE_2, List.of(3), false),
+                        new Chore(WEEK_2, TYPE_3, List.of(1), false)
+                ), 1)
         );
         var expected = new WeeklyChores(WEEK_3, List.of(
-                new Chore(WEEK_3, TYPE_1, List.of(3), List.of(3), false),
-                new Chore(WEEK_3, TYPE_2, List.of(1), List.of(1), false),
-                new Chore(WEEK_3, TYPE_3, List.of(2), List.of(2), false)
-        ));
-        when(repository.getAll()).thenReturn(weeklyChores);
+                new Chore(WEEK_3, TYPE_1, List.of(3), false),
+                new Chore(WEEK_3, TYPE_2, List.of(1), false),
+                new Chore(WEEK_3, TYPE_3, List.of(2), false)
+        ), 2);
+        when(repository.findAll()).thenReturn(weeklyChores);
         when(dateUtils.getCurentWeekId()).thenReturn(WEEK_3);
 
         // When
@@ -87,11 +89,11 @@ public class WeeklyChoresServiceTest {
     public void shouldCreateWeeklyChoresWhenDatabaseEmptyAndSameFlatmatesAsChores() {
         // Given
         var expected = new WeeklyChores(WEEK_3, List.of(
-                new Chore(WEEK_3, TYPE_1, List.of(1), List.of(1), false),
-                new Chore(WEEK_3, TYPE_2, List.of(2), List.of(2), false),
-                new Chore(WEEK_3, TYPE_3, List.of(3), List.of(3), false)
-        ));
-        when(repository.getAll()).thenReturn(Collections.emptyList());
+                new Chore(WEEK_3, TYPE_1, List.of(1), false),
+                new Chore(WEEK_3, TYPE_2, List.of(2), false),
+                new Chore(WEEK_3, TYPE_3, List.of(3), false)
+        ), 0);
+        when(repository.findAll()).thenReturn(Collections.emptyList());
         var flatmates = List.of(
                 new Flatmate(1, "user1", null, null),
                 new Flatmate(2, "user2", null, null),
@@ -116,7 +118,7 @@ public class WeeklyChoresServiceTest {
     @Test
     public void shouldReturnErrorWhenDatabaseEmptyAndDifferentNumberOfFlatmatesAndChores() {
         // Given
-        when(repository.getAll()).thenReturn(Collections.emptyList());
+        when(repository.findAll()).thenReturn(Collections.emptyList());
         var flatmates = List.of(
                 new Flatmate(1, "user1", null, null),
                 new Flatmate(2, "user2", null, null)
