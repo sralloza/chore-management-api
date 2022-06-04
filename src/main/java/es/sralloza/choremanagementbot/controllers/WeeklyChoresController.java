@@ -30,7 +30,7 @@ public class WeeklyChoresController {
 
     @GetMapping("/{weekId}")
     public Optional<WeeklyChores> getWeeklyChoresById(@PathVariable("weekId") String weekId) {
-        validator.validate(weekId);
+        validator.validateSyntax(weekId);
         return service.getByWeekId(weekId);
     }
 
@@ -41,13 +41,14 @@ public class WeeklyChoresController {
 
     @PostMapping("/week/{weekId}")
     public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId) {
-        validator.validate(weekId);
+        validator.validateSyntax(weekId);
+        validator.validateTimeline(weekId);
         return service.createWeeklyChores(weekId);
     }
 
     @DeleteMapping("/{weekId}")
     public void deleteWeeklyChores(@PathVariable("weekId") String weekId) {
-        validator.validate(weekId);
+        validator.validateSyntax(weekId);
         service.deleteWeeklyChores(weekId);
     }
 }

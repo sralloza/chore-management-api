@@ -22,10 +22,10 @@ Feature: Weekly Chores API
             | 2022.02 |
             | 2022.03 |
             | 2022.04 |
-            | 2022.05 |
-            | 2022.06 |
-            | 2022.07 |
-            | 2022.08 |
+            | 2022.15 |
+            | 2022.16 |
+            | 2022.17 |
+            | 2022.18 |
         And I list the weekly chores using the API
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -37,10 +37,10 @@ Feature: Weekly Chores API
             2022.02  2  3  4  1
             2022.03  3  4  1  2
             2022.04  4  1  2  3
-            2022.05  1  2  3  4
-            2022.06  2  3  4  1
-            2022.07  3  4  1  2
-            2022.08  4  1  2  3
+            2022.15  1  2  3  4
+            2022.16  2  3  4  1
+            2022.17  3  4  1  2
+            2022.18  4  1  2  3
             """
 
 
@@ -53,10 +53,10 @@ Feature: Weekly Chores API
             | 2022.02 |
             | 2022.03 |
             | 2022.04 |
-            | 2022.05 |
-            | 2022.06 |
-            | 2022.07 |
-            | 2022.08 |
+            | 2022.15 |
+            | 2022.16 |
+            | 2022.17 |
+            | 2022.18 |
         Then I list the weekly chores using the API
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -68,10 +68,10 @@ Feature: Weekly Chores API
             2022.02  2  3  4
             2022.03  3  4  5
             2022.04  4  5  1
-            2022.05  5  1  2
-            2022.06  1  2  3
-            2022.07  2  3  4
-            2022.08  3  4  5
+            2022.15  5  1  2
+            2022.16  1  2  3
+            2022.17  2  3  4
+            2022.18  3  4  5
             """
 
 
@@ -84,10 +84,10 @@ Feature: Weekly Chores API
             | 2022.02 |
             | 2022.03 |
             | 2022.04 |
-            | 2022.05 |
-            | 2022.06 |
-            | 2022.07 |
-            | 2022.08 |
+            | 2022.15 |
+            | 2022.16 |
+            | 2022.17 |
+            | 2022.18 |
         And I list the weekly chores using the API
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -99,10 +99,10 @@ Feature: Weekly Chores API
             2022.02  2  3  1  2  3
             2022.03  3  1  2  3  1
             2022.04  1  2  3  1  2
-            2022.05  2  3  1  2  3
-            2022.06  3  1  2  3  1
-            2022.07  1  2  3  1  2
-            2022.08  2  3  1  2  3
+            2022.15  2  3  1  2  3
+            2022.16  3  1  2  3  1
+            2022.17  1  2  3  1  2
+            2022.18  2  3  1  2  3
             """
 
 
@@ -117,18 +117,34 @@ Feature: Weekly Chores API
 
 
     Scenario Outline: Return error when creating weekly chores for invalid week
-        When I create the weekly chores for the week "<week_id>" using the API
+        When I create the weekly chores for the week "<invalid_week_id>" using the API
         Then the response status code is "400"
-        And the error message contains "Invalid week ID: .+"
+        And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: week_id = <week_id>
-            | user         |
-            | invalid-week |
-            | 2022-03      |
-            | 2022.3       |
-            | 2022.00      |
-            | 2022.55      |
-            | whatever     |
+        Examples: Invalid week IDs
+            | invalid_week_id |
+            | invalid-week    |
+            | 2022-03         |
+            | 2022.3          |
+            | 2022.00         |
+            | 2022.55         |
+            | 2022023         |
+            | whatever        |
+
+    Scenario Outline: Return error when creating weekly chores for an old week
+        Given there is 1 tenant
+        And there is 1 chore type
+        And I create the weekly chores for the week "2022.10" using the API
+        When I create the weekly chores for the week "<old_week_id>" using the API
+        Then the response status code is "400"
+        And the error message is "Invalid week ID (too old): <old_week_id>"
+
+        Examples: Old week IDs
+            | old_week_id |
+            | 2022.09     |
+            | 2022.04     |
+            | 2021.04     |
+            | 2020.44     |
 
 
     Scenario: Return error when creating weekly chores but there are no tenants
@@ -152,18 +168,19 @@ Feature: Weekly Chores API
 
 
     Scenario Outline: Return error when deleting weekly chores for invalid week
-        When I delete the weekly chores for the week "<week_id>" using the API
+        When I delete the weekly chores for the week "<invalid_week_id>" using the API
         Then the response status code is "400"
-        And the error message is "Invalid week ID: <week_id>"
+        And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: week_id = <week_id>
-            | user         |
-            | invalid-week |
-            | 2022-03      |
-            | 2022.3       |
-            | 2022.00      |
-            | 2022.55      |
-            | whatever     |
+        Examples: Invalid week IDs
+            | invalid_week_id |
+            | invalid-week    |
+            | 2022-03         |
+            | 2022.3          |
+            | 2022.00         |
+            | 2022.55         |
+            | 2022023         |
+            | whatever        |
 
 
     Scenario: Get weekly chores by weekId
@@ -182,15 +199,16 @@ Feature: Weekly Chores API
 
 
     Scenario Outline: Return error when trying to get weekly chores by an invalid weekId
-        When I get the weekly chores for the week "<week_id>" using the API
+        When I get the weekly chores for the week "<invalid_week_id>" using the API
         Then the response status code is "400"
-        And the error message contains "Invalid week ID: <week_id>"
+        And the error message contains "Invalid week ID: <invalid_week_id>"
 
-        Examples: week_id = <week_id>
-            | user         |
-            | invalid-week |
-            | 2022-03      |
-            | 2022.3       |
-            | 2022.00      |
-            | 2022.55      |
-            | whatever     |
+        Examples: Invalid week IDs
+            | invalid_week_id |
+            | invalid-week    |
+            | 2022-03         |
+            | 2022.3          |
+            | 2022.00         |
+            | 2022.55         |
+            | 2022023         |
+            | whatever        |

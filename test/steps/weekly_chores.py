@@ -27,7 +27,9 @@ def step_impl(context, week_id=None):
         return
 
     for week_id in weeks:
-        context.post(f"/weekly-chores/week/{week_id}")
+        res = context.post(f"/weekly-chores/week/{week_id}")
+        err_msg = f"Failed to create weekly chores for week {week_id} ({res.status_code}): {res.text}"
+        assert res.ok, err_msg
 
 
 @step("I create the weekly chores for next week using the API")
