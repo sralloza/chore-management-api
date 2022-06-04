@@ -1,7 +1,6 @@
 package es.sralloza.choremanagementbot.controllers;
 
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
-import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class WeeklyChoresController {
     @Autowired
     private WeekIdValidator validator;
 
-    @GetMapping("")
+    @GetMapping()
     public List<WeeklyChores> getWeeklyChores() {
         return service.findAll();
     }
@@ -34,7 +33,7 @@ public class WeeklyChoresController {
         return service.getByWeekId(weekId);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public WeeklyChores createNextWeekChores() {
         return service.createNextWeekChores();
     }
