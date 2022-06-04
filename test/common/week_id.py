@@ -1,13 +1,16 @@
 from datetime import datetime, timedelta
 
+
 def assert_week_id_equals(expected, actual):
     assert actual == expected, f"Expected weekId {expected}, got {actual}"
+
 
 def get_week_id_from_res(res):
     res_json = res.json()
     assert "week_id" in res_json
 
     return res_json["week_id"]
+
 
 def calculate_current_week_id():
     return _calculate_week_id(datetime.now())

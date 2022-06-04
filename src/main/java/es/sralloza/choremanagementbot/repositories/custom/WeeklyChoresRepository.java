@@ -2,6 +2,7 @@ package es.sralloza.choremanagementbot.repositories.custom;
 
 import es.sralloza.choremanagementbot.builders.ChoreMapper;
 import es.sralloza.choremanagementbot.builders.WeeklyChoresMapper;
+import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.Chore;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChore;
@@ -67,8 +68,26 @@ public class WeeklyChoresRepository {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        var rotation = new DBRotation(null, weeklyChores.getWeekId(), weeklyChores.getRotation());
+        var rotation = new DBRotation(weeklyChores.getWeekId(), weeklyChores.getRotation());
         dbRotationRepository.save(rotation);
         dbChoresRepository.saveAll(result);
+    }
+
+    public void deleteByWeekId(String weekId) {
+        var dbChoreList = dbChoresRepository.findAll().stream()
+                .filter(chore -> chore.getWeekId().equals(weekId))
+                .collect(Collectors.toList());
+        if (dbChoreList.isEmpty()) {
+            throw new NotFoundException("No chores found for week " + weekId);
+        }
+        dbChoresRepository.deleteAll(dbChoreList);
+
+        var dbRotation = dbRotationRepository.findAll().stream()
+                .filter(rotation -> rotation.getWeekId().equals(weekId))
+                .collect(Collectors.toList());
+        if (dbRotation.isEmpty()) {
+            throw new NotFoundException("No rotation found for week " + weekId);
+        }
+        dbRotationRepository.deleteAll(dbRotation);
     }
 }

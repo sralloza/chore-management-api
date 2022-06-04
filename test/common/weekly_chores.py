@@ -3,7 +3,7 @@ from collections import namedtuple
 
 import pandas as pd
 
-WeeklyChore = namedtuple("WeeklyChore", "week_id chore flatmate")
+WeeklyChore = namedtuple("WeeklyChore", "week_id chore tenants")
 
 
 def parse_weekly_chores_res(res):
@@ -11,17 +11,14 @@ def parse_weekly_chores_res(res):
     chores = [x["chores"] for x in data]
     chores = [y for x in chores for y in x]
 
-    for chore in chores:
-        print(chore)
-
     return [
-        WeeklyChore(x["week_id"], x["type"], flatmates_to_str(x["assigned"]))
+        WeeklyChore(x["week_id"], x["type"], tenants_to_str(x["assigned"]))
         for x in chores
     ]
 
 
-def flatmates_to_str(flatmates):
-    return ",".join([str(x) for x in flatmates])
+def tenants_to_str(tenants):
+    return ",".join([str(x) for x in tenants])
 
 
 def parse_weekly_chores_res_table_str(res):
@@ -33,8 +30,7 @@ def parse_weekly_chores_res_table_str(res):
         chores = res_json["chores"]
 
     for chore in chores:
-        print(chore)
-        chore["assigned"] = flatmates_to_str(chore["assigned"])
+        chore["assigned"] = tenants_to_str(chore["assigned"])
 
     df = pd.DataFrame(chores)
     df2 = df.pivot(index="week_id", columns="type", values="assigned")

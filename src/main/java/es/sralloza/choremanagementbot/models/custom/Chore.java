@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementbot.models.custom;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Chore {
+    @JsonProperty("week_id")
     private String weekId;
     private String type;
     private List<Integer> assigned;

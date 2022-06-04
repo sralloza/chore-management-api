@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementbot.controllers;
 
+import es.sralloza.choremanagementbot.models.custom.WeekId;
 import es.sralloza.choremanagementbot.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,22 +14,22 @@ public class WeekIdController {
     private DateUtils dateUtils;
 
     @GetMapping("")
-    public String getCurrentWeekIdAlias() {
+    public WeekId getCurrentWeekIdAlias() {
         return getCurrentWeekId();
     }
 
     @GetMapping("/current")
-    public String getCurrentWeekId() {
-        return dateUtils.getCurrentWeekId();
+    public WeekId getCurrentWeekId() {
+        return new WeekId(dateUtils.getCurrentWeekId());
     }
 
     @GetMapping("/last")
-    public String getLastWeekId() {
-        return dateUtils.getWeekIdByDeltaDays(-7);
+    public WeekId getLastWeekId() {
+        return new WeekId(dateUtils.getWeekIdByDeltaDays(-7));
     }
 
     @GetMapping("/next")
-    public String getNextWeekId() {
-        return dateUtils.getWeekIdByDeltaDays(7);
+    public WeekId getNextWeekId() {
+        return new WeekId(dateUtils.getWeekIdByDeltaDays(7));
     }
 }

@@ -3,7 +3,9 @@ package es.sralloza.choremanagementbot.controllers;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
+import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class WeeklyChoresController {
     @Autowired
     private WeeklyChoresService service;
+    @Autowired
+    private WeekIdValidator validator;
 
     @GetMapping("")
     public List<WeeklyChores> getWeeklyChores() {
@@ -26,16 +30,24 @@ public class WeeklyChoresController {
 
     @GetMapping("/{weekId}")
     public Optional<WeeklyChores> getWeeklyChoresById(@PathVariable("weekId") String weekId) {
+        validator.validate(weekId);
         return service.getByWeekId(weekId);
     }
 
-    @PostMapping("/create")
-    public WeeklyChores createWeeklyChores() {
-        return service.createWeeklyChores();
+    @PostMapping("")
+    public WeeklyChores createNextWeekChores() {
+        return service.createNextWeekChores();
     }
 
-    @PostMapping("/create/week/{weekId}")
+    @PostMapping("/week/{weekId}")
     public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId) {
+        validator.validate(weekId);
         return service.createWeeklyChores(weekId);
+    }
+
+    @DeleteMapping("/{weekId}")
+    public void deleteWeeklyChores(@PathVariable("weekId") String weekId) {
+        validator.validate(weekId);
+        service.deleteWeeklyChores(weekId);
     }
 }

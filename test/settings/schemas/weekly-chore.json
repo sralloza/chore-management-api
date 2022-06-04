@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "week_id": {
+      "type": "string"
+    },
+    "chores": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "week_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "assigned": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "done": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "week_id",
+          "type",
+          "assigned",
+          "done"
+        ]
+      }
+    },
+    "rotation": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "week_id",
+    "chores",
+    "rotation"
+  ]
+}

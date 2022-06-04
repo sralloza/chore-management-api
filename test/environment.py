@@ -6,7 +6,9 @@ from toolium.behave.environment import before_all as tlm_before_all
 from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 
-URL = "http://localhost:8080"
+from common.common import URL
+from common.reset import reset_databases
+
 
 def before_all(context):
     tlm_before_all(context)
@@ -23,6 +25,11 @@ def before_scenario(context, scenario):
     context.post = lambda path, **kwargs: context.session.post(URL + path, **kwargs)
     context.put = lambda path, **kwargs: context.session.put(URL + path, **kwargs)
     context.delete = lambda path, **kwargs: context.session.delete(URL + path, **kwargs)
+
+    context.res = None
+    context.res_list = []
+    reset_databases(context)
+
     context.res = None
     context.res_list = []
 
