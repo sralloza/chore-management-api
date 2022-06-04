@@ -12,7 +12,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Flatmate {
+public class Tenant {
     Integer telegramId;
     String username;
     UUID apiToken;

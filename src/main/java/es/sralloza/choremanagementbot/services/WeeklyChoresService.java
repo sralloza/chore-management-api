@@ -2,10 +2,10 @@ package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.exceptions.NotImplementedException;
 import es.sralloza.choremanagementbot.models.custom.Chore;
-import es.sralloza.choremanagementbot.models.custom.Flatmate;
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChoreType;
-import es.sralloza.choremanagementbot.repositories.custom.FlatmatesRepository;
+import es.sralloza.choremanagementbot.repositories.custom.TenantsRepository;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
 import es.sralloza.choremanagementbot.utils.ChoreUtils;
@@ -30,7 +30,7 @@ public class WeeklyChoresService {
     private final DBChoreTypesRepository choreTypesRepository;
 
     @Autowired
-    private final FlatmatesRepository flatmatesRepository;
+    private final TenantsRepository TenantsRepository;
 
     @Autowired
     private final DateUtils dateUtils;
@@ -41,12 +41,12 @@ public class WeeklyChoresService {
     @Inject
     public WeeklyChoresService(WeeklyChoresRepository weeklyChoresRepository,
                                DBChoreTypesRepository choreTypesRepository,
-                               FlatmatesRepository flatmatesRepository,
+                               TenantsRepository TenantsRepository,
                                DateUtils dateUtils,
                                ChoreUtils choreUtils) {
         this.weeklyChoresRepository = weeklyChoresRepository;
         this.choreTypesRepository = choreTypesRepository;
-        this.flatmatesRepository = flatmatesRepository;
+        this.TenantsRepository = TenantsRepository;
         this.dateUtils = dateUtils;
         this.choreUtils = choreUtils;
     }
@@ -83,31 +83,31 @@ public class WeeklyChoresService {
         List<String> choreTypes = choreTypesRepository.findAll().stream()
                 .map(DBChoreType::getId)
                 .collect(Collectors.toList());
-        List<Flatmate> flatmates = flatmatesRepository.getAll();
+        List<Tenant> Tenants = TenantsRepository.getAll();
 
-        List<Chore> chores = distributeChores(choreTypes, flatmates, weekId, 0);
+        List<Chore> chores = distributeChores(choreTypes, Tenants, weekId, 0);
         return new WeeklyChores()
                 .setWeekId(weekId)
                 .setChores(chores)
                 .setRotation(0);
     }
 
-    private List<Chore> distributeChores(List<String> choreTypes, List<Flatmate> flatmates,
+    private List<Chore> distributeChores(List<String> choreTypes, List<Tenant> Tenants,
                                          String weekId, Integer rotation) {
-        // Same number of flatmates as tasks
-        int arraySize = Integer.max(choreTypes.size(), flatmates.size());
-        List<Flatmate> repeatedFlatmates = choreUtils.repeatArray(flatmates, arraySize);
-        Collections.rotate(repeatedFlatmates, rotation);
-        if (choreTypes.size() == flatmates.size()) {
+        // Same number of Tenants as tasks
+        int arraySize = Integer.max(choreTypes.size(), Tenants.size());
+        List<Tenant> repeatedTenants = choreUtils.repeatArray(Tenants, arraySize);
+        Collections.rotate(repeatedTenants, rotation);
+        if (choreTypes.size() == Tenants.size()) {
             return IntStream.range(0, choreTypes.size())
-                    .mapToObj(n -> createChore(weekId, choreTypes.get(n), flatmates.get(n)))
+                    .mapToObj(n -> createChore(weekId, choreTypes.get(n), Tenants.get(n)))
                     .collect(Collectors.toList());
         }
 
-        throw new NotImplementedException("Can't create tasks: different number of Flatmates and Tasks defined");
+        throw new NotImplementedException("Can't create tasks: different number of Tenants and Tasks defined");
     }
 
-    private Chore createChore(String weekId, String type, Flatmate assignee) {
+    private Chore createChore(String weekId, String type, Tenant assignee) {
         Integer id = assignee.getTelegramId();
         return new Chore(weekId, type, List.of(id), false);
     }

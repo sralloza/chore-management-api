@@ -12,12 +12,12 @@ import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "Flatmates")
+@Table(name = "Tenants")
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DBFlatmate {
+public class DBTenant {
     @Id
     private Integer telegramId;
 
