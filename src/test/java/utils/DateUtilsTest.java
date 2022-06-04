@@ -97,7 +97,7 @@ public class DateUtilsTest {
         when(dateProvider.getCurrentDate()).thenReturn(date);
 
         // When
-        var actual = dateUtils.getCurentWeekId();
+        var actual = dateUtils.getCurrentWeekId();
 
         // Then
         assertEquals(expected, actual);

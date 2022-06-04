@@ -3,7 +3,6 @@ package es.sralloza.choremanagementbot.utils;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -27,8 +26,17 @@ public class DateUtils {
         return localDate.get(WeekFields.of(locale).dayOfWeek());
     }
 
-    public String getCurentWeekId() {
+    public String getWeekIdByDeltaDays(int days) {
+        LocalDate localDate = dateProvider.getCurrentDate().plusDays(days);
+        return getWeekIdByLocalDate(localDate);
+    }
+
+    public String getCurrentWeekId() {
         LocalDate localDate = dateProvider.getCurrentDate();
+        return getWeekIdByLocalDate(localDate);
+    }
+
+    private String getWeekIdByLocalDate(LocalDate localDate) {
         int weekNumber = getWeekNumberByDate(localDate);
         int year = localDate.getYear();
 

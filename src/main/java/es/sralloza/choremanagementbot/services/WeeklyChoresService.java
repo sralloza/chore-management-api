@@ -53,7 +53,7 @@ public class WeeklyChoresService {
 
 
     public WeeklyChores createWeeklyChores() {
-        String weekId = dateUtils.getCurentWeekId();
+        String weekId = dateUtils.getCurrentWeekId();
         return createWeeklyChores(weekId);
     }
 

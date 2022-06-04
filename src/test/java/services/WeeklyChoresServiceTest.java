@@ -5,11 +5,9 @@ import es.sralloza.choremanagementbot.models.custom.Chore;
 import es.sralloza.choremanagementbot.models.custom.Flatmate;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChoreType;
-import es.sralloza.choremanagementbot.models.db.DBRotation;
 import es.sralloza.choremanagementbot.repositories.custom.FlatmatesRepository;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
-import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
 import es.sralloza.choremanagementbot.utils.ChoreUtils;
 import es.sralloza.choremanagementbot.utils.DateUtils;
@@ -76,7 +74,7 @@ public class WeeklyChoresServiceTest {
                 new Chore(WEEK_3, TYPE_3, List.of(2), false)
         ), 2);
         when(repository.findAll()).thenReturn(weeklyChores);
-        when(dateUtils.getCurentWeekId()).thenReturn(WEEK_3);
+        when(dateUtils.getCurrentWeekId()).thenReturn(WEEK_3);
 
         // When
         var actual = service.createWeeklyChores();
@@ -106,7 +104,7 @@ public class WeeklyChoresServiceTest {
                 new DBChoreType("type3", null)
         );
         when(choreTypesRepository.findAll()).thenReturn(choreTypes);
-        when(dateUtils.getCurentWeekId()).thenReturn(WEEK_3);
+        when(dateUtils.getCurrentWeekId()).thenReturn(WEEK_3);
 
         // When
         var actual = service.createWeeklyChores();
