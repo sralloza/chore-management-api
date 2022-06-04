@@ -1,0 +1,15 @@
+Feature: Weekly Chores API
+    Scenario: Create weekly chores for next week
+        Given there is 1 flatmate
+        And there is 1 chore type
+        When I create a weekly chore for next week using the API
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "weekly-chore-list"
+        And the response contains the following weekly chores
+            """
+            type     A
+
+            {current}  1
+            """
+
+    Scenario: Create
