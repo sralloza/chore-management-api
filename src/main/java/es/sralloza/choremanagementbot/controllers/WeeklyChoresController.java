@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.QueryParam;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,15 +35,16 @@ public class WeeklyChoresController {
     }
 
     @PostMapping()
-    public WeeklyChores createNextWeekChores() {
-        return service.createNextWeekChores();
+    public WeeklyChores createNextWeekChores(@QueryParam("force") Boolean force) {
+        return service.createNextWeekChores(force);
     }
 
     @PostMapping("/week/{weekId}")
-    public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId) {
+    public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId,
+                                           @QueryParam("force") Boolean force) {
         validator.validateSyntax(weekId);
         validator.validateTimeline(weekId);
-        return service.createWeeklyChores(weekId);
+        return service.createWeeklyChores(weekId, force);
     }
 
     @DeleteMapping("/{weekId}")

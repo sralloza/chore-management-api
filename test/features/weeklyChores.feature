@@ -272,6 +272,84 @@ Feature: Weekly Chores API
             | 2020.44     |
 
 
+    Scenario: Return error when creating weekly chores after tenants have changed
+        Given there are 3 tenants
+        And there are 3 chore types
+        And I create the weekly chores for the week "2022.01" using the API
+        And I create a tenant with name "John" and id 111 using the API
+        When I create the weekly chores for the week "2022.02" using the API
+        Then the response status code is "400"
+        And the error message is the following
+            """
+            Tenants have changed since weekly chore creation. Use force parameter to restart the weekly chores creation.
+            """
+
+
+    Scenario: Create weekly tasks if a tenant is created and removed
+        Given there are 3 tenants
+        And there are 3 chore types
+        And I create the weekly chores for the week "2022.01" using the API
+        And I create a tenant with name "John" and id 111 using the API
+        And I remove the tenant with id 111 using the API
+        When I create the weekly chores for the week "2022.02" using the API
+        Then the response status code is "200"
+        And I list the weekly chores using the API
+        And the response status code is "200"
+        And the response contains the following weekly chores
+            """
+            type     A  B  C
+
+            2022.01  1  2  3
+            2022.02  2  3  1
+            """
+
+
+    Scenario: Restart weekly tasks creation if new tenant is registered using weekID endpoint
+        Given there are 3 tenants
+        And there are 5 chore types
+        And I create the weekly chores for the following weeks using the API
+            | week_id |
+            | 2022.01 |
+            | 2022.02 |
+        And I create a tenant with name "tenant4" and id 4 using the API
+        When I create the weekly chores for the week "2022.03" with force=true using the API
+        Then the response status code is "200"
+        And I list the weekly chores using the API
+        And the response status code is "200"
+        And the response body is validated against the json-schema "weekly-chore-list"
+        And the response contains the following weekly chores
+            """
+            type     A  B  C  D  E
+
+            2022.01  1  2  3  1  2
+            2022.02  2  3  1  2  3
+            2022.03  1  2  3  4  1
+            """
+
+
+    Scenario: Restart weekly tasks creation if new tenant is registered using next week endpoint
+        Given there are 3 tenants
+        And there are 5 chore types
+        And I create the weekly chores for the following weeks using the API
+            | week_id |
+            | 2022.01 |
+            | 2022.02 |
+        And I create a tenant with name "tenant4" and id 4 using the API
+        When I create the weekly chores for next week with force=true using the API
+        Then the response status code is "200"
+        And I list the weekly chores using the API
+        And the response status code is "200"
+        And the response body is validated against the json-schema "weekly-chore-list"
+        And the response contains the following weekly chores
+            """
+            type     A  B  C  D  E
+
+            2022.01  1  2  3  1  2
+            2022.02  2  3  1  2  3
+            {next}  1  2  3  4  1
+            """
+
+
     Scenario: Return error when creating weekly chores but there are no tenants
         Given there is 1 chore type
         When I create the weekly chores for the week "2022.01" using the API

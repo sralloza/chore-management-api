@@ -51,6 +51,7 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'com.typesafe:config:1.4.2'
+    implementation 'commons-codec:commons-codec:1.15'
 
     // Json encoding
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'

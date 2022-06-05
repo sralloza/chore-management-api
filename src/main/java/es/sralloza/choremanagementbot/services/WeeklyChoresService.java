@@ -15,9 +15,11 @@ import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
 import es.sralloza.choremanagementbot.utils.ChoreUtils;
 import es.sralloza.choremanagementbot.utils.DateUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
+@Slf4j
 public class WeeklyChoresService {
     @Autowired
     private WeeklyChoresRepository weeklyChoresRepository;
@@ -50,12 +53,12 @@ public class WeeklyChoresService {
     @Autowired
     private ChoreUtils choreUtils;
 
-    public WeeklyChores createNextWeekChores() {
+    public WeeklyChores createNextWeekChores(@Nullable Boolean force) {
         String weekId = dateUtils.getWeekIdByDeltaDays(7);
-        return createWeeklyChores(weekId);
+        return createWeeklyChores(weekId, force);
     }
 
-    public WeeklyChores createWeeklyChores(String weekId) {
+    public WeeklyChores createWeeklyChores(String weekId, @Nullable Boolean force) {
         boolean alreadyExists = weeklyChoresRepository.findAll().stream()
                 .anyMatch(weeklyChores -> weeklyChores.getWeekId().equals(weekId));
         if (alreadyExists) {
@@ -65,22 +68,31 @@ public class WeeklyChoresService {
         List<WeeklyChores> weeklyChoresList = weeklyChoresRepository.findAll();
 
         if (weeklyChoresList.isEmpty()) {
-            WeeklyChores weeklyChores = createWeeklyChores(weekId, 0);
+            WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, 0);
             weeklyChoresRepository.save(weeklyChores);
             return weeklyChores;
         }
 
-        int lastRotation = dbRotationRepository.findAll().stream()
+        DBRotation lastRotation = dbRotationRepository.findAll().stream()
                 .max(Comparator.comparing(DBRotation::getWeekId))
-                .map(DBRotation::getRotation)
-                .orElse(0);
+                .orElseThrow(() -> new RuntimeException("No rotations found creating weekly chores for week " + weekId));
 
-        WeeklyChores weeklyChores = createWeeklyChores(weekId, lastRotation + 1);
+        int newRotation = lastRotation.getRotation() + 1;
+        if (!lastRotation.getTenantIdsHash().equals(tenantsService.getTenantsHash())) {
+            if (!Boolean.TRUE.equals(force)) {
+                throw new BadRequestException("Tenants have changed since weekly chore creation. Use force parameter " +
+                        "to restart the weekly chores creation.");
+            }
+            log.info("Recreating weekly chores");
+            newRotation = 0;
+        }
+
+        WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, newRotation);
         weeklyChoresRepository.save(weeklyChores);
         return weeklyChores;
     }
 
-    private WeeklyChores createWeeklyChores(String weekId, int rotation) {
+    private WeeklyChores createWeeklyChoresByRotation(String weekId, int rotation) {
         List<String> choreTypes = choreTypesRepository.findAll().stream()
                 .map(DBChoreType::getId)
                 .collect(Collectors.toList());

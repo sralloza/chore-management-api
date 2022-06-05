@@ -8,10 +8,12 @@ import es.sralloza.choremanagementbot.models.db.DBTenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
 import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBTenantsRepository;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -35,6 +37,13 @@ public class TenantsService {
         return repository.findById(tenantId)
                 .map(mapper::build)
                 .orElseThrow(notFoundException(tenantId));
+    }
+
+    public String getTenantsHash() {
+        Set<Integer> tenantIds = listTenants().stream()
+                .map(Tenant::getTelegramId)
+                .collect(Collectors.toSet());
+        return DigestUtils.sha256Hex(tenantIds.toString());
     }
 
     public Tenant createTenant(TenantCreate tenantCreate) {

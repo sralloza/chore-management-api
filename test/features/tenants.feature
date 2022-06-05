@@ -49,7 +49,6 @@ Feature: Tenants API
             | [INT:-3]    | telegram_id must be positive |
 
 
-    @current
     Scenario Outline: Validate error creating a tenant with invalid name
         Given I create a tenant with name "<name>" and id 1 using the API
         Then the response status code is "400"

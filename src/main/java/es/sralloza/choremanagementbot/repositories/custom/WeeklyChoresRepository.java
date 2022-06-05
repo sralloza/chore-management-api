@@ -9,6 +9,7 @@ import es.sralloza.choremanagementbot.models.db.DBChore;
 import es.sralloza.choremanagementbot.models.db.DBRotation;
 import es.sralloza.choremanagementbot.repositories.db.DBChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
+import es.sralloza.choremanagementbot.services.TenantsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -21,24 +22,18 @@ import java.util.stream.Collectors;
 
 @Repository
 public class WeeklyChoresRepository {
-    private final ChoresRepository choresRepository;
-    private final DBChoresRepository dbChoresRepository;
-    private final DBRotationRepository dbRotationRepository;
-    private final ChoreMapper choreMapper;
-    private final WeeklyChoresMapper weeklyChoresMapper;
-
     @Autowired
-    public WeeklyChoresRepository(ChoresRepository choresRepository,
-                                  DBChoresRepository dbChoresRepository,
-                                  DBRotationRepository dbRotationRepository,
-                                  ChoreMapper choreMapper,
-                                  WeeklyChoresMapper weeklyChoresMapper) {
-        this.choresRepository = choresRepository;
-        this.dbChoresRepository = dbChoresRepository;
-        this.dbRotationRepository = dbRotationRepository;
-        this.choreMapper = choreMapper;
-        this.weeklyChoresMapper = weeklyChoresMapper;
-    }
+    private ChoresRepository choresRepository;
+    @Autowired
+    private DBChoresRepository dbChoresRepository;
+    @Autowired
+    private DBRotationRepository dbRotationRepository;
+    @Autowired
+    private ChoreMapper choreMapper;
+    @Autowired
+    private WeeklyChoresMapper weeklyChoresMapper;
+    @Autowired
+    private TenantsService tenantsService;
 
     public Optional<WeeklyChores> findByWeekId(String weekId) {
         return findAll().stream()
@@ -68,7 +63,10 @@ public class WeeklyChoresRepository {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        var rotation = new DBRotation(weeklyChores.getWeekId(), weeklyChores.getRotation());
+        var rotation = new DBRotation()
+                .setWeekId(weeklyChores.getWeekId())
+                .setRotation(weeklyChores.getRotation())
+                .setTenantIdsHash(tenantsService.getTenantsHash());
         dbRotationRepository.save(rotation);
         dbChoresRepository.saveAll(result);
     }

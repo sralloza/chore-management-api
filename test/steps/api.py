@@ -28,9 +28,9 @@ def step_impl(context, code):
 @step("the response body is a valid json")
 def step_impl(context):
     try:
-        json.loads(context.api_response.raw)
-    except ValueError:
-        raise
+        json.loads(context.res.text)
+    except ValueError as exc:
+        assert False, f"Response body is not a valid json ({exc})"
 
 
 @step("the {header} header is in the response")
@@ -63,8 +63,10 @@ def step_impl(context, message):
     assert message in errors_array, error_msg
 
 
+@step("the error message is the following")
 @step('the error message is "{message}"')
-def step_impl(context, message):
+def step_impl(context, message=None):
+    message = message or context.text
     assert "message" in context.res.json(), "No error message in response"
     actual = context.res.json()["message"]
 
