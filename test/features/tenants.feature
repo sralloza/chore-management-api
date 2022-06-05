@@ -1,12 +1,25 @@
 Feature: Tenants API
+    Scenario: List tenants
+        Given there are 5 tenants
+        When I list the tenants using the API
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "tenant-list"
+        And the response should contain the following tenants
+            | username | telegram_id |
+            | tenant1  | [INT:1]     |
+            | tenant2  | [INT:2]     |
+            | tenant3  | [INT:3]     |
+            | tenant4  | [INT:4]     |
+            | tenant5  | [INT:5]     |
+
     Scenario: Create a new tenant
-        When I create a tenant with name "John" and id 111
+        When I create a tenant with name "John" and id 111 using the API
         Then the response status code is "200"
         And the response body is validated against the json-schema "tenant"
         And a tenant with name "John" and id 111 is in the tenants list response
 
     Scenario: Validate error creating a duplicate tenant
-        Given I create a tenant with name "John" and id 111
-        When I create a tenant with name "John" and id 111
+        Given I create a tenant with name "John" and id 111 using the API
+        When I create a tenant with name "John" and id 111 using the API
         Then the response status code is "409"
         And the error message is "Tenant with id 111 already exists"

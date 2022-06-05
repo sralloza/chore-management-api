@@ -1,10 +1,11 @@
 from unittest import mock
-from behave import step
+from behave import step, given, then
 from common.tenant import *
+from common.common import assert_arrays_equal
 
 
-@step("there is {tenants:d} tenant")
-@step("there are {tenants:d} tenants")
+@given("there is {tenants:d} tenant")
+@given("there are {tenants:d} tenants")
 def step_impl(context, tenants):
     for i in range(1, tenants + 1):
         payload = {"telegram_id": i, "username": f"tenant{i}"}
@@ -14,15 +15,28 @@ def step_impl(context, tenants):
     context.res = None
 
 
-@step('I create a tenant with name "{name}" and id {tenant_id:d}')
+@step('I create a tenant with name "{name}" and id {tenant_id:d} using the API')
 def step_impl(context, name, tenant_id):
     payload = {"telegram_id": tenant_id, "username": name}
 
     context.res = context.post("/tenants", json=payload)
 
 
-@step(
-'a tenant with name "{name}" and id {tenant_id:d} is in the tenants list response'
+@step("I list the tenants using the API")
+def step_impl(context):
+    context.res = context.get("/tenants")
+
+
+@step("the response should contain the following tenants")
+def step_impl(context):
+    expected_tenants = get_tenants_from_feature_table(context)
+    actual_tenants = [Tenant(**x) for x in context.res.json()]
+
+    assert_arrays_equal(expected_tenants, actual_tenants)
+
+
+@then(
+    'a tenant with name "{name}" and id {tenant_id:d} is in the tenants list response'
 )
 def step_impl(context, name, tenant_id):
     tenants = get_tenants(context)
