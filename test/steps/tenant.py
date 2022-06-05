@@ -1,7 +1,10 @@
 from unittest import mock
-from behave import step, given, then
-from common.tenant import *
+
+from behave import given, step, then
+from toolium.utils.dataset import replace_param
+
 from common.common import assert_arrays_equal
+from common.tenant import *
 
 
 @given("there is {tenants:d} tenant")
@@ -16,10 +19,19 @@ def step_impl(context, tenants):
 
 
 @step('I create a tenant with name "{name}" and id {tenant_id:d} using the API')
+@step('I create a tenant with name "{name}" and custom id {tenant_id} using the API')
 def step_impl(context, name, tenant_id):
-    payload = {"telegram_id": tenant_id, "username": name}
+    payload = {
+        "telegram_id": replace_param(tenant_id),
+        "username": replace_param(name),
+    }
 
     context.res = context.post("/tenants", json=payload)
+
+
+@step('I create a tenant with body "{body}" using the API')
+def step_impl(context, body):
+    context.res = context.post("/tenants", json=body)
 
 
 @step("I list the tenants using the API")

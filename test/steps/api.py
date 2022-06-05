@@ -52,7 +52,15 @@ def step_impl(context, message):
     assert "message" in context.res.json(), "No error message in response"
     actual = context.res.json()["message"]
     error_msg = f'The error message should contain "{message}", but it is "{actual}"'
-    assert re.match(message, actual), error_msg
+    assert re.search(message, actual), error_msg
+
+
+@step('one of messages in the errors array is "{message}"')
+def step_impl(context, message):
+    assert "errors" in context.res.json(), "No errors array in response"
+    errors_array = [x["defaultMessage"] for x in context.res.json()["errors"]]
+    error_msg = f'One of the messages in the errors array should contain "{message}" ({errors_array})'
+    assert message in errors_array, error_msg
 
 
 @step('the error message is "{message}"')

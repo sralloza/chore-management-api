@@ -1,12 +1,14 @@
 from collections import namedtuple
-from toolium.utils.dataset import replace_param
 from unittest import mock
+
+from toolium.utils.dataset import replace_param
 
 Tenant = namedtuple("Tenant", "username telegram_id api_token")
 
 
 def get_tenants(context):
     return [Tenant(**x) for x in context.get("/tenants").json()]
+
 
 def get_tenants_from_feature_table(context):
     return [

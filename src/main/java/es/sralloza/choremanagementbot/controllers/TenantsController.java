@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -29,7 +30,7 @@ public class TenantsController {
     }
 
     @PostMapping()
-    public Tenant createTenant(@RequestBody TenantCreate tenantCreate) {
+    public Tenant createTenant(@RequestBody @Valid TenantCreate tenantCreate) {
         return service.createTenant(tenantCreate);
     }
 
