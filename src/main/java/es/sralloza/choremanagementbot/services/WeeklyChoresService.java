@@ -27,38 +27,22 @@ import java.util.stream.IntStream;
 @Service
 public class WeeklyChoresService {
     @Autowired
-    private final WeeklyChoresRepository weeklyChoresRepository;
+    private WeeklyChoresRepository weeklyChoresRepository;
 
     @Autowired
-    private final DBChoreTypesRepository choreTypesRepository;
+    private DBChoreTypesRepository choreTypesRepository;
 
     @Autowired
-    private final TenantsRepository tenantsRepository;
+    private TenantsRepository tenantsRepository;
 
     @Autowired
-    private final DBRotationRepository dbRotationRepository;
+    private DBRotationRepository dbRotationRepository;
 
     @Autowired
-    private final DateUtils dateUtils;
+    private DateUtils dateUtils;
 
     @Autowired
-    private final ChoreUtils choreUtils;
-
-    @Inject
-    public WeeklyChoresService(WeeklyChoresRepository weeklyChoresRepository,
-                               DBChoreTypesRepository choreTypesRepository,
-                               TenantsRepository TenantsRepository,
-                               DBRotationRepository dbRotationRepository,
-                               DateUtils dateUtils,
-                               ChoreUtils choreUtils) {
-        this.weeklyChoresRepository = weeklyChoresRepository;
-        this.choreTypesRepository = choreTypesRepository;
-        this.tenantsRepository = TenantsRepository;
-        this.dbRotationRepository = dbRotationRepository;
-        this.dateUtils = dateUtils;
-        this.choreUtils = choreUtils;
-    }
-
+    private ChoreUtils choreUtils;
 
     public WeeklyChores createNextWeekChores() {
         String weekId = dateUtils.getWeekIdByDeltaDays(7);
@@ -85,7 +69,6 @@ public class WeeklyChoresService {
                 .map(DBRotation::getRotation)
                 .orElse(0);
 
-        System.out.println("lastRotation: " + lastRotation);
         WeeklyChores weeklyChores = createWeeklyChores(weekId, lastRotation + 1);
         weeklyChoresRepository.save(weeklyChores);
         return weeklyChores;
