@@ -27,6 +27,11 @@ def step_impl(context):
     context.res = context.get("/tenants")
 
 
+@step("I remove the tenant with id {tenant_id} using the API")
+def step_impl(context, tenant_id):
+    context.res = context.delete(f"/tenants/{tenant_id}")
+
+
 @step("the response should contain the following tenants")
 def step_impl(context):
     expected_tenants = get_tenants_from_feature_table(context)
@@ -43,3 +48,11 @@ def step_impl(context, name, tenant_id):
     expected = Tenant(username=name, telegram_id=tenant_id, api_token=mock.ANY)
 
     assert expected in tenants, f"{expected} is not in {tenants}"
+
+
+@then("a tenant with id {tenant_id} is not in the tenants list response")
+def step_impl(context, tenant_id):
+    tenants = get_tenants(context)
+    expected = Tenant(username=mock.ANY, telegram_id=tenant_id, api_token=mock.ANY)
+
+    assert expected not in tenants, f"{expected} is not in {tenants}"
