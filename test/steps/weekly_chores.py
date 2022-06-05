@@ -32,6 +32,11 @@ def step_impl(context, week_id=None):
         assert res.ok, err_msg
 
 
+@step('the tenant {tenant_id:d} skips the week "{week_id}" using the API')
+def step_impl(context, tenant_id, week_id):
+    context.res = context.post(f"/weekly-chores/skip/{week_id}/tenant/{tenant_id}")
+
+
 @step("I create the weekly chores for next week using the API")
 def step_impl(context):
     context.res = context.post("/weekly-chores")

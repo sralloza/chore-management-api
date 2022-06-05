@@ -8,19 +8,23 @@ import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChoreType;
 import es.sralloza.choremanagementbot.models.db.DBRotation;
+import es.sralloza.choremanagementbot.models.db.DBSkippedWeek;
 import es.sralloza.choremanagementbot.repositories.custom.TenantsRepository;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
 import es.sralloza.choremanagementbot.utils.ChoreUtils;
 import es.sralloza.choremanagementbot.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,6 +41,9 @@ public class WeeklyChoresService {
 
     @Autowired
     private DBRotationRepository dbRotationRepository;
+
+    @Autowired
+    private DBSkippedWeekRepository dbSkippedWeekRepository;
 
     @Autowired
     private DateUtils dateUtils;
@@ -80,16 +87,11 @@ public class WeeklyChoresService {
                 .collect(Collectors.toList());
         List<Tenant> tenants = tenantsRepository.getAll();
 
-        List<Chore> chores = distributeChores(choreTypes, tenants, weekId, rotation);
-        return new WeeklyChores()
-                .setWeekId(weekId)
-                .setChores(chores)
-                .setRotation(rotation);
+        return createWeeklyChoresDistributingChores(choreTypes, tenants, weekId, rotation);
     }
 
-    private List<Chore> distributeChores(List<String> choreTypes, List<Tenant> tenants,
-                                         String weekId, int rotation) {
-
+    private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
+                                                              String weekId, int rotation) {
         if (tenants.isEmpty()) {
             throw new BadRequestException("Can't create weekly chores, no tenants registered");
         }
@@ -98,19 +100,59 @@ public class WeeklyChoresService {
             throw new BadRequestException("Can't create weekly chores, no chore types registered");
         }
 
+        List<Integer> tenantIdList = tenants.stream()
+                .map(Tenant::getTelegramId)
+                .collect(Collectors.toList());
+
+        Set<Integer> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()
+                .filter(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId))
+                .map(DBSkippedWeek::getTenantId)
+                .collect(Collectors.toSet());
+        Set<Integer> tenantsNotSkippingWeek = tenantIdList.stream()
+                .filter(tenantId -> !tenantsSkippingWeek.contains(tenantId))
+                .collect(Collectors.toSet());
+
         int arraySize = Integer.max(choreTypes.size(), tenants.size()) * 2;
+
+        if (tenantsNotSkippingWeek.size() == 1) {
+            var tenantAlone = tenantsNotSkippingWeek.iterator().next();
+            rotation--;
+            for (int i = 0; i < tenants.size(); i++) {
+                tenantIdList.set(i, tenantAlone);
+            }
+        }
         rotation = rotation % tenants.size();
 
-        List<Tenant> repeatedTenants = choreUtils.repeatArray(tenants, arraySize);
+        List<Integer> repeatedTenants = choreUtils.repeatArray(tenantIdList, arraySize);
         Collections.rotate(repeatedTenants, -rotation);
-        return IntStream.range(0, choreTypes.size())
-                .mapToObj(n -> createChore(weekId, choreTypes.get(n), repeatedTenants.get(n)))
+
+        var distributedChoreList = IntStream.range(0, choreTypes.size())
+                .mapToObj(n -> {
+                    var tenantId = repeatedTenants.get(n);
+                    return createChore(weekId,
+                            choreTypes.get(n),
+                            tenantId,
+                            tenantsSkippingWeek.contains(tenantId) ? tenantsNotSkippingWeek : null
+                    );
+                })
                 .collect(Collectors.toList());
+
+        return new WeeklyChores()
+                .setWeekId(weekId)
+                .setChores(distributedChoreList)
+                .setRotation(rotation);
     }
 
-    private Chore createChore(String weekId, String type, Tenant assignee) {
-        Integer id = assignee.getTelegramId();
-        return new Chore(weekId, type, List.of(id), false);
+    private Chore createChore(String weekId, String type, Integer tenantId, Set<Integer> tenantIdListOverride) {
+        List<Integer> asigneeList = new ArrayList<>();
+
+        if (tenantIdListOverride == null || tenantIdListOverride.isEmpty()) {
+            asigneeList.add(tenantId);
+        } else {
+            asigneeList.addAll(tenantIdListOverride);
+        }
+
+        return new Chore(weekId, type, asigneeList, false);
     }
 
     public List<WeeklyChores> findAll() {
@@ -128,5 +170,24 @@ public class WeeklyChoresService {
             throw new NotFoundException("No weekly chores found for week " + weekId);
         }
         weeklyChoresRepository.deleteByWeekId(weekId);
+    }
+
+    public void skipWeek(String weekId, Integer tenantId) {
+        boolean exists = dbSkippedWeekRepository.findAll().stream()
+                .anyMatch(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId) &&
+                        dbSkippedWeek.getTenantId().equals(tenantId));
+        if (exists) {
+            String tenantName = tenantsRepository.getAll().stream()
+                    .filter(tenant -> tenant.getTelegramId().equals(tenantId))
+                    .findAny()
+                    .map(Tenant::getUsername)
+                    .orElseThrow(() -> new NotFoundException("No tenant found for id " + tenantId));
+            throw new BadRequestException("Tenant " + tenantName + " has already skipped the week " + weekId);
+        }
+
+        var ignoredWeek = new DBSkippedWeek()
+                .setWeekId(weekId)
+                .setTenantId(tenantId);
+        dbSkippedWeekRepository.save(ignoredWeek);
     }
 }

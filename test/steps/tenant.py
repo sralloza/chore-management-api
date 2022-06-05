@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from behave import step
 
 
@@ -9,8 +7,7 @@ def step_impl(context, tenants):
     for i in range(1, tenants + 1):
         payload = {
             "telegram_id": i,
-            "username": f"user{i}",
-            "api_token": str(uuid4()),
+            "username": f"tenant{i}"
         }
 
         context.res = context.post("/tenants", json=payload)
