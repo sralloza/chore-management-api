@@ -5,7 +5,10 @@ def reset_databases(context):
 
 
 def get_ids_from_response(res, key):
-    return [x[key] for x in res.json()]
+    try:
+        return [x[key] for x in res.json()]
+    except KeyError:
+        raise ValueError(f"Response does not contain key: {key}\n>>> {res.text}")
 
 
 def remove_all(context, endpoint, key_field):

@@ -1,9 +1,8 @@
 package es.sralloza.choremanagementbot.controllers;
 
-import es.sralloza.choremanagementbot.models.db.DBTenant;
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
-import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
-import es.sralloza.choremanagementbot.repositories.db.DBTenantsRepository;
+import es.sralloza.choremanagementbot.services.TenantsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
@@ -24,28 +21,21 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping("/tenants")
 public class TenantsController {
     @Autowired
-    private DBTenantsRepository dbTenantsRepository;
-    @Autowired
-    private DBSkippedWeekRepository dbSkippedWeekRepository;
+    private TenantsService service;
 
     @GetMapping()
-    public List<DBTenant> listTenants() {
-        return dbTenantsRepository.findAll();
+    public List<Tenant> listTenants() {
+        return service.listTenants();
     }
 
     @PostMapping()
-    public DBTenant createTenant(@RequestBody TenantCreate tenantCreate) {
-        var tenant = new DBTenant(tenantCreate.getTelegramId(), tenantCreate.getUsername(), UUID.randomUUID());
-        return dbTenantsRepository.save(tenant);
+    public Tenant createTenant(@RequestBody TenantCreate tenantCreate) {
+        return service.createTenant(tenantCreate);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = NO_CONTENT)
     public void deleteTenant(@PathVariable("id") Integer tenantId) {
-        dbTenantsRepository.deleteById(tenantId);
-        var skippedWeeks = dbSkippedWeekRepository.findAll().stream()
-                .filter(week -> week.getTenantId().equals(tenantId))
-                .collect(Collectors.toList());
-        dbSkippedWeekRepository.deleteAll(skippedWeeks);
+        service.deleteTenantById(tenantId);
     }
 }

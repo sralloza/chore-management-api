@@ -251,7 +251,7 @@ Feature: Weekly Chores API
             | invalid-week    |
             | 2022-03         |
             | 2022.3          |
-            | 2022.00         |ß
+            | 2022.00         |
             | 2022.55         |
             | 2022023         |
             | whatever        |

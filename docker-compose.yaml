@@ -3,8 +3,6 @@ version: "3.8"
 services:
   app:
     build: .
-    env_file:
-      - .env
     environment:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
@@ -20,3 +18,5 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=chore-management
+    ports:
+      - "3306:3306"

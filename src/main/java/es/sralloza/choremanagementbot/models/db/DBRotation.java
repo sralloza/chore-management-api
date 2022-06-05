@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Rotation")
+@Table(name = "Rotations")
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor

@@ -45,6 +45,7 @@ dependencies {
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    implementation 'mysql:mysql-connector-java'
 
     // Utils
     implementation 'org.projectlombok:lombok:1.18.24'

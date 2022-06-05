@@ -20,13 +20,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DBTenant {
     @Id
-    @JsonProperty("telegram_id")
     private Integer telegramId;
 
     @Column(length = 50, nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    @JsonProperty("api_token")
-    private UUID apiToken;
+    @Column(length = 36, nullable = false)
+    private String apiToken;
 }

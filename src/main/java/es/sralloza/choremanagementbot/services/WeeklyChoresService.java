@@ -9,7 +9,6 @@ import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.models.db.DBChoreType;
 import es.sralloza.choremanagementbot.models.db.DBRotation;
 import es.sralloza.choremanagementbot.models.db.DBSkippedWeek;
-import es.sralloza.choremanagementbot.repositories.custom.TenantsRepository;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
@@ -37,7 +36,7 @@ public class WeeklyChoresService {
     private DBChoreTypesRepository choreTypesRepository;
 
     @Autowired
-    private TenantsRepository tenantsRepository;
+    private TenantsService tenantsService;
 
     @Autowired
     private DBRotationRepository dbRotationRepository;
@@ -85,13 +84,8 @@ public class WeeklyChoresService {
         List<String> choreTypes = choreTypesRepository.findAll().stream()
                 .map(DBChoreType::getId)
                 .collect(Collectors.toList());
-        List<Tenant> tenants = tenantsRepository.getAll();
+        List<Tenant> tenants = tenantsService.listTenants();
 
-        return createWeeklyChoresDistributingChores(choreTypes, tenants, weekId, rotation);
-    }
-
-    private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
-                                                              String weekId, int rotation) {
         if (tenants.isEmpty()) {
             throw new BadRequestException("Can't create weekly chores, no tenants registered");
         }
@@ -99,7 +93,11 @@ public class WeeklyChoresService {
         if (choreTypes.isEmpty()) {
             throw new BadRequestException("Can't create weekly chores, no chore types registered");
         }
+        return createWeeklyChoresDistributingChores(choreTypes, tenants, weekId, rotation);
+    }
 
+    private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
+                                                              String weekId, int rotation) {
         List<Integer> tenantIdList = tenants.stream()
                 .map(Tenant::getTelegramId)
                 .collect(Collectors.toList());
@@ -177,11 +175,7 @@ public class WeeklyChoresService {
                 .anyMatch(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId) &&
                         dbSkippedWeek.getTenantId().equals(tenantId));
         if (exists) {
-            String tenantName = tenantsRepository.getAll().stream()
-                    .filter(tenant -> tenant.getTelegramId().equals(tenantId))
-                    .findAny()
-                    .map(Tenant::getUsername)
-                    .orElseThrow(() -> new NotFoundException("No tenant found for id " + tenantId));
+            String tenantName = tenantsService.getTenantById(tenantId).getUsername();
             throw new BadRequestException("Tenant " + tenantName + " has already skipped the week " + weekId);
         }
 

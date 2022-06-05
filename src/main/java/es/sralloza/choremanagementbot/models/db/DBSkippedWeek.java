@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "SkippedWeek")
+@Table(name = "SkippedWeeks")
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
