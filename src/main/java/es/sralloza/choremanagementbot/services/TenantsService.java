@@ -1,6 +1,7 @@
 package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.builders.TenantMapper;
+import es.sralloza.choremanagementbot.exceptions.ConflictException;
 import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBTenant;
@@ -37,6 +38,9 @@ public class TenantsService {
     }
 
     public Tenant createTenant(TenantCreate tenantCreate) {
+        if (repository.existsById(tenantCreate.getTelegramId())) {
+            throw new ConflictException("Tenant with id " + tenantCreate.getTelegramId() + " already exists");
+        }
         String uuid = UUID.randomUUID().toString();
         var tenant = new DBTenant(tenantCreate.getTelegramId(), tenantCreate.getUsername(), uuid);
         repository.save(tenant);

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "telegram_id": {
+      "type": "integer"
+    },
+    "username": {
+      "type": "string"
+    },
+    "api_token": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "required": [
+    "telegram_id",
+    "username",
+    "api_token"
+  ]
+}
