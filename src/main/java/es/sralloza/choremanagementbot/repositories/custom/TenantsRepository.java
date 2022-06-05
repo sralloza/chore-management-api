@@ -13,24 +13,14 @@ import java.util.stream.Collectors;
 @Repository
 public class TenantsRepository {
     @Autowired
-    private final ChoresRepository choresRepository;
-    @Autowired
-    private final DBTenantsRepository dbTenantsRepository;
-    @Autowired
-    private final TenantMapper mapper;
+    private DBTenantsRepository dbTenantsRepository;
 
-    public TenantsRepository(ChoresRepository choresRepository,
-                             DBTenantsRepository dbTenantsRepository,
-                             TenantMapper mapper) {
-        this.choresRepository = choresRepository;
-        this.dbTenantsRepository = dbTenantsRepository;
-        this.mapper = mapper;
-    }
+    @Autowired
+    private TenantMapper mapper;
 
     public List<Tenant> getAll() {
-        List<Chore> chores = choresRepository.getAll();
         return dbTenantsRepository.findAll().stream()
-                .map(dbTenant -> mapper.build(dbTenant, chores))
+                .map(mapper::build)
                 .collect(Collectors.toList());
     }
 }

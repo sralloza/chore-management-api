@@ -14,5 +14,5 @@ import java.util.Map;
 public class ChoreTypeTickets {
     private String id;
     private String description;
-    private Map<String, Integer> ticketsByUser;
+    private Map<String, Integer> ticketsByTenant;
 }

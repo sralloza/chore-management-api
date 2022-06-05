@@ -45,7 +45,7 @@ public class ChoreMapper {
                 .map(entry -> new Chore()
                         .setType(entry.getKey())
                         .setAssigned(entry.getValue().stream()
-                                .map(DBChore::getUserId)
+                                .map(DBChore::getTenantId)
                                 .collect(Collectors.toList()))
                         .setWeekId(weekId)
                         .setDone(entry.getValue().stream().allMatch(DBChore::getDone)))

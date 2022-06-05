@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 @Service
 public class ChoreTypeTicketsMapper {
     public ChoreTypeTickets build(DBChoreType dbChoreType, List<DBTicket> tickets) {
-        var ticketsByUser = tickets.stream()
+        var ticketsByTenant = tickets.stream()
                 .filter(dbTicket -> dbTicket.getChoreType().equals(dbChoreType.getId()))
                 .collect(Collectors.toMap(DBTicket::getUsername, DBTicket::getTickets));
         return new ChoreTypeTickets()
                 .setId(dbChoreType.getId())
                 .setDescription(dbChoreType.getDescription())
-                .setTicketsByUser(ticketsByUser);
+                .setTicketsByTenant(ticketsByTenant);
     }
 }
