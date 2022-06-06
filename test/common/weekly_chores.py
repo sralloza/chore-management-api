@@ -33,6 +33,9 @@ def parse_weekly_chores_res_table_str(res):
         chore["assigned"] = tenants_to_str(chore["assigned"])
 
     df = pd.DataFrame(chores)
+    if df.empty:
+        return "<empty>"
+
     df2 = df.pivot(index="week_id", columns="type", values="assigned")
     df2.index.name = ""
     df_str = str(df2)

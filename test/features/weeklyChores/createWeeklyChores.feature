@@ -1,4 +1,4 @@
-Feature: Weekly Chores API
+Feature: Weekly Chores API - createWeeklyChores
 
     Scenario: Create weekly chores for next week
         Given there is 1 tenant
@@ -206,7 +206,7 @@ Feature: Weekly Chores API
             """
 
 
-    Scenario: Return error when a tenant skips twice the same week
+    Scenario: Validate error when a tenant skips twice the same week
         Given there is 1 tenant
         And the tenant 1 skips the week "2022.01" using the API
         And the tenant 1 skips the week "2022.01" using the API
@@ -214,7 +214,7 @@ Feature: Weekly Chores API
         And the error message is "Tenant tenant1 has already skipped the week 2022.01"
 
 
-    Scenario Outline: Return error when tenants skips an invalid week
+    Scenario Outline: Validate error when tenants skips an invalid week
         Given there is 1 tenant
         When the tenant 1 skips the week "<invalid_week_id>" using the API
         Then the response status code is "400"
@@ -231,7 +231,7 @@ Feature: Weekly Chores API
             | whatever        |
 
 
-    Scenario: Return error when creating duplicate weekly chores
+    Scenario: Validate error when creating duplicate weekly chores
         Given there is 1 tenant
         And there is 1 chore type
         And I create the weekly chores for the week "2022.01" using the API
@@ -241,7 +241,7 @@ Feature: Weekly Chores API
         And the error message contains "Weekly chores for week .+ already exist"
 
 
-    Scenario Outline: Return error when creating weekly chores for invalid week
+    Scenario Outline: Validate error when creating weekly chores for invalid week
         When I create the weekly chores for the week "<invalid_week_id>" using the API
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
@@ -256,7 +256,7 @@ Feature: Weekly Chores API
             | 2022023         |
             | whatever        |
 
-    Scenario Outline: Return error when creating weekly chores for an old week
+    Scenario Outline: Validate error when creating weekly chores for an old week
         Given there is 1 tenant
         And there is 1 chore type
         And I create the weekly chores for the week "2022.10" using the API
@@ -272,7 +272,7 @@ Feature: Weekly Chores API
             | 2020.44     |
 
 
-    Scenario: Return error when creating weekly chores after tenants have changed
+    Scenario: Validate error when creating weekly chores after tenants have changed
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
@@ -350,68 +350,15 @@ Feature: Weekly Chores API
             """
 
 
-    Scenario: Return error when creating weekly chores but there are no tenants
+    Scenario: Validate error when creating weekly chores but there are no tenants
         Given there is 1 chore type
         When I create the weekly chores for the week "2022.01" using the API
         Then the response status code is "400"
         And the error message is "Can't create weekly chores, no tenants registered"
 
 
-    Scenario: Return error when creating weekly chores but there are no chore types
+    Scenario: Validate error when creating weekly chores but there are no chore types
         Given there is 1 tenant
         When I create the weekly chores for the week "2022.01" using the API
         Then the response status code is "400"
         And the error message is "Can't create weekly chores, no chore types registered"
-
-
-    Scenario: Return error when deleting an unknown weekly chore
-        When I delete the weekly chores for the week "2022.01" using the API
-        Then the response status code is "404"
-        And the error message is "No weekly chores found for week 2022.01"
-
-
-    Scenario Outline: Return error when deleting weekly chores for invalid week
-        When I delete the weekly chores for the week "<invalid_week_id>" using the API
-        Then the response status code is "400"
-        And the error message is "Invalid week ID: <invalid_week_id>"
-
-        Examples: Invalid week IDs
-            | invalid_week_id |
-            | invalid-week    |
-            | 2022-03         |
-            | 2022.3          |
-            | 2022.00         |
-            | 2022.55         |
-            | 2022023         |
-            | whatever        |
-
-
-    Scenario: Get weekly chores by weekId
-        Given there is 1 tenant
-        And there is 1 chore type
-        And I create the weekly chores for the week "2022.01" using the API
-        When I get the weekly chores for the week "2022.01" using the API
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore"
-        And the response contains the following weekly chores
-            """
-            type     A
-
-            2022.01  1
-            """
-
-
-    Scenario Outline: Return error when trying to get weekly chores by an invalid weekId
-        When I get the weekly chores for the week "<invalid_week_id>" using the API
-        Then the response status code is "400"
-        And the error message contains "Invalid week ID: <invalid_week_id>"
-
-        Examples: Invalid week IDs
-            | invalid_week_id |
-            | invalid-week    |
-            | 2022-03         |
-            | 2022.3          |
-            | 2022.00         |
-            | 2022.55         |
-            | 2022023         |
-            | whatever        |
