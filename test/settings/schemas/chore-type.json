@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "$ref": "#/definitions/ChoreType",
+  "definitions": {
+    "ChoreType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "description",
+        "id"
+      ]
+    }
+  }
+}

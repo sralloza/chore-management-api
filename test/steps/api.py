@@ -56,7 +56,9 @@ def step_impl(context, message):
 
 
 @step('one of messages in the errors array is "{message}"')
-def step_impl(context, message):
+@step("one of messages in the errors array is the following")
+def step_impl(context, message=None):
+    message = message or context.text
     assert "errors" in context.res.json(), "No errors array in response"
     errors_array = [x["defaultMessage"] for x in context.res.json()["errors"]]
     error_msg = f'One of the messages in the errors array should contain "{message}" ({errors_array})'

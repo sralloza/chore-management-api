@@ -1,7 +1,7 @@
 package es.sralloza.choremanagementbot.controllers;
 
-import es.sralloza.choremanagementbot.models.db.DBChoreType;
-import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
+import es.sralloza.choremanagementbot.models.custom.ChoreType;
+import es.sralloza.choremanagementbot.services.ChoreTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
@@ -20,21 +21,26 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping("/chore-types")
 public class ChoreTypesController {
     @Autowired
-    private DBChoreTypesRepository dbChoreTypesRepository;
+    private ChoreTypesService service;
 
     @GetMapping()
-    public List<DBChoreType> listChoreTypes() {
-        return dbChoreTypesRepository.findAll();
+    public List<ChoreType> listChoreTypes() {
+        return service.listChoreTypes();
+    }
+
+    @GetMapping("/{id}")
+    public ChoreType getChoreType(@PathVariable String id) {
+        return service.getChoreTypeById(id);
     }
 
     @PostMapping()
-    public DBChoreType createTenant(@RequestBody DBChoreType choreType) {
-        return dbChoreTypesRepository.save(choreType);
+    public ChoreType createChoreType(@RequestBody @Valid ChoreType choreType) {
+        return service.createChoreType(choreType);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = NO_CONTENT)
     public void deleteChoreType(@PathVariable("id") String id) {
-        dbChoreTypesRepository.deleteById(id);
+        service.removeChoreType(id);
     }
 }
