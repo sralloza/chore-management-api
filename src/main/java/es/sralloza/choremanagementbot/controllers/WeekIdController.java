@@ -13,11 +13,6 @@ public class WeekIdController {
     @Autowired
     private DateUtils dateUtils;
 
-    @GetMapping()
-    public WeekId getCurrentWeekIdAlias() {
-        return getCurrentWeekId();
-    }
-
     @GetMapping("/current")
     public WeekId getCurrentWeekId() {
         return new WeekId(dateUtils.getCurrentWeekId());
