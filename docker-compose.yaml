@@ -11,7 +11,7 @@ services:
       - MYSQL_DATABASE=chore-management
       - WAIT_FOR_IT_ADDRESS=database:3306
     ports:
-      - "8000:8000"
+      - "8080:8080"
 
   database:
     image: mysql:oracle

@@ -7,13 +7,16 @@ COPY build.gradle settings.gradle gradlew /home/gradle/
 COPY src/ /home/gradle/src/
 
 RUN ./gradlew build
-RUN ./gradlew test --scan
-RUN ./gradlew fat -i
 
 FROM sralloza/openjdk:11-jre
 
-RUN mkdir /app
+COPY utils/wait-for-it.sh /app/wait-for-it.sh
+COPY utils/entrypoint.sh /app/entrypoint.sh
 
-COPY --from=build /home/gradle/build/libs/*.jar /app/chore-management-bot.jar
+RUN chmod +x /app/*.sh
 
-ENTRYPOINT [ "java", "-jar", "/app/chore-management-bot.jar" ]
+EXPOSE 8080
+
+COPY --from=build /home/gradle/build/libs/*.jar /app/chore-management-api.jar
+
+ENTRYPOINT [ "/app/entrypoint.sh" ]
