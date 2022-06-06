@@ -29,9 +29,19 @@ public class TenantsController {
         return service.listTenants();
     }
 
+    @GetMapping("/{id}")
+    public Tenant getTenant(@PathVariable Integer id) {
+        return service.getTenantById(id);
+    }
+
     @PostMapping()
     public Tenant createTenant(@RequestBody @Valid TenantCreate tenantCreate) {
         return service.createTenant(tenantCreate);
+    }
+
+    @PostMapping("/{id}/recreate-token")
+    public Tenant recreateTenantToken(@PathVariable Integer id) {
+        return service.recreateTenantToken(id);
     }
 
     @DeleteMapping("/{id}")

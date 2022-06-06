@@ -285,12 +285,12 @@ Feature: Weekly Chores API
             """
 
 
-    Scenario: Create weekly tasks if a tenant is created and removed
+    Scenario: Create weekly tasks if a tenant is created and deleted
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
         And I create a tenant with name "John" and id 111 using the API
-        And I remove the tenant with id 111 using the API
+        And I delete the tenant with id 111 using the API
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
         And I list the weekly chores using the API

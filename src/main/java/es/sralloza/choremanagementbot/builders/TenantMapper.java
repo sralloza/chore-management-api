@@ -14,4 +14,11 @@ public class TenantMapper {
                 .setUsername(dbTenant.getUsername())
                 .setApiToken(UUID.fromString(dbTenant.getApiToken()));
     }
+
+    public DBTenant build(Tenant tenant) {
+        return new DBTenant()
+                .setTelegramId(tenant.getTelegramId())
+                .setUsername(tenant.getUsername())
+                .setApiToken(tenant.getApiToken().toString());
+    }
 }

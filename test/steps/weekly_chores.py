@@ -1,9 +1,9 @@
 import json
+
 from behave import step
 
 from common.week_id import *
 from common.weekly_chores import *
-
 
 CREATE_TEXT = "I create the weekly chores for "
 

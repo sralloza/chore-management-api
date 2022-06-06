@@ -11,7 +11,10 @@ def get_path_from_res(res):
 
 def assert_arrays_equal(expected, actual):
     errors = []
+    if len(expected) != len(actual):
+        errors.append(f"- Expected {len(expected)} items, got {len(actual)}")
+
     for i, (e, a) in enumerate(zip(expected, actual)):
         if e != a:
-            errors.append(f"Position {i} not equal: {e} != {a}")
+            errors.append(f"- Position {i} not equal: {e} != {a}")
     assert_not_errors(errors)

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,7 +35,7 @@ public class TenantsService {
     public Tenant getTenantById(Integer tenantId) {
         return repository.findById(tenantId)
                 .map(mapper::build)
-                .orElseThrow(notFoundException(tenantId));
+                .orElseThrow(() -> getNotFoundException(tenantId));
     }
 
     public String getTenantsHash() {
@@ -58,7 +57,7 @@ public class TenantsService {
 
     public void deleteTenantById(Integer tenantId) {
         if (!repository.existsById(tenantId)) {
-            throw notFoundException(tenantId).get();
+            throw getNotFoundException(tenantId);
         }
         repository.deleteById(tenantId);
 
@@ -68,7 +67,15 @@ public class TenantsService {
         dbSkippedWeekRepository.deleteAll(skippedWeeks);
     }
 
-    private Supplier<NotFoundException> notFoundException(Integer tenantId) {
-        return () -> new NotFoundException("No tenant found with id " + tenantId);
+    private NotFoundException getNotFoundException(Integer tenantId) {
+        return new NotFoundException("No tenant found with id " + tenantId);
+    }
+
+    public Tenant recreateTenantToken(Integer id) {
+        Tenant tenant = getTenantById(id);
+        UUID uuid = UUID.randomUUID();
+        tenant.setApiToken(uuid);
+        repository.save(mapper.build(tenant));
+        return tenant;
     }
 }

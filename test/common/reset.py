@@ -1,7 +1,7 @@
 def reset_databases(context):
-    remove_all(context, "/tenants", "telegram_id")
-    remove_all(context, "/chore-types", "id")
-    remove_all(context, "/weekly-chores", "week_id")
+    delete_all(context, "/tenants", "telegram_id")
+    delete_all(context, "/chore-types", "id")
+    delete_all(context, "/weekly-chores", "week_id")
 
 
 def get_ids_from_response(res, key):
@@ -11,7 +11,7 @@ def get_ids_from_response(res, key):
         raise ValueError(f"Response does not contain key: {key}\n>>> {res.text}")
 
 
-def remove_all(context, endpoint, key_field):
+def delete_all(context, endpoint, key_field):
     context.res = context.get(endpoint)
     context.execute_steps('Given the response status code is "200"')
 

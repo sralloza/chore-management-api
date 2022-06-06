@@ -7,6 +7,11 @@ from common.common import assert_arrays_equal
 from common.tenant import *
 
 
+@step("I get the tenant with id {tenant_id} using the API")
+def step_impl(context, tenant_id):
+    context.res = context.get(f"/tenants/{tenant_id}")
+
+
 @given("there is {tenants:d} tenant")
 @given("there are {tenants:d} tenants")
 def step_impl(context, tenants):
@@ -39,15 +44,31 @@ def step_impl(context):
     context.res = context.get("/tenants")
 
 
-@step("I remove the tenant with id {tenant_id} using the API")
+@step("I delete the tenant with id {tenant_id} using the API")
 def step_impl(context, tenant_id):
     context.res = context.delete(f"/tenants/{tenant_id}")
+
+
+@step("I save the tenant's token")
+def step_impl(context):
+    context.execute_steps(
+        """
+    Given the response body is a valid json
+    And the response status code is "200"
+    """
+    )
+    context.api_token = context.res.json()["api_token"]
+
+
+@step("I recreate the token of the tenant with id {tenant_id} using the API")
+def step_impl(context, tenant_id):
+    context.res = context.post(f"/tenants/{tenant_id}/recreate-token")
 
 
 @step("the response should contain the following tenants")
 def step_impl(context):
     expected_tenants = get_tenants_from_feature_table(context)
-    actual_tenants = [Tenant(**x) for x in context.res.json()]
+    actual_tenants = get_tenants_from_response(context)
 
     assert_arrays_equal(expected_tenants, actual_tenants)
 
@@ -68,3 +89,31 @@ def step_impl(context, tenant_id):
     expected = Tenant(username=mock.ANY, telegram_id=tenant_id, api_token=mock.ANY)
 
     assert expected not in tenants, f"{expected} is not in {tenants}"
+
+
+@step("the tenant's token is different from the saved token")
+def step_impl(context):
+    context.execute_steps(
+        """
+    Given the response body is a valid json
+    And the response status code is "200"
+    """
+    )
+    new_token = context.res.json()["api_token"]
+    assert (
+        new_token != context.api_token
+    ), f"{new_token} is the same as {context.api_token}"
+
+
+@step("the tenant's token is equal to the saved token")
+def step_impl(context):
+    context.execute_steps(
+        """
+    Given the response body is a valid json
+    And the response status code is "200"
+    """
+    )
+    new_token = context.res.json()["api_token"]
+    assert (
+        new_token == context.api_token
+    ), f"{new_token} is different as {context.api_token}"
