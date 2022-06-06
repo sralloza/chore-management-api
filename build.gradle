@@ -28,15 +28,7 @@ dependencies {
     // Utils
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.typesafe:config:1.4.2'
     implementation 'commons-codec:commons-codec:1.15'
     implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
     implementation 'org.projectlombok:lombok:1.18.24'
-
-    // Logging
-    implementation 'com.tersesystems.logback:logback-classic:1.0.3'
-    implementation 'com.tersesystems.logback:logback-structured-config:1.0.3'
-    implementation 'com.tersesystems.logback:logback-typesafe-config:1.0.3'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.1.1'
-    implementation 'org.slf4j:slf4j-api:1.7.36'
 }
