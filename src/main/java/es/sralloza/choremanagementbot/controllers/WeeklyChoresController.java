@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/weekly-chores")
+@RequestMapping("/v1/weekly-chores")
 public class WeeklyChoresController {
     @Autowired
     private WeeklyChoresService service;

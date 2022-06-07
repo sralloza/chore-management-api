@@ -18,7 +18,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
-@RequestMapping("/chore-types")
+@RequestMapping("/v1/chore-types")
 public class ChoreTypesController {
     @Autowired
     private ChoreTypesService service;

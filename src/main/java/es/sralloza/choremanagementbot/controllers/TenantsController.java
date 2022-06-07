@@ -19,7 +19,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
-@RequestMapping("/tenants")
+@RequestMapping("/v1/tenants")
 public class TenantsController {
     @Autowired
     private TenantsService service;

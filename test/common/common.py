@@ -1,4 +1,5 @@
 URL = "http://localhost:8080"
+VERSIONED_URL_TEMPLATE = URL + "/v{version}"
 
 
 def assert_not_errors(errors):
