@@ -1,4 +1,4 @@
-Feature: Skip Weeks API - skipWeek
+Feature: Tenants API - skipWeek
 
     As a tenant, some weeks I may not be living in the apartment so
     I don't have to clean it.

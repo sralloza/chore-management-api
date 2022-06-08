@@ -1,4 +1,4 @@
-Feature: Weekly Chores API - skipWeek
+Feature: Tenants API - skipWeek
 
     As a tenant I want to unskip a week in case I have wrongly skipped it.
 

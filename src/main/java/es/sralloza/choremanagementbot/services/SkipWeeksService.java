@@ -1,9 +1,8 @@
-package es.sralloza.choremanagementbot.controllers;
+package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.exceptions.BadRequestException;
 import es.sralloza.choremanagementbot.models.db.DBSkippedWeek;
 import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
-import es.sralloza.choremanagementbot.services.TenantsService;
 import es.sralloza.choremanagementbot.utils.DateProvider;
 import es.sralloza.choremanagementbot.utils.DateUtils;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
