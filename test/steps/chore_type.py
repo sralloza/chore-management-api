@@ -2,8 +2,7 @@ from string import ascii_uppercase
 
 from behave import step
 
-from common.chore_type import *
-from common.common import assert_arrays_equal, replace_param
+from common import *
 
 
 @step("there is {chore_types:d} chore type")
@@ -53,3 +52,16 @@ def step_impl(context):
     actual = get_chore_types_from_res(context)
 
     assert_arrays_equal(expected, actual)
+
+
+@step("the database contains the following chore types")
+def step_impl(context):
+    if not context.table:
+        print("Warning: no table data")
+
+    table_as_text = table_to_str(context.table)
+    context.execute_steps(
+        "Given I list the chore types using the API\n"
+        + "And the response contains the following chore types\n"
+        + f"{table_as_text}"
+    )

@@ -1,6 +1,6 @@
 from behave import step
 
-from common.week_id import *
+from common import *
 
 
 @step("I get the current week ID using the API")

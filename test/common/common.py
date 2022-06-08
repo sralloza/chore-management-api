@@ -1,6 +1,6 @@
 import re
 
-from toolium.utils.dataset import replace_param as tm_replace_param
+from toolium.utils.dataset import replace_param as _tm_replace_param
 
 URL = "http://localhost:8080"
 VERSIONED_URL_TEMPLATE = URL + "/v{version}"
@@ -29,6 +29,10 @@ def assert_has_text(context):
     assert context.text, "Step has no text"
 
 
+def assert_has_table(context):
+    assert context.table, "Step has no table"
+
+
 def replace_param(context, param, infer_param_type=True):
     if not isinstance(param, str):
         return param
@@ -42,4 +46,23 @@ def replace_param(context, param, infer_param_type=True):
         return context.get("/week-id/next", silenced=True).json()["week_id"]
     if param == "[LAST_WEEK_ID]":
         return context.get("/week-id/last", silenced=True).json()["week_id"]
-    return tm_replace_param(param, infer_param_type=infer_param_type)
+    return _tm_replace_param(param, infer_param_type=infer_param_type)
+
+
+def table_to_str(table):
+    if not table:
+        return ""
+
+    result = ""
+    if table.headings:
+        result = "|"
+    for heading in table.headings:
+        result += heading + "|"
+    result += "\n"
+    for row in table.rows:
+        if row.cells:
+            result += "|"
+        for cell in row.cells:
+            result += cell + "|"
+        result += "\n"
+    return result

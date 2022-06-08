@@ -5,8 +5,7 @@ Feature: Chore Types API - createChoreType
             | chore-type-1 | description-chore-type-1 |
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
-        And I list the chore types using the API
-        And the response contains the following chore types
+        And the database contains the following chore types
             | id           | description              |
             | chore-type-1 | description-chore-type-1 |
 
@@ -51,8 +50,7 @@ Feature: Chore Types API - createChoreType
             | [25_LEN_STR] | description-chore-type-1 |
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
-        And I list the chore types using the API
-        And the response contains the following chore types
+        And the database contains the following chore types
             | id           | description              |
             | [25_LEN_STR] | description-chore-type-1 |
 
@@ -106,8 +104,7 @@ Feature: Chore Types API - createChoreType
             | chore-type-1 | [255_LEN_STR] |
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
-        And I list the chore types using the API
-        And the response contains the following chore types
+        And the database contains the following chore types
             | id           | description              |
             | chore-type-1 | [255_LEN_STR] |
 

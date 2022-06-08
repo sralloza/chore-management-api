@@ -7,7 +7,7 @@ from pathlib import Path
 from behave import step
 from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 
-from common.common import assert_not_errors, get_path_from_res
+from common import *
 
 
 @step('the response status code is "{code:d}"')

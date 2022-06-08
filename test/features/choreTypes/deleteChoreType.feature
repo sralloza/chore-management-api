@@ -3,8 +3,7 @@ Feature: Chore Types API - deleteChoreType
         Given there is 1 chore type
         When I delete the chore type with id A using the API
         Then the response status code is "204"
-        And I list the chore types using the API
-        And the response contains the following chore types
+        And the database contains the following chore types
 
 
     Scenario: validate error when deleting a non existing chore type

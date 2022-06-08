@@ -1,4 +1,6 @@
-from common.common import replace_param
+from behave import step
+
+from common import *
 
 
 @step('the tenant {tenant_id:d} skips the week "{week_id}" using the API')

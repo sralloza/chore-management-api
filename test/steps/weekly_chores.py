@@ -2,11 +2,7 @@ import json
 
 from behave import step
 
-from common.common import *
-from common.week_id import *
-from common.weekly_chores import *
-
-CREATE_TEXT = "I create the weekly chores for "
+from common import *
 
 
 @step("I list the weekly chores using the API")
