@@ -1,6 +1,7 @@
 from string import ascii_uppercase
 
 from behave import step
+
 from common.chore_type import *
 from common.common import assert_arrays_equal, replace_param
 

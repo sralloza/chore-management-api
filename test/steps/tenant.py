@@ -1,6 +1,7 @@
 from unittest import mock
 
 from behave import given, step, then
+
 from common.common import assert_arrays_equal, replace_param
 from common.tenant import *
 
