@@ -5,8 +5,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
         And I create the weekly chores for the week "2022.01" using the API
         When I delete the weekly chores for the week "2022.01" using the API
         Then the response status code is "204"
-        And I list the weekly chores using the API
-        And the response contains the following weekly chores
+        And the database contains the following weekly chores
             """
             <empty>
             """

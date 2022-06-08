@@ -10,8 +10,7 @@ Feature: Tenants API - skipWeek
         When the tenant 2 unskips the week "2025.01" using the API
         Then the response status code is "204"
         And I create the weekly chores for the week "2025.01" using the API
-        And I list the weekly chores using the API
-        And the response contains the following weekly chores
+        And the database contains the following weekly chores
             """
             type     A  B  C
 

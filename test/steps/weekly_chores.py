@@ -2,6 +2,7 @@ import json
 
 from behave import step
 
+from common.common import *
 from common.week_id import *
 from common.weekly_chores import *
 
@@ -64,3 +65,13 @@ def step_impl(context):
 
     msg = f"tables don't match:\n\n{expected}\n\n{actual}"
     assert expected == actual, msg
+
+
+@step("the database contains the following weekly chores")
+def step_impl(context):
+    assert_has_text(context)
+    context.execute_steps(
+        "Given I list the weekly chores using the API\n"
+        + "And the response contains the following weekly chores\n"
+        + f"'''\n{context.text}\n'''"
+    )

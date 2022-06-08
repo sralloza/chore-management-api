@@ -25,6 +25,10 @@ def assert_arrays_equal(expected, actual):
     assert_not_errors(errors)
 
 
+def assert_has_text(context):
+    assert context.text, "Step has no text"
+
+
 def replace_param(context, param, infer_param_type=True):
     if not isinstance(param, str):
         return param
