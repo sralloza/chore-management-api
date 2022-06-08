@@ -55,13 +55,4 @@ public class WeeklyChoresController {
         validator.validateSyntax(weekId);
         service.deleteWeeklyChores(weekId);
     }
-
-    @PostMapping("/skip/{weekId}/tenant/{tenantId}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void skipWeek(@PathVariable("weekId") String weekId,
-                         @PathVariable("tenantId") Integer tenantId) {
-        validator.validateSyntax(weekId);
-        validator.validateTimeline(weekId);
-        service.skipWeek(weekId, tenantId);
-    }
 }

@@ -181,19 +181,4 @@ public class WeeklyChoresService {
         }
         weeklyChoresRepository.deleteByWeekId(weekId);
     }
-
-    public void skipWeek(String weekId, Integer tenantId) {
-        boolean exists = dbSkippedWeekRepository.findAll().stream()
-                .anyMatch(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId) &&
-                        dbSkippedWeek.getTenantId().equals(tenantId));
-        if (exists) {
-            String tenantName = tenantsService.getTenantById(tenantId).getUsername();
-            throw new BadRequestException("Tenant " + tenantName + " has already skipped the week " + weekId);
-        }
-
-        var ignoredWeek = new DBSkippedWeek()
-                .setWeekId(weekId)
-                .setTenantId(tenantId);
-        dbSkippedWeekRepository.save(ignoredWeek);
-    }
 }

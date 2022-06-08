@@ -44,6 +44,19 @@ Feature: Chore Types API - createChoreType
             """
 
 
+    @run
+    Scenario: create a choreType with the largest id possible
+        When I create the following chore type using the API
+            | id           | description              |
+            | [25_LEN_STR] | description-chore-type-1 |
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "chore-type"
+        And I list the chore types using the API
+        And the response contains the following chore types
+            | id           | description              |
+            | [25_LEN_STR] | description-chore-type-1 |
+
+
     Scenario: Validate error creating a choreType with an id too long
         When I create the following chore type using the API
             | id                         | description              |
@@ -66,7 +79,7 @@ Feature: Chore Types API - createChoreType
             """
 
 
-    Scenario: Validate error creating a choreType with a empty description
+    Scenario: Validate error creating a choreType with an empty description
         When I create the following chore type using the API
             | id           | description |
             | chore-type-1 | [EMPTY]     |
@@ -76,7 +89,7 @@ Feature: Chore Types API - createChoreType
             choreType.description cannot be blank
             """
 
-    Scenario: Validate error creating a choreType with a empty description
+    Scenario: Validate error creating a choreType with a blank description
         When I create the following chore type using the API
             | id           | description |
             | chore-type-1 | [B]         |
@@ -86,10 +99,22 @@ Feature: Chore Types API - createChoreType
             choreType.description cannot be blank
             """
 
+    @run
+    Scenario: create a choreType with the largest description possible
+        When I create the following chore type using the API
+            | id           | description   |
+            | chore-type-1 | [255_LEN_STR] |
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "chore-type"
+        And I list the chore types using the API
+        And the response contains the following chore types
+            | id           | description              |
+            | chore-type-1 | [255_LEN_STR] |
+
 
     Scenario: Validate error creating a choreType with a description too long
         When I create the following chore type using the API
-            | id           | description              |
+            | id           | description   |
             | chore-type-1 | [256_LEN_STR] |
         Then the response status code is "400"
         And one of messages in the errors array is the following

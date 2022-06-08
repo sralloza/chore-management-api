@@ -18,9 +18,11 @@ def step_impl(context, week_id):
     context.res = context.get(f"/weekly-chores/{week_id}")
 
 
-@step(CREATE_TEXT + 'the week "{week_id}" with force={force} using the API')
-@step(CREATE_TEXT + 'the week "{week_id}" using the API')
-@step(CREATE_TEXT + "the following weeks using the API")
+@step(
+    'I create the weekly chores for the week "{week_id}" with force={force} using the API'
+)
+@step('I create the weekly chores for the week "{week_id}" using the API')
+@step("I create the weekly chores for the following weeks using the API")
 def step_impl(context, week_id=None, force=None):
     params = None if force is None else {"force": json.loads(force)}
 
@@ -39,13 +41,8 @@ def step_impl(context, week_id=None, force=None):
         assert res.ok, err_msg
 
 
-@step('the tenant {tenant_id:d} skips the week "{week_id}" using the API')
-def step_impl(context, tenant_id, week_id):
-    context.res = context.post(f"/weekly-chores/skip/{week_id}/tenant/{tenant_id}")
-
-
-@step(CREATE_TEXT + "next week with force={force} using the API")
-@step(CREATE_TEXT + "next week using the API")
+@step("I create the weekly chores for next week with force={force} using the API")
+@step("I create the weekly chores for next week using the API")
 def step_impl(context, force=None):
     params = None if force is None else {"force": json.loads(force)}
 

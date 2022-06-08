@@ -1,10 +1,8 @@
 from string import ascii_uppercase
 
 from behave import step
-from toolium.utils.dataset import replace_param
-
 from common.chore_type import *
-from common.common import assert_arrays_equal
+from common.common import assert_arrays_equal, replace_param
 
 
 @step("there is {chore_types:d} chore type")
@@ -25,14 +23,9 @@ def step_impl(context, chore_types):
 def step_impl(context):
     assert len(list(context.table)) == 1, "Expected 1 row"
 
-    def extra_replacement(x):
-        if x == "[256_LEN_STR]":
-            return "x" * 256
-        return replace_param(x)
-
     payload = {
-        "id": extra_replacement(context.table[0]["id"]),
-        "description": extra_replacement(context.table[0]["description"]),
+        "id": replace_param(context, context.table[0]["id"]),
+        "description": replace_param(context, context.table[0]["description"]),
     }
     context.res = context.post("/chore-types", json=payload)
 

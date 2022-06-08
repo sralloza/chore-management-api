@@ -1,7 +1,7 @@
 package es.sralloza.choremanagementbot.utils;
 
-import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
@@ -14,6 +14,17 @@ public class DateUtils {
 
     public DateUtils(DateProvider dateProvider) {
         this.dateProvider = dateProvider;
+    }
+
+    public LocalDate getLocalDateByWeekId(String weekId) {
+        int year = Integer.parseInt(weekId.split("\\.")[0]);
+        int week = Integer.parseInt(weekId.split("\\.")[1]);
+
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+        return LocalDate.now()
+                .withYear(year)
+                .with(weekFields.weekOfYear(), week)
+                .with(weekFields.dayOfWeek(), 1);
     }
 
     private int getWeekNumberByDate(LocalDate localDate) {

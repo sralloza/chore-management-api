@@ -109,17 +109,17 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when a tenant skips a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 2 skips the week "2022.15" using the API
+        And the tenant 2 skips the week "2025.15" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
-            | 2022.01 |
-            | 2022.02 |
-            | 2022.03 |
-            | 2022.04 |
-            | 2022.15 |
-            | 2022.16 |
-            | 2022.17 |
-            | 2022.18 |
+            | 2025.01 |
+            | 2025.02 |
+            | 2025.03 |
+            | 2025.04 |
+            | 2025.15 |
+            | 2025.16 |
+            | 2025.17 |
+            | 2025.18 |
         And I list the weekly chores using the API
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -127,33 +127,33 @@ Feature: Weekly Chores API - createWeeklyChores
             """
             type     A      B  C  D
 
-            2022.01  1      2  3  4
-            2022.02  2      3  4  1
-            2022.03  3      4  1  2
-            2022.04  4      1  2  3
-            2022.15  1  1,3,4  3  4
-            2022.16  2      3  4  1
-            2022.17  3      4  1  2
-            2022.18  4      1  2  3
+            2025.01  1      2  3  4
+            2025.02  2      3  4  1
+            2025.03  3      4  1  2
+            2025.04  4      1  2  3
+            2025.15  1  1,3,4  3  4
+            2025.16  2      3  4  1
+            2025.17  3      4  1  2
+            2025.18  4      1  2  3
             """
 
 
     Scenario: Create weekly chores when two tenants skips a couple of weeks
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 2 skips the week "2022.15" using the API
-        And the tenant 3 skips the week "2022.15" using the API
-        And the tenant 3 skips the week "2022.16" using the API
+        And the tenant 2 skips the week "2025.15" using the API
+        And the tenant 3 skips the week "2025.15" using the API
+        And the tenant 3 skips the week "2025.16" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
-            | 2022.01 |
-            | 2022.02 |
-            | 2022.03 |
-            | 2022.04 |
-            | 2022.15 |
-            | 2022.16 |
-            | 2022.17 |
-            | 2022.18 |
+            | 2025.01 |
+            | 2025.02 |
+            | 2025.03 |
+            | 2025.04 |
+            | 2025.15 |
+            | 2025.16 |
+            | 2025.17 |
+            | 2025.18 |
         And I list the weekly chores using the API
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -161,33 +161,33 @@ Feature: Weekly Chores API - createWeeklyChores
             """
             type     A      B    C  D
 
-            2022.01  1      2    3  4
-            2022.02  2      3    4  1
-            2022.03  3      4    1  2
-            2022.04  4      1    2  3
-            2022.15  1    1,4  1,4  4
-            2022.16  2  1,2,4    4  1
-            2022.17  3      4    1  2
-            2022.18  4      1    2  3
+            2025.01  1      2    3  4
+            2025.02  2      3    4  1
+            2025.03  3      4    1  2
+            2025.04  4      1    2  3
+            2025.15  1    1,4  1,4  4
+            2025.16  2  1,2,4    4  1
+            2025.17  3      4    1  2
+            2025.18  4      1    2  3
             """
 
 
     Scenario: Create weekly chores when all tenants but one skip a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 1 skips the week "2022.15" using the API
-        And the tenant 2 skips the week "2022.15" using the API
-        And the tenant 4 skips the week "2022.15" using the API
+        And the tenant 1 skips the week "2025.15" using the API
+        And the tenant 2 skips the week "2025.15" using the API
+        And the tenant 4 skips the week "2025.15" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
-            | 2022.01 |
-            | 2022.02 |
-            | 2022.03 |
-            | 2022.04 |
-            | 2022.15 |
-            | 2022.16 |
-            | 2022.17 |
-            | 2022.18 |
+            | 2025.01 |
+            | 2025.02 |
+            | 2025.03 |
+            | 2025.04 |
+            | 2025.15 |
+            | 2025.16 |
+            | 2025.17 |
+            | 2025.18 |
         And I list the weekly chores using the API
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
@@ -195,40 +195,15 @@ Feature: Weekly Chores API - createWeeklyChores
             """
             type     A  B  C  D
 
-            2022.01  1  2  3  4
-            2022.02  2  3  4  1
-            2022.03  3  4  1  2
-            2022.04  4  1  2  3
-            2022.15  3  3  3  3
-            2022.16  1  2  3  4
-            2022.17  2  3  4  1
-            2022.18  3  4  1  2
+            2025.01  1  2  3  4
+            2025.02  2  3  4  1
+            2025.03  3  4  1  2
+            2025.04  4  1  2  3
+            2025.15  3  3  3  3
+            2025.16  1  2  3  4
+            2025.17  2  3  4  1
+            2025.18  3  4  1  2
             """
-
-
-    Scenario: Validate error when a tenant skips twice the same week
-        Given there is 1 tenant
-        And the tenant 1 skips the week "2022.01" using the API
-        And the tenant 1 skips the week "2022.01" using the API
-        Then the response status code is "400"
-        And the error message is "Tenant tenant1 has already skipped the week 2022.01"
-
-
-    Scenario Outline: Validate error when tenants skips an invalid week
-        Given there is 1 tenant
-        When the tenant 1 skips the week "<invalid_week_id>" using the API
-        Then the response status code is "400"
-        And the error message is "Invalid week ID: <invalid_week_id>"
-
-        Examples: Invalid week IDs
-            | invalid_week_id |
-            | invalid-week    |
-            | 2022-03         |
-            | 2022.3          |
-            | 2022.00         |
-            | 2022.55         |
-            | 2022023         |
-            | whatever        |
 
 
     Scenario: Validate error when creating duplicate weekly chores

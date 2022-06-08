@@ -20,6 +20,6 @@ public class DBChoreType {
     @Id
     private String id;
 
-    @Column(length = 250, nullable = false)
+    @Column(nullable = false)
     private String description;
 }
