@@ -1,9 +1,9 @@
 from collections import namedtuple
 from unittest import mock
 
-from toolium.utils.dataset import replace_param
+from common.common import replace_param
 
-Tenant = namedtuple("Tenant", "username telegram_id api_token")
+Tenant = namedtuple("Tenant", "username tenant_id api_token")
 
 
 def get_tenants(context):
@@ -11,10 +11,13 @@ def get_tenants(context):
 
 
 def get_tenants_from_feature_table(context):
-    return [
-        Tenant(x["username"], replace_param(x["telegram_id"]), mock.ANY)
-        for x in context.table.rows
-    ]
+    return [get_tenant_from_row(context, x) for x in context.table.rows]
+
+
+def get_tenant_from_row(context, row):
+    username = row["username"]
+    tenant_id = replace_param(context, row["tenant_id"])
+    return Tenant(username, tenant_id, mock.ANY)
 
 
 def get_tenants_from_response(context):

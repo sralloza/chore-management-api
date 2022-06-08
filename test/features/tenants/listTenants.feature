@@ -6,7 +6,7 @@ Feature: Tenants API - listTenants
         Then the response status code is "200"
         And the response body is validated against the json-schema "tenant-list"
         And the response should contain the following tenants
-            | username | telegram_id |
+            | username | tenant_id |
             | tenant1  | [INT:1]     |
             | tenant2  | [INT:2]     |
             | tenant3  | [INT:3]     |

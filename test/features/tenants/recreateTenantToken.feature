@@ -1,7 +1,9 @@
 Feature: Tenants API - recreateTenantToken
 
     Scenario: Recreate tenant token
-        Given I create a tenant with name "John" and id 111 using the API
+        Given I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
         When I get the tenant with id 111 using the API
         And I save the tenant's token
         And I recreate the token of the tenant with id 111 using the API

@@ -1,15 +1,25 @@
 Feature: Tenants API - createTenant
 
+    As an admin user I want to register a new tenant.
+
     Scenario: Create a new tenant
-        When I create a tenant with name "John" and id 111 using the API
+        When I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
         Then the response status code is "200"
         And the response body is validated against the json-schema "tenant"
-        And a tenant with name "John" and id 111 is in the tenants list response
+        And the following tenant exists
+            | username | tenant_id |
+            | John     | 111       |
 
 
     Scenario: Validate error creating a duplicate tenant
-        Given I create a tenant with name "John" and id 111 using the API
-        When I create a tenant with name "John" and id 111 using the API
+        Given I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
+        When I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
         Then the response status code is "409"
         And the error message is "Tenant with id 111 already exists"
 
@@ -25,24 +35,28 @@ Feature: Tenants API - createTenant
             | "string"   | JSON parse error |
 
 
-    Scenario Outline: Validate error creating a tenant with an invalid telegram_id
-        Given I create a tenant with name "John" and custom id <telegram_id> using the API
+    Scenario Outline: Validate error creating a tenant with an invalid tenant_id
+        Given I create a tenant using the API
+            | username |
+            | John     |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
         Examples:
-            | telegram_id | err_msg                      |
-            | [NULL]      | telegram_id is required      |
-            | [INT:-3]    | telegram_id must be positive |
+            | tenant_id | err_msg                      |
+            | [NULL]    | tenant_id is required      |
+            | [INT:-3]  | tenant_id must be positive |
 
 
     Scenario Outline: Validate error creating a tenant with an invalid name
-        Given I create a tenant with name "<name>" and id 1 using the API
+        Given I create a tenant using the API
+            | tenant_id |
+            | 1         |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
         Examples:
-            | name    | err_msg                          |
-            | [NULL]  | username is required             |
-            | [EMPTY] | username can't be blank          |
-            | po      | username size must be at least 3 |
+            | username | err_msg                          |
+            | [NULL]   | username is required             |
+            | [EMPTY]  | username can't be blank          |
+            | po       | username size must be at least 3 |

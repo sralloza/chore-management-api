@@ -20,7 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DBTenant {
     @Id
-    private Integer telegramId;
+    private Integer tenantId;
 
     @Column(length = 50, nullable = false)
     private String username;

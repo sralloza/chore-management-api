@@ -251,7 +251,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
-        And I create a tenant with name "John" and id 111 using the API
+        And I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "400"
         And the error message is the following
@@ -264,7 +266,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
-        And I create a tenant with name "John" and id 111 using the API
+        And I create a tenant using the API
+            | username | tenant_id |
+            | John     | 111       |
         And I delete the tenant with id 111 using the API
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
@@ -286,7 +290,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
-        And I create a tenant with name "tenant4" and id 4 using the API
+        And I create a tenant using the API
+            | username | tenant_id |
+            | tenant4  | 4         |
         When I create the weekly chores for the week "2022.03" with force=true using the API
         Then the response status code is "200"
         And I list the weekly chores using the API
@@ -309,7 +315,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
-        And I create a tenant with name "tenant4" and id 4 using the API
+        And I create a tenant using the API
+            | username | tenant_id |
+            | tenant4  | 4         |
         When I create the weekly chores for next week with force=true using the API
         Then the response status code is "200"
         And I list the weekly chores using the API

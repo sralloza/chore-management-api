@@ -1,3 +1,4 @@
+from uuid import uuid4
 import requests
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
@@ -18,15 +19,39 @@ def before_feature(context, feature):
     tlm_before_feature(context, feature)
 
 
+def request(context, method, path, **kwargs):
+    url = VERSIONED_URL_TEMPLATE.format(version=1) + path
+
+    pprint = print
+    if "silenced" in kwargs:
+        silenced = kwargs.pop("silenced")
+        if silenced is True:
+            pprint = lambda *x: x
+
+    pprint()
+    if "json" in kwargs:
+        pprint(f"Sending json: {kwargs['json']}\n")
+
+    correlator = str(uuid4())
+    headers = kwargs.pop("headers", {})
+    headers["X-Correlator"] = correlator
+    kwargs["headers"] = headers
+
+    res = context.session.request(method, url, **kwargs)
+
+    pprint("X-Correlator".center(len(correlator), "="))
+    pprint(correlator + "\n")
+    return res
+
+
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
     context.session = requests.Session()
 
-    url = VERSIONED_URL_TEMPLATE.format(version=1)
-    context.get = lambda path, **kwargs: context.session.get(url + path, **kwargs)
-    context.post = lambda path, **kwargs: context.session.post(url + path, **kwargs)
-    context.put = lambda path, **kwargs: context.session.put(url + path, **kwargs)
-    context.delete = lambda path, **kwargs: context.session.delete(url + path, **kwargs)
+    context.get = lambda path, **kwargs: request(context, "GET", path, **kwargs)
+    context.post = lambda path, **kwargs: request(context, "POST", path, **kwargs)
+    context.put = lambda path, **kwargs: request(context, "PUT", path, **kwargs)
+    context.delete = lambda path, **kwargs: request(context, "DELETE", path, **kwargs)
 
     context.res = None
     context.res_list = []

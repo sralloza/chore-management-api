@@ -14,8 +14,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tenant {
-    @JsonProperty("telegram_id")
-    Integer telegramId;
+    @JsonProperty("tenant_id")
+    Integer tenantId;
     String username;
     @JsonProperty("api_token")
     UUID apiToken;

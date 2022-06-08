@@ -10,14 +10,14 @@ import java.util.UUID;
 public class TenantMapper {
     public Tenant build(DBTenant dbTenant) {
         return new Tenant()
-                .setTelegramId(dbTenant.getTelegramId())
+                .setTenantId(dbTenant.getTenantId())
                 .setUsername(dbTenant.getUsername())
                 .setApiToken(UUID.fromString(dbTenant.getApiToken()));
     }
 
     public DBTenant build(Tenant tenant) {
         return new DBTenant()
-                .setTelegramId(tenant.getTelegramId())
+                .setTenantId(tenant.getTenantId())
                 .setUsername(tenant.getUsername())
                 .setApiToken(tenant.getApiToken().toString());
     }

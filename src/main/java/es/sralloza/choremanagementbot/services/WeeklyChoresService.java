@@ -111,7 +111,7 @@ public class WeeklyChoresService {
     private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
                                                               String weekId, int rotation) {
         List<Integer> tenantIdList = tenants.stream()
-                .map(Tenant::getTelegramId)
+                .map(Tenant::getTenantId)
                 .collect(Collectors.toList());
 
         Set<Integer> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()

@@ -40,17 +40,17 @@ public class TenantsService {
 
     public String getTenantsHash() {
         Set<Integer> tenantIds = listTenants().stream()
-                .map(Tenant::getTelegramId)
+                .map(Tenant::getTenantId)
                 .collect(Collectors.toSet());
         return DigestUtils.sha256Hex(tenantIds.toString());
     }
 
     public Tenant createTenant(TenantCreate tenantCreate) {
-        if (repository.existsById(tenantCreate.getTelegramId())) {
-            throw new ConflictException("Tenant with id " + tenantCreate.getTelegramId() + " already exists");
+        if (repository.existsById(tenantCreate.getTenantId())) {
+            throw new ConflictException("Tenant with id " + tenantCreate.getTenantId() + " already exists");
         }
         String uuid = UUID.randomUUID().toString();
-        var tenant = new DBTenant(tenantCreate.getTelegramId(), tenantCreate.getUsername(), uuid);
+        var tenant = new DBTenant(tenantCreate.getTenantId(), tenantCreate.getUsername(), uuid);
         repository.save(tenant);
         return mapper.build(tenant);
     }

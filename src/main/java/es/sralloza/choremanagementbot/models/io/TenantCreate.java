@@ -16,10 +16,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TenantCreate {
-    @JsonProperty("telegram_id")
-    @NotNull(message = "telegram_id is required")
-    @Positive(message = "telegram_id must be positive")
-    Integer telegramId;
+    @JsonProperty("tenant_id")
+    @NotNull(message = "tenant_id is required")
+    @Positive(message = "tenant_id must be positive")
+    Integer tenantId;
 
     @NotNull(message = "username is required")
     @NotBlank(message = "username can't be blank")
