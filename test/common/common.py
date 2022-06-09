@@ -51,6 +51,9 @@ def replace_param(context, param, infer_param_type=True):
 
 
 def parse_table(table, enforce_int=True):
+    if not table:
+        return []
+
     result = []
     for row in table:
         parsed_row = dict(row.as_dict())

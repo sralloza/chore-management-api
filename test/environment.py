@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 import allure
 import requests
 from toolium.behave.environment import after_all as tlm_after_all
@@ -9,7 +7,7 @@ from toolium.behave.environment import before_all as tlm_before_all
 from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 
-from common.common import VERSIONED_URL_TEMPLATE
+from common.api import request
 from common.reset import reset_databases
 
 
@@ -19,32 +17,6 @@ def before_all(context):
 
 def before_feature(context, feature):
     tlm_before_feature(context, feature)
-
-
-def request(context, method, path, **kwargs):
-    url = VERSIONED_URL_TEMPLATE.format(version=1) + path
-
-    pprint = print
-    if "silenced" in kwargs:
-        silenced = kwargs.pop("silenced")
-        if silenced is True:
-            pprint = lambda *x: x
-
-    pprint()
-    if "json" in kwargs:
-        pprint(f">>>> {kwargs['json']}\n")
-
-    correlator = str(uuid4())
-    headers = kwargs.pop("headers", {})
-    headers["X-Correlator"] = correlator
-    kwargs["headers"] = headers
-
-    res = context.session.request(method, url, **kwargs)
-
-    pprint("X-Correlator".center(len(correlator), "="))
-    pprint(correlator + "\n")
-    pprint(f"<<<< {res.text}\n")
-    return res
 
 
 def before_scenario(context, scenario):
@@ -64,7 +36,7 @@ def before_scenario(context, scenario):
     context.res_list = []
 
 
-def after_scenario(context, scenario):
+def register_allure_stdout_stderr(context):
     stdout = context.stdout_capture.getvalue()
     stderr = context.stderr_capture.getvalue()
     if stdout:
@@ -76,6 +48,9 @@ def after_scenario(context, scenario):
             stderr, name="stderr", attachment_type=allure.attachment_type.TEXT
         )
 
+
+def after_scenario(context, scenario):
+    register_allure_stdout_stderr(context)
     tlm_after_scenario(context, scenario)
 
 
