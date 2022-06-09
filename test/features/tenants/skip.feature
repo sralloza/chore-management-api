@@ -31,7 +31,7 @@ Feature: Tenants API - skipWeek
             {next}  1  1,3  3
             """
 
-    @run
+
     Scenario Outline: Validate error when tenants skips an invalid week
         Given there is 1 tenant
         When the tenant 1 skips the week "<invalid_week_id>" using the API

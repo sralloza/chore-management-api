@@ -22,7 +22,8 @@ Feature: Tenants API - skipWeek
         Given there is 1 tenant
         When the tenant 1 unskips the week "2022.01" using the API
         Then the response status code is "400"
-        And the error message is "Tenant tenant1 has not skipped the week 2022.01"
+        And the error message is "Tenant with id 1 has not skipped the week 2022.01"
+
 
     Scenario Outline: Validate error when tenants unskips an invalid week
         Given there is 1 tenant

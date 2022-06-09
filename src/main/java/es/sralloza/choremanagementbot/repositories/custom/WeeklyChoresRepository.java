@@ -32,8 +32,6 @@ public class WeeklyChoresRepository {
     private ChoreMapper choreMapper;
     @Autowired
     private WeeklyChoresMapper weeklyChoresMapper;
-    @Autowired
-    private TenantsService tenantsService;
 
     public Optional<WeeklyChores> findByWeekId(String weekId) {
         return findAll().stream()
@@ -56,7 +54,7 @@ public class WeeklyChoresRepository {
                 .collect(Collectors.toList());
     }
 
-    public void save(WeeklyChores weeklyChores) {
+    public void save(WeeklyChores weeklyChores, String tenantsHash) {
         List<Chore> chores = weeklyChores.getChores();
         List<DBChore> result = chores.stream()
                 .map(choreMapper::splitChore)
@@ -66,7 +64,7 @@ public class WeeklyChoresRepository {
         var rotation = new DBRotation()
                 .setWeekId(weeklyChores.getWeekId())
                 .setRotation(weeklyChores.getRotation())
-                .setTenantIdsHash(tenantsService.getTenantsHash());
+                .setTenantIdsHash(tenantsHash);
         dbRotationRepository.save(rotation);
         dbChoresRepository.saveAll(result);
     }

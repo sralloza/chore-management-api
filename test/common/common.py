@@ -1,4 +1,5 @@
 import re
+from itertools import zip_longest
 
 from toolium.utils.dataset import replace_param as _tm_replace_param
 
@@ -19,7 +20,7 @@ def assert_arrays_equal(expected, actual):
     if len(expected) != len(actual):
         errors.append(f"- Expected {len(expected)} items, got {len(actual)}")
 
-    for i, (e, a) in enumerate(zip(expected, actual)):
+    for i, (e, a) in enumerate(zip_longest(expected, actual)):
         if e != a:
             errors.append(f"- Position {i} not equal: {e} != {a}")
     assert_not_errors(errors)
@@ -47,6 +48,20 @@ def replace_param(context, param, infer_param_type=True):
     if param == "[LAST_WEEK_ID]":
         return context.get("/week-id/last", silenced=True).json()["week_id"]
     return _tm_replace_param(param, infer_param_type=infer_param_type)
+
+
+def parse_table(table, enforce_int=True):
+    result = []
+    for row in table:
+        parsed_row = dict(row.as_dict())
+        if enforce_int:
+            for key, value in parsed_row.items():
+                try:
+                    parsed_row[key] = int(value)
+                except ValueError:
+                    pass
+        result.append(parsed_row)
+    return result
 
 
 def table_to_str(table):

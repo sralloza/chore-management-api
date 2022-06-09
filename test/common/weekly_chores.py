@@ -3,6 +3,8 @@ from collections import namedtuple
 
 import pandas as pd
 
+from common.pandas_utils import normalize_df
+
 WeeklyChore = namedtuple("WeeklyChore", "week_id chore tenants")
 
 
@@ -37,7 +39,4 @@ def parse_weekly_chores_res_table_str(res):
         return "<empty>"
 
     df2 = df.pivot(index="week_id", columns="type", values="assigned")
-    df2.index.name = ""
-    df_str = str(df2)
-    df_str = re.sub("\n\\s+\n", "\n\n", df_str)
-    return df_str
+    return normalize_df(df2)

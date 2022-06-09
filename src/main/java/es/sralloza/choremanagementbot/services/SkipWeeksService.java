@@ -11,11 +11,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.temporal.WeekFields;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class SkipWeeksService {
-    @Autowired
-    private TenantsService tenantsService;
     @Autowired
     private DBSkippedWeekRepository repository;
     @Autowired
@@ -30,8 +29,7 @@ public class SkipWeeksService {
         validatePastWeekId(weekId);
 
         if (repository.findByWeekIdAndTenantId(weekId, tenantId).isPresent()) {
-            String tenantName = tenantsService.getTenantById(tenantId).getUsername();
-            throw new BadRequestException("Tenant " + tenantName + " has already skipped the week " + weekId);
+            throw new BadRequestException("Tenant with id " + tenantId + " has already skipped the week " + weekId);
         }
 
         var ignoredWeek = new DBSkippedWeek()
@@ -45,8 +43,7 @@ public class SkipWeeksService {
         var skippedWeek = repository.findByWeekIdAndTenantId(weekId, tenantId);
 
         if (skippedWeek.isEmpty()) {
-            String tenantName = tenantsService.getTenantById(tenantId).getUsername();
-            throw new BadRequestException("Tenant " + tenantName + " has not skipped the week " + weekId);
+            throw new BadRequestException("Tenant with id " + tenantId + " has not skipped the week " + weekId);
         }
 
         repository.delete(skippedWeek.get());
@@ -64,5 +61,12 @@ public class SkipWeeksService {
         if (weekDate.isBefore(currentDate)) {
             throw new BadRequestException("Cannot skip a week in the past");
         }
+    }
+
+    public void deleteSkipWeeksByTenantId(Integer tenantId) {
+        var skippedWeeks = repository.findAll().stream()
+                .filter(week -> week.getTenantId().equals(tenantId))
+                .collect(Collectors.toList());
+        repository.deleteAll(skippedWeeks);
     }
 }

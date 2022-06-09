@@ -6,7 +6,6 @@ import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBTenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
-import es.sralloza.choremanagementbot.repositories.db.DBSkippedWeekRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBTenantsRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,9 @@ public class TenantsService {
     @Autowired
     private DBTenantsRepository repository;
     @Autowired
-    private DBSkippedWeekRepository dbSkippedWeekRepository;
+    private SkipWeeksService skipWeeksService;
+    @Autowired
+    private TicketsService ticketsService;
     @Autowired
     private TenantMapper mapper;
 
@@ -52,6 +53,7 @@ public class TenantsService {
         String uuid = UUID.randomUUID().toString();
         var tenant = new DBTenant(tenantCreate.getTenantId(), tenantCreate.getUsername(), uuid);
         repository.save(tenant);
+        ticketsService.createTicketsForTenant(tenant.getTenantId());
         return mapper.build(tenant);
     }
 
@@ -59,12 +61,11 @@ public class TenantsService {
         if (!repository.existsById(tenantId)) {
             throw getNotFoundException(tenantId);
         }
+
         repository.deleteById(tenantId);
 
-        var skippedWeeks = dbSkippedWeekRepository.findAll().stream()
-                .filter(week -> week.getTenantId().equals(tenantId))
-                .collect(Collectors.toList());
-        dbSkippedWeekRepository.deleteAll(skippedWeeks);
+        skipWeeksService.deleteSkipWeeksByTenantId(tenantId);
+        ticketsService.deleteTicketsByTenant(tenantId);
     }
 
     private NotFoundException getNotFoundException(Integer tenantId) {

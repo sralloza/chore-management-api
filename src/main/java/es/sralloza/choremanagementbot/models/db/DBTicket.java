@@ -21,13 +21,13 @@ import javax.persistence.Table;
 public class DBTicket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
 
     @Column(length = 50, nullable = false)
     private String choreType;
 
     @Column(length = 50, nullable = false)
-    private String username;
+    private Integer tenantId;
 
     @Column(nullable = false)
     private Integer tickets;

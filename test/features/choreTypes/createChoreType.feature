@@ -43,7 +43,6 @@ Feature: Chore Types API - createChoreType
             """
 
 
-    @run
     Scenario: create a choreType with the largest id possible
         When I create the following chore type using the API
             | id           | description              |
@@ -97,7 +96,6 @@ Feature: Chore Types API - createChoreType
             choreType.description cannot be blank
             """
 
-    @run
     Scenario: create a choreType with the largest description possible
         When I create the following chore type using the API
             | id           | description   |

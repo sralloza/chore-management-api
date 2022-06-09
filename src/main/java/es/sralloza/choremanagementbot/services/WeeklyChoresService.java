@@ -34,22 +34,16 @@ import java.util.stream.IntStream;
 public class WeeklyChoresService {
     @Autowired
     private WeeklyChoresRepository weeklyChoresRepository;
-
     @Autowired
     private DBChoreTypesRepository choreTypesRepository;
-
     @Autowired
     private TenantsService tenantsService;
-
     @Autowired
     private DBRotationRepository dbRotationRepository;
-
     @Autowired
     private DBSkippedWeekRepository dbSkippedWeekRepository;
-
     @Autowired
     private DateUtils dateUtils;
-
     @Autowired
     private ChoreUtils choreUtils;
 
@@ -69,7 +63,7 @@ public class WeeklyChoresService {
 
         if (weeklyChoresList.isEmpty()) {
             WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, 0);
-            weeklyChoresRepository.save(weeklyChores);
+            weeklyChoresRepository.save(weeklyChores, tenantsService.getTenantsHash());
             return weeklyChores;
         }
 
@@ -88,7 +82,7 @@ public class WeeklyChoresService {
         }
 
         WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, newRotation);
-        weeklyChoresRepository.save(weeklyChores);
+        weeklyChoresRepository.save(weeklyChores, tenantsService.getTenantsHash());
         return weeklyChores;
     }
 

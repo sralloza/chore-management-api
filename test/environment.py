@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+import allure
 import requests
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
@@ -31,7 +32,7 @@ def request(context, method, path, **kwargs):
 
     pprint()
     if "json" in kwargs:
-        pprint(f"Sending json: {kwargs['json']}\n")
+        pprint(f">>>> {kwargs['json']}\n")
 
     correlator = str(uuid4())
     headers = kwargs.pop("headers", {})
@@ -42,6 +43,7 @@ def request(context, method, path, **kwargs):
 
     pprint("X-Correlator".center(len(correlator), "="))
     pprint(correlator + "\n")
+    pprint(f"<<<< {res.text}\n")
     return res
 
 
@@ -63,6 +65,17 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
+    stdout = context.stdout_capture.getvalue()
+    stderr = context.stderr_capture.getvalue()
+    if stdout:
+        allure.attach(
+            stdout, name="stdout", attachment_type=allure.attachment_type.TEXT
+        )
+    if stderr:
+        allure.attach(
+            stderr, name="stderr", attachment_type=allure.attachment_type.TEXT
+        )
+
     tlm_after_scenario(context, scenario)
 
 

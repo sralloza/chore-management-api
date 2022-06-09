@@ -16,6 +16,8 @@ public class ChoreTypesService {
     @Autowired
     private DBChoreTypesRepository repository;
     @Autowired
+    private TicketsService ticketsService;
+    @Autowired
     private ChoreTypesMapper mapper;
 
     public List<ChoreType> listChoreTypes() {
@@ -33,6 +35,8 @@ public class ChoreTypesService {
         if (repository.existsById(choreType.getId())) {
             throw new ConflictException("Chore type already exists with id " + choreType.getId());
         }
+
+        ticketsService.createTicketsForChoreType(choreType.getId());
         return mapper.build(repository.save(mapper.build(choreType)));
     }
 
