@@ -1,4 +1,9 @@
 Feature: Chore Types API - listChoreTypes
+
+    As a user I want to list the defined chore types.
+
+    # TODO: validate admin and tenants have access (guest are not allowed)
+
     Scenario: List chore types when empty
         When I list the chore types using the API
         Then the response status code is "200"

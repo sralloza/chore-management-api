@@ -1,6 +1,6 @@
 from behave import step
 
-from common.common import assert_arrays_equal, assert_has_text, parse_table
+from common.common import assert_arrays_equal, parse_table, table_to_str
 from common.tickets import parse_tickets_res_table_str
 
 
@@ -19,4 +19,10 @@ def step_impl(context):
 
 @step("the database contains the following tickets")
 def step_impl(context):
-    assert_has_text(context)
+    context.execute_steps(
+        f"""
+    Given I list the tickets using the API
+    And the response contains the following tickets
+    {table_to_str(context.table)}
+    """
+    )

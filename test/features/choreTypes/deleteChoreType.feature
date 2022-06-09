@@ -1,4 +1,10 @@
 Feature: Chore Types API - deleteChoreType
+
+    As an admin I want to delete a specific chore type.
+
+    # TODO: validate only admin have access (guests and tenants are not allowed)
+
+
     Scenario: delete chore type
         Given there is 1 chore type
         When I delete the chore type with id A using the API

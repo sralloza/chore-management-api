@@ -1,5 +1,10 @@
 Feature: Chore Types API - createChoreType
-    Scenario: Create a chore type
+
+    As an admin I want to register chore types.
+
+    # TODO: validate only admin can register chore types
+
+    Scenario: Create a chore type without tenants
         When I create the following chore type using the API
             | id           | description              |
             | chore-type-1 | description-chore-type-1 |
@@ -8,6 +13,24 @@ Feature: Chore Types API - createChoreType
         And the database contains the following chore types
             | id           | description              |
             | chore-type-1 | description-chore-type-1 |
+        And the database contains the following tickets
+
+
+    Scenario: Validate that tickets are created after the chore type
+        Given there are 3 tenants
+        When I create the following chore type using the API
+            | id        | description           |
+            | new-chore | new-chore-description |
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "chore-type"
+        And the database contains the following chore types
+            | id        | description           |
+            | new-chore | new-chore-description |
+        And the database contains the following tickets
+            | tenant  | new-chore |
+            | tenant1 | 0         |
+            | tenant2 | 0         |
+            | tenant3 | 0         |
 
 
     Scenario: Validate error creating a choreType with a null id
@@ -86,6 +109,7 @@ Feature: Chore Types API - createChoreType
             choreType.description cannot be blank
             """
 
+
     Scenario: Validate error creating a choreType with a blank description
         When I create the following chore type using the API
             | id           | description |
@@ -96,6 +120,7 @@ Feature: Chore Types API - createChoreType
             choreType.description cannot be blank
             """
 
+
     Scenario: create a choreType with the largest description possible
         When I create the following chore type using the API
             | id           | description   |
@@ -103,7 +128,7 @@ Feature: Chore Types API - createChoreType
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
         And the database contains the following chore types
-            | id           | description              |
+            | id           | description   |
             | chore-type-1 | [255_LEN_STR] |
 
 

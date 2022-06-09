@@ -1,5 +1,9 @@
 Feature: Chore Types API - getChoreType
 
+    As a user I want to get the details of a chore type.
+
+    # TODO: validate admin and tenants have access (guest are not allowed)
+
     Scenario: Get a chore type
         Given there is 1 chore type
         When I get the chore type with id "A" using the API
@@ -14,4 +18,3 @@ Feature: Chore Types API - getChoreType
         When I get the chore type with id "X" using the API
         Then the response status code is "404"
         And the error message is "No chore type found with id X"
-

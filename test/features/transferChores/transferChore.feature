@@ -1,4 +1,3 @@
-@wip
 Feature: Transfer Chores API - transferChore
     Scenario: Simple chore transfer
         Given there are 2 tenants
