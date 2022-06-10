@@ -12,10 +12,7 @@ Feature: Weekly Chores API - listWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A
-
-            2022.01  1
-            2022.02  1
-            2022.03  1
-            """
+            | week_id | A |
+            | 2022.01 | 1 |
+            | 2022.02 | 1 |
+            | 2022.03 | 1 |

@@ -8,16 +8,9 @@ Feature: Transfer Chores API - transferChore
             | 1                | 2              | A          | 2022.01 |
         Then the response status code is "204"
         And the database contains the following weekly chores
-            """
-            type     A  B
-
-            2022.01  2  2
-            """
-
-        And I list the tickets using the API
-        And The response contains the following tickets
+            | week_id | A | B |
+            | 2022.01 | 2 | 2 |
+        And the database contains the following tickets
             | tenant  | A  | B |
             | tenant1 | -1 | 0 |
             | tenant2 | 1  | 0 |
-
-# And the database contains the following tickets

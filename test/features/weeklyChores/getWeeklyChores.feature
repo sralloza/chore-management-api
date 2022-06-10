@@ -8,11 +8,8 @@ Feature: Weekly Chores API - getWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
-            """
-            type     A
-
-            2022.01  1
-            """
+            | week_id | A |
+            | 2022.01 | 1 |
 
 
     Scenario Outline: Validate error when trying to get weekly chores by an invalid weekId

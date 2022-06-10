@@ -47,7 +47,7 @@ def step_impl(context):
     context.res = context.get("/tenants")
 
 
-@when('I delete the tenant with id "{tenant_id:d}" using the API')
+@step('I delete the tenant with id "{tenant_id:d}" using the API')
 def step_impl(context, tenant_id):
     context.res = context.delete(f"/tenants/{tenant_id}")
 
@@ -107,7 +107,7 @@ def step_impl(context):
     )
 
 
-@step("the tenant's token is different from the saved token")
+@then("the tenant's token is different from the saved token")
 def step_impl(context):
     context.execute_steps(
         """
@@ -119,17 +119,3 @@ def step_impl(context):
     assert (
         new_token != context.api_token
     ), f"{new_token} is the same as {context.api_token}"
-
-
-@step("the tenant's token is equal to the saved token")
-def step_impl(context):
-    context.execute_steps(
-        """
-    Given the response body is a valid json
-    And the response status code is "200"
-    """
-    )
-    new_token = context.res.json()["api_token"]
-    assert (
-        new_token == context.api_token
-    ), f"{new_token} is different as {context.api_token}"

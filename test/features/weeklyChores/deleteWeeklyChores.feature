@@ -6,9 +6,6 @@ Feature: Weekly Chores API - deleteWeeklyChores
         When I delete the weekly chores for the week "2022.01" using the API
         Then the response status code is "204"
         And the database contains the following weekly chores
-            """
-            <empty>
-            """
 
 
     Scenario: Validate error when deleting an unknown weekly chore

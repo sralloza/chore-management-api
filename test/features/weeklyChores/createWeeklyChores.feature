@@ -7,11 +7,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
-            """
-            type     A
+            | week_id        | A |
+            | [NEXT_WEEK_ID] | 1 |
 
-            {next}  1
-            """
 
     Scenario: Create weekly chores when same number of tenants and chore types
         Given there are 4 tenants
@@ -30,18 +28,15 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C  D
-
-            2022.01  1  2  3  4
-            2022.02  2  3  4  1
-            2022.03  3  4  1  2
-            2022.04  4  1  2  3
-            2022.15  1  2  3  4
-            2022.16  2  3  4  1
-            2022.17  3  4  1  2
-            2022.18  4  1  2  3
-            """
+            | week_id | A | B | C | D |
+            | 2022.01 | 1 | 2 | 3 | 4 |
+            | 2022.02 | 2 | 3 | 4 | 1 |
+            | 2022.03 | 3 | 4 | 1 | 2 |
+            | 2022.04 | 4 | 1 | 2 | 3 |
+            | 2022.15 | 1 | 2 | 3 | 4 |
+            | 2022.16 | 2 | 3 | 4 | 1 |
+            | 2022.17 | 3 | 4 | 1 | 2 |
+            | 2022.18 | 4 | 1 | 2 | 3 |
 
 
     Scenario: Create weekly chores when there are more tenants than chore types
@@ -61,18 +56,15 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C
-
-            2022.01  1  2  3
-            2022.02  2  3  4
-            2022.03  3  4  5
-            2022.04  4  5  1
-            2022.15  5  1  2
-            2022.16  1  2  3
-            2022.17  2  3  4
-            2022.18  3  4  5
-            """
+            | week_id | A | B | C |
+            | 2022.01 | 1 | 2 | 3 |
+            | 2022.02 | 2 | 3 | 4 |
+            | 2022.03 | 3 | 4 | 5 |
+            | 2022.04 | 4 | 5 | 1 |
+            | 2022.15 | 5 | 1 | 2 |
+            | 2022.16 | 1 | 2 | 3 |
+            | 2022.17 | 2 | 3 | 4 |
+            | 2022.18 | 3 | 4 | 5 |
 
 
     Scenario: Create weekly chores when there are more chore types than tenants
@@ -92,24 +84,21 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C  D  E
-
-            2022.01  1  2  3  1  2
-            2022.02  2  3  1  2  3
-            2022.03  3  1  2  3  1
-            2022.04  1  2  3  1  2
-            2022.15  2  3  1  2  3
-            2022.16  3  1  2  3  1
-            2022.17  1  2  3  1  2
-            2022.18  2  3  1  2  3
-            """
+            | week_id | A | B | C | D | E |
+            | 2022.01 | 1 | 2 | 3 | 1 | 2 |
+            | 2022.02 | 2 | 3 | 1 | 2 | 3 |
+            | 2022.03 | 3 | 1 | 2 | 3 | 1 |
+            | 2022.04 | 1 | 2 | 3 | 1 | 2 |
+            | 2022.15 | 2 | 3 | 1 | 2 | 3 |
+            | 2022.16 | 3 | 1 | 2 | 3 | 1 |
+            | 2022.17 | 1 | 2 | 3 | 1 | 2 |
+            | 2022.18 | 2 | 3 | 1 | 2 | 3 |
 
 
     Scenario: Create weekly chores when a tenant skips a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 2 skips the week "2025.15" using the API
+        And the tenant with id "2" skips the week "2025.15" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -124,26 +113,23 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A      B  C  D
-
-            2025.01  1      2  3  4
-            2025.02  2      3  4  1
-            2025.03  3      4  1  2
-            2025.04  4      1  2  3
-            2025.15  1  1,3,4  3  4
-            2025.16  2      3  4  1
-            2025.17  3      4  1  2
-            2025.18  4      1  2  3
-            """
+            | week_id | A | B     | C | D |
+            | 2025.01 | 1 | 2     | 3 | 4 |
+            | 2025.02 | 2 | 3     | 4 | 1 |
+            | 2025.03 | 3 | 4     | 1 | 2 |
+            | 2025.04 | 4 | 1     | 2 | 3 |
+            | 2025.15 | 1 | 1,3,4 | 3 | 4 |
+            | 2025.16 | 2 | 3     | 4 | 1 |
+            | 2025.17 | 3 | 4     | 1 | 2 |
+            | 2025.18 | 4 | 1     | 2 | 3 |
 
 
     Scenario: Create weekly chores when two tenants skips a couple of weeks
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 2 skips the week "2025.15" using the API
-        And the tenant 3 skips the week "2025.15" using the API
-        And the tenant 3 skips the week "2025.16" using the API
+        And the tenant with id "2" skips the week "2025.15" using the API
+        And the tenant with id "3" skips the week "2025.15" using the API
+        And the tenant with id "3" skips the week "2025.16" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -158,26 +144,23 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A      B    C  D
-
-            2025.01  1      2    3  4
-            2025.02  2      3    4  1
-            2025.03  3      4    1  2
-            2025.04  4      1    2  3
-            2025.15  1    1,4  1,4  4
-            2025.16  2  1,2,4    4  1
-            2025.17  3      4    1  2
-            2025.18  4      1    2  3
-            """
+            | week_id | A | B     | C   | D |
+            | 2025.01 | 1 | 2     | 3   | 4 |
+            | 2025.02 | 2 | 3     | 4   | 1 |
+            | 2025.03 | 3 | 4     | 1   | 2 |
+            | 2025.04 | 4 | 1     | 2   | 3 |
+            | 2025.15 | 1 | 1,4   | 1,4 | 4 |
+            | 2025.16 | 2 | 1,2,4 | 4   | 1 |
+            | 2025.17 | 3 | 4     | 1   | 2 |
+            | 2025.18 | 4 | 1     | 2   | 3 |
 
 
     Scenario: Create weekly chores when all tenants but one skip a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant 1 skips the week "2025.15" using the API
-        And the tenant 2 skips the week "2025.15" using the API
-        And the tenant 4 skips the week "2025.15" using the API
+        And the tenant with id "1" skips the week "2025.15" using the API
+        And the tenant with id "2" skips the week "2025.15" using the API
+        And the tenant with id "4" skips the week "2025.15" using the API
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -192,18 +175,15 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C  D
-
-            2025.01  1  2  3  4
-            2025.02  2  3  4  1
-            2025.03  3  4  1  2
-            2025.04  4  1  2  3
-            2025.15  3  3  3  3
-            2025.16  1  2  3  4
-            2025.17  2  3  4  1
-            2025.18  3  4  1  2
-            """
+            | week_id | A | B | C | D |
+            | 2025.01 | 1 | 2 | 3 | 4 |
+            | 2025.02 | 2 | 3 | 4 | 1 |
+            | 2025.03 | 3 | 4 | 1 | 2 |
+            | 2025.04 | 4 | 1 | 2 | 3 |
+            | 2025.15 | 3 | 3 | 3 | 3 |
+            | 2025.16 | 1 | 2 | 3 | 4 |
+            | 2025.17 | 2 | 3 | 4 | 1 |
+            | 2025.18 | 3 | 4 | 1 | 2 |
 
 
     Scenario: Validate error when creating duplicate weekly chores
@@ -269,18 +249,15 @@ Feature: Weekly Chores API - createWeeklyChores
         And I create a tenant using the API
             | username | tenant_id |
             | John     | 111       |
-        And I delete the tenant with id 111 using the API
+        And I delete the tenant with id "111" using the API
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
         And I list the weekly chores using the API
         And the response status code is "200"
         And the response contains the following weekly chores
-            """
-            type     A  B  C
-
-            2022.01  1  2  3
-            2022.02  2  3  1
-            """
+            | week_id | A | B | C |
+            | 2022.01 | 1 | 2 | 3 |
+            | 2022.02 | 2 | 3 | 1 |
 
 
     Scenario: Restart weekly tasks creation if new tenant is registered using weekID endpoint
@@ -299,13 +276,10 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C  D  E
-
-            2022.01  1  2  3  1  2
-            2022.02  2  3  1  2  3
-            2022.03  1  2  3  4  1
-            """
+            | week_id | A | B | C | D | E |
+            | 2022.01 | 1 | 2 | 3 | 1 | 2 |
+            | 2022.02 | 2 | 3 | 1 | 2 | 3 |
+            | 2022.03 | 1 | 2 | 3 | 4 | 1 |
 
 
     Scenario: Restart weekly tasks creation if new tenant is registered using next week endpoint
@@ -324,13 +298,10 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            """
-            type     A  B  C  D  E
-
-            2022.01  1  2  3  1  2
-            2022.02  2  3  1  2  3
-            {next}  1  2  3  4  1
-            """
+            | week_id        | A | B | C | D | E |
+            | 2022.01        | 1 | 2 | 3 | 1 | 2 |
+            | 2022.02        | 2 | 3 | 1 | 2 | 3 |
+            | [NEXT_WEEK_ID] | 1 | 2 | 3 | 4 | 1 |
 
 
     Scenario: Validate error when creating weekly chores but there are no tenants
