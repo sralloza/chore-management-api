@@ -41,6 +41,6 @@ public class ChoreTypesController {
     @DeleteMapping("/{id}")
     @ResponseStatus(value = NO_CONTENT)
     public void deleteChoreType(@PathVariable("id") String id) {
-        service.removeChoreType(id);
+        service.deleteChoreType(id);
     }
 }

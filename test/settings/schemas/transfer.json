@@ -1,0 +1,43 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "$ref": "#/definitions/Transfer",
+    "definitions": {
+        "Transfer": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "completed": {
+                    "type": "boolean"
+                },
+                "tenant_id_from": {
+                    "type": "integer"
+                },
+                "tenant_id_to": {
+                    "type": "integer"
+                },
+                "chore_type": {
+                    "type": "string"
+                },
+                "week_id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "id",
+                "timestamp",
+                "completed",
+                "tenant_id_from",
+                "tenant_id_to",
+                "chore_type",
+                "week_id"
+            ]
+        }
+    }
+}

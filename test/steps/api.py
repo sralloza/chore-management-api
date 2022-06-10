@@ -110,3 +110,8 @@ def step_impl(context, schema):
             errors.append(msg)
 
     assert_not_errors(errors)
+
+
+@step('I save the "{attr}" attribute of the response as "{dest}"')
+def step_impl(context, attr, dest):
+    setattr(context, dest, context.res.json()[attr])

@@ -45,13 +45,13 @@ public class TicketsService {
                 .collect(Collectors.toList()));
     }
 
-    public void addTicketsToTenant(Integer tenantId, ChoreType choreType, int nTickets) {
+    public void addTicketsToTenant(Integer tenantId, String choreType, int nTickets) {
         DBTicket tickets = dbTicketsRepository.findAll().stream()
-                .filter(dbTicket -> dbTicket.getChoreType().equals(choreType.getId()))
+                .filter(dbTicket -> dbTicket.getChoreType().equals(choreType))
                 .filter(dbTicket -> dbTicket.getTenantId().equals(tenantId))
                 .findAny()
                 .orElseThrow(() -> new RuntimeException("No tickets found for tenant with id " + tenantId +
-                        " and chore type " + choreType.getId()));
+                        " and chore type " + choreType));
         tickets.setTickets(tickets.getTickets() + nTickets);
         dbTicketsRepository.save(tickets);
     }

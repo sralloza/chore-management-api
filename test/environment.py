@@ -37,8 +37,8 @@ def before_scenario(context, scenario):
 
 
 def register_allure_stdout_stderr(context):
-    stdout = context.stdout_capture.getvalue()
-    stderr = context.stderr_capture.getvalue()
+    stdout = None if not context.stdout_capture else context.stdout_capture.getvalue()
+    stderr = None if not context.stderr_capture else context.stderr_capture.getvalue()
     if stdout:
         allure.attach(
             stdout, name="stdout", attachment_type=allure.attachment_type.TEXT

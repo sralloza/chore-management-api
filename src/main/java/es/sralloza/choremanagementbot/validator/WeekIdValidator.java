@@ -3,8 +3,6 @@ package es.sralloza.choremanagementbot.validator;
 import es.sralloza.choremanagementbot.exceptions.BadRequestException;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.repositories.custom.WeeklyChoresRepository;
-import es.sralloza.choremanagementbot.utils.DateProvider;
-import es.sralloza.choremanagementbot.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,6 +1,7 @@
 def reset_databases(context):
-    delete_all(context, "/tenants", "tenant_id")
     delete_all(context, "/chore-types", "id")
+    delete_all(context, "/tenants", "tenant_id")
+    delete_all(context, "/transfers", "id")
     delete_all(context, "/weekly-chores", "week_id")
 
 

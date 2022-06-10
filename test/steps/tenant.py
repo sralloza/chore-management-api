@@ -1,5 +1,3 @@
-from unittest import mock
-
 from behave import *
 
 from common import *

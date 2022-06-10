@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,9 +27,13 @@ public class ChoreTypesService {
                 .collect(Collectors.toList());
     }
 
-    public ChoreType getChoreTypeById(String id) {
+    public ChoreType getChoreTypeById(String choreTypeId) {
+        return getChoreTypeById(choreTypeId, getNotFoundException(choreTypeId));
+    }
+
+    public ChoreType getChoreTypeById(String id, Supplier<? extends RuntimeException> exceptionSupplier) {
         return mapper.build(repository.findById(id)
-                .orElseThrow(() -> getNotFoundException(id)));
+                .orElseThrow(exceptionSupplier));
     }
 
     public ChoreType createChoreType(ChoreType choreType) {
@@ -40,14 +45,14 @@ public class ChoreTypesService {
         return mapper.build(repository.save(mapper.build(choreType)));
     }
 
-    public void removeChoreType(String id) {
+    public void deleteChoreType(String id) {
         if (!repository.existsById(id)) {
-            throw getNotFoundException(id);
+            throw getNotFoundException(id).get();
         }
         repository.deleteById(id);
     }
 
-    private NotFoundException getNotFoundException(String id) {
-        return new NotFoundException("No chore type found with id " + id);
+    private Supplier<NotFoundException> getNotFoundException(String id) {
+        return () -> new NotFoundException("No chore type found with id " + id);
     }
 }
