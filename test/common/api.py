@@ -38,6 +38,6 @@ def request(context, method, path, **kwargs):
     kwargs["headers"] = headers
 
     res = context.session.request(method, url, **kwargs)
-    pprint(f"<<<< {res.text}\n\n")
+    pprint(f"<<<< {res.status_code} {res.text}\n\n")
 
     return res

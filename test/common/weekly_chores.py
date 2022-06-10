@@ -26,17 +26,22 @@ def tenants_to_str(tenants):
 def parse_weekly_chores_res_table_str(res):
     res_json = res.json()
     if isinstance(res_json, list):
-        chores = [x["chores"] for x in res.json()]
+        chores = [x["chores"] for x in res_json]
         chores = [item for sublist in chores for item in sublist]
     else:
         chores = res_json["chores"]
 
+    parsed = {}
     for chore in chores:
-        chore["assigned"] = tenants_to_str(chore["assigned"])
+        if chore["week_id"] not in parsed:
+            parsed[chore["week_id"]] = {}
 
-    df = pd.DataFrame(chores)
-    if df.empty:
-        return "<empty>"
+        parsed[chore["week_id"]][chore["type"]] = tenants_to_str(chore["assigned"])
 
-    df2 = df.pivot(index="week_id", columns="type", values="assigned")
-    return normalize_df(df2)
+    data = []
+    for week_id, chore_dict in parsed.items():
+        result = {}
+        result["week_id"] = week_id
+        result.update(chore_dict)
+        data.append(result)
+    return data

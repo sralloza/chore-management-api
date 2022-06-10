@@ -1,22 +1,18 @@
 from collections import namedtuple
 from unittest import mock
 
-from common.common import replace_param
+from common.common import parse_table
 
 Tenant = namedtuple("Tenant", "username tenant_id api_token")
 
 
-def get_tenants(context):
-    return [Tenant(**x) for x in context.get("/tenants").json()]
-
-
 def get_tenants_from_feature_table(context):
-    return [get_tenant_from_row(context, x) for x in context.table.rows]
+    return [_get_tenant_from_row(x) for x in parse_table(context.table)]
 
 
-def get_tenant_from_row(context, row):
-    username = row["username"]
-    tenant_id = replace_param(context, row["tenant_id"])
+def _get_tenant_from_row(row):
+    username = row.get("username", mock.ANY)
+    tenant_id = row["tenant_id"]
     return Tenant(username, tenant_id, mock.ANY)
 
 

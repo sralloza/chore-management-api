@@ -1,13 +1,8 @@
 from unittest import mock
 
-from behave import given, step, then
+from behave import *
 
 from common import *
-
-
-@step("I get the tenant with id {tenant_id} using the API")
-def step_impl(context, tenant_id):
-    context.res = context.get(f"/tenants/{tenant_id}")
 
 
 @given("there is {tenants:d} tenant")
@@ -22,15 +17,11 @@ def step_impl(context, tenants):
 
 
 @step('I create a tenant with name "{username}" using the API')
-@step('I create a tenant with id "{tenant_id}" using the API')
+@step('I create a tenant with id "{tenant_id:d}" using the API')
 @step("I create a tenant using the API")
 def step_impl(context, username=None, tenant_id=None):
     tenant_id = tenant_id or context.table[0].get("tenant_id")
     username = username or context.table[0].get("username")
-
-    if context.active_outline:
-        tenant_id = context.active_outline.get("tenant_id") or tenant_id
-        username = context.active_outline.get("username") or username
 
     payload = {}
     if tenant_id is not None:
@@ -41,22 +32,27 @@ def step_impl(context, username=None, tenant_id=None):
     context.res = context.post("/tenants", json=payload)
 
 
-@step('I create a tenant with body "{body}" using the API')
+@when('I create a tenant with body "{body}" using the API')
 def step_impl(context, body):
     context.res = context.post("/tenants", json=body)
 
 
-@step("I list the tenants using the API")
+@when('I get the tenant with id "{tenant_id:d}" using the API')
+def step_impl(context, tenant_id):
+    context.res = context.get(f"/tenants/{tenant_id}")
+
+
+@when("I list the tenants using the API")
 def step_impl(context):
     context.res = context.get("/tenants")
 
 
-@step("I delete the tenant with id {tenant_id} using the API")
+@when('I delete the tenant with id "{tenant_id:d}" using the API')
 def step_impl(context, tenant_id):
     context.res = context.delete(f"/tenants/{tenant_id}")
 
 
-@step("I save the tenant's token")
+@when("I save the tenant's token")
 def step_impl(context):
     context.execute_steps(
         """
@@ -67,12 +63,13 @@ def step_impl(context):
     context.api_token = context.res.json()["api_token"]
 
 
-@step("I recreate the token of the tenant with id {tenant_id} using the API")
+@when('I recreate the token of the tenant with id "{tenant_id:d}" using the API')
 def step_impl(context, tenant_id):
     context.res = context.post(f"/tenants/{tenant_id}/recreate-token")
 
 
-@step("the response should contain the following tenants")
+@then("the response contains the following tenant")
+@then("the response contains the following tenants")
 def step_impl(context):
     expected_tenants = get_tenants_from_feature_table(context)
     actual_tenants = get_tenants_from_response(context)
@@ -80,24 +77,34 @@ def step_impl(context):
     assert_arrays_equal(expected_tenants, actual_tenants)
 
 
-@then("the following tenant exists")
+@then("the response does not contain the following tenants")
 def step_impl(context):
-    tenants = get_tenants(context)
-    context.table.require_columns(["username", "tenant_id"])
+    expected_tenants = get_tenants_from_feature_table(context)
+    actual_tenants = get_tenants_from_response(context)
 
-    username = replace_param(context, context.table[0].get("username"))
-    tenant_id = replace_param(context, context.table[0].get("tenant_id"))
-    expected = Tenant(username=username, tenant_id=tenant_id, api_token=mock.ANY)
-
-    assert expected in tenants, f"{expected} is not in {tenants}"
+    assert_arrays_not_contain(expected_tenants, actual_tenants)
 
 
-@then("a tenant with id {tenant_id} is not in the tenants list response")
-def step_impl(context, tenant_id):
-    tenants = get_tenants(context)
-    expected = Tenant(username=mock.ANY, tenant_id=tenant_id, api_token=mock.ANY)
+@then("the database contains the following tenants")
+def step_impl(context):
+    context.execute_steps(
+        f"""
+    When I list the tenants using the API
+    Then the response contains the following tenants
+    {table_to_str(context.table)}
+    """
+    )
 
-    assert expected not in tenants, f"{expected} is not in {tenants}"
+
+@then("the database does not contain the following tenants")
+def step_impl(context):
+    context.execute_steps(
+        f"""
+    When I list the tenants using the API
+    Then the response does not contain the following tenants
+    {table_to_str(context.table)}
+    """
+    )
 
 
 @step("the tenant's token is different from the saved token")

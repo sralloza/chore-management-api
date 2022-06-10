@@ -55,19 +55,20 @@ def step_impl(context, week_id):
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
     actual = parse_weekly_chores_res_table_str(context.res)
-    if "{next}" in context.text:
-        context.text = context.text.replace("{next}", calculate_next_week_id())
-    expected = context.text
-
-    msg = f"tables don't match:\n\n{expected}\n\n{actual}"
-    assert expected == actual, msg
+    expected = parse_table(
+        context.table, mode="replace_param", context=context, attrs=["week_id"]
+    )
+    for line in expected:
+        line["week_id"] = str(line["week_id"])
+    assert_arrays_equal(expected, actual)
 
 
 @step("the database contains the following weekly chores")
 def step_impl(context):
-    assert_has_text(context)
     context.execute_steps(
-        "Given I list the weekly chores using the API\n"
-        + "And the response contains the following weekly chores\n"
-        + f"'''\n{context.text}\n'''"
+        f"""
+            When I list the weekly chores using the API
+            And the response contains the following weekly chores
+            {table_to_str(context.table)}
+            """
     )
