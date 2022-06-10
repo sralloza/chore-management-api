@@ -1,3 +1,5 @@
+@chore-type
+@crud.crud.list
 Feature: Chore Types API - listChoreTypes
 
     As a user I want to list the defined chore types.

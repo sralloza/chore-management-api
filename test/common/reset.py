@@ -13,11 +13,11 @@ def get_ids_from_response(res, key):
 
 def delete_all(context, endpoint, key_field):
     context.res = context.get(endpoint, silenced=True)
-    context.execute_steps('Given the response status code is "200"')
+    context.execute_steps('Then the response status code is "200"')
 
     ids = get_ids_from_response(context.res, key_field)
     for resource_id in ids:
         context.res = context.delete(f"{endpoint}/{resource_id}", silenced=True)
-        context.execute_steps('Given the HTTP status code should be in "200,204"')
+        context.execute_steps('Then the HTTP status code should be in "200,204"')
 
     context.res = None

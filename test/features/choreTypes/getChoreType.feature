@@ -1,3 +1,5 @@
+@chore-type
+@crud.get
 Feature: Chore Types API - getChoreType
 
     As a user I want to get the details of a chore type.

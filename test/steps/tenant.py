@@ -17,7 +17,7 @@ def step_impl(context, tenants):
         payload = {"tenant_id": i, "username": f"tenant{i}"}
 
         context.res = context.post("/tenants", json=payload)
-        context.execute_steps('Given the response status code is "200"')
+        context.execute_steps('Then the response status code is "200"')
     context.res = None
 
 

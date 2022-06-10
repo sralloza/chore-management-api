@@ -1,4 +1,4 @@
-from behave import step
+from behave import *
 
 from common.common import assert_arrays_equal, parse_table, table_to_str
 from common.tickets import parse_tickets_res_table_str
@@ -17,7 +17,7 @@ def step_impl(context):
     assert_arrays_equal(expected, actual)
 
 
-@step("the database contains the following tickets")
+@then("the database contains the following tickets")
 def step_impl(context):
     context.execute_steps(
         f"""

@@ -1,12 +1,12 @@
 from string import ascii_uppercase
 
-from behave import step
+from behave import *
 
 from common import *
 
 
-@step("there is {chore_types:d} chore type")
-@step("there are {chore_types:d} chore types")
+@given("there is {chore_types:d} chore type")
+@given("there are {chore_types:d} chore types")
 def step_impl(context, chore_types):
     for i in range(chore_types):
         payload = {
@@ -14,12 +14,12 @@ def step_impl(context, chore_types):
             "description": f"description{i+1}",
         }
         context.res = context.post("/chore-types", json=payload)
-        context.execute_steps('Given the response status code is "200"')
+        context.execute_steps('Then the response status code is "200"')
 
     context.res = None
 
 
-@step("I create the following chore type using the API")
+@when("I create a chore type type using the API")
 def step_impl(context):
     assert len(list(context.table)) == 1, "Expected 1 row"
 
@@ -30,23 +30,23 @@ def step_impl(context):
     context.res = context.post("/chore-types", json=payload)
 
 
-@step("I list the chore types using the API")
+@when("I list the chore types using the API")
 def step_impl(context):
     context.res = context.get("/chore-types")
 
 
-@step('I get the chore type with id "{chore_id}" using the API')
+@when('I get the chore type with id "{chore_id}" using the API')
 def step_impl(context, chore_id):
     context.res = context.get(f"/chore-types/{chore_id}")
 
 
-@step("I delete the chore type with id {chore_id} using the API")
+@when('I delete the chore type with id "{chore_id}" using the API')
 def step_impl(context, chore_id):
     context.res = context.delete(f"/chore-types/{chore_id}")
 
 
-@step("the response contains the following chore type")
-@step("the response contains the following chore types")
+@then("the response contains the following chore type")
+@then("the response contains the following chore types")
 def step_impl(context):
     expected = get_chore_types_from_feature_table(context)
     actual = get_chore_types_from_res(context)
@@ -54,14 +54,14 @@ def step_impl(context):
     assert_arrays_equal(expected, actual)
 
 
-@step("the database contains the following chore types")
+@then("the database contains the following chore types")
 def step_impl(context):
     if not context.table:
         print("Warning: no table data")
 
     table_as_text = table_to_str(context.table)
     context.execute_steps(
-        "Given I list the chore types using the API\n"
-        + "And the response contains the following chore types\n"
+        "When I list the chore types using the API\n"
+        + "Then the response contains the following chore types\n"
         + f"{table_as_text}"
     )

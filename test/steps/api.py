@@ -4,14 +4,17 @@ import re
 from ast import literal_eval
 from pathlib import Path
 
-from behave import step
+from behave import *
 from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 
 from common import *
 
 
-@step('the response status code is "{code:d}"')
-@step('all the response status codes are "{code:d}"')
+# todo: remove when and given steps
+@when('the response status code is "{code:d}"')
+@given('the response status code is "{code:d}"')
+@then('the response status code is "{code:d}"')
+@then('all the response status codes are "{code:d}"')
 def step_impl(context, code):
     errors = []
     res_list = context.res_list or [context.res]
@@ -55,8 +58,8 @@ def step_impl(context, message):
     assert re.search(message, actual), error_msg
 
 
-@step('one of messages in the errors array is "{message}"')
-@step("one of messages in the errors array is the following")
+@then('one of messages in the errors array is "{message}"')
+@then("one of messages in the errors array is the following")
 def step_impl(context, message=None):
     message = message or context.text
     assert "errors" in context.res.json(), "No errors array in response"
@@ -76,8 +79,10 @@ def step_impl(context, message=None):
     assert actual == message, msg.format(message, actual)
 
 
-@step('all the response bodies are validated against the json-schema "{schema}"')
-@step('the response body is validated against the json-schema "{schema}"')
+# todo: remove when step
+@when('the response body is validated against the json-schema "{schema}"')
+@then('the response body is validated against the json-schema "{schema}"')
+@then('all the response bodies are validated against the json-schema "{schema}"')
 def step_impl(context, schema):
     schema = Path(__file__).parent.parent / f"settings/schemas/{schema}.json"
     with open(schema) as f:

@@ -1,4 +1,4 @@
-package es.sralloza.choremanagementbot.builders;
+package es.sralloza.choremanagementbot.controllers;
 
 import es.sralloza.choremanagementbot.services.TransferChoresService;
 import org.springframework.beans.factory.annotation.Autowired;
