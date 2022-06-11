@@ -14,6 +14,7 @@ public class TransfersMapper {
                 .setTenantIdTo(transfer.getTenantIdTo())
                 .setChoreType(transfer.getChoreType())
                 .setWeekId(transfer.getWeekId())
+                .setAccepted(transfer.getAccepted())
                 .setCompleted(transfer.getCompleted());
     }
 }

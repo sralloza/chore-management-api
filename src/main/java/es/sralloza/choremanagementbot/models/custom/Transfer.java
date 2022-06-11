@@ -19,5 +19,6 @@ public class Transfer {
     private String choreType;
     @JsonProperty("week_id")
     private String weekId;
+    private Boolean accepted;
     private Boolean completed;
 }

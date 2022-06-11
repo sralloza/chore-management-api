@@ -60,7 +60,8 @@ public class TransferChoresService {
                 .setChoreType(choreType)
                 .setWeekId(weekId)
                 .setTimestamp(timestamp)
-                .setCompleted(false);
+                .setCompleted(false)
+                .setAccepted(null);
         repository.save(transfer);
         return mapper.build(transfer);
     }
@@ -97,7 +98,7 @@ public class TransferChoresService {
         return registerTransfer(from, to, choreTypeId, weekId);
     }
 
-    public Transfer completeTransfer(Long id) {
+    private Transfer completeTransfer(Long id, Boolean accepted) {
         DBTransfer transfer = repository.findById(id)
                 .orElseThrow(() -> new NotFoundException("No transfer found with id " + id));
 
@@ -105,15 +106,25 @@ public class TransferChoresService {
             throw new BadRequestException("Transfer with id " + id + " is already completed");
         }
 
-        DBChore originalChore = findChoreByTypeAndWeek(transfer.getChoreType(), transfer.getWeekId());
-        Tenant tenantDestiny = tenantsService.getTenantById(transfer.getTenantIdTo());
+        if (accepted) {
+            DBChore originalChore = findChoreByTypeAndWeek(transfer.getChoreType(), transfer.getWeekId());
 
-        ticketsService.addTicketsToTenant(transfer.getTenantIdFrom(), transfer.getChoreType(), -1);
-        ticketsService.addTicketsToTenant(transfer.getTenantIdTo(), transfer.getChoreType(), 1);
-        originalChore.setTenantId(tenantDestiny.getTenantId());
+            ticketsService.addTicketsToTenant(transfer.getTenantIdFrom(), transfer.getChoreType(), -1);
+            ticketsService.addTicketsToTenant(transfer.getTenantIdTo(), transfer.getChoreType(), 1);
+            originalChore.setTenantId(transfer.getTenantIdTo());
+        }
 
         transfer.setCompleted(true);
+        transfer.setAccepted(accepted);
         return mapper.build(transfer);
+    }
+
+    public Transfer acceptTransfer(Long id) {
+        return completeTransfer(id, true);
+    }
+
+    public Transfer rejectTransfer(Long id) {
+        return completeTransfer(id, false);
     }
 
     public void deleteTransfer(Long id) {

@@ -51,6 +51,8 @@ def replace_param(context, param, infer_param_type=True):
     match = re.match(r"\[(\d+)_LEN_STR\]", param)
     if match is not None:
         return "x" * int(match.group(1))
+    if param.lower() == "null":
+        return None
     if param == "[CURRENT_WEEK_ID]":
         return context.get("/week-id/current", silenced=True).json()["week_id"]
     if param == "[NEXT_WEEK_ID]":

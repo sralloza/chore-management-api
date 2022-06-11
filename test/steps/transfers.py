@@ -23,15 +23,26 @@ def step_impl(context):
     context.res = context.post("/transfers/start", json=payload)
 
 
-@step('a tenant completes a chore transfer with id "{transfer_id}" using the API')
-@step('a tenant completes a chore transfer with id saved as "{attr}" using the API')
+@step('a tenant accepts the chore transfer with id "{transfer_id}" using the API')
+@step('a tenant accepts the chore transfer with id saved as "{attr}" using the API')
 def step_impl(context, transfer_id=None, attr=None):
     if transfer_id is None:
         if attr is not None:
             transfer_id = getattr(context, attr)
         else:
             transfer_id = context.transfer_id
-    context.res = context.post(f"/transfers/complete/{transfer_id}")
+    context.res = context.post(f"/transfers/accept/{transfer_id}")
+
+
+@step('a tenant rejects the chore transfer with id "{transfer_id}" using the API')
+@step('a tenant rejects the chore transfer with id saved as "{attr}" using the API')
+def step_impl(context, transfer_id=None, attr=None):
+    if transfer_id is None:
+        if attr is not None:
+            transfer_id = getattr(context, attr)
+        else:
+            transfer_id = context.transfer_id
+    context.res = context.post(f"/transfers/reject/{transfer_id}")
 
 
 @step("I list the transfers using the API")
@@ -44,6 +55,8 @@ def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
 
     actual = context.res.json()
+    if not isinstance(actual, list):
+        actual = [actual]
     for line in actual:
         del line["id"]
         del line["timestamp"]

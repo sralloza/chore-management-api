@@ -41,4 +41,7 @@ public class DBTransfer {
 
     @Column(nullable = false)
     private Boolean completed;
+
+    @Column()
+    private Boolean accepted;
 }

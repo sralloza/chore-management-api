@@ -6,19 +6,16 @@ Feature: Transfers API - startTransfer
 
     # TODO: only admin can access this endpoint, not tenants or guests
 
-
     Scenario: Start chore transfer happy path
-        Given there are 3 tenants
-        And there are 3 chore types
-        And I create the weekly chores for the week "2022.01" using the API
+        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         When a tenant starts a chore transfer to other tenant using the API
             | tenant_id_from | tenant_id_to | chore_type | week_id |
             | 1              | 2            | A          | 2022.01 |
         Then the response status code is "200"
         And the response body is validated against the json-schema "transfer"
         And the database contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed |
-            | 1              | 2            | A          | 2022.01 | False     |
+            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
+            | 1              | 2            | A          | 2022.01 | False     | None     |
         And the database contains the following weekly chores
             | week_id | A | B | C |
             | 2022.01 | 1 | 2 | 3 |
@@ -49,10 +46,10 @@ Feature: Transfers API - startTransfer
         Then the response status code is "200"
         And the response body is validated against the json-schema "transfer"
         And the database contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed |
-            | 1              | 2            | A          | 2022.01 | False     |
-            | 3              | 1            | C          | 2022.01 | False     |
-            | 5              | 4            | E          | 2022.01 | False     |
+            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
+            | 1              | 2            | A          | 2022.01 | False     | None     |
+            | 3              | 1            | C          | 2022.01 | False     | None     |
+            | 5              | 4            | E          | 2022.01 | False     | None     |
         And the database contains the following weekly chores
             | week_id | A | B | C | D | E |
             | 2022.01 | 1 | 2 | 3 | 4 | 5 |
@@ -65,10 +62,33 @@ Feature: Transfers API - startTransfer
             | tenant5 | 0 | 0 | 0 | 0 | 0 |
 
 
+    Scenario: Start chore transfer to user2 after user1 has rejected it.
+        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
+        And a tenant starts a chore transfer to other tenant using the API
+            | tenant_id_from | tenant_id_to | chore_type | week_id |
+            | 1              | 2            | A          | 2022.01 |
+        And the response status code is "200"
+        And I save the "id" attribute of the response as "transfer_id"
+        And a tenant rejects the chore transfer with id saved as "transfer_id" using the API
+        And the response status code is "200"
+        When a tenant starts a chore transfer to other tenant using the API
+            | tenant_id_from | tenant_id_to | chore_type | week_id |
+            | 1              | 3            | A          | 2022.01 |
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "transfer"
+        And the response contains the following transfers
+            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
+            | 1              | 3            | A          | 2022.01 | False     | None     |
+        And the database contains the following transfers
+            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
+            | 1              | 2            | A          | 2022.01 | True      | False    |
+            | 1              | 3            | A          | 2022.01 | False     | None     |
+
+
+
+
     Scenario: Validate error when a tenant tries to transfer a chore to multiple tenants
-        Given there are 3 tenants
-        And there are 3 chore types
-        And I create the weekly chores for the week "2022.01" using the API
+        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         And a tenant starts a chore transfer to other tenant using the API
             | tenant_id_from | tenant_id_to | chore_type | week_id |
             | 1              | 2            | A          | 2022.01 |

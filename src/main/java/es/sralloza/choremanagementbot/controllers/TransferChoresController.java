@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.ws.rs.QueryParam;
 import java.util.List;
 
 @RestController
@@ -46,9 +45,14 @@ public class TransferChoresController {
                 transferCreate.getWeekId());
     }
 
-    @PostMapping("/complete/{id}")
-    public Transfer completeTransfer(@PathVariable Long id) {
-        return service.completeTransfer(id);
+    @PostMapping("/accept/{id}")
+    public Transfer acceptTransfer(@PathVariable Long id) {
+        return service.acceptTransfer(id);
+    }
+
+    @PostMapping("/reject/{id}")
+    public Transfer rejectTransfer(@PathVariable Long id) {
+        return service.rejectTransfer(id);
     }
 
     @DeleteMapping("/{id}")
