@@ -1,9 +1,7 @@
 package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.builders.ChoreTypeTicketsMapper;
-import es.sralloza.choremanagementbot.models.custom.ChoreType;
 import es.sralloza.choremanagementbot.models.custom.ChoreTypeTickets;
-import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBTicket;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBTicketsRepository;

@@ -9,7 +9,6 @@ import es.sralloza.choremanagementbot.models.db.DBChore;
 import es.sralloza.choremanagementbot.models.db.DBRotation;
 import es.sralloza.choremanagementbot.repositories.db.DBChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
-import es.sralloza.choremanagementbot.services.TenantsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
