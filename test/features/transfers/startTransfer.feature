@@ -4,7 +4,9 @@ Feature: Transfers API - startTransfer
 
     As a tenant I want to transfer a chore to another tenant.
 
-    # TODO: only admin can access this endpoint, not tenants or guests
+    # todo: only admin and tenants can access this endpoint, guests can't.
+    # todo: tenants can't transfer chores in name of other tenants (tenant_id_from will always  be the tenant itself).
+    # todo: tenants can use the keyword "me" to refer to themselves.
 
     Scenario: Start chore transfer happy path
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"

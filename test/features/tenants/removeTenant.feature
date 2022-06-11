@@ -1,5 +1,5 @@
 @tenants
-@crud.remove
+@crud.delete
 Feature: Tenants API - deleteTenant
 
     Scenario: Delete tenant

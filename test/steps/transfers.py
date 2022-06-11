@@ -24,6 +24,17 @@ def step_impl(context):
     context.res = context.post("/transfers/start", json=payload)
 
 
+@step('I get the transfer with id saved as "{attr}" using the API')
+@step('I get the transfer with id "{transfer_id}" using the API')
+def step_impl(context, transfer_id=None, attr=None):
+    if transfer_id is None:
+        if attr is not None:
+            transfer_id = getattr(context, attr)
+        else:
+            transfer_id = context.transfer_id
+    context.res = context.get(f"/transfers/{transfer_id}")
+
+
 @step('a tenant accepts the chore transfer with id "{transfer_id}" using the API')
 @step('a tenant accepts the chore transfer with id saved as "{attr}" using the API')
 def step_impl(context, transfer_id=None, attr=None):
