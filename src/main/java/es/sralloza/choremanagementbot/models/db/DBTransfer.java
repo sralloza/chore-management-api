@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Transfers")
@@ -25,7 +24,7 @@ public class DBTransfer {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime timestamp;
+    private Long timestamp;
 
     @Column(nullable = false)
     private Integer tenantIdFrom;

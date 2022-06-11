@@ -1,13 +1,16 @@
 import json
 import os
 import re
+import textwrap
 from ast import literal_eval
+from datetime import datetime
 from pathlib import Path
 
 from behave import *
+from dateutil.parser import parse
 from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 
-from common import *
+from common.common import *
 
 
 # todo: remove when and given steps
@@ -115,3 +118,20 @@ def step_impl(context, schema):
 @step('I save the "{attr}" attribute of the response as "{dest}"')
 def step_impl(context, attr, dest):
     setattr(context, dest, context.res.json()[attr])
+
+
+@step('the response timestamp attribute is at most "{ms:d}" ms ago')
+def step_impl(context, ms):
+    now = datetime.now()
+    timestamp = parse(context.res.json()["timestamp"])
+    diff = now - timestamp
+
+    actual_ms = diff.total_seconds() * 1000
+    assert actual_ms >= 0, textwrap.dedent(
+        f"""\
+    Invalid timestamp: {timestamp}
+    Current timestamp: {now}
+    Timestamp is {actual_ms:.2f} ms into the future"""
+    )
+    print("actual_ms:", actual_ms)
+    assert actual_ms <= ms, f"Timestamp is {actual_ms:.2f} ms ago"

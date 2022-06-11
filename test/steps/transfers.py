@@ -1,5 +1,6 @@
 from behave import step
-from common.common import assert_arrays_equal, parse_table, replace_param, table_to_str
+
+from common.common import *
 
 
 @step("a tenant starts a chore transfer to other tenant using the API")
@@ -77,3 +78,48 @@ def step_impl(context):
     {table_to_str(context.table)}
     """
     )
+
+
+@step("the following transfers are created")
+def step_impl(context):
+    assert_has_table(context)
+    context.table.require_columns(
+        ["tenant_id_from", "tenant_id_to", "chore_type", "week_id", "accepted"]
+    )
+
+    table = parse_table(context.table)
+
+    for line in table:
+        accepted = line["accepted"]
+        del line["accepted"]
+
+        attr_name = line.get("id_attr_name", "transfer_id")
+        table_str = list_of_dicts_to_table_str([line])
+        context.execute_steps(
+            f"""
+        When a tenant starts a chore transfer to other tenant using the API
+        {table_str}
+        And I save the "id" attribute of the response as "{attr_name}"
+        """
+        )
+
+        transfer_id = getattr(context, attr_name)
+
+        if accepted is True:
+            context.execute_steps(
+                f"""
+                When a tenant accepts the chore transfer with id "{transfer_id}" using the API
+                Then the response status code is "200"
+                """
+            )
+        elif accepted is False:
+            context.execute_steps(
+                f"""
+                When a tenant rejects the chore transfer with id "{transfer_id}" using the API
+                Then the response status code is "200"
+                """
+            )
+        elif accepted is not None:
+            raise ValueError(
+                f"accepted must be True, False or None, found {accepted!r}"
+            )

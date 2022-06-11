@@ -85,6 +85,13 @@ Feature: Transfers API - startTransfer
             | 1              | 3            | A          | 2022.01 | False     | None     |
 
 
+    Scenario: Validate transfer timestamp after transfer is created
+        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
+        When a tenant starts a chore transfer to other tenant using the API
+            | tenant_id_from | tenant_id_to | chore_type | week_id |
+            | 1              | 2            | A          | 2022.01 |
+        Then the response status code is "200"
+        And the response timestamp attribute is at most "20" ms ago
 
 
     Scenario: Validate error when a tenant tries to transfer a chore to multiple tenants

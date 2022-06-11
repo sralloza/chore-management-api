@@ -26,6 +26,17 @@ Feature: Transfers API - rejectTransfer
             | tenant3 | 0 | 0 | 0 |
 
 
+    Scenario: Validate transfer timestamp after transfer is rejected
+        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
+        And a tenant starts a chore transfer to other tenant using the API
+            | tenant_id_from | tenant_id_to | chore_type | week_id |
+            | 1              | 2            | A          | 2022.01 |
+        And I save the "id" attribute of the response as "transfer_id"
+        When a tenant rejects the chore transfer with id saved as "transfer_id" using the API
+        Then the response status code is "200"
+        And the response timestamp attribute is at most "20" ms ago
+
+
     Scenario: Validate error when rejecting a chore transfer twice
         Given there are 3 tenants
         And there are 3 chore types

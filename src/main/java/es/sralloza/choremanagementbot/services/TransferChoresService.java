@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -53,13 +53,12 @@ public class TransferChoresService {
     }
 
     public Transfer registerTransfer(Integer from, Integer to, String choreType, String weekId) {
-        LocalDateTime timestamp = dateProvider.getCurrentDateTime();
         DBTransfer transfer = new DBTransfer()
                 .setTenantIdFrom(from)
                 .setTenantIdTo(to)
                 .setChoreType(choreType)
                 .setWeekId(weekId)
-                .setTimestamp(timestamp)
+                .setTimestamp(dateProvider.getCurrentMillis())
                 .setCompleted(false)
                 .setAccepted(null);
         repository.save(transfer);
@@ -114,6 +113,7 @@ public class TransferChoresService {
             originalChore.setTenantId(transfer.getTenantIdTo());
         }
 
+        transfer.setTimestamp(dateProvider.getCurrentMillis());
         transfer.setCompleted(true);
         transfer.setAccepted(accepted);
         return mapper.build(transfer);

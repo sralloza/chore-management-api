@@ -14,4 +14,8 @@ public class DateProvider {
     public LocalDateTime getCurrentDateTime() {
         return LocalDateTime.now();
     }
+
+    public long getCurrentMillis() {
+        return System.currentTimeMillis();
+    }
 }

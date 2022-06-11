@@ -1,5 +1,5 @@
-from ast import literal_eval
 import re
+from ast import literal_eval
 from itertools import zip_longest
 from typing import List, Optional
 
@@ -101,6 +101,25 @@ def get_parser(mode, context=None):
         return lambda x: replace_param(context, x)
     else:
         raise ValueError(f"Unknown mode {mode}")
+
+
+def list_of_dicts_to_table_str(list_of_dicts):
+    if not list_of_dicts:
+        return ""
+
+    headlines = list(list_of_dicts[0].keys())
+    result = "|"
+    for heading in headlines:
+        result += heading + "|"
+    result += "\n"
+
+    for line in list_of_dicts:
+        result += "|"
+        for key in headlines:
+            result += f"{line[key]}|"
+        result += "\n"
+
+    return result
 
 
 def table_to_str(table):

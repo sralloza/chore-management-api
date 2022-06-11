@@ -1,5 +1,6 @@
 from behave import *
 
+
 @given(
     'there are {a:d} tenants, {b:d} chore types and weekly chores for the week "{week_id}"'
 )
