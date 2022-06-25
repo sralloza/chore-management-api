@@ -91,6 +91,19 @@ def step_impl(context):
     )
 
 
+@step("I transfer a chore using the API")
+def step_impl(context):
+    table_str = table_to_str(context.table)
+    context.execute_steps(
+        f"""
+        When a tenant starts a chore transfer to other tenant using the API
+        {table_str}
+        And I save the "id" attribute of the response as "transfer_id"
+        And a tenant accepts the chore transfer with id saved as "transfer_id" using the API
+        """
+    )
+
+
 @step("the following transfers are created")
 def step_impl(context):
     assert_has_table(context)

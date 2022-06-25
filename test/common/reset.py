@@ -1,24 +1,32 @@
-def reset_databases(context):
-    delete_all(context, "/chore-types", "id")
-    delete_all(context, "/tenants", "tenant_id")
-    delete_all(context, "/transfers", "id")
-    delete_all(context, "/weekly-chores", "week_id")
+from os import getenv
+import mysql.connector
+from logging import getLogger
+
+logger = getLogger(__name__)
+DATABASES = (
+    "chore_types",
+    "chores",
+    "rotations",
+    "skipped_weeks",
+    "tenants",
+    "tickets",
+    "transfers",
+)
 
 
-def get_ids_from_response(res, key):
-    try:
-        return [x[key] for x in res.json()]
-    except KeyError:
-        raise ValueError(f"Response does not contain key: {key}\n>>> {res.text}")
+def reset_databases():
+    user = getenv("MYSQL_USER", "root")
+    password = getenv("MYSQL_PASSWORD", "root")
+    host = getenv("MYSQL_HOST", "localhost")
+    database = getenv("MYSQL_DATABASE", "chore-management")
+    port = int(getenv("MYSQL_PORT", "3306"))
 
+    kwargs = dict(host=host, user=user, password=password, database=database, port=port)
+    logger.debug("Connecting to database: {}", kwargs)
+    conn = mysql.connector.connect(**kwargs)
+    cursor = conn.cursor()
 
-def delete_all(context, endpoint, key_field):
-    context.res = context.get(endpoint, silenced=True)
-    context.execute_steps('Then the response status code is "200"')
-
-    ids = get_ids_from_response(context.res, key_field)
-    for resource_id in ids:
-        context.res = context.delete(f"{endpoint}/{resource_id}", silenced=True)
-        context.execute_steps('Then the HTTP status code should be in "200,204"')
-
-    context.res = None
+    for db in DATABASES:
+        cursor.execute(f"DELETE FROM {db}")
+    conn.commit()
+    conn.close()

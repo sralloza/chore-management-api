@@ -30,7 +30,7 @@ def before_scenario(context, scenario):
 
     context.res = None
     context.res_list = []
-    reset_databases(context)
+    reset_databases()
 
     context.res = None
     context.res_list = []
@@ -39,6 +39,8 @@ def before_scenario(context, scenario):
 def register_allure_stdout_stderr(context):
     stdout = None if not context.stdout_capture else context.stdout_capture.getvalue()
     stderr = None if not context.stderr_capture else context.stderr_capture.getvalue()
+    logs = None if not context.log_capture else context.log_capture.getvalue()
+
     if stdout:
         allure.attach(
             stdout, name="stdout", attachment_type=allure.attachment_type.TEXT
@@ -46,6 +48,10 @@ def register_allure_stdout_stderr(context):
     if stderr:
         allure.attach(
             stderr, name="stderr", attachment_type=allure.attachment_type.TEXT
+        )
+    if logs:
+        allure.attach(
+            logs, name="logs", attachment_type=allure.attachment_type.TEXT
         )
 
 

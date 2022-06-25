@@ -1,17 +1,21 @@
 package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.builders.TenantMapper;
+import es.sralloza.choremanagementbot.exceptions.BadRequestException;
 import es.sralloza.choremanagementbot.exceptions.ConflictException;
 import es.sralloza.choremanagementbot.exceptions.NotFoundException;
+import es.sralloza.choremanagementbot.models.custom.ChoreTypeTickets;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBTenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
+import es.sralloza.choremanagementbot.repositories.db.DBChoresRepository;
 import es.sralloza.choremanagementbot.repositories.db.DBTenantsRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -25,6 +29,8 @@ public class TenantsService {
     private SkipWeeksService skipWeeksService;
     @Autowired
     private TicketsService ticketsService;
+    @Autowired
+    private DBChoresRepository dbChoresRepository;
     @Autowired
     private TenantMapper mapper;
 
@@ -65,6 +71,23 @@ public class TenantsService {
     public void deleteTenantById(Integer tenantId) {
         if (!repository.existsById(tenantId)) {
             throw getNotFoundException(tenantId).get();
+        }
+
+        Tenant tenant = getTenantById(tenantId);
+        List<ChoreTypeTickets> tickets = ticketsService.listChoreTypeTickets();
+        for (var choreTypeTickets : tickets) {
+            Map<String, Integer> ticketsMap = choreTypeTickets.getTicketsByTenant();
+            if (ticketsMap.get(tenant.getUsername()) != 0) {
+                throw new BadRequestException("Tenant has unbalanced tickets");
+            }
+        }
+
+        var pendingChores = dbChoresRepository.findAll().stream()
+                .filter(dbChore -> dbChore.getTenantId().equals(tenantId))
+                .filter(dbChore -> dbChore.getDone().equals(false))
+                .count();
+        if (pendingChores != 0) {
+            throw new BadRequestException("Tenant has " + pendingChores + " pending chores");
         }
 
         repository.deleteById(tenantId);
