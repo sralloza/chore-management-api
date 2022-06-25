@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       POETRY_VIRTUALENVS_CREATE: "false"
+      TERM: xterm-color
     steps:
       - uses: actions/checkout@v2
 
