@@ -7,6 +7,8 @@ COPY build.gradle settings.gradle gradlew /home/gradle/
 COPY src/ /home/gradle/src/
 
 RUN ./gradlew build
+RUN rm /home/gradle/build/libs/*-plain.jar
+RUN ls -l /home/gradle/build/libs
 
 FROM sralloza/openjdk:11-jre
 
