@@ -20,7 +20,7 @@ jobs:
           java-version: 11
 
       - name: Launch docker-compose
-        run: docker-compose up --build
+        run: docker-compose up --build -d
 
       - name: Test with Gradle
         run: utils/wait-for-it.sh 127.0.0.1 -- behave
