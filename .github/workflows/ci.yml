@@ -1,8 +1,6 @@
 name: E2E tests
 
 on:
-  # TODO: delete line
-  push:
   pull_request:
     branches:
       - master
