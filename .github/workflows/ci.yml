@@ -22,8 +22,8 @@ jobs:
       - name: Launch docker-compose
         run: docker-compose up --build -d
 
-      - name: Test with Gradle
-        run: utils/wait-for-it.sh 127.0.0.1 -- behave
+      - name: Run tests e2e
+        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave
 
       - uses: actions/upload-artifact@v2
         if: always()
