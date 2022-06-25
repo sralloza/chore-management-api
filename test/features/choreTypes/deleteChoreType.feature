@@ -18,3 +18,22 @@ Feature: Chore Types API - deleteChoreType
         When I delete the chore type with id "invalid" using the API
         Then the response status code is "404"
         And the error message is "No chore type found with id invalid"
+
+
+    Scenario: validate error when deleting a chore type with pending chores
+        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
+        And I create the weekly chores for the week "2022.02" using the API
+        When I delete the chore type with id "A" using the API
+        Then the response status code is "400"
+        And the error message is "Chore type A has 2 pending chores"
+
+
+    Scenario: validate error when deleting a chore type with non balanced tickets
+        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
+        And I transfer a chore using the API
+            | tenant_id_from | tenant_id_to | chore_type | week_id |
+            | 1              | 2            | A          | 2022.01 |
+
+        When I delete the chore type with id "A" using the API
+        Then the response status code is "400"
+        And the error message is "Chore type has unbalanced tickets"

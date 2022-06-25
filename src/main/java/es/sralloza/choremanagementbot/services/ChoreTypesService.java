@@ -1,14 +1,18 @@
 package es.sralloza.choremanagementbot.services;
 
 import es.sralloza.choremanagementbot.builders.ChoreTypesMapper;
+import es.sralloza.choremanagementbot.exceptions.BadRequestException;
 import es.sralloza.choremanagementbot.exceptions.ConflictException;
 import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.ChoreType;
+import es.sralloza.choremanagementbot.models.custom.ChoreTypeTickets;
 import es.sralloza.choremanagementbot.repositories.db.DBChoreTypesRepository;
+import es.sralloza.choremanagementbot.repositories.db.DBChoresRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,8 @@ public class ChoreTypesService {
     private TicketsService ticketsService;
     @Autowired
     private ChoreTypesMapper mapper;
+    @Autowired
+    private DBChoresRepository dbChoresRepository;
 
     public List<ChoreType> listChoreTypes() {
         return repository.findAll().stream()
@@ -49,6 +55,26 @@ public class ChoreTypesService {
         if (!repository.existsById(id)) {
             throw getNotFoundException(id).get();
         }
+
+        Optional<ChoreTypeTickets> tickets = ticketsService.getChoreTypeTicketsById(id);
+        if (tickets.isPresent()) {
+            var ticketsMap = tickets.get().getTicketsByTenant();
+            for (var entry : ticketsMap.entrySet()) {
+                if (entry.getValue() != 0) {
+                    throw new BadRequestException("Chore type has unbalanced tickets");
+                }
+            }
+        }
+
+        var pendingChores = dbChoresRepository.findAll().stream()
+                .filter(dbChore -> dbChore.getChoreType().equals(id))
+                .filter(dbChore -> dbChore.getDone().equals(false))
+                .count();
+        if (pendingChores != 0) {
+            throw new BadRequestException("Chore type " + id + " has " + pendingChores + " pending chores");
+        }
+
+
         repository.deleteById(id);
     }
 

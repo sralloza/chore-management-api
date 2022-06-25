@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +30,12 @@ public class TicketsService {
         return dbChoreTypesRepository.findAll().stream()
                 .map(dbChoreType -> mapper.build(dbChoreType, tickets))
                 .collect(Collectors.toList());
+    }
+
+    public Optional<ChoreTypeTickets> getChoreTypeTicketsById(String id) {
+        return listChoreTypeTickets().stream()
+                .filter(choreTypeTickets -> choreTypeTickets.getId().equals(id))
+                .findAny();
     }
 
     public void createTicketsForTenant(Integer tenantId) {
