@@ -9,7 +9,7 @@ def parse_weekly_chores_res(res):
     chores = [y for x in chores for y in x]
 
     return [
-        WeeklyChore(x["week_id"], x["type"], tenants_to_str(x["assigned"]))
+        WeeklyChore(x["week_id"], x["type"], tenants_to_str(x["assigned_ids"]))
         for x in chores
     ]
 
@@ -31,7 +31,7 @@ def parse_weekly_chores_res_table_str(res):
         if chore["week_id"] not in parsed:
             parsed[chore["week_id"]] = {}
 
-        parsed[chore["week_id"]][chore["type"]] = tenants_to_str(chore["assigned"])
+        parsed[chore["week_id"]][chore["type"]] = tenants_to_str(chore["assigned_ids"])
 
     data = []
     for week_id, chore_dict in parsed.items():

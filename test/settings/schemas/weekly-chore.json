@@ -20,10 +20,16 @@
               "type": {
                 "type": "string"
               },
-              "assigned": {
+              "assigned_ids": {
                 "type": "array",
                 "items": {
                   "type": "integer"
+                }
+              },
+              "assigned_usernames": {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 }
               },
               "done": {
@@ -33,7 +39,8 @@
             "required": [
               "week_id",
               "type",
-              "assigned",
+              "assigned_ids",
+              "assigned_usernames",
               "done"
             ]
           }

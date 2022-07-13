@@ -1,7 +1,11 @@
 package es.sralloza.choremanagementbot.builders;
 
 import es.sralloza.choremanagementbot.models.custom.Chore;
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBChore;
+import es.sralloza.choremanagementbot.services.TenantsService;
+import org.hibernate.service.spi.InjectService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -12,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ChoreMapper {
+    @Autowired
+    private TenantsService tenantsService;
 
     public List<Chore> buildChore(List<DBChore> dbChore) {
         Map<String, List<DBChore>> choresGroupedByWeekId = dbChore.stream()
@@ -21,7 +27,7 @@ public class ChoreMapper {
     }
 
     public List<DBChore> splitChore(Chore chore) {
-        return chore.getAssigned().stream()
+        return chore.getAssignedIds().stream()
                 .map(n -> new DBChore(null, chore.getType(), n, chore.getWeekId(), chore.getDone()))
                 .collect(Collectors.toList());
     }
@@ -44,8 +50,13 @@ public class ChoreMapper {
         return choresGroupedByChoreType.entrySet().stream()
                 .map(entry -> new Chore()
                         .setType(entry.getKey())
-                        .setAssigned(entry.getValue().stream()
+                        .setAssignedIds(entry.getValue().stream()
                                 .map(DBChore::getTenantId)
+                                .collect(Collectors.toList()))
+                        .setAssignedUsernames(entry.getValue().stream()
+                                .map(DBChore::getTenantId)
+                                .map(tenantsService::getTenantById)
+                                .map(Tenant::getUsername)
                                 .collect(Collectors.toList()))
                         .setWeekId(weekId)
                         .setDone(entry.getValue().stream().allMatch(DBChore::getDone)))
