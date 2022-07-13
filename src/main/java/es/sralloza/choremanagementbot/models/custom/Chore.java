@@ -16,6 +16,9 @@ public class Chore {
     @JsonProperty("week_id")
     private String weekId;
     private String type;
-    private List<Integer> assigned;
+    @JsonProperty("assigned_ids")
+    private List<Integer> assignedIds;
+    @JsonProperty("assigned_usernames")
+    private List<String> assignedUsernames;
     private Boolean done;
 }

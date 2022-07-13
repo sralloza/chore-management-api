@@ -148,15 +148,20 @@ public class WeeklyChoresService {
     }
 
     private Chore createChore(String weekId, String type, Integer tenantId, Set<Integer> tenantIdListOverride) {
-        List<Integer> asigneeList = new ArrayList<>();
+        List<Integer> asigneeListIds = new ArrayList<>();
 
         if (tenantIdListOverride == null || tenantIdListOverride.isEmpty()) {
-            asigneeList.add(tenantId);
+            asigneeListIds.add(tenantId);
         } else {
-            asigneeList.addAll(tenantIdListOverride);
+            asigneeListIds.addAll(tenantIdListOverride);
         }
 
-        return new Chore(weekId, type, asigneeList, false);
+        var asigneeListUsernames = asigneeListIds.stream()
+                .map(tenantsService::getTenantById)
+                .map(Tenant::getUsername)
+                .collect(Collectors.toList());
+
+        return new Chore(weekId, type, asigneeListIds, asigneeListUsernames, false);
     }
 
     public List<WeeklyChores> findAll() {
