@@ -1,6 +1,14 @@
 {
-    "getCurrentWeekId": {
-      "path": "/week-id/current",
-      "method": "GET"
-    }
+  "getCurrentWeekId": {
+    "path": "/week-id/current",
+    "method": "GET"
+  },
+  "getLastWeekId": {
+    "path": "/week-id/last",
+    "method": "GET"
+  },
+  "getNextWeekId": {
+    "path": "/week-id/next",
+    "method": "GET"
   }
+}
