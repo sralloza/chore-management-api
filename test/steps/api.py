@@ -87,7 +87,7 @@ def step_impl(context, message=None):
 @then('the response body is validated against the json-schema "{schema}"')
 @then('all the response bodies are validated against the json-schema "{schema}"')
 def step_impl(context, schema):
-    schema = Path(__file__).parent.parent / f"settings/schemas/{schema}.json"
+    schema = Path(__file__).parent.parent / f"resources/schemas/{schema}.json"
     with open(schema) as f:
         json_schema = json.load(f)
 

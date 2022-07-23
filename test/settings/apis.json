@@ -10,5 +10,10 @@
   "getNextWeekId": {
     "path": "/week-id/next",
     "method": "GET"
+  },
+  "getChoreType": {
+    "path": "/chore-types/{choreTypeId}",
+    "pathParams": ["choreTypeId"],
+    "method": "GET"
   }
 }

@@ -17,7 +17,18 @@ def send_request(context, endpoint=None, payload=None):
 
     path = api["path"]
     method = api["method"]
+
+    url_params = get_url_params(context, endpoint)
+    path = path.format(**url_params)
     context.res = _send_request(context, method, path, payload)
+
+
+def get_url_params(context, endpoint):
+    try:
+        param_names = map_param(f"[CONF:apis.{endpoint}.pathParams]")
+    except KeyError:
+        return {}
+    return {k: getattr(context, k) for k in param_names}
 
 
 # TODO: remove json attribute (backward compatibility)
@@ -25,8 +36,6 @@ def send_request(context, endpoint=None, payload=None):
 def _send_request(context, method, path, payload=None, json=None, params=None):
     correlator = str(uuid4())
     url = VERSIONED_URL_TEMPLATE.format(version=1) + path
-    url_params = getattr(context, "url_params", {})
-    url = url.format(**url_params)
 
     headers = getattr(context, "headers", {})
     headers["X-Correlator"] = correlator

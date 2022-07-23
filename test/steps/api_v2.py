@@ -12,6 +12,11 @@ def step_impl(context):
     context.params = table_to_dict(context.table)
 
 
+@step('I send a request to the Api resource "{resource}" through 4P"')
+def step_impl(context, resource):
+    send_request(context, resource)
+
+
 @step("I send a request to the Api with body params")
 def step_impl(context):
     payload = table_to_dict(context.table)
@@ -21,6 +26,17 @@ def step_impl(context):
 @step("I send a request to the Api")
 def step_impl(context):
     send_request(context)
+
+
+@step('The field "{field}" with value "{value}"')
+def step_impl(context, field, value):
+    """
+    Save field and value in context
+    :param context: behave context
+    :param field: context attribute name
+    :param value: context attribute value
+    """
+    setattr(context, field, value)
 
 
 @step('the response attribute "{attr}" as string is "{value}"')
