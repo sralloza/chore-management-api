@@ -10,6 +10,7 @@ services:
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=chore-management
       - WAIT_FOR_IT_ADDRESS=database:3306
+      - TZ=Europe/Madrid
     ports:
       - "8080:8080"
 

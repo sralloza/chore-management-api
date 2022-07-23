@@ -20,7 +20,9 @@ def send_request(context, endpoint=None, payload=None):
     context.res = _send_request(context, method, path, payload)
 
 
-def _send_request(context, method, path, payload=None):
+# TODO: remove json attribute (backward compatibility)
+# TODO: remove params attribute (backward compatibility)
+def _send_request(context, method, path, payload=None, json=None, params=None):
     correlator = str(uuid4())
     url = VERSIONED_URL_TEMPLATE.format(version=1) + path
     url_params = getattr(context, "url_params", {})
@@ -28,10 +30,10 @@ def _send_request(context, method, path, payload=None):
 
     headers = getattr(context, "headers", {})
     headers["X-Correlator"] = correlator
-    params = getattr(context, "params", None)
-    
+    params = params or getattr(context, "params", None)
+
     res = context.session.request(
-        method, url, params=params, json=payload, timeout=5
+        method, url, params=params, json=payload or json, timeout=5
     )
     print_res(res)
     return res

@@ -7,8 +7,8 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
-            | week_id        | A |
-            | [NEXT_WEEK_ID] | 1 |
+            | week_id               | A |
+            | [NOW(%Y.%W) + 7 DAYS] | 1 |
 
 
     Scenario: Create weekly chores when same number of tenants and chore types
@@ -298,10 +298,10 @@ Feature: Weekly Chores API - createWeeklyChores
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            | week_id        | A | B | C | D | E |
-            | 2022.01        | 1 | 2 | 3 | 1 | 2 |
-            | 2022.02        | 2 | 3 | 1 | 2 | 3 |
-            | [NEXT_WEEK_ID] | 1 | 2 | 3 | 4 | 1 |
+            | week_id               | A | B | C | D | E |
+            | 2022.01               | 1 | 2 | 3 | 1 | 2 |
+            | 2022.02               | 2 | 3 | 1 | 2 | 3 |
+            | [NOW(%Y.%W) + 7 DAYS] | 1 | 2 | 3 | 4 | 1 |
 
 
     Scenario: Validate error when creating weekly chores but there are no tenants

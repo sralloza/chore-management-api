@@ -1,8 +1,10 @@
 from string import ascii_uppercase
 
 from behave import *
+from toolium.utils.dataset import replace_param
 
-from common import *
+from common.chore_type import *
+from common.utils import *
 
 
 @given("there is {chore_types:d} chore type")
@@ -24,8 +26,8 @@ def step_impl(context):
     assert len(list(context.table)) == 1, "Expected 1 row"
 
     payload = {
-        "id": replace_param(context, context.table[0]["id"]),
-        "description": replace_param(context, context.table[0]["description"]),
+        "id": replace_param(context.table[0]["id"]),
+        "description": replace_param(context.table[0]["description"]),
     }
     context.res = context.post("/chore-types", json=payload)
 

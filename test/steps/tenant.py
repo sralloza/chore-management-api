@@ -1,6 +1,8 @@
 from behave import *
+from toolium.utils.dataset import replace_param
 
-from common import *
+from common.tenant import *
+from common.utils import *
 
 
 @given("there is {tenants:d} tenant")
@@ -23,9 +25,9 @@ def step_impl(context, username=None, tenant_id=None):
 
     payload = {}
     if tenant_id is not None:
-        payload["tenant_id"] = replace_param(context, tenant_id, infer_param_type=False)
+        payload["tenant_id"] = replace_param(tenant_id, infer_param_type=False)
     if username is not None:
-        payload["username"] = replace_param(context, username, infer_param_type=False)
+        payload["username"] = replace_param(username, infer_param_type=False)
 
     context.res = context.post("/tenants", json=payload)
 

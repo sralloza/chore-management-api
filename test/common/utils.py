@@ -47,18 +47,16 @@ def parse_table(
     table,
     *,
     mode: str = "literal",
-    context=None,
     attrs: Optional[List[str]] = None,
+    **kwargs
 ):
     if mode not in ("literal", "replace_param", None):
         raise ValueError(f"Unknown mode {mode}")
-    if mode == "replace_param" and context is None:
-        raise ValueError("Context is required for replace_param mode")
 
     if not table:
         return []
 
-    parser = get_parser(mode, context)
+    parser = get_parser(mode)
 
     result = []
     for row in table:
@@ -68,18 +66,18 @@ def parse_table(
                 if attrs is not None and key not in attrs:
                     continue
                 try:
-                    parsed_row[key] = parser(value)
+                    parsed_row[key] = parser(value, **kwargs)
                 except Exception:
                     pass
         result.append(parsed_row)
     return result
 
 
-def get_parser(mode, context=None):
+def get_parser(mode):
     if mode == "literal":
         return literal_eval
     elif mode == "replace_param":
-        return lambda x: replace_param(context, x)
+        return replace_param
     else:
         raise ValueError(f"Unknown mode {mode}")
 
@@ -103,7 +101,7 @@ def list_of_dicts_to_table_str(list_of_dicts):
     return result
 
 
-def table_to_str(table):
+def table_to_str(table,replace=False, infer=True):
     if not table:
         return ""
 
@@ -117,6 +115,8 @@ def table_to_str(table):
         if row.cells:
             result += "|"
         for cell in row.cells:
+            if replace:
+                cell = replace_param(cell, infer_param_type=infer)
             result += cell + "|"
         result += "\n"
     return result

@@ -21,11 +21,11 @@ def get_chore_types_from_res(context):
 def get_chore_types_from_feature_table(context):
     if context.table is None:
         return []
-    return [create_chore_type_from_row(context, x) for x in context.table.rows]
+    return [create_chore_type_from_row(x) for x in context.table.rows]
 
 
-def create_chore_type_from_row(context, row):
+def create_chore_type_from_row(row):
     return ChoreType(
-        replace_param(context, row["id"]),
-        replace_param(context, row["description"]),
+        replace_param(row["id"]),
+        replace_param(row["description"]),
     )

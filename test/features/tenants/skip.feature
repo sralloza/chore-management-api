@@ -21,12 +21,12 @@ Feature: Tenants API - skipWeek
     Scenario: a tenant skips the next week
         Given there are 3 tenants
         And there are 3 chore types
-        When the tenant with id "2" skips the week "[NEXT_WEEK_ID]" using the API
+        When the tenant with id "2" skips the week "[NOW(%Y.%W) + 7 DAYS]" using the API
         Then the response status code is "204"
         And I create the weekly chores for next week using the API
         And the database contains the following weekly chores
-            | week_id        | A | B   | C |
-            | [NEXT_WEEK_ID] | 1 | 1,3 | 3 |
+            | week_id               | A | B   | C |
+            | [NOW(%Y.%W) + 7 DAYS] | 1 | 1,3 | 3 |
 
 
     Scenario Outline: Validate error when tenants skips an invalid week
@@ -55,13 +55,13 @@ Feature: Tenants API - skipWeek
 
     Scenario: validate error when tenant skips last week
         Given there is 1 tenant
-        When the tenant with id "1" skips the week "[LAST_WEEK_ID]" using the API
+        When the tenant with id "1" skips the week "[NOW(%Y.%W) - 7 DAYS]" using the API
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
 
 
     Scenario: validate error when tenant skips a week in the past
         Given there is 1 tenant
-        When the tenant with id "1" skips the week "[CURRENT_WEEK_ID]" using the API
+        When the tenant with id "1" skips the week "[NOW(%Y.%W)]" using the API
         Then the response status code is "400"
         And the error message is "Cannot skip the current week"
