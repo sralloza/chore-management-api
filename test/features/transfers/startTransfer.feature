@@ -87,6 +87,7 @@ Feature: Transfers API - startTransfer
             | 1              | 3            | A          | 2022.01 | False     | None     |
 
 
+    @timing
     Scenario: Validate transfer timestamp after transfer is created
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         When a tenant starts a chore transfer to other tenant using the API

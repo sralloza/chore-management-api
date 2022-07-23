@@ -10,7 +10,8 @@ services:
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=chore-management
       - WAIT_FOR_IT_ADDRESS=database:3306
-      - TZ=Europe/Madrid
+      # Export this environment variable if the host TZ is not UTC
+      - TZ
     ports:
       - "8080:8080"
 
