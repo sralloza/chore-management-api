@@ -1,5 +1,5 @@
-@chore-type
-@crud.list
+@api.chore-type
+@listChoreTypes
 Feature: Chore Types API - listChoreTypes
 
     As a user I want to list the defined chore types.
@@ -7,10 +7,13 @@ Feature: Chore Types API - listChoreTypes
     # TODO: validate admin and tenants have access (guest are not allowed)
 
     Scenario: List chore types when empty
-        When I list the chore types using the API
+        When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type-list"
-        And the response contains the following chore types
+        And the Api response contains the expected data
+            """
+            []
+            """
 
 
     Scenario: List chore types when non empty

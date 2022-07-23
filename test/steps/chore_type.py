@@ -37,11 +37,6 @@ def step_impl(context):
     context.res = context.get("/chore-types")
 
 
-@when('I get the chore type with id "{chore_id}" using the API')
-def step_impl(context, chore_id):
-    context.res = context.get(f"/chore-types/{chore_id}")
-
-
 @when('I delete the chore type with id "{chore_id}" using the API')
 def step_impl(context, chore_id):
     context.res = context.delete(f"/chore-types/{chore_id}")

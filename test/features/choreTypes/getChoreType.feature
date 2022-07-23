@@ -12,11 +12,10 @@ Feature: Chore Types API - getChoreType
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
-        And the Api response contains the expected JSON
+        And the Api response contains the expected data
 
 
     Scenario: Validate error when getting a non existing chore type
-        When I get the chore type with id "X" using the API
         Given The field "choreTypeId" with value "X"
         When I send a request to the Api
         Then the response status code is "404"
