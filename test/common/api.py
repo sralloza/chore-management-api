@@ -1,7 +1,7 @@
 import json
 from uuid import uuid4
 
-from common.common import VERSIONED_URL_TEMPLATE
+from common.utils import VERSIONED_URL_TEMPLATE
 
 
 def _format_params(**kwargs):

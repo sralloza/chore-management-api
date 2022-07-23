@@ -1,0 +1,6 @@
+{
+    "getCurrentWeekId": {
+      "path": "/week-id/current",
+      "method": "GET"
+    }
+  }

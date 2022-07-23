@@ -1,7 +1,7 @@
 from collections import namedtuple
 from unittest import mock
 
-from common.common import parse_table
+from common.utils import parse_table
 
 Tenant = namedtuple("Tenant", "username tenant_id api_token")
 

@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from common.common import replace_param
+from common.utils import replace_param
 
 ChoreType = namedtuple("ChoreType", "id description")
 

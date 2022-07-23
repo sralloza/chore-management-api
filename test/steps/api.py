@@ -10,7 +10,7 @@ from behave import *
 from dateutil.parser import parse
 from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 
-from common.common import *
+from common.utils import *
 
 
 # todo: remove when and given steps

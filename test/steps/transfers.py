@@ -1,6 +1,6 @@
 from behave import step
 
-from common.common import *
+from common.utils import *
 
 
 @step("a tenant starts a chore transfer to other tenant using the API")
