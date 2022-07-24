@@ -1,5 +1,5 @@
-@transfers
-@transfers.start
+@api.transfers
+@startTransfer
 Feature: Transfers API - startTransfer
 
     As a tenant I want to transfer a chore to another tenant.
@@ -10,9 +10,12 @@ Feature: Transfers API - startTransfer
 
     Scenario: Start chore transfer happy path
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "200"
         And the response body is validated against the json-schema "transfer"
         And the database contains the following transfers
@@ -100,17 +103,23 @@ Feature: Transfers API - startTransfer
         And a tenant starts a chore transfer to other tenant using the API
             | tenant_id_from | tenant_id_to | chore_type | week_id |
             | 1              | 2            | A          | 2022.01 |
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 3            | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 3           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And the error message is "Cannot transfer chore to multiple tenants"
 
 
     Scenario Outline: Validate error when tenant_id_from is invalid
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | <tenant_id>    | 2            | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | <tenant_id> | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
@@ -122,9 +131,12 @@ Feature: Transfers API - startTransfer
 
 
     Scenario Outline: Validate error when tenant_id_to is invalid
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | <tenant_id>  | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | <tenant_id> | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
@@ -136,9 +148,12 @@ Feature: Transfers API - startTransfer
 
 
     Scenario Outline: Validate error when chore_type is invalid
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type   | week_id |
-            | 1              | 2            | <chore_type> | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value  | as_string |
+            | tenant_id_from | 1            | false     |
+            | tenant_id_to   | 2            | false     |
+            | chore_type     | <chore_type> | false     |
+            | week_id        | 2022.01      | true      |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
@@ -150,9 +165,12 @@ Feature: Transfers API - startTransfer
 
 
     Scenario Outline: Validate error when week_id is invalid
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id   |
-            | 1              | 2            | A          | <week_id> |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | <week_id>   | true      |
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
@@ -164,9 +182,12 @@ Feature: Transfers API - startTransfer
 
 
     Scenario Outline: Validate error when week_id's format is invalid
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id   |
-            | 1              | 2            | A          | <week_id> |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | <week_id>   | true      |
         Then the response status code is "400"
         And the error message is "Invalid week ID: <week_id>"
 
@@ -182,26 +203,35 @@ Feature: Transfers API - startTransfer
 
     Scenario: Validate error when the tenant_id_from does not belong to any tenant
         Given there are 3 tenants
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 9999           | 2            | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 9999        | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And the error message is "Tenant with id 9999 does not exist"
 
 
     Scenario: Validate error when the tenant_id_to does not belong to any tenant
         Given there are 3 tenants
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 9999         | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 9999        | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And the error message is "Tenant with id 9999 does not exist"
 
 
     Scenario: Validate error when the tenant_id_from is the same as the tenant_id_to
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 1            | A          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 1           | false     |
+            | chore_type     | A           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And the error message is "Cannot transfer chore to the same tenant"
 
@@ -210,9 +240,12 @@ Feature: Transfers API - startTransfer
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | C          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | C           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "403"
         And the error message is the following
             """
@@ -222,8 +255,11 @@ Feature: Transfers API - startTransfer
 
     Scenario: Validate error when a tenant tries to transfer a chore which type does not exist
         Given there are 3 tenants
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | X          | 2022.01 |
+        When I send a request to the Api with body params
+            | param_name     | param_value | as_string |
+            | tenant_id_from | 1           | false     |
+            | tenant_id_to   | 2           | false     |
+            | chore_type     | X           | false     |
+            | week_id        | 2022.01     | true      |
         Then the response status code is "400"
         And the error message is "Chore type with id X does not exist"

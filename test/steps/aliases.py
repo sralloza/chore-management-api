@@ -49,3 +49,29 @@ def step_impl(context, tenant_id, week_id):
     )
 
     context.res = None
+
+
+@step("a tenant starts a chore transfer to other tenant using the API")
+def step_impl(context):
+    attrs = ["tenant_id_from", "tenant_id_to", "chore_type", "week_id"]
+    context.table.require_columns(attrs)
+
+    nrows = len(list(context.table))
+    assert nrows == 1, f"Only one row is allowed, found {nrows}"
+
+    row = context.table.rows[0]
+
+    payload = {}
+    for attr in attrs:
+        value = row.get(attr)
+        if value is not None:
+            value = replace_param(value, infer_param_type=attr != "week_id")
+            payload[attr] = value
+
+    context.execute_steps(
+        f"""
+    When I send a request to the Api resource "startTransfer" with body params
+    {payload_to_table_format(payload)}
+    Then the response status code is "200"
+    """
+    )

@@ -66,5 +66,9 @@
     "path": "/weekly-chores/{weekId}",
     "pathParams": ["weekId"],
     "method": "DELETE"
+  },
+  "startTransfer": {
+    "path": "/transfers/start",
+    "method": "POST"
   }
 }
