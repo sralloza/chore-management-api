@@ -32,6 +32,7 @@ def step_impl(context):
     context.res = context.post("/chore-types", json=payload)
 
 
+# TODO: remove
 @when("I list the chore types using the API")
 def step_impl(context):
     context.res = context.get("/chore-types")
