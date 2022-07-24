@@ -20,7 +20,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: Invalid week IDs
+        Examples: invalid_week_id = <invalid_week_id>
             | invalid_week_id |
             | invalid-week    |
             | 2022-03         |

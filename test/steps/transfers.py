@@ -16,10 +16,8 @@ def step_impl(context):
     for attr in attrs:
         value = row.get(attr)
         if value is not None:
-            value = replace_param(value)
+            value = replace_param(value, infer_param_type=attr != "week_id")
             payload[attr] = value
-            if attr == "week_id" and value is not None:
-                payload[attr] = str(payload[attr])
 
     context.res = context.post("/transfers/start", json=payload)
 

@@ -116,7 +116,7 @@ Feature: Transfers API - startTransfer
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples: Invalid tenant_id_from
+        Examples: tenant_id = <tenant_id> | err_msg = <err_msg>
             | tenant_id | err_msg                         |
             | [NULL]    | tenant_id_from is required      |
             | -1        | tenant_id_from must be positive |
@@ -130,7 +130,7 @@ Feature: Transfers API - startTransfer
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples: Invalid tenant_id_to
+        Examples: tenant_id = <tenant_id> | err_msg = <err_msg>
             | tenant_id | err_msg                       |
             | [NULL]    | tenant_id_to is required      |
             | -1        | tenant_id_to must be positive |
@@ -144,7 +144,7 @@ Feature: Transfers API - startTransfer
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples: Invalid chore_type
+        Examples: chore_type = <chore_type> | err_msg = <err_msg>
             | chore_type | err_msg                   |
             | [NULL]     | chore_type is required    |
             | [EMPTY]    | chore_type can't be blank |
@@ -158,7 +158,7 @@ Feature: Transfers API - startTransfer
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples: Invalid week IDs
+        Examples: week_id = <week_id> | err_msg = <err_msg>
             | week_id | err_msg                |
             | [NULL]  | week_id is required    |
             | [EMPTY] | week_id can't be blank |
@@ -172,14 +172,14 @@ Feature: Transfers API - startTransfer
         Then the response status code is "400"
         And the error message is "Invalid week ID: <week_id>"
 
-        Examples: Invalid week IDs
-            | invalid-week |
-            | 2022-03      |
-            | 2022.3       |
-            | 2022.00      |
-            | 2022.55      |
-            | 2022023      |
-            | whatever     |
+        Examples: week_id = <week_id>
+            | week_id  |
+            | 2022-03  |
+            | 2022.3   |
+            | 2022.00  |
+            | 2022.55  |
+            | 2022023  |
+            | whatever |
 
 
     Scenario: Validate error when the tenant_id_from does not belong to any tenant

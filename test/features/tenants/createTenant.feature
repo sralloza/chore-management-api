@@ -55,7 +55,7 @@ Feature: Tenants API - createTenant
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples:
+        Examples: tenant_id = <tenant_id> | err_msg = <err_msg>
             | tenant_id | err_msg                    |
             | [NULL]    | tenant_id is required      |
             | [INT:-3]  | tenant_id must be positive |
@@ -69,7 +69,7 @@ Feature: Tenants API - createTenant
         Then the response status code is "400"
         And one of messages in the errors array is "<err_msg>"
 
-        Examples:
+        Examples: username = <username> | err_msg = <err_msg>
             | username | err_msg                          |
             | [NULL]   | username is required             |
             | [EMPTY]  | username can't be blank          |

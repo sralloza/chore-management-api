@@ -222,7 +222,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: Invalid week IDs
+        Examples: invalid_week_id = <invalid_week_id>
             | invalid_week_id |
             | invalid-week    |
             | 2022-03         |
@@ -240,7 +240,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "400"
         And the error message is "Invalid week ID (too old): <old_week_id>"
 
-        Examples: Old week IDs
+        Examples: old_week_id = <old_week_id>
             | old_week_id |
             | 2022.09     |
             | 2022.04     |
