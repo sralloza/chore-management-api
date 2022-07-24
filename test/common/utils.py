@@ -44,11 +44,7 @@ def assert_has_table(context):
 
 
 def parse_table(
-    table,
-    *,
-    mode: str = "literal",
-    attrs: Optional[List[str]] = None,
-    **kwargs
+    table, *, mode: str = "literal", attrs: Optional[List[str]] = None, **kwargs
 ):
     if mode not in ("literal", "replace_param", None):
         raise ValueError(f"Unknown mode {mode}")
@@ -101,7 +97,7 @@ def list_of_dicts_to_table_str(list_of_dicts):
     return result
 
 
-def table_to_str(table,replace=False, infer=True):
+def table_to_str(table, replace=False, infer=True):
     if not table:
         return ""
 
@@ -120,3 +116,25 @@ def table_to_str(table,replace=False, infer=True):
             result += cell + "|"
         result += "\n"
     return result
+
+
+def replace_nested_ob(obj):
+    if isinstance(obj, list):
+        for item in obj:
+            replace_nested_ob(item)
+    else:
+        _replace_obj(obj)
+
+
+def _replace_obj(obj: dict):
+    for key, value in obj.items():
+        if isinstance(value, dict):
+            _replace_obj(value)
+        elif isinstance(value, list):
+            for i, item in enumerate(value):
+                if isinstance(item, dict):
+                    _replace_obj(item)
+                else:
+                    obj[key][i] = replace_param(item)
+        else:
+            obj[key] = replace_param(value)

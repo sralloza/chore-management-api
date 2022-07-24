@@ -12,9 +12,15 @@ def step_impl(context):
     context.params = table_to_dict(context.table)
 
 
-@step('I send a request to the Api resource "{resource}" through 4P"')
+@step('I send a request to the Api resource "{resource}"')
 def step_impl(context, resource):
     send_request(context, resource)
+
+
+@step('I send a request to the Api resource "{resource}" with body params')
+def step_impl(context, resource):
+    payload = table_to_dict(context.table)
+    send_request(context, resource, payload=payload)
 
 
 @step("I send a request to the Api with body params")
