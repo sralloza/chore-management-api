@@ -15,6 +15,7 @@ Feature: Tenants API - skipWeek
         And the field "weekId" with string value "2025.01"
         When I send a request to the Api
         Then the response status code is "204"
+        And The Api response is empty
         And I create the weekly chores for the week "2025.01" using the API
         And the database contains the following weekly chores
             | week_id | A | B   | C |
@@ -28,6 +29,7 @@ Feature: Tenants API - skipWeek
         And the field "weekId" with string value "[NOW(%Y.%W) + 7 DAYS]"
         When I send a request to the Api
         Then the response status code is "204"
+        And The Api response is empty
         And I create the weekly chores for next week using the API
         And the database contains the following weekly chores
             | week_id               | A | B   | C |

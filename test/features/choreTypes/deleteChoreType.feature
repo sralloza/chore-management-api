@@ -12,6 +12,7 @@ Feature: Chore Types API - deleteChoreType
         And the field "choreTypeId" with value "A"
         When I send a request to the Api
         Then the response status code is "204"
+        And The Api response is empty
         When I send a request to the Api resource "listChoreTypes"
         Then the response status code is "200"
         And the Api response contains the expected data

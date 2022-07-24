@@ -11,6 +11,7 @@ Feature: Tenants API - deleteTenant
         Then the response status code is "200"
         When I send a request to the Api
         Then the response status code is "204"
+        And The Api response is empty
         When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
         And the Api response contains the expected data

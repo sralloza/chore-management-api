@@ -9,6 +9,12 @@ from common.response import get_step_body_json, remove_attributes
 RESPONSES_PATH = Path(__file__).parent.parent / "resources/responses"
 
 
+@step("The Api response is empty")
+def step_impl(context):
+    msg = f"Response is not empty: {context.res.text}"
+    assert context.res.text == "", msg
+
+
 @step("the Api response contains the expected data")
 def step_impl(context):
     json_file = None
