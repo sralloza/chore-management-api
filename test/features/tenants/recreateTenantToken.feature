@@ -3,7 +3,9 @@ Feature: Tenants API - recreateTenantToken
 
     Scenario: Recreate tenant token
         Given there is 1 tenant
-        When I get the tenant with id "1" using the API
+        And the field "tenantId" with value "1"
+        When I send a request to the Api resource "getTenant"
+        And the response status code is "200"
         And I save the tenant's token
         And I recreate the token of the tenant with id "1" using the API
         Then the response status code is "200"

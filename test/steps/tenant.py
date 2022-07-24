@@ -1,5 +1,4 @@
 from behave import *
-from toolium.utils.dataset import replace_param
 
 from common.tenant import *
 from common.utils import *
@@ -14,11 +13,6 @@ def step_impl(context, tenants):
         context.res = context.post("/tenants", json=payload)
         context.execute_steps('Then the response status code is "200"')
     context.res = None
-
-
-@when('I get the tenant with id "{tenant_id:d}" using the API')
-def step_impl(context, tenant_id):
-    context.res = context.get(f"/tenants/{tenant_id}")
 
 
 @when("I list the tenants using the API")

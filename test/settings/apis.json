@@ -37,5 +37,10 @@
     "path": "/tenants/{tenantId}",
     "pathParams": ["tenantId"],
     "method": "DELETE"
+  },
+  "getTenant": {
+    "path": "/tenants/{tenantId}",
+    "pathParams": ["tenantId"],
+    "method": "GET"
   }
 }
