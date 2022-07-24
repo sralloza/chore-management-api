@@ -1,5 +1,6 @@
 @api.tenants
 @unSkipWeek
+@sanity
 Feature: Tenants API - unSkipWeek
 
     As a tenant I want to unskip a week in case I have wrongly skipped it.

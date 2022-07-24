@@ -1,5 +1,6 @@
 @api.tenants
 @listTenants
+@sanity
 Feature: Tenants API - listTenants
 
     Scenario: List tenants
