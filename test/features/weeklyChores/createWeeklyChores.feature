@@ -253,7 +253,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | username   | John        |
             | tenant_id  | 111         |
         Then the response status code is "200"
-        And I delete the tenant with id "111" using the API
+        Given the field "tenantId" with value "111"
+        When I send a request to the Api resource "deleteTenant"
+        Then the response status code is "204"
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
         And I list the weekly chores using the API

@@ -39,7 +39,7 @@ def step_impl(context):
     send_request(context)
 
 
-@step('The field "{field}" with value "{value}"')
+@step('the field "{field}" with value "{value}"')
 def step_impl(context, field, value):
     """
     Save field and value in context

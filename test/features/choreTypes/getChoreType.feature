@@ -8,7 +8,7 @@ Feature: Chore Types API - getChoreType
 
     Scenario: Get a chore type
         Given there is 1 chore type
-        Given The field "choreTypeId" with value "A"
+        Given the field "choreTypeId" with value "A"
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
@@ -16,7 +16,7 @@ Feature: Chore Types API - getChoreType
 
 
     Scenario: Validate error when getting a non existing chore type
-        Given The field "choreTypeId" with value "X"
+        Given the field "choreTypeId" with value "X"
         When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No chore type found with id X"

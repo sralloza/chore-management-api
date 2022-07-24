@@ -32,5 +32,10 @@
   "createTenant": {
     "path": "/tenants",
     "method": "POST"
+  },
+  "deleteTenant": {
+    "path": "/tenants/{tenantId}",
+    "pathParams": ["tenantId"],
+    "method": "DELETE"
   }
 }

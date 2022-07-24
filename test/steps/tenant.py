@@ -26,11 +26,6 @@ def step_impl(context):
     context.res = context.get("/tenants")
 
 
-@step('I delete the tenant with id "{tenant_id:d}" using the API')
-def step_impl(context, tenant_id):
-    context.res = context.delete(f"/tenants/{tenant_id}")
-
-
 @when("I save the tenant's token")
 def step_impl(context):
     context.execute_steps(
