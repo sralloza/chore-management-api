@@ -61,5 +61,10 @@
     "path": "/tenants/{tenantId}/unskip/{weekId}",
     "pathParams": ["tenantId", "weekId"],
     "method": "POST"
+  },
+  "deleteWeeklyChores": {
+    "path": "/weekly-chores/{weekId}",
+    "pathParams": ["weekId"],
+    "method": "DELETE"
   }
 }

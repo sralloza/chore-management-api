@@ -35,23 +35,15 @@ def get_dataset():
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
+    dataset.project_config = get_dataset()
     context.session = requests.Session()
 
     context.get = lambda path, **kwargs: _send_request(context, "GET", path, **kwargs)
     context.post = lambda path, **kwargs: _send_request(context, "POST", path, **kwargs)
-    context.put = lambda path, **kwargs: _send_request(context, "PUT", path, **kwargs)
-    context.delete = lambda path, **kwargs: _send_request(
-        context, "DELETE", path, **kwargs
-    )
 
-    context.res = None
-    context.res_list = []
     reset_databases()
-
     context.res = None
     context.res_list = []
-
-    dataset.project_config = get_dataset()
 
 
 def register_allure_stdout_stderr(context):

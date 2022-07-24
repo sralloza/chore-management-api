@@ -47,11 +47,6 @@ def step_impl(context, force=None):
     context.res = context.post("/weekly-chores", params=params)
 
 
-@step('I delete the weekly chores for the week "{week_id}" using the API')
-def step_impl(context, week_id):
-    context.res = context.delete(f"/weekly-chores/{week_id}")
-
-
 @step("the response contains the following weekly chores")
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
