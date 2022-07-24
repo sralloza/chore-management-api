@@ -25,8 +25,6 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.17 |
             | 2022.18 |
         And I list the weekly chores using the API
-        And the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D |
             | 2022.01 | 1 | 2 | 3 | 4 |
@@ -81,8 +79,6 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.17 |
             | 2022.18 |
         And I list the weekly chores using the API
-        And the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D | E |
             | 2022.01 | 1 | 2 | 3 | 1 | 2 |
@@ -190,7 +186,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there is 1 tenant
         And there is 1 chore type
         And I create the weekly chores for the week "2022.01" using the API
-        And the response status code is "200"
+        Then the response status code is "200"
         When I create the weekly chores for the week "2022.01" using the API
         Then the response status code is "409"
         And the error message contains "Weekly chores for week .+ already exist"

@@ -43,7 +43,6 @@ def before_scenario(context, scenario):
 
     reset_databases()
     context.res = None
-    context.res_list = []
 
 
 def register_allure_stdout_stderr(context):

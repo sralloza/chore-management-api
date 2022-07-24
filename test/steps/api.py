@@ -2,33 +2,21 @@ import json
 import os
 import re
 import textwrap
-from ast import literal_eval
 from datetime import datetime
 from pathlib import Path
 
 from behave import *
 from dateutil.parser import parse
+from hamcrest import *
 from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 
 from common.utils import *
 
 
-# todo: remove when and given steps
-@when('the response status code is "{code:d}"')
-@given('the response status code is "{code:d}"')
 @then('the response status code is "{code:d}"')
-@then('all the response status codes are "{code:d}"')
 def step_impl(context, code):
-    errors = []
-    res_list = context.res_list or [context.res]
-    for res in res_list:
-        actual = res.status_code
-        if actual != code:
-            path = get_path_from_res(res)
-            msg = f"- [{path}] expected status code {code}, got {actual}\n    >>>> {res.text}"
-            errors.append(msg)
-
-    assert_not_errors(errors)
+    actual = context.res.status_code
+    assert_that(actual, equal_to(code), f"Expected status code {code}, got {actual}")
 
 
 @step("the response body is a valid json")
@@ -41,16 +29,8 @@ def step_impl(context):
 
 @step("the {header} header is in the response")
 def step_impl(context, header):
-    msg = f"Header {header} is not present in the response.\nHEADERS: {context.api_response.headers}"
-    assert context.api_response.headers.getlist(header), msg
-
-
-@step('the HTTP status code should be in "{status_list}"')
-def step_impl(context, status_list):
-    msg = 'HTTP status code should be in "{}", but it is "{}"\n  >>>> {}"'
-    status_list = literal_eval(status_list)
-    status = context.res.status_code
-    assert status in status_list, msg.format(status_list, status, context.res.text)
+    msg = f"Header {header} is not present in the response.\nHEADERS: {context.res.headers}"
+    assert context.res.headers.getlist(header), msg
 
 
 @step('the error message contains "{message}"')
@@ -82,10 +62,7 @@ def step_impl(context, message=None):
     assert actual == message, msg.format(message, actual)
 
 
-# todo: remove when step
-@when('the response body is validated against the json-schema "{schema}"')
 @then('the response body is validated against the json-schema "{schema}"')
-@then('all the response bodies are validated against the json-schema "{schema}"')
 def step_impl(context, schema):
     schema = Path(__file__).parent.parent / f"resources/schemas/{schema}.json"
     with open(schema) as f:
@@ -96,23 +73,18 @@ def step_impl(context, schema):
         referrer=json_schema, base_uri="file://" + json_schema_dir + "/"
     )
 
-    res_list = context.res_list or [context.res]
-    errors = []
-    for i, res in enumerate(res_list):
-        api_response = res.json()
+    api_response = context.res.json()
 
-        try:
-            validate(
-                api_response,
-                json_schema,
-                resolver=resolver,
-                format_checker=FormatChecker(),
-            )
-        except ValidationError as exc:
-            msg = f"- ValidationError on response #{i}: {exc.message}"
-            errors.append(msg)
-
-    assert_not_errors(errors)
+    try:
+        validate(
+            api_response,
+            json_schema,
+            resolver=resolver,
+            format_checker=FormatChecker(),
+        )
+    except ValidationError as exc:
+        msg = f"- Json Schema ValidationError: {exc.message}"
+        assert False, msg
 
 
 @step('I save the "{attr}" attribute of the response as "{dest}"')
