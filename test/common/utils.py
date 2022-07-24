@@ -138,3 +138,13 @@ def _replace_obj(obj: dict):
                     obj[key][i] = replace_param(item)
         else:
             obj[key] = replace_param(value)
+
+
+def payload_to_table_format(params):
+    table = []
+    for key, value in params.items():
+        row = {}
+        row["param_name"] = key
+        row["param_value"] = value
+        table.append(row)
+    return list_of_dicts_to_table_str(table)

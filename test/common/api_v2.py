@@ -15,6 +15,9 @@ def send_request(context, endpoint=None, payload=None):
     except KeyError:
         raise ValueError(f"Invalid endpoint in feature name: {endpoint}") from None
 
+    if not isinstance(api, dict):
+        raise ValueError(f"Invalid endpoint in feature name: {endpoint}")
+
     path = api["path"]
     method = api["method"]
 
