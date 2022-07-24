@@ -11,8 +11,10 @@ Feature: Tenants API - skipWeek
     Scenario: a tenant skips a single week
         Given there are 3 tenants
         And there are 3 chore types
-        Given the field "tenantId" with value "2"
-        And the field "weekId" with string value "2025.01"
+        And the fields
+            | field    | value   | as_string |
+            | tenantId | 2       | false     |
+            | weekId   | 2025.01 | false     |
         When I send a request to the Api
         Then the response status code is "204"
         And The Api response is empty
@@ -25,8 +27,10 @@ Feature: Tenants API - skipWeek
     Scenario: a tenant skips the next week
         Given there are 3 tenants
         And there are 3 chore types
-        Given the field "tenantId" with value "2"
-        And the field "weekId" with string value "[NOW(%Y.%W) + 7 DAYS]"
+        And the fields
+            | field    | value                 | as_string |
+            | tenantId | 2                     | false     |
+            | weekId   | [NOW(%Y.%W) + 7 DAYS] | true      |
         When I send a request to the Api
         Then the response status code is "204"
         And The Api response is empty
@@ -38,13 +42,15 @@ Feature: Tenants API - skipWeek
 
     Scenario Outline: Validate error when tenants skips an invalid week
         Given there is 1 tenant
-        And the field "tenantId" with value "1"
-        And the field "weekId" with string value "<invalid_week_id>"
+        And the fields
+            | field    | value             | as_string |
+            | tenantId | 1                 | false     |
+            | weekId   | <invalid_week_id> | true      |
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: Invalid week IDs
+        Examples: invalid week id = <invalid_week_id>
             | invalid_week_id |
             | invalid-week    |
             | 2022-03         |
@@ -57,8 +63,10 @@ Feature: Tenants API - skipWeek
 
     Scenario: validate error when tenant skips a really past week
         Given there is 1 tenant
-        And the field "tenantId" with value "1"
-        And the field "weekId" with string value "2022.01"
+        And the fields
+            | field    | value   | as_string |
+            | tenantId | 1       | false     |
+            | weekId   | 2022.01 | true      |
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -66,8 +74,10 @@ Feature: Tenants API - skipWeek
 
     Scenario: validate error when tenant skips last week
         Given there is 1 tenant
-        And the field "tenantId" with value "1"
-        And the field "weekId" with string value "[NOW(%Y.%W) - 7 DAYS]"
+        And the fields
+            | field    | value                 | as_string |
+            | tenantId | 1                     | false     |
+            | weekId   | [NOW(%Y.%W) - 7 DAYS] | true      |
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -75,8 +85,10 @@ Feature: Tenants API - skipWeek
 
     Scenario: validate error when tenant skips a week in the past
         Given there is 1 tenant
-        And the field "tenantId" with value "1"
-        And the field "weekId" with string value "[NOW(%Y.%W)]"
+        And the fields
+            | field    | value        | as_string |
+            | tenantId | 1            | false     |
+            | weekId   | [NOW(%Y.%W)] | true      |
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip the current week"

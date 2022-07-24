@@ -51,5 +51,10 @@
     "path": "/tenants/{tenantId}/skip/{weekId}",
     "pathParams": ["tenantId", "weekId"],
     "method": "POST"
+  },
+  "unSkipWeek": {
+    "path": "/tenants/{tenantId}/unskip/{weekId}",
+    "pathParams": ["tenantId", "weekId"],
+    "method": "POST"
   }
 }

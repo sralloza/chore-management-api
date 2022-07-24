@@ -50,6 +50,15 @@ def set_field_to_context(context, field, value, to_str=False):
     setattr(context, field, value)
 
 
+@step("the fields")
+def step_impl(context):
+    for row in context.table:
+        field = row["field"]
+        value = row["value"]
+        to_str = row.get("as_string", "fals").lower() == "true"
+        set_field_to_context(context, field, value, to_str=to_str)
+
+
 @step('the response attribute "{attr}" as string is "{value}"')
 def step_impl(context, attr, value):
     assert_response_attr(context, attr, value, to_str=True)
