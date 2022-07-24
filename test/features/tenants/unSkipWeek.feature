@@ -1,5 +1,5 @@
 @tenants
-Feature: Tenants API - skipWeek
+Feature: Tenants API - unSkipWeek
 
     As a tenant I want to unskip a week in case I have wrongly skipped it.
 
@@ -9,7 +9,10 @@ Feature: Tenants API - skipWeek
     Scenario: a tenant unskips a single week
         Given there are 3 tenants
         And there are 3 chore types
-        And the tenant with id "2" skips the week "2025.01" using the API
+        And the field "tenantId" with value "2"
+        And the field "weekId" with string value "2025.01"
+        When I send a request to the Api resource "skipWeek"
+        Then the response status code is "204"
         When the tenant with id "2" unskips the week "2025.01" using the API
         Then the response status code is "204"
         And I create the weekly chores for the week "2025.01" using the API

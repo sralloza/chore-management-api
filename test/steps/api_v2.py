@@ -39,14 +39,14 @@ def step_impl(context):
     send_request(context)
 
 
-@step('the field "{field}" with value "{value}"')
+@step('the field "{field}" with string value "{value}"')
 def step_impl(context, field, value):
-    """
-    Save field and value in context
-    :param context: behave context
-    :param field: context attribute name
-    :param value: context attribute value
-    """
+    set_field_to_context(context, field, value, to_str=True)
+
+
+@step('the field "{field}" with value "{value}"')
+def set_field_to_context(context, field, value, to_str=False):
+    value = replace_param(value, infer_param_type=not to_str)
     setattr(context, field, value)
 
 
