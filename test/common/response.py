@@ -16,6 +16,14 @@ def remove_attributes(obj, attrs):
 
 
 def remove_attribute(obj, attr):
+    if not isinstance(obj, list):
+        _remove_attribute(obj, attr)
+    else:
+        for item in obj:
+            remove_attribute(item, attr)
+
+
+def _remove_attribute(obj, attr):
     attrs = attr.split(".")
     tmp = obj
     for attr in attrs:

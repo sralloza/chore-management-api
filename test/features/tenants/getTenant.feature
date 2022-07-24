@@ -8,9 +8,9 @@ Feature: Tenants API - getTenant
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "tenant"
-        And the response contains the following tenants
-            | username | tenant_id |
-            | tenant1  | 1         |
+        And the Api response contains the expected data
+            | skip_param |
+            | api_token  |
 
 
     Scenario: Validate error when requesting non existing tenant

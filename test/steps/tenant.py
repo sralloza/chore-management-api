@@ -15,11 +15,6 @@ def step_impl(context, tenants):
     context.res = None
 
 
-@when("I list the tenants using the API")
-def step_impl(context):
-    context.res = context.get("/tenants")
-
-
 @when("I save the tenant's token")
 def step_impl(context):
     context.execute_steps(
@@ -34,45 +29,6 @@ def step_impl(context):
 @when('I recreate the token of the tenant with id "{tenant_id:d}" using the API')
 def step_impl(context, tenant_id):
     context.res = context.post(f"/tenants/{tenant_id}/recreate-token")
-
-
-@then("the response contains the following tenant")
-@then("the response contains the following tenants")
-def step_impl(context):
-    expected_tenants = get_tenants_from_feature_table(context)
-    actual_tenants = get_tenants_from_response(context)
-
-    assert_arrays_equal(expected_tenants, actual_tenants)
-
-
-@then("the response does not contain the following tenants")
-def step_impl(context):
-    expected_tenants = get_tenants_from_feature_table(context)
-    actual_tenants = get_tenants_from_response(context)
-
-    assert_arrays_not_contain(expected_tenants, actual_tenants)
-
-
-@then("the database contains the following tenants")
-def step_impl(context):
-    context.execute_steps(
-        f"""
-    When I list the tenants using the API
-    Then the response contains the following tenants
-    {table_to_str(context.table)}
-    """
-    )
-
-
-@then("the database does not contain the following tenants")
-def step_impl(context):
-    context.execute_steps(
-        f"""
-    When I list the tenants using the API
-    Then the response does not contain the following tenants
-    {table_to_str(context.table)}
-    """
-    )
 
 
 @then("the tenant's token is different from the saved token")

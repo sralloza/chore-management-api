@@ -42,5 +42,9 @@
     "path": "/tenants/{tenantId}",
     "pathParams": ["tenantId"],
     "method": "GET"
+  },
+  "listTenants": {
+    "path": "/tenants",
+    "method": "GET"
   }
 }
