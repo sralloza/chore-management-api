@@ -47,6 +47,11 @@
     "path": "/tenants",
     "method": "GET"
   },
+  "recreateTenantToken": {
+    "path": "/tenants/{tenantId}/recreate-token",
+    "pathParams": ["tenantId"],
+    "method": "POST"
+  },
   "skipWeek": {
     "path": "/tenants/{tenantId}/skip/{weekId}",
     "pathParams": ["tenantId", "weekId"],
