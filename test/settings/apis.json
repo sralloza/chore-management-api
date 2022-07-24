@@ -19,5 +19,10 @@
   "listChoreTypes": {
     "path": "/chore-types",
     "method": "GET"
+  },
+  "deleteChoreType": {
+    "path": "/chore-types/{choreTypeId}",
+    "pathParams": ["choreTypeId"],
+    "method": "DELETE"
   }
 }
