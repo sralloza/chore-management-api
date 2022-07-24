@@ -29,6 +29,11 @@ def step_impl(context):
     send_request(context, payload=payload)
 
 
+@step("I send a request to the Api with body")
+def step_impl(context):
+    send_request(context, payload=context.text)
+
+
 @step("I send a request to the Api")
 def step_impl(context):
     send_request(context)

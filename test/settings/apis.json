@@ -28,5 +28,9 @@
   "createChoreType": {
     "path": "/chore-types",
     "method": "POST"
+  },
+  "createTenant": {
+    "path": "/tenants",
+    "method": "POST"
   }
 }

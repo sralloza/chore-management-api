@@ -3,9 +3,11 @@
 Feature: Tenants API - deleteTenant
 
     Scenario: Delete tenant
-        Given I create a tenant using the API
-            | username | tenant_id |
-            | John     | 111       |
+        When I send a request to the Api resource "createTenant" with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "200"
         When I delete the tenant with id "111" using the API
         Then the response status code is "204"
         And the database does not contain the following tenants

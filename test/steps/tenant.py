@@ -16,27 +16,6 @@ def step_impl(context, tenants):
     context.res = None
 
 
-@step('I create a tenant with name "{username}" using the API')
-@step('I create a tenant with id "{tenant_id:d}" using the API')
-@step("I create a tenant using the API")
-def step_impl(context, username=None, tenant_id=None):
-    tenant_id = tenant_id or context.table[0].get("tenant_id")
-    username = username or context.table[0].get("username")
-
-    payload = {}
-    if tenant_id is not None:
-        payload["tenant_id"] = replace_param(tenant_id, infer_param_type=False)
-    if username is not None:
-        payload["username"] = replace_param(username, infer_param_type=False)
-
-    context.res = context.post("/tenants", json=payload)
-
-
-@when('I create a tenant with body "{body}" using the API')
-def step_impl(context, body):
-    context.res = context.post("/tenants", json=body)
-
-
 @when('I get the tenant with id "{tenant_id:d}" using the API')
 def step_impl(context, tenant_id):
     context.res = context.get(f"/tenants/{tenant_id}")
