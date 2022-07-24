@@ -11,12 +11,7 @@ Feature: Tenants API - unSkipWeek
     Scenario: a tenant unskips a single week
         Given there are 3 tenants
         And there are 3 chore types
-        And the fields
-            | field    | value   | as_string |
-            | tenantId | 2       | false     |
-            | weekId   | 2025.01 | true      |
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
+        And the tenant "2" skips the week "2025.01"
         When I send a request to the Api
         Then the response status code is "204"
         And The Api response is empty
@@ -32,7 +27,7 @@ Feature: Tenants API - unSkipWeek
             | field    | value   | as_string |
             | tenantId | 1       | false     |
             | weekId   | 2022.01 | true      |
-        When I send a request to the Api resource "unSkipWeek"
+        When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Tenant with id 1 has not skipped the week 2022.01"
 
@@ -43,7 +38,7 @@ Feature: Tenants API - unSkipWeek
             | field    | value             | as_string |
             | tenantId | 1                 | false     |
             | weekId   | <invalid_week_id> | true      |
-        When I send a request to the Api resource "unSkipWeek"
+        When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
 

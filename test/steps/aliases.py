@@ -35,3 +35,17 @@ def step_impl(context, tenants):
         )
 
     context.res = None
+
+
+@given('the tenant "{tenant_id:d}" skips the week "{week_id}"')
+def step_impl(context, tenant_id, week_id):
+    context.execute_steps(
+        f"""
+        Given the field "tenantId" with value "{tenant_id}"
+        And the field "weekId" with string value "{week_id}"
+        When I send a request to the Api resource "skipWeek"
+        Then the response status code is "204"
+        """
+    )
+
+    context.res = None

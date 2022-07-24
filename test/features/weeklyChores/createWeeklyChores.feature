@@ -98,10 +98,7 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when a tenant skips a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the field "tenantId" with value "2"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
+        And the tenant "2" skips the week "2025.15"
         When I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -130,18 +127,9 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when two tenants skips a couple of weeks
         Given there are 4 tenants
         And there are 4 chore types
-        And the field "tenantId" with value "2"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
-        Given the field "tenantId" with value "3"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
-        Given the field "tenantId" with value "3"
-        And the field "weekId" with string value "2025.16"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
+        And the tenant "2" skips the week "2025.15"
+        And the tenant "3" skips the week "2025.15"
+        And the tenant "3" skips the week "2025.16"
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -170,18 +158,9 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when all tenants but one skip a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the field "tenantId" with value "1"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
-        Given the field "tenantId" with value "2"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
-        Given the field "tenantId" with value "4"
-        And the field "weekId" with string value "2025.15"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
+        And the tenant "1" skips the week "2025.15"
+        And the tenant "2" skips the week "2025.15"
+        And the tenant "4" skips the week "2025.15"
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
