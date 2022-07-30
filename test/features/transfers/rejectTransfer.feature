@@ -26,6 +26,7 @@ Feature: Transfers API - rejectTransfer
             | tenant3 | 0 | 0 | 0 |
 
 
+    @timing
     Scenario: Validate transfer timestamp after transfer is rejected
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         And a tenant starts a chore transfer to other tenant using the API

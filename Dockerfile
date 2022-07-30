@@ -12,6 +12,16 @@ RUN ls -l /home/gradle/build/libs
 
 FROM sralloza/openjdk:11-jre
 
+RUN apt update && \
+    apt upgrade -y && \
+    apt install locales -y
+
+RUN sed -i '/es_ES.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+ENV LANG es_ES.UTF-8
+ENV LC_ALL es_ES.UTF-8
+ENV TZ Europe/Madrid
+
 COPY utils/wait-for-it.sh /app/wait-for-it.sh
 COPY utils/entrypoint.sh /app/entrypoint.sh
 

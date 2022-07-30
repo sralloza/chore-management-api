@@ -2,7 +2,8 @@ import json
 
 from behave import step
 
-from common import *
+from common.utils import *
+from common.weekly_chores import *
 
 
 @step("I list the weekly chores using the API")
@@ -46,18 +47,14 @@ def step_impl(context, force=None):
     context.res = context.post("/weekly-chores", params=params)
 
 
-@step('I delete the weekly chores for the week "{week_id}" using the API')
-def step_impl(context, week_id):
-    context.res = context.delete(f"/weekly-chores/{week_id}")
-
-
 @step("the response contains the following weekly chores")
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
     actual = parse_weekly_chores_res_table_str(context.res)
     expected = parse_table(
-        context.table, mode="replace_param", context=context, attrs=["week_id"]
+        context.table, mode="replace_param", attrs=["week_id"], infer_param_type=False
     )
+
     for line in expected:
         line["week_id"] = str(line["week_id"])
     assert_arrays_equal(expected, actual)
@@ -69,6 +66,6 @@ def step_impl(context):
         f"""
             When I list the weekly chores using the API
             And the response contains the following weekly chores
-            {table_to_str(context.table)}
+            {table_to_str(context.table, replace=True, infer=False)}
             """
     )

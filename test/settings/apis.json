@@ -1,0 +1,74 @@
+{
+  "getCurrentWeekId": {
+    "path": "/week-id/current",
+    "method": "GET"
+  },
+  "getLastWeekId": {
+    "path": "/week-id/last",
+    "method": "GET"
+  },
+  "getNextWeekId": {
+    "path": "/week-id/next",
+    "method": "GET"
+  },
+  "getChoreType": {
+    "path": "/chore-types/{choreTypeId}",
+    "pathParams": ["choreTypeId"],
+    "method": "GET"
+  },
+  "listChoreTypes": {
+    "path": "/chore-types",
+    "method": "GET"
+  },
+  "deleteChoreType": {
+    "path": "/chore-types/{choreTypeId}",
+    "pathParams": ["choreTypeId"],
+    "method": "DELETE"
+  },
+  "createChoreType": {
+    "path": "/chore-types",
+    "method": "POST"
+  },
+  "createTenant": {
+    "path": "/tenants",
+    "method": "POST"
+  },
+  "deleteTenant": {
+    "path": "/tenants/{tenantId}",
+    "pathParams": ["tenantId"],
+    "method": "DELETE"
+  },
+  "getTenant": {
+    "path": "/tenants/{tenantId}",
+    "pathParams": ["tenantId"],
+    "method": "GET"
+  },
+  "listTenants": {
+    "path": "/tenants",
+    "method": "GET"
+  },
+  "recreateTenantToken": {
+    "path": "/tenants/{tenantId}/recreate-token",
+    "pathParams": ["tenantId"],
+    "method": "POST"
+  },
+  "skipWeek": {
+    "path": "/tenants/{tenantId}/skip/{weekId}",
+    "pathParams": ["tenantId", "weekId"],
+    "method": "POST"
+  },
+  "unSkipWeek": {
+    "path": "/tenants/{tenantId}/unskip/{weekId}",
+    "pathParams": ["tenantId", "weekId"],
+    "method": "POST"
+  },
+  "deleteWeeklyChores": {
+    "path": "/weekly-chores/{weekId}",
+    "pathParams": ["weekId"],
+    "method": "DELETE"
+  },
+  "startTransfer": {
+    "path": "/transfers/start",
+    "method": "POST"
+  }
+}

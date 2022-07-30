@@ -1,6 +1,6 @@
 from behave import *
 
-from common.common import assert_arrays_equal, parse_table, table_to_str
+from common.utils import assert_arrays_equal, parse_table, table_to_str
 from common.tickets import parse_tickets_res_table_str
 
 

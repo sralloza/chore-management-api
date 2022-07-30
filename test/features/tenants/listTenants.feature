@@ -1,16 +1,13 @@
-@tenants
-@crud.list
+@api.tenants
+@listTenants
+@sanity
 Feature: Tenants API - listTenants
 
     Scenario: List tenants
         Given there are 5 tenants
-        When I list the tenants using the API
+        When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "tenant-list"
-        And the response contains the following tenants
-            | username | tenant_id |
-            | tenant1  | 1         |
-            | tenant2  | 2         |
-            | tenant3  | 3         |
-            | tenant4  | 4         |
-            | tenant5  | 5         |
+        And the Api response contains the expected data
+            | skip_param |
+            | api_token  |

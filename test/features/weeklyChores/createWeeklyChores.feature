@@ -7,8 +7,8 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
-            | week_id        | A |
-            | [NEXT_WEEK_ID] | 1 |
+            | week_id               | A |
+            | [NOW(%Y.%W) + 7 DAYS] | 1 |
 
 
     Scenario: Create weekly chores when same number of tenants and chore types
@@ -25,8 +25,6 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.17 |
             | 2022.18 |
         And I list the weekly chores using the API
-        And the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D |
             | 2022.01 | 1 | 2 | 3 | 4 |
@@ -81,8 +79,6 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.17 |
             | 2022.18 |
         And I list the weekly chores using the API
-        And the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D | E |
             | 2022.01 | 1 | 2 | 3 | 1 | 2 |
@@ -98,8 +94,8 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when a tenant skips a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant with id "2" skips the week "2025.15" using the API
-        And I create the weekly chores for the following weeks using the API
+        And the tenant "2" skips the week "2025.15"
+        When I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
             | 2025.02 |
@@ -127,9 +123,9 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when two tenants skips a couple of weeks
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant with id "2" skips the week "2025.15" using the API
-        And the tenant with id "3" skips the week "2025.15" using the API
-        And the tenant with id "3" skips the week "2025.16" using the API
+        And the tenant "2" skips the week "2025.15"
+        And the tenant "3" skips the week "2025.15"
+        And the tenant "3" skips the week "2025.16"
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -158,9 +154,9 @@ Feature: Weekly Chores API - createWeeklyChores
     Scenario: Create weekly chores when all tenants but one skip a week
         Given there are 4 tenants
         And there are 4 chore types
-        And the tenant with id "1" skips the week "2025.15" using the API
-        And the tenant with id "2" skips the week "2025.15" using the API
-        And the tenant with id "4" skips the week "2025.15" using the API
+        And the tenant "1" skips the week "2025.15"
+        And the tenant "2" skips the week "2025.15"
+        And the tenant "4" skips the week "2025.15"
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2025.01 |
@@ -190,7 +186,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there is 1 tenant
         And there is 1 chore type
         And I create the weekly chores for the week "2022.01" using the API
-        And the response status code is "200"
+        Then the response status code is "200"
         When I create the weekly chores for the week "2022.01" using the API
         Then the response status code is "409"
         And the error message contains "Weekly chores for week .+ already exist"
@@ -201,7 +197,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
 
-        Examples: Invalid week IDs
+        Examples: invalid_week_id = <invalid_week_id>
             | invalid_week_id |
             | invalid-week    |
             | 2022-03         |
@@ -219,7 +215,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "400"
         And the error message is "Invalid week ID (too old): <old_week_id>"
 
-        Examples: Old week IDs
+        Examples: old_week_id = <old_week_id>
             | old_week_id |
             | 2022.09     |
             | 2022.04     |
@@ -231,9 +227,11 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
-        And I create a tenant using the API
-            | username | tenant_id |
-            | John     | 111       |
+        When I send a request to the Api resource "createTenant" with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "200"
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "400"
         And the error message is the following
@@ -246,10 +244,14 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
-        And I create a tenant using the API
-            | username | tenant_id |
-            | John     | 111       |
-        And I delete the tenant with id "111" using the API
+        When I send a request to the Api resource "createTenant" with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "200"
+        Given the field "tenantId" with value "111"
+        When I send a request to the Api resource "deleteTenant"
+        Then the response status code is "204"
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
         And I list the weekly chores using the API
@@ -267,9 +269,11 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
-        And I create a tenant using the API
-            | username | tenant_id |
-            | tenant4  | 4         |
+        When I send a request to the Api resource "createTenant" with body params
+            | param_name | param_value |
+            | username   | tenant4     |
+            | tenant_id  | 4           |
+        Then the response status code is "200"
         When I create the weekly chores for the week "2022.03" with force=true using the API
         Then the response status code is "200"
         And I list the weekly chores using the API
@@ -289,19 +293,21 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
-        And I create a tenant using the API
-            | username | tenant_id |
-            | tenant4  | 4         |
+        When I send a request to the Api resource "createTenant" with body params
+            | param_name | param_value |
+            | username   | tenant4     |
+            | tenant_id  | 4           |
+        Then the response status code is "200"
         When I create the weekly chores for next week with force=true using the API
         Then the response status code is "200"
         And I list the weekly chores using the API
         And the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
-            | week_id        | A | B | C | D | E |
-            | 2022.01        | 1 | 2 | 3 | 1 | 2 |
-            | 2022.02        | 2 | 3 | 1 | 2 | 3 |
-            | [NEXT_WEEK_ID] | 1 | 2 | 3 | 4 | 1 |
+            | week_id               | A | B | C | D | E |
+            | 2022.01               | 1 | 2 | 3 | 1 | 2 |
+            | 2022.02               | 2 | 3 | 1 | 2 | 3 |
+            | [NOW(%Y.%W) + 7 DAYS] | 1 | 2 | 3 | 4 | 1 |
 
 
     Scenario: Validate error when creating weekly chores but there are no tenants

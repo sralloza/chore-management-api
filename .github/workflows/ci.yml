@@ -31,7 +31,8 @@ jobs:
         run: poetry install
 
       - name: Run tests e2e
-        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave
+        #  TODO: do not skip timing tests
+        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t="-timing"
 
       - uses: actions/upload-artifact@v2
         if: always()

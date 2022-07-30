@@ -1,27 +1,6 @@
 from behave import step
 
-from common.common import *
-
-
-@step("a tenant starts a chore transfer to other tenant using the API")
-def step_impl(context):
-    attrs = ["tenant_id_from", "tenant_id_to", "chore_type", "week_id"]
-
-    nrows = len(list(context.table))
-    assert nrows == 1, f"Only one row is allowed, found {nrows}"
-
-    row = context.table.rows[0]
-
-    payload = {}
-    for attr in attrs:
-        value = row.get(attr)
-        if value is not None:
-            value = replace_param(context, value)
-            payload[attr] = value
-            if attr == "week_id" and value is not None:
-                payload[attr] = str(payload[attr])
-
-    context.res = context.post("/transfers/start", json=payload)
+from common.utils import *
 
 
 @step('I get the transfer with id saved as "{attr}" using the API')

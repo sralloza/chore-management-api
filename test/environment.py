@@ -1,3 +1,6 @@
+from json import loads
+from pathlib import Path
+
 import allure
 import requests
 from toolium.behave.environment import after_all as tlm_after_all
@@ -6,9 +9,10 @@ from toolium.behave.environment import after_scenario as tlm_after_scenario
 from toolium.behave.environment import before_all as tlm_before_all
 from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
+from toolium.utils import dataset
 
-from common.api import request
-from common.reset import reset_databases
+from common.api_v2 import _send_request
+from common.db import reset_databases
 
 
 def before_all(context):
@@ -17,23 +21,28 @@ def before_all(context):
 
 def before_feature(context, feature):
     tlm_before_feature(context, feature)
+    context.api = Path(feature.filename).parent.name
+    context.resource = feature.name.split(" - ")[-1]
+
+
+def get_dataset():
+    dataset = {}
+    apis_path = Path(__file__).parent / "settings/apis.json"
+    dataset["apis"] = loads(apis_path.read_text())
+
+    return dataset
 
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
+    dataset.project_config = get_dataset()
     context.session = requests.Session()
 
-    context.get = lambda path, **kwargs: request(context, "GET", path, **kwargs)
-    context.post = lambda path, **kwargs: request(context, "POST", path, **kwargs)
-    context.put = lambda path, **kwargs: request(context, "PUT", path, **kwargs)
-    context.delete = lambda path, **kwargs: request(context, "DELETE", path, **kwargs)
+    context.get = lambda path, **kwargs: _send_request(context, "GET", path, **kwargs)
+    context.post = lambda path, **kwargs: _send_request(context, "POST", path, **kwargs)
 
-    context.res = None
-    context.res_list = []
     reset_databases()
-
     context.res = None
-    context.res_list = []
 
 
 def register_allure_stdout_stderr(context):
@@ -50,9 +59,7 @@ def register_allure_stdout_stderr(context):
             stderr, name="stderr", attachment_type=allure.attachment_type.TEXT
         )
     if logs:
-        allure.attach(
-            logs, name="logs", attachment_type=allure.attachment_type.TEXT
-        )
+        allure.attach(logs, name="logs", attachment_type=allure.attachment_type.TEXT)
 
 
 def after_scenario(context, scenario):
