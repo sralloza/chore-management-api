@@ -1,7 +1,6 @@
 import json
 import os
 import re
-import textwrap
 from datetime import datetime
 from pathlib import Path
 
@@ -99,11 +98,12 @@ def step_impl(context, ms):
     diff = now - timestamp
 
     actual_ms = diff.total_seconds() * 1000
-    assert actual_ms >= 0, textwrap.dedent(
-        f"""\
-    Invalid timestamp: {timestamp}
-    Current timestamp: {now}
-    Timestamp is {actual_ms:.2f} ms into the future"""
-    )
-    print("actual_ms:", actual_ms)
+    print(" TIMING DEBUG ".center(80, "-"))
+    print("Timestamp:", timestamp)
+    print("Current timestamp:", now)
+    print("Diff: ", diff)
+    print("Diff in ms:", actual_ms)
+    print("-" * 80)
+
+    assert actual_ms >= 0, f"Timestamp is {actual_ms:.2f} ms into the future"
     assert actual_ms <= ms, f"Timestamp is {actual_ms:.2f} ms ago"

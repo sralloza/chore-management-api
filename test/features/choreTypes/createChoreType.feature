@@ -4,10 +4,29 @@ Feature: Chore Types API - createChoreType
 
     As an admin I want to register chore types.
 
-    # TODO: validate only admin can register chore types (guests and tenants are not allowed).
+
+    Scenario: Return 403 when user is a guest
+        When I send a request to the Api with body params
+            | param_name  | param_value              |
+            | id          | chore-type-1             |
+            | description | description-chore-type-1 |
+        Then the response status code is "403"
+        And the error message is "Admin access required"
+
+
+    Scenario: Return 403 when user is a tenant
+        Given there is 1 tenant
+        And I use a tenant's token
+        When I send a request to the Api with body params
+            | param_name  | param_value              |
+            | id          | chore-type-1             |
+            | description | description-chore-type-1 |
+        Then the response status code is "403"
+        And the error message is "Admin access required"
 
 
     Scenario: Create a chore type without tenants
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -30,6 +49,7 @@ Feature: Chore Types API - createChoreType
 
     Scenario: Validate that tickets are created after the chore type
         Given there are 3 tenants
+        And I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value           |
             | id          | new-chore             |
@@ -54,7 +74,25 @@ Feature: Chore Types API - createChoreType
             | tenant3 | 0         |
 
 
+    Scenario: Validate error when sending no body
+        Given I use the admin token
+        When I send a request to the Api
+        Then the response status code is "400"
+        And the error message is "Missing request body"
+
+
+    Scenario: Validate error when sending an invalid body
+        Given I use the admin token
+        When I send a request to the Api with body
+            """
+            xxx
+            """
+        Then the response status code is "400"
+        And the error message is "Invalid request body"
+
+
     Scenario: Validate error creating a chore type with a null id
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [NULL]                   |
@@ -67,6 +105,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a chore type with an empty id
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [EMPTY]                  |
@@ -79,6 +118,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a chore type with a blank id
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [B]                      |
@@ -90,7 +130,8 @@ Feature: Chore Types API - createChoreType
             """
 
 
-    Scenario: create a chore type with the largest id possible
+    Scenario: Create a chore type with the largest id possible
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [STRING_WITH_LENGTH_25]  |
@@ -111,6 +152,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a chore type with an id too long
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [STRING_WITH_LENGTH_26]  |
@@ -123,6 +165,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a chore type with a null description
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value  |
             | id          | chore-type-1 |
@@ -135,6 +178,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a chore type with an empty description
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value  |
             | id          | chore-type-1 |
@@ -147,6 +191,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a choreType with a blank description
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value  |
             | id          | chore-type-1 |
@@ -158,7 +203,8 @@ Feature: Chore Types API - createChoreType
             """
 
 
-    Scenario: create a choreType with the largest description possible
+    Scenario: Create a choreType with the largest description possible
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -179,6 +225,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error creating a choreType with a description too long
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |

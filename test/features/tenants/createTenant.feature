@@ -32,7 +32,6 @@ Feature: Tenants API - createTenant
         And the error message is "Tenant with id 111 already exists"
 
 
-    #TODO: return a better error message when the body is not valid
     Scenario Outline: Validate error creating a tenant with invalid body
         When I send a request to the Api with body
             """
@@ -43,8 +42,8 @@ Feature: Tenants API - createTenant
 
         Examples: body = <body> | err_msg = <err_msg>
             | body       | err_msg          |
-            | not-a-json | JSON parse error |
-            | "string"   | JSON parse error |
+            | not-a-json | Invalid request body |
+            | "string"   | Invalid request body |
 
 
     Scenario Outline: Validate error creating a tenant with an invalid tenant_id
