@@ -1,6 +1,7 @@
 package es.sralloza.choremanagementbot.security;
 
 import es.sralloza.choremanagementbot.exceptions.ForbiddenException;
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.services.TenantsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,19 +32,27 @@ public class SimpleSecurity {
     }
   }
 
-  private String getApiKey() {
-    return request.getHeader("x-token");
+  public Tenant getTenant() {
+    var apiKey = getApiKey();
+    return tenantsService.listTenants().stream()
+        .filter(t -> t.getApiToken().toString().equals(apiKey))
+        .findAny()
+        .orElse(null);
   }
 
-  private boolean isAdmin() {
+  public boolean isAdmin() {
     return principalRequestValue.equals(getApiKey());
   }
 
-  private boolean isTenant() {
+  public boolean isTenant() {
     if (isAdmin()) {
       return true;
     }
     return tenantsService.listTenants().stream()
         .anyMatch(t -> t.getApiToken().toString().equals(getApiKey()));
+  }
+
+  private String getApiKey() {
+    return request.getHeader("x-token");
   }
 }

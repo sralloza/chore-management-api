@@ -1,9 +1,12 @@
 package es.sralloza.choremanagementbot.controllers;
 
+import es.sralloza.choremanagementbot.exceptions.ForbiddenException;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
+import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.SkipWeeksService;
 import es.sralloza.choremanagementbot.services.TenantsService;
+import es.sralloza.choremanagementbot.utils.TenantIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +30,10 @@ public class TenantsController {
     private TenantsService tenantsService;
     @Autowired
     private SkipWeeksService skipWeeksService;
+    @Autowired
+    private TenantIdHelper tenantIdHelper;
+    @Autowired
+    private SimpleSecurity security;
 
     @GetMapping()
     public List<Tenant> listTenants() {
@@ -34,8 +41,16 @@ public class TenantsController {
     }
 
     @GetMapping("/{id}")
-    public Tenant getTenant(@PathVariable Integer id) {
-        return tenantsService.getTenantById(id);
+    public Tenant getTenant(@PathVariable String id) {
+        security.requireTenant();
+        var userTenantId = security.getTenant();
+        var askedTenantId = tenantIdHelper.parseTenantId(id);
+        if (userTenantId != null) {
+            if (!askedTenantId.equals(userTenantId.getTenantId())) {
+                throw new ForbiddenException("You don't have permission to access other tenant's data");
+            }
+        }
+        return tenantsService.getTenantById(askedTenantId);
     }
 
     @PostMapping()

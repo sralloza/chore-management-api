@@ -30,6 +30,7 @@ def step_impl(context, tenants):
         raw_data = {"tenant_id": i, "username": f"tenant{i}"}
         context.execute_steps(
             f"""
+            Given I use the admin token
             When I send a request to the Api resource "createTenant" with body params
             {payload_to_table_format(raw_data)}
             Then the response status code is "200"
@@ -37,6 +38,7 @@ def step_impl(context, tenants):
         )
 
     context.res = None
+    context.token = None
 
 
 @given('the tenant "{tenant_id:d}" skips the week "{week_id}"')
