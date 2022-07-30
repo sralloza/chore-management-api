@@ -24,6 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     // Metrics
+    // TODO: add metrics
 
     // Utils
     annotationProcessor 'org.projectlombok:lombok:1.18.24'

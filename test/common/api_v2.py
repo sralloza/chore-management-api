@@ -42,10 +42,15 @@ def _send_request(context, method, path, payload=None, json=None, params=None):
 
     headers = getattr(context, "headers", {})
     headers["X-Correlator"] = correlator
+
+    token = getattr(context, "token", None)
+    if token:
+        headers["x-token"] = token
+
     params = params or getattr(context, "params", None)
 
     res = context.session.request(
-        method, url, params=params, json=payload or json, timeout=5
+        method, url, params=params, json=payload or json, timeout=5, headers=headers
     )
     print_res(res)
     return res

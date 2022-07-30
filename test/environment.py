@@ -17,6 +17,7 @@ from common.db import reset_databases
 
 def before_all(context):
     tlm_before_all(context)
+    context.admin_token = "bc6acdd7-9de0-495f-86ea-20beda48d626"
 
 
 def before_feature(context, feature):
@@ -35,6 +36,8 @@ def get_dataset():
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
+    # check_naming(scenario)
+
     dataset.project_config = get_dataset()
     context.session = requests.Session()
 
@@ -73,3 +76,10 @@ def after_feature(context, feature):
 
 def after_all(context):
     tlm_after_all(context)
+
+
+def check_naming(scenario):
+    scenario_name = scenario.name
+    if not scenario_name.istitle():
+        msg = f"Scenario name should be titled ({scenario_name.title()})"
+        raise AssertionError(msg)
