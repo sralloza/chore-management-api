@@ -3,7 +3,7 @@
 Feature: Chore Types API - getChoreType
 
     As an admin or tenant
-    I want to get the details of a chore type.
+    I want to get the details of a chore type
 
 
     @authorization
