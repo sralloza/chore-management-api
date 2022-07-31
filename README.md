@@ -33,14 +33,14 @@ behave -t authorization
 - tenants - deleteTenant
 - tenants - getTenant
 - tenants - listTenants
+- tenants - recreateTenantToken
+- tenants - skipWeek
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
 
 ### In progress
 
-- tenants - recreateTenantToken
-- tenants - skipWeek
 - tenants - unSkipWeek
 - transfers - acceptTransfer
 - transfers - getTransfer
@@ -54,7 +54,9 @@ behave -t authorization
 
 ### Ready
 
-- tickets - xxx
+- tickets - transferTickets
+- tickets - getTicketsByChoreType
+- tickets - listTickets
 
 ## Deploy
 
