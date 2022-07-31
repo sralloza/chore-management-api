@@ -5,6 +5,7 @@ from behave import *
 def step_impl(context):
     context.execute_steps(
         """
+        Given I use the admin token
         When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
         """
@@ -14,6 +15,7 @@ def step_impl(context):
         context.execute_steps(
             """
             Given There is 1 tenant
+            And I use the admin token
             When I send a request to the Api resource "listTenants"
             Then the response status code is "200"
             """
