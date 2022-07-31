@@ -33,12 +33,13 @@ def step_impl(context, id):
         f"""
         Given I use the admin token
         And the field "tenantId" with value "{id}"
-        When I send a request to the Api resource "getTenant"
+        When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
         """
     )
 
-    context.token = context.res.json()["api_token"]
+    tokens = [t for t in context.res.json() if t["tenant_id"] == int(id)]
+    context.token = tokens[0]["api_token"]
     context.res = None
 
 

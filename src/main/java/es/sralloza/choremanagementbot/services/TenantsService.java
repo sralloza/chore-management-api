@@ -1,10 +1,12 @@
 package es.sralloza.choremanagementbot.services;
 
+import es.sralloza.choremanagementbot.builders.SimpleTenantMapper;
 import es.sralloza.choremanagementbot.builders.TenantMapper;
 import es.sralloza.choremanagementbot.exceptions.BadRequestException;
 import es.sralloza.choremanagementbot.exceptions.ConflictException;
 import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.ChoreTypeTickets;
+import es.sralloza.choremanagementbot.models.custom.SimpleTenant;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.db.DBTenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
@@ -32,12 +34,18 @@ public class TenantsService {
     @Autowired
     private DBChoresRepository dbChoresRepository;
     @Autowired
-    private TenantMapper mapper;
+    private TenantMapper tenantMapper;
+    @Autowired
+    private SimpleTenantMapper simpleTenantMapper;
 
     public List<Tenant> listTenants() {
         return repository.findAll().stream()
-                .map(mapper::build)
+                .map(tenantMapper::build)
                 .collect(Collectors.toList());
+    }
+
+    public SimpleTenant getSimpleTenantById(Integer tenantId) {
+        return simpleTenantMapper.build(getTenantById(tenantId));
     }
 
     public Tenant getTenantById(Integer tenantId) {
@@ -46,7 +54,7 @@ public class TenantsService {
 
     public Tenant getTenantById(Integer tenantId, Supplier<? extends RuntimeException> exceptionSupplier) {
         return repository.findById(tenantId)
-                .map(mapper::build)
+                .map(tenantMapper::build)
                 .orElseThrow(exceptionSupplier);
     }
 
@@ -65,7 +73,7 @@ public class TenantsService {
         var tenant = new DBTenant(tenantCreate.getTenantId(), tenantCreate.getUsername(), uuid);
         repository.save(tenant);
         ticketsService.createTicketsForTenant(tenant.getTenantId());
-        return mapper.build(tenant);
+        return tenantMapper.build(tenant);
     }
 
     public void deleteTenantById(Integer tenantId) {
@@ -104,7 +112,7 @@ public class TenantsService {
         Tenant tenant = getTenantById(id);
         UUID uuid = UUID.randomUUID();
         tenant.setApiToken(uuid);
-        repository.save(mapper.build(tenant));
+        repository.save(tenantMapper.build(tenant));
         return tenant;
     }
 }
