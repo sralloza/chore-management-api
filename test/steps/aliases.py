@@ -46,9 +46,11 @@ def step_impl(context, tenant_id, week_id):
     context.execute_steps(
         f"""
         Given the field "tenantId" with value "{tenant_id}"
+        And I use the token of the tenant with id "{tenant_id}"
         And the field "weekId" with string value "{week_id}"
         When I send a request to the Api resource "skipWeek"
         Then the response status code is "204"
+        And I clear the token
         """
     )
 

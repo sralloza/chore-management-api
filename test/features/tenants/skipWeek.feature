@@ -3,19 +3,53 @@
 @sanity
 Feature: Tenants API - skipWeek
 
-    As a tenant, some weeks I may not be living in the apartment so
-    I don't have to clean it.
+    As an admin or tenant
+    I want to skip a week
 
-    # todo: add endpoint /tenants/me/skip
 
-    # Note: more detailed scenarios are described in the weeklyChores.create feature
-    Scenario: a tenant skips a single week
-        Given there are 3 tenants
-        And there are 3 chore types
+    @authorization
+    Scenario: Validate response for guest user
+        Given the fields
+            | field    | value   | as_string |
+            | tenantId | 1       | false     |
+            | weekId   | 2025.01 | false     |
+        When I send a request to the Api
+        Then the response status code is "403"
+        And the error message is "Tenant access required"
+
+
+    @authorization
+    Scenario: Validate response for tenant user
+        Given there is 1 tenant
+        And the fields
+            | field    | value   | as_string |
+            | tenantId | 1       | false     |
+            | weekId   | 2025.01 | false     |
+        And I use the token of the tenant with id "1"
+        When I send a request to the Api
+        Then the response status code is "204"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given there is 1 tenant
         And the fields
             | field    | value   | as_string |
             | tenantId | 2       | false     |
             | weekId   | 2025.01 | false     |
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "204"
+
+
+    Scenario Outline: a tenant skips a single week
+        Given there are 3 tenants
+        And there are 3 chore types
+        And the fields
+            | field    | value       | as_string |
+            | tenantId | <tenant_id> | false     |
+            | weekId   | 2025.01     | false     |
+        And I use the token of the tenant with id "<real_tenant_id>"
         When I send a request to the Api
         Then the response status code is "204"
         And The Api response is empty
@@ -24,14 +58,20 @@ Feature: Tenants API - skipWeek
             | week_id | A | B   | C |
             | 2025.01 | 1 | 1,3 | 3 |
 
+        Examples: tenant_id = <tenant_id> | real_tenant_id = <real_tenant_id>
+            | tenant_id | real_tenant_id |
+            | 2         | 2              |
+            | me        | 2              |
 
-    Scenario: a tenant skips the next week
+
+    Scenario Outline: a tenant skips the next week
         Given there are 3 tenants
         And there are 3 chore types
         And the fields
             | field    | value                 | as_string |
-            | tenantId | 2                     | false     |
+            | tenantId | <tenant_id>           | false     |
             | weekId   | [NOW(%Y.%W) + 7 DAYS] | true      |
+        And I use the token of the tenant with id "<real_tenant_id>"
         When I send a request to the Api
         Then the response status code is "204"
         And The Api response is empty
@@ -40,6 +80,35 @@ Feature: Tenants API - skipWeek
             | week_id               | A | B   | C |
             | [NOW(%Y.%W) + 7 DAYS] | 1 | 1,3 | 3 |
 
+        Examples: tenant_id = <tenant_id> | real_tenant_id = <real_tenant_id>
+            | tenant_id | real_tenant_id |
+            | 2         | 2              |
+            | me        | 2              |
+
+
+    Scenario: Validate error response when using keyword me with the admin token
+        Given there is 1 tenant
+        And I use the admin token
+        And the fields
+            | field    | value   | as_string |
+            | tenantId | me      | false     |
+            | weekId   | 2025.01 | false     |
+        When I send a request to the Api
+        Then the response status code is "400"
+        And the error message is "Cannot use keyword me with an admin token"
+
+
+    Scenario: Validate error response when requesting other tenant's data
+        Given there are 2 tenants
+        And I use the token of the tenant with id "1"
+        And the fields
+            | field    | value   | as_string |
+            | tenantId | 2       | false     |
+            | weekId   | 2025.01 | false     |
+        When I send a request to the Api
+        Then the response status code is "403"
+        And the error message is "You don't have permission to access other tenant's data"
+
 
     Scenario Outline: Validate error when tenants skips an invalid week
         Given there is 1 tenant
@@ -47,6 +116,7 @@ Feature: Tenants API - skipWeek
             | field    | value             | as_string |
             | tenantId | 1                 | false     |
             | weekId   | <invalid_week_id> | true      |
+        And I use the admin token
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
@@ -68,6 +138,7 @@ Feature: Tenants API - skipWeek
             | field    | value   | as_string |
             | tenantId | 1       | false     |
             | weekId   | 2022.01 | true      |
+        And I use the admin token
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -79,6 +150,7 @@ Feature: Tenants API - skipWeek
             | field    | value                 | as_string |
             | tenantId | 1                     | false     |
             | weekId   | [NOW(%Y.%W) - 7 DAYS] | true      |
+        And I use the admin token
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -90,6 +162,7 @@ Feature: Tenants API - skipWeek
             | field    | value        | as_string |
             | tenantId | 1            | false     |
             | weekId   | [NOW(%Y.%W)] | true      |
+        And I use the admin token
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip the current week"
