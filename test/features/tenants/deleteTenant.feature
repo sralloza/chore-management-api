@@ -3,11 +3,14 @@
 Feature: Tenants API - deleteTenant
 
     Scenario: Delete tenant
+        Given I use the admin token
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | John        |
             | tenant_id  | 111         |
+        Then the response status code is "200"
         Given the field "tenantId" with value "111"
+        And I clear the token
         Then the response status code is "200"
         When I send a request to the Api
         Then the response status code is "204"

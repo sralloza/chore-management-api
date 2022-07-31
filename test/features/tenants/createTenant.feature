@@ -2,11 +2,45 @@
 @createTenant
 Feature: Tenants API - createTenant
 
-    As an admin user I want to register a new tenant.
+    As an admin
+    I want to register a new tenant
 
-    # TODO: validate only admin have access (guests and tenants are not allowed)
+
+    @authorization
+    Scenario: Validate response for guest user
+        When I send a request to the Api with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "403"
+        And the error message is "Admin access required"
+
+
+    @authorization
+    Scenario: Validate response for tenant user
+        Given there is 1 tenant
+        And I use a tenant's token
+        When I send a request to the Api with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "403"
+        And the error message is "Admin access required"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given there is 1 tenant
+        And I use the admin token
+        When I send a request to the Api with body params
+            | param_name | param_value |
+            | username   | John        |
+            | tenant_id  | 111         |
+        Then the response status code is "200"
+
 
     Scenario: Create a new tenant
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |
@@ -19,6 +53,7 @@ Feature: Tenants API - createTenant
 
 
     Scenario: Validate error creating a duplicate tenant
+        Given I use the admin token
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |
