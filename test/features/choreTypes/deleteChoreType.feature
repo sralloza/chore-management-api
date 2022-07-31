@@ -2,7 +2,8 @@
 @deleteChoreType
 Feature: Chore Types API - deleteChoreType
 
-    As an admin I want to delete a specific chore type.
+    As an admin
+    I want to delete a specific chore type.
 
 
     Scenario: Return 403 when user is a guest

@@ -2,7 +2,8 @@
 @createChoreType
 Feature: Chore Types API - createChoreType
 
-    As an admin I want to register chore types.
+    As an admin
+    I want to register chore types.
 
 
     Scenario: Return 403 when user is a guest
