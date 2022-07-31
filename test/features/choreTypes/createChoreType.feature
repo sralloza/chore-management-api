@@ -2,7 +2,8 @@
 @createChoreType
 Feature: Chore Types API - createChoreType
 
-    As an admin I want to register chore types.
+    As an admin
+    I want to register chore types.
 
 
     Scenario: Return 403 when user is a guest
@@ -15,8 +16,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Return 403 when user is a tenant
-        Given there is 1 tenant
-        And I use a tenant's token
+        Given I use a tenant's token
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -75,59 +75,64 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Validate error when sending no body
-        Given I use the admin token
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Missing request body"
 
 
-    Scenario: Validate error when sending an invalid body
-        Given I use the admin token
+    Scenario Outline: Validate error when sending an invalid body
         When I send a request to the Api with body
             """
-            xxx
+            <body>
             """
         Then the response status code is "400"
         And the error message is "Invalid request body"
 
+        Examples: body = <body> | err_msg = <err_msg>
+            | body       | err_msg              |
+            | not-a-json | Invalid request body |
+            | "string"   | Invalid request body |
 
-    Scenario: Validate error creating a chore type with a null id
-        Given I use the admin token
+
+    Scenario Outline: Validate error when missing required fields
         When I send a request to the Api with body params
-            | param_name  | param_value              |
-            | id          | [NULL]                   |
-            | description | description-chore-type-1 |
+            | param_name  | param_value   |
+            | id          | <id>          |
+            | description | <description> |
         Then the response status code is "400"
         And one of messages in the errors array is the following
             """
-            choreType.id cannot be null
+            <error_msg>
             """
 
+        Examples:
+            | id         | description | error_msg                            |
+            | [NONE]     | description | choreType.id cannot be null          |
+            | chore-type | [NONE]      | choreType.description cannot be null |
 
-    Scenario: Validate error creating a chore type with an empty id
-        Given I use the admin token
+
+
+    Scenario Outline: Validate error creating a chore type with invalid fields
         When I send a request to the Api with body params
-            | param_name  | param_value              |
-            | id          | [EMPTY]                  |
-            | description | description-chore-type-1 |
+            | param_name  | param_value   |
+            | id          | <id>          |
+            | description | <description> |
         Then the response status code is "400"
         And one of messages in the errors array is the following
             """
-            choreType.id cannot be blank
+            <error_msg>
             """
 
-
-    Scenario: Validate error creating a chore type with a blank id
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value              |
-            | id          | [B]                      |
-            | description | description-chore-type-1 |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.id cannot be blank
-            """
+        Examples: id = <id> | description = <description> | error_msg = <error_msg>
+            | id                      | description              | error_msg                                                    |
+            | [NULL]                  | description              | choreType.id cannot be null                                  |
+            | [EMPTY]                 | description              | choreType.id cannot be blank                                 |
+            | [B]                     | description              | choreType.id cannot be blank                                 |
+            | [STRING_WITH_LENGTH_26] | description              | choreType.id must have between 1 and 25 characters           |
+            | chore-type-1            | [NULL]                   | choreType.description cannot be null                         |
+            | chore-type-1            | [EMPTY]                  | choreType.description cannot be blank                        |
+            | chore-type-1            | [B]                      | choreType.description cannot be blank                        |
+            | chore-type-1            | [STRING_WITH_LENGTH_256] | choreType.description must have between 1 and 255 characters |
 
 
     Scenario: Create a chore type with the largest id possible
@@ -151,58 +156,6 @@ Feature: Chore Types API - createChoreType
             """
 
 
-    Scenario: Validate error creating a chore type with an id too long
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value              |
-            | id          | [STRING_WITH_LENGTH_26]  |
-            | description | description-chore-type-1 |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.id must have between 1 and 25 characters
-            """
-
-
-    Scenario: Validate error creating a chore type with a null description
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value  |
-            | id          | chore-type-1 |
-            | description | [NULL]       |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.description cannot be null
-            """
-
-
-    Scenario: Validate error creating a chore type with an empty description
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value  |
-            | id          | chore-type-1 |
-            | description | [EMPTY]      |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.description cannot be blank
-            """
-
-
-    Scenario: Validate error creating a choreType with a blank description
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value  |
-            | id          | chore-type-1 |
-            | description | [B]          |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.description cannot be blank
-            """
-
-
     Scenario: Create a choreType with the largest description possible
         Given I use the admin token
         When I send a request to the Api with body params
@@ -221,17 +174,4 @@ Feature: Chore Types API - createChoreType
                     "description": "[STRING_WITH_LENGTH_255]"
                 }
             ]
-            """
-
-
-    Scenario: Validate error creating a choreType with a description too long
-        Given I use the admin token
-        When I send a request to the Api with body params
-            | param_name  | param_value              |
-            | id          | chore-type-1             |
-            | description | [STRING_WITH_LENGTH_256] |
-        Then the response status code is "400"
-        And one of messages in the errors array is the following
-            """
-            choreType.description must have between 1 and 255 characters
             """
