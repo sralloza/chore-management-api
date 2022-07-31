@@ -17,7 +17,7 @@ Feature: Chore Types API - createChoreType
 
 
     @authorization
-    Scenario:  Validate response for tenant user
+    Scenario: Validate response for tenant user
         Given I use a tenant's token
         When I send a request to the Api with body params
             | param_name  | param_value              |
