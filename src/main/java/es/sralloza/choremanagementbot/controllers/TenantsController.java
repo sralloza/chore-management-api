@@ -68,6 +68,7 @@ public class TenantsController {
     @DeleteMapping("/{id}")
     @ResponseStatus(value = NO_CONTENT)
     public void deleteTenant(@PathVariable("id") Integer tenantId) {
+        security.requireAdmin();
         tenantsService.deleteTenantById(tenantId);
     }
 

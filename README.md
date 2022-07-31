@@ -30,6 +30,7 @@ behave -t authorization
 - choreTypes - getChoreType
 - choreTypes - listChoreTypes
 - tenants - createTenant
+- tenants - deleteTenant
 - tenants - getTenant
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
@@ -37,7 +38,6 @@ behave -t authorization
 
 ### In progress
 
-- tenants - deleteTenant
 - tenants - listTenants (do send api_token in response, admin only)
 - tenants - recreateTenantToken
 - tenants - skipWeek
