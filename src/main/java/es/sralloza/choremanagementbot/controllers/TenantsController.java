@@ -55,6 +55,7 @@ public class TenantsController {
 
     @PostMapping()
     public Tenant createTenant(@RequestBody @Valid TenantCreate tenantCreate) {
+        security.requireAdmin();
         return tenantsService.createTenant(tenantCreate);
     }
 

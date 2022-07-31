@@ -227,6 +227,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
+        And I use the admin token
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | John        |
@@ -244,6 +245,7 @@ Feature: Weekly Chores API - createWeeklyChores
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
+        And I use the admin token
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | John        |
@@ -269,6 +271,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
+        And I use the admin token
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | tenant4     |
@@ -293,6 +296,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | week_id |
             | 2022.01 |
             | 2022.02 |
+        And I use the admin token
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | tenant4     |
