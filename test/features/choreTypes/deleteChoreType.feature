@@ -3,7 +3,7 @@
 Feature: Chore Types API - deleteChoreType
 
     As an admin
-    I want to delete a specific chore type.
+    I want to delete a specific chore type
 
 
     @authorization

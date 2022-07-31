@@ -3,7 +3,7 @@
 Feature: Chore Types API - createChoreType
 
     As an admin
-    I want to register chore types.
+    I want to register chore types
 
 
     @authorization

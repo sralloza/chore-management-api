@@ -29,6 +29,7 @@ public class ChoreTypesController {
 
     @GetMapping()
     public List<ChoreType> listChoreTypes() {
+        security.requireTenant();
         return service.listChoreTypes();
     }
 

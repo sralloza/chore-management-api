@@ -28,10 +28,10 @@ behave -t authorization
 - choreTypes - createChoreType
 - choreTypes - deleteChoreType
 - choreTypes - getChoreType
+- choreTypes - listChoreTypes
 
 ### In progress
 
-- choreTypes - listChoreTypes
 - tenants - getTenant (do not send api_token in response)
 - tenants - createTenant
 - tenants - deleteTenant
