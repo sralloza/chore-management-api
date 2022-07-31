@@ -80,7 +80,9 @@ public class TenantsController {
     @PostMapping("/{tenantId}/unskip/{weekId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void unSkipWeek(@PathVariable("weekId") String weekId,
-                           @PathVariable("tenantId") Integer tenantId) {
-        skipWeeksService.unSkipWeek(weekId, tenantId);
+                           @PathVariable("tenantId") String tenantId) {
+        security.requireTenantFromPath(tenantId);
+        var askedTenantId = tenantIdHelper.parseTenantId(tenantId);
+        skipWeeksService.unSkipWeek(weekId, askedTenantId);
     }
 }
