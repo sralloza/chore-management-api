@@ -8,11 +8,11 @@ Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
 
 - choreTypes - createChoreType
 - choreTypes - deleteChoreType
+- choreTypes - getChoreType
 - tenants - getTenant
 
 ### In progress
 
-- choreTypes - getChoreType
 - choreTypes - listChoreTypes
 - tenants - createTenant
 - tenants - deleteTenant
