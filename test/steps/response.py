@@ -5,6 +5,7 @@ import jq
 from behave import *
 from deepdiff import DeepDiff
 from hamcrest import *
+from toolium.utils.dataset import replace_param
 
 from common.response import get_step_body_json, remove_attributes
 
@@ -78,3 +79,25 @@ def step_impl(context, res_attr, saved_attr):
     actual = jq.compile(res_attr).input(res_json).first()
     expected = getattr(context, saved_attr)
     assert_that(expected, equal_to(actual))
+
+
+@step('I save the "{attr}" attribute of the response as "{dest}"')
+def step_impl(context, attr, dest):
+    setattr(context, dest, context.res.json()[attr])
+
+
+@step('I save the "{attr}" attribute of the response with "{key}={value}" as "{dest}"')
+def step_impl(context, attr, key, value, dest):
+    res_json = context.res.json()
+    if not isinstance(res_json, list):
+        raise ValueError("Response is not a list")
+
+    key = replace_param(key)
+    value = replace_param(value)
+
+    for item in res_json:
+        if item[key] == value:
+            setattr(context, dest, item)
+            return
+    else:
+        raise ValueError(f"Item not found (key={key!r}, value={value!r}")

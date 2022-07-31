@@ -10,15 +10,15 @@ import java.util.UUID;
 public class TenantMapper {
     public Tenant build(DBTenant dbTenant) {
         return new Tenant()
-                .setTenantId(dbTenant.getTenantId())
-                .setUsername(dbTenant.getUsername())
-                .setApiToken(UUID.fromString(dbTenant.getApiToken()));
+            .setTenantId(dbTenant.getTenantId())
+            .setUsername(dbTenant.getUsername())
+            .setApiToken(UUID.fromString(dbTenant.getApiToken()));
     }
 
     public DBTenant build(Tenant tenant) {
         return new DBTenant()
-                .setTenantId(tenant.getTenantId())
-                .setUsername(tenant.getUsername())
-                .setApiToken(tenant.getApiToken().toString());
+            .setTenantId(tenant.getTenantId())
+            .setUsername(tenant.getUsername())
+            .setApiToken(tenant.getApiToken().toString());
     }
 }

@@ -86,11 +86,6 @@ def step_impl(context, schema):
         assert False, msg
 
 
-@step('I save the "{attr}" attribute of the response as "{dest}"')
-def step_impl(context, attr, dest):
-    setattr(context, dest, context.res.json()[attr])
-
-
 @step('the response timestamp attribute is at most "{ms:d}" ms ago')
 def step_impl(context, ms):
     now = datetime.now()

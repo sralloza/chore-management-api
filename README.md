@@ -31,13 +31,13 @@ behave -t authorization
 - choreTypes - listChoreTypes
 - tenants - createTenant
 - tenants - deleteTenant
+- tenants - getTenant
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
 
 ### In progress
 
-- tenants - getTenant (do not send api_token in response)
 - tenants - listTenants (do send api_token in response, admin only)
 - tenants - recreateTenantToken
 - tenants - skipWeek

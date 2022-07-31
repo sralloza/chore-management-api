@@ -37,10 +37,8 @@ Feature: Tenants API - getTenant
         And the field "tenantId" with value "<id>"
         When I send a request to the Api
         Then the response status code is "200"
-        And the response body is validated against the json-schema "tenant"
+        And the response body is validated against the json-schema "simple-tenant"
         And the Api response contains the expected data
-            | skip_param |
-            | api_token  |
 
         Examples: id = <id> | tenant_token_from = <tenant_token_from>
             | id | tenant_token_from |

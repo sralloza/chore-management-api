@@ -1,21 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "type": "object",
-  "$ref": "#/definitions/ChoreType",
+  "$ref": "#/definitions/tenant",
   "definitions": {
-    "ChoreType": {
+    "tenant": {
+      "$schema": "https://json-schema.org/draft-07/schema",
       "type": "object",
       "properties": {
-        "description": {
-          "type": "string"
+        "tenant_id": {
+          "type": "integer"
         },
-        "id": {
+        "username": {
           "type": "string"
         }
       },
       "required": [
-        "description",
-        "id"
+        "tenant_id",
+        "username"
       ]
     }
   }
