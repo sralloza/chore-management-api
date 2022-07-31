@@ -32,13 +32,13 @@ behave -t authorization
 - tenants - createTenant
 - tenants - deleteTenant
 - tenants - getTenant
+- tenants - listTenants
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
 
 ### In progress
 
-- tenants - listTenants (do send api_token in response, admin only)
 - tenants - recreateTenantToken
 - tenants - skipWeek
 - tenants - unSkipWeek

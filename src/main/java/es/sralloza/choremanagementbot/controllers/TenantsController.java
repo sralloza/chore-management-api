@@ -38,6 +38,7 @@ public class TenantsController {
 
     @GetMapping()
     public List<Tenant> listTenants() {
+        security.requireAdmin();
         return tenantsService.listTenants();
     }
 
