@@ -3,6 +3,7 @@ package es.sralloza.choremanagementbot.security;
 import es.sralloza.choremanagementbot.exceptions.ForbiddenException;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.services.TenantsService;
+import es.sralloza.choremanagementbot.utils.TenantIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,10 @@ public class SimpleSecurity {
 
   @Autowired
   private HttpServletRequest request;
-
   @Autowired
   private TenantsService tenantsService;
+  @Autowired
+  private TenantIdHelper tenantIdHelper;
 
   public void requireAdmin() {
     if (!isAdmin()) {
@@ -38,6 +40,17 @@ public class SimpleSecurity {
         .filter(t -> t.getApiToken().toString().equals(apiKey))
         .findAny()
         .orElse(null);
+  }
+
+  public void requireTenantFromPath(String tenantId) {
+    requireTenant();
+    var userTenantId = getTenant();
+    var askedTenantId = tenantIdHelper.parseTenantId(tenantId);
+    if (userTenantId != null) {
+      if (!askedTenantId.equals(userTenantId.getTenantId())) {
+        throw new ForbiddenException("You don't have permission to access other tenant's data");
+      }
+    }
   }
 
   public boolean isAdmin() {
