@@ -34,6 +34,7 @@ public class ChoreTypesController {
 
     @GetMapping("/{id}")
     public ChoreType getChoreType(@PathVariable String id) {
+        security.requireTenant();
         return service.getChoreTypeById(id);
     }
 

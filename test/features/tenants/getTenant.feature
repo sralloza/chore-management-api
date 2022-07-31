@@ -3,13 +3,32 @@
 Feature: Tenants API - getTenant
 
     As a tenant or admin
-    I want to get a tenant by id.
+    I want to access a tenant's detail or I want to access myself's details
 
-
-    Scenario: Return 403 if user is guest
+    @authorization
+    Scenario: Validate response for guest user
         Given the field "tenantId" with value "1"
         When I send a request to the Api
         Then the response status code is "403"
+        And the error message is "Tenant access required"
+
+
+    @authorization
+    Scenario: Validate response for tenant user
+        Given there is 1 tenant
+        And the field "tenantId" with value "1"
+        And I use a tenant's token
+        When I send a request to the Api
+        Then the response status code is "200"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given there is 1 tenant
+        And the field "tenantId" with value "1"
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "200"
 
 
     Scenario Outline: Get tenant by id

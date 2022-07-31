@@ -6,7 +6,8 @@ Feature: Chore Types API - createChoreType
     I want to register chore types.
 
 
-    Scenario: Return 403 when user is a guest
+    @authorization
+    Scenario: Validate response for guest user
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -15,7 +16,8 @@ Feature: Chore Types API - createChoreType
         And the error message is "Admin access required"
 
 
-    Scenario: Return 403 when user is a tenant
+    @authorization
+    Scenario:  Validate response for tenant user
         Given I use a tenant's token
         When I send a request to the Api with body params
             | param_name  | param_value              |
@@ -23,6 +25,16 @@ Feature: Chore Types API - createChoreType
             | description | description-chore-type-1 |
         Then the response status code is "403"
         And the error message is "Admin access required"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given I use the admin token
+        When I send a request to the Api with body params
+            | param_name  | param_value              |
+            | id          | chore-type-1             |
+            | description | description-chore-type-1 |
+        Then the response status code is "200"
 
 
     Scenario: Create a chore type without tenants
