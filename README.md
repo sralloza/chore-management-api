@@ -30,6 +30,9 @@ behave -t authorization
 - choreTypes - getChoreType
 - choreTypes - listChoreTypes
 - tenants - createTenant
+- weekId - getCurrentWeekId
+- weekId - getLastWeekId
+- weekId - getNextWeekId
 
 ### In progress
 
@@ -44,9 +47,6 @@ behave -t authorization
 - transfers - listTransfers
 - transfers - rejectTransfers
 - transfers - startTransfer
-- weekId - getCurrentWeekId
-- weekId - getLastWeekId
-- weekId - getNextWeekId
 - weeklyChores - createWeeklyChores
 - weeklyChores - deleteWeeklyChores
 - weeklyChores - getWeeklyChores
