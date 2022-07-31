@@ -6,20 +6,31 @@ Feature: Chore Types API - deleteChoreType
     I want to delete a specific chore type.
 
 
-    Scenario: Return 403 when user is a guest
+    @authorization
+    Scenario: Validate response for guest user
         Given the field "choreTypeId" with value "A"
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "Admin access required"
 
 
-    Scenario: Return 403 when user is a tenant
+    @authorization
+    Scenario: Validate response for tenant user
         Given there is 1 chore type
         And the field "choreTypeId" with value "A"
         And I use a tenant's token
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "Admin access required"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given there is 1 chore type
+        And the field "choreTypeId" with value "A"
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "204"
 
 
     Scenario: Delete chore type

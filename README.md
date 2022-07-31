@@ -2,6 +2,25 @@
 
 Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
 
+## Testing
+
+```shell
+# Launch all tests
+behave
+
+# Launch tests of a specific API
+behave -t api.tenants
+
+# Launch tests of a specific endpoint
+behave -t getTenant
+
+# Launch sanity tests (most important features)
+behave -t sanity
+
+# Launch authorization tests
+behave -t authorization
+```
+
 ## Development
 
 ### Finished
@@ -9,14 +28,14 @@ Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
 - choreTypes - createChoreType
 - choreTypes - deleteChoreType
 - choreTypes - getChoreType
-- tenants - getTenant
 
 ### In progress
 
 - choreTypes - listChoreTypes
+- tenants - getTenant (do not send api_token in response)
 - tenants - createTenant
 - tenants - deleteTenant
-- tenants - listTenants
+- tenants - listTenants (do send api_token in response, admin only)
 - tenants - recreateTenantToken
 - tenants - skipWeek
 - tenants - unSkipWeek
@@ -47,15 +66,15 @@ Configuration is done by setting environment variables.
 
 ### Required
 
-- ***ADMIN_TOKEN***: only token with admin access.
+- **_ADMIN_TOKEN_**: only token with admin access.
 
 ### Optional
 
-- ***MYSQL_HOST***: host where the database is. Defaults to `localhost`.
-- ***MYSQL_PORT***: port where the database listens to. Defaults to `3306`.
-- ***MYSQL_DATABASE***: database name to use. Defaults to `chore-management`.
-- ***MYSQL_USER***: user to access the database. Defaults to `root`.
-- ***MYSQL_PASSWORD***: password to access the database. Defaults to `root`.
-- ***LOG_LEVEL***: general level of logs. Defaults to `INFO`.
-- ***SPRING_WEB_LOG_LEVEL***: spring logger level. Defaults to `DEBUG`.
-- ***HIBERNATE_LOG_LEVEL***: hibernate logger level. Defaults to `INFO`.
+- **_MYSQL_HOST_**: host where the database is. Defaults to `localhost`.
+- **_MYSQL_PORT_**: port where the database listens to. Defaults to `3306`.
+- **_MYSQL_DATABASE_**: database name to use. Defaults to `chore-management`.
+- **_MYSQL_USER_**: user to access the database. Defaults to `root`.
+- **_MYSQL_PASSWORD_**: password to access the database. Defaults to `root`.
+- **_LOG_LEVEL_**: general level of logs. Defaults to `INFO`.
+- **_SPRING_WEB_LOG_LEVEL_**: spring logger level. Defaults to `DEBUG`.
+- **_HIBERNATE_LOG_LEVEL_**: hibernate logger level. Defaults to `INFO`.
