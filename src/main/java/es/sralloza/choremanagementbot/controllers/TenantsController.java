@@ -1,6 +1,5 @@
 package es.sralloza.choremanagementbot.controllers;
 
-import es.sralloza.choremanagementbot.exceptions.ForbiddenException;
 import es.sralloza.choremanagementbot.models.custom.SimpleTenant;
 import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.io.TenantCreate;
@@ -44,14 +43,8 @@ public class TenantsController {
 
     @GetMapping("/{id}")
     public SimpleTenant getTenant(@PathVariable String id) {
-        security.requireTenant();
-        var userTenantId = security.getTenant();
-        var askedTenantId = tenantIdHelper.parseTenantId(id);
-        if (userTenantId != null) {
-            if (!askedTenantId.equals(userTenantId.getTenantId())) {
-                throw new ForbiddenException("You don't have permission to access other tenant's data");
-            }
-        }
+        security.requireTenantFromPath(id);
+        Integer askedTenantId = tenantIdHelper.parseTenantId(id);
         return tenantsService.getSimpleTenantById(askedTenantId);
     }
 
@@ -62,8 +55,10 @@ public class TenantsController {
     }
 
     @PostMapping("/{id}/recreate-token")
-    public Tenant recreateTenantToken(@PathVariable Integer id) {
-        return tenantsService.recreateTenantToken(id);
+    public Tenant recreateTenantToken(@PathVariable String id) {
+        security.requireTenantFromPath(id);
+        Integer askedTenantId = tenantIdHelper.parseTenantId(id);
+        return tenantsService.recreateTenantToken(askedTenantId);
     }
 
     @DeleteMapping("/{id}")

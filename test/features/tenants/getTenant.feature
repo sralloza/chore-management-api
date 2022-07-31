@@ -47,9 +47,10 @@ Feature: Tenants API - getTenant
             | me | 1                 |
 
 
-    Scenario Outline: Validate error response when using keyword me with the admin token
-        Given I use the admin token
-        And the field "tenantId" with value "1"
+    Scenario: Validate error response when using keyword me with the admin token
+        Given there is 1 tenant
+        And I use the admin token
+        And the field "tenantId" with value "me"
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot use keyword me with an admin token"
