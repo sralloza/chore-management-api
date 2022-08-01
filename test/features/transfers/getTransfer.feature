@@ -61,6 +61,7 @@ Feature: Transfers API - getTransfer
 
     Scenario: Get transfer not found
         Given I use the admin token
-        When I get the transfer with id "999" using the API
+        And the field "transferId" with value "999"
+        When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No transfer found with id 999"

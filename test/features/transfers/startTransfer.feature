@@ -72,8 +72,10 @@ Feature: Transfers API - startTransfer
         And a tenant starts a chore transfer to other tenant using the API
             | tenant_id_from | tenant_id_to | chore_type | week_id |
             | 1              | 2            | A          | 2022.01 |
-        And I save the "id" attribute of the response as "transfer_id"
-        And a tenant rejects the chore transfer with id saved as "transfer_id" using the API
+        And I save the "id" attribute of the response as "transferId"
+        And I use the token of the tenant with id "2"
+        When I send a request to the Api resource "rejectTransfer"
+        Then the response status code is "200"
         When a tenant starts a chore transfer to other tenant using the API
             | tenant_id_from | tenant_id_to | chore_type | week_id |
             | 1              | 3            | A          | 2022.01 |
