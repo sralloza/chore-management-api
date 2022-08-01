@@ -36,6 +36,7 @@ behave -t authorization
 - tenants - recreateTenantToken
 - tenants - skipWeek
 - tenants - unSkipWeek
+- transfers - listTransfers
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
@@ -44,7 +45,6 @@ behave -t authorization
 
 - transfers - acceptTransfer
 - transfers - getTransfer
-- transfers - listTransfers
 - transfers - rejectTransfers
 - transfers - startTransfer
 - weeklyChores - createWeeklyChores

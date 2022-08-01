@@ -70,5 +70,9 @@
   "startTransfer": {
     "path": "/transfers/start",
     "method": "POST"
+  },
+  "listTransfers": {
+    "path": "/transfers",
+    "method": "GET"
   }
 }

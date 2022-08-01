@@ -36,10 +36,6 @@ def step_impl(context, transfer_id=None, attr=None):
     context.res = context.post(f"/transfers/reject/{transfer_id}")
 
 
-@step("I list the transfers using the API")
-def step_impl(context):
-    context.res = context.get("/transfers")
-
 
 @step("the response contains the following transfers")
 def step_impl(context):
@@ -63,9 +59,11 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         f"""
-    When I list the transfers using the API
+    Given I use the admin token
+    When I send a request to the Api resource "listTransfers"
     Then the response contains the following transfers
     {table_to_str(context.table)}
+    And I clear the token
     """
     )
 
