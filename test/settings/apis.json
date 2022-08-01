@@ -80,6 +80,11 @@
     "pathParams": ["transferId"],
     "method": "POST"
   },
+  "rejectTransfer": {
+    "path": "/transfers/{transferId}/reject",
+    "pathParams": ["transferId"],
+    "method": "POST"
+  },
   "getTransfer": {
     "path": "/transfers/{transferId}",
     "pathParams": ["transferId"],

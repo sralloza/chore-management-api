@@ -3,29 +3,6 @@ from behave import step
 from common.utils import *
 
 
-@step('I get the transfer with id saved as "{attr}" using the API')
-@step('I get the transfer with id "{transfer_id}" using the API')
-def step_impl(context, transfer_id=None, attr=None):
-    if transfer_id is None:
-        if attr is not None:
-            transfer_id = getattr(context, attr)
-        else:
-            transfer_id = context.transfer_id
-    context.res = context.get(f"/transfers/{transfer_id}")
-
-
-@step('a tenant rejects the chore transfer with id "{transfer_id}" using the API')
-@step('a tenant rejects the chore transfer with id saved as "{attr}" using the API')
-def step_impl(context, transfer_id=None, attr=None):
-    if transfer_id is None:
-        if attr is not None:
-            transfer_id = getattr(context, attr)
-        else:
-            transfer_id = context.transfer_id
-    context.res = context.post(f"/transfers/{transfer_id}/reject")
-
-
-
 @step("the response contains the following transfers")
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
@@ -68,7 +45,7 @@ def step_impl(context):
         And I use the admin token
         And I send a request to the Api resource "acceptTransfer"
         Then the response status code is "200"
-        And i clear the token
+        And I clear the token
         """
     )
 

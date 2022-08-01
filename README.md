@@ -42,10 +42,10 @@ behave -t authorization
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
+- transfers - rejectTransfer
 
 ### In progress
 
-- transfers - rejectTransfers
 - transfers - startTransfer
 - weeklyChores - createWeeklyChores
 - weeklyChores - deleteWeeklyChores

@@ -60,6 +60,9 @@ public class TransferChoresController {
 
     @PostMapping("/{id}/reject")
     public Transfer rejectTransfer(@PathVariable Long id) {
+        security.requireTenant();
+        var transfer = service.getTransferById(id);
+        security.requireTenantFromPath(transfer.getTenantIdTo().toString());
         return service.rejectTransfer(id);
     }
 
