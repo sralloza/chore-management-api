@@ -3,16 +3,15 @@
 @sanity
 Feature: Tenants API - unSkipWeek
 
-    As a tenant I want to unskip a week in case I have wrongly skipped it.
-
-    # todo: add endpoint /tenants/me/unskip
+    As an admin or tenant
+    I want to unskip a week in case I have wrongly skipped it
 
     @authorization
     Scenario: Validate response for guest user
         Given the fields
-            | field    | value   | as_string |
-            | tenantId | 1       | false     |
-            | weekId   | 2025.01 | false     |
+            | field    | value   |
+            | tenantId | 1       |
+            | weekId   | 2025.01 |
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "Tenant access required"
@@ -23,9 +22,9 @@ Feature: Tenants API - unSkipWeek
         Given there is 1 tenant
         And the tenant "1" skips the week "2025.01"
         And the fields
-            | field    | value   | as_string |
-            | tenantId | 1       | false     |
-            | weekId   | 2025.01 | false     |
+            | field    | value   |
+            | tenantId | 1       |
+            | weekId   | 2025.01 |
         And I use the token of the tenant with id "1"
         When I send a request to the Api
         Then the response status code is "204"
@@ -36,9 +35,9 @@ Feature: Tenants API - unSkipWeek
         Given there is 1 tenant
         And the tenant "1" skips the week "2025.01"
         And the fields
-            | field    | value   | as_string |
-            | tenantId | 1       | false     |
-            | weekId   | 2025.01 | false     |
+            | field    | value   |
+            | tenantId | 1       |
+            | weekId   | 2025.01 |
         And I use the admin token
         When I send a request to the Api
         Then the response status code is "204"
@@ -68,9 +67,9 @@ Feature: Tenants API - unSkipWeek
         Given there is 1 tenant
         And I use the admin token
         And the fields
-            | field    | value   | as_string |
-            | tenantId | me      | false     |
-            | weekId   | 2022.01 | false     |
+            | field    | value   |
+            | tenantId | me      |
+            | weekId   | 2022.01 |
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot use keyword me with an admin token"
@@ -80,19 +79,20 @@ Feature: Tenants API - unSkipWeek
         Given there are 2 tenants
         And I use the token of the tenant with id "1"
         And the fields
-            | field    | value   | as_string |
-            | tenantId | 2       | false     |
-            | weekId   | 2022.01 | false     |
+            | field    | value   |
+            | tenantId | 2       |
+            | weekId   | 2022.01 |
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "You don't have permission to access other tenant's data"
 
+
     Scenario: validate error when tenants unskips a non skipped week
         Given there is 1 tenant
         And the fields
-            | field    | value   | as_string |
-            | tenantId | 1       | false     |
-            | weekId   | 2022.01 | true      |
+            | field    | value   |
+            | tenantId | 1       |
+            | weekId   | 2022.01 |
         And I use the token of the tenant with id "1"
         When I send a request to the Api
         Then the response status code is "400"
