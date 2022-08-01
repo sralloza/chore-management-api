@@ -50,6 +50,12 @@ def set_field_to_context(context, field, value, to_str=False):
     setattr(context, field, value)
 
 
+@step('the field "{field}" saved as "{attr}"')
+def step_impl(context, field, attr):
+    value = getattr(context, attr)
+    set_field_to_context(context, field, value)
+
+
 @step("the fields")
 def step_impl(context):
     for row in context.table:

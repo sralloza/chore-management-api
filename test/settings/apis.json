@@ -74,5 +74,10 @@
   "listTransfers": {
     "path": "/transfers",
     "method": "GET"
+  },
+  "acceptTransfer": {
+    "path": "/transfers/{transferId}/accept",
+    "pathParams": ["transferId"],
+    "method": "POST"
   }
 }

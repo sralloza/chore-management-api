@@ -44,17 +44,20 @@ public class TransferChoresController {
     public Transfer startTransfer(@RequestBody @Valid TransferCreate transferCreate) {
         weekIdValidator.validateSyntax(transferCreate.getWeekId());
         return service.startTransfer(transferCreate.getTenantIdFrom(),
-                transferCreate.getTenantIdTo(),
-                transferCreate.getChoreType(),
-                transferCreate.getWeekId());
+            transferCreate.getTenantIdTo(),
+            transferCreate.getChoreType(),
+            transferCreate.getWeekId());
     }
 
-    @PostMapping("/accept/{id}")
+    @PostMapping("/{id}/accept")
     public Transfer acceptTransfer(@PathVariable Long id) {
+        security.requireTenant();
+        var transfer = service.getTransferById(id);
+        security.requireTenantFromPath(transfer.getTenantIdTo().toString());
         return service.acceptTransfer(id);
     }
 
-    @PostMapping("/reject/{id}")
+    @PostMapping("/{id}/reject")
     public Transfer rejectTransfer(@PathVariable Long id) {
         return service.rejectTransfer(id);
     }
