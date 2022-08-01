@@ -35,13 +35,13 @@ behave -t authorization
 - tenants - listTenants
 - tenants - recreateTenantToken
 - tenants - skipWeek
+- tenants - unSkipWeek
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
 
 ### In progress
 
-- tenants - unSkipWeek
 - transfers - acceptTransfer
 - transfers - getTransfer
 - transfers - listTransfers

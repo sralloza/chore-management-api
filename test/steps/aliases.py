@@ -41,7 +41,7 @@ def step_impl(context, tenants):
     context.token = None
 
 
-@given('the tenant "{tenant_id:d}" skips the week "{week_id}"')
+@given('the tenant "{tenant_id}" skips the week "{week_id}"')
 def step_impl(context, tenant_id, week_id):
     context.execute_steps(
         f"""
