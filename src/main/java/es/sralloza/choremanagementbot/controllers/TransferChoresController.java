@@ -2,6 +2,7 @@ package es.sralloza.choremanagementbot.controllers;
 
 import es.sralloza.choremanagementbot.models.custom.Transfer;
 import es.sralloza.choremanagementbot.models.io.TransferCreate;
+import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.TransferChoresService;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,12 @@ public class TransferChoresController {
     private TransferChoresService service;
     @Autowired
     private WeekIdValidator weekIdValidator;
+    @Autowired
+    private SimpleSecurity security;
 
     @GetMapping()
     public List<Transfer> listTransfers() {
+        security.requireTenant();
         return service.listTransfers();
     }
 
