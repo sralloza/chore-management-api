@@ -79,5 +79,10 @@
     "path": "/transfers/{transferId}/accept",
     "pathParams": ["transferId"],
     "method": "POST"
+  },
+  "getTransfer": {
+    "path": "/transfers/{transferId}",
+    "pathParams": ["transferId"],
+    "method": "GET"
   }
 }

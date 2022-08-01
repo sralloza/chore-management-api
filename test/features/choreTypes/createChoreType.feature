@@ -117,7 +117,7 @@ Feature: Chore Types API - createChoreType
             <error_msg>
             """
 
-        Examples:
+        Examples: id = <id> | description = <description> | error_msg = <error_msg>
             | id         | description | error_msg                            |
             | [NONE]     | description | choreType.id cannot be null          |
             | chore-type | [NONE]      | choreType.description cannot be null |
