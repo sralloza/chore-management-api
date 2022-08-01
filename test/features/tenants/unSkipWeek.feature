@@ -57,7 +57,7 @@ Feature: Tenants API - unSkipWeek
             | week_id | A | B | C |
             | 2025.01 | 1 | 2 | 3 |
 
-        Examples:
+        Examples: tenant_id = <tenant_id> | real_tenant_id = <real_tenant_id>
             | tenant_id | real_tenant_id |
             | 2         | 2              |
             | me        | 2              |

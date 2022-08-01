@@ -37,6 +37,7 @@ public class TransferChoresController {
 
     @GetMapping("/{id}")
     public Transfer getTransfer(@PathVariable Long id) {
+        security.requireTenant();
         return service.getTransferById(id);
     }
 
