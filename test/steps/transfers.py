@@ -14,17 +14,6 @@ def step_impl(context, transfer_id=None, attr=None):
     context.res = context.get(f"/transfers/{transfer_id}")
 
 
-@step('a tenant accepts the chore transfer with id "{transfer_id}" using the API')
-@step('a tenant accepts the chore transfer with id saved as "{attr}" using the API')
-def step_impl(context, transfer_id=None, attr=None):
-    if transfer_id is None:
-        if attr is not None:
-            transfer_id = getattr(context, attr)
-        else:
-            transfer_id = context.transfer_id
-    context.res = context.post(f"/transfers/accept/{transfer_id}")
-
-
 @step('a tenant rejects the chore transfer with id "{transfer_id}" using the API')
 @step('a tenant rejects the chore transfer with id saved as "{attr}" using the API')
 def step_impl(context, transfer_id=None, attr=None):
@@ -33,7 +22,7 @@ def step_impl(context, transfer_id=None, attr=None):
             transfer_id = getattr(context, attr)
         else:
             transfer_id = context.transfer_id
-    context.res = context.post(f"/transfers/reject/{transfer_id}")
+    context.res = context.post(f"/transfers/{transfer_id}/reject")
 
 
 
@@ -75,8 +64,11 @@ def step_impl(context):
         f"""
         When a tenant starts a chore transfer to other tenant using the API
         {table_str}
-        And I save the "id" attribute of the response as "transfer_id"
-        And a tenant accepts the chore transfer with id saved as "transfer_id" using the API
+        Given I save the "id" attribute of the response as "transferId"
+        And I use the admin token
+        And I send a request to the Api resource "acceptTransfer"
+        Then the response status code is "200"
+        And i clear the token
         """
     )
 
