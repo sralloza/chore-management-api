@@ -1,6 +1,6 @@
 # Meal Planner Bot
 
-Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
+Successor of the - [Meal Planner API](https://github.com/sralloza/meal-planner).
 
 ## Testing
 
@@ -23,44 +23,51 @@ behave -t authorization
 
 ## Development
 
-### Finished
+### Endpoints
 
-- choreTypes - createChoreType
-- choreTypes - deleteChoreType
-- choreTypes - getChoreType
-- choreTypes - listChoreTypes
-- tenants - createTenant
-- tenants - deleteTenant
-- tenants - getTenant
-- tenants - listTenants
-- tenants - recreateTenantToken
-- tenants - skipWeek
-- tenants - unSkipWeek
-- transfers - acceptTransfer
-- transfers - getTransfer
-- transfers - listTransfers
-- transfers - rejectTransfer
-- transfers - startTransfer
-- weekId - getCurrentWeekId
-- weekId - getLastWeekId
-- weekId - getNextWeekId
-- weeklyChores - listWeeklyChores
+- [ ] choreTypes
+  - [x] createChoreType
+  - [x] deleteChoreType
+  - [x] getChoreType
+  - [x] listChoreTypes
+- [ ] tenants
+  - [x] createTenant
+  - [x] deleteTenant
+  - [x] getTenant
+  - [x] listTenants
+  - [x] recreateTenantToken
+  - [x] skipWeek
+  - [x] unSkipWeek
+- [ ] transfers
+  - [x] acceptTransfer
+  - [x] getTransfer
+  - [x] listTransfers
+  - [x] rejectTransfer
+  - [x] startTransfer
+- [ ] weekId
+  - [x] getCurrentWeekId
+  - [x] getLastWeekId
+  - [x] getNextWeekId
+- [ ] weeklyChores
+  - [x] listWeeklyChores
+  - [ ] createWeeklyChores
+  - [ ] deleteWeeklyChores
+  - [ ] getWeeklyChores
+- [ ] tickets
+  - [ ] transferTickets
+  - [ ] getTicketsByChoreType
+  - [ ] listTickets
 
-### In progress
+### Other tasks
 
-- weeklyChores - createWeeklyChores
-- weeklyChores - deleteWeeklyChores
-- weeklyChores - getWeeklyChores
-
-### Ready
-
-- tickets - transferTickets
-- tickets - getTicketsByChoreType
-- tickets - listTickets
+- [ ] Fix timing tests in CI
+- [ ] Add prometheus metrics
+- [ ] Add pagination in all `list` endpoints
+- [ ] Add redoc documentation
 
 ## Deploy
 
-Docker images are provided in [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
+Docker images are provided in - [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
 
 ## Configuration
 
