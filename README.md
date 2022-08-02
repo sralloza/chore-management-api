@@ -25,12 +25,12 @@ behave -t authorization
 
 ### Endpoints
 
-- [ ] choreTypes
+- [x] choreTypes
   - [x] createChoreType
   - [x] deleteChoreType
   - [x] getChoreType
   - [x] listChoreTypes
-- [ ] tenants
+- [x] tenants
   - [x] createTenant
   - [x] deleteTenant
   - [x] getTenant
@@ -38,21 +38,22 @@ behave -t authorization
   - [x] recreateTenantToken
   - [x] skipWeek
   - [x] unSkipWeek
-- [ ] transfers
+- [x] transfers
   - [x] acceptTransfer
   - [x] getTransfer
   - [x] listTransfers
   - [x] rejectTransfer
   - [x] startTransfer
-- [ ] weekId
+- [x] weekId
   - [x] getCurrentWeekId
   - [x] getLastWeekId
   - [x] getNextWeekId
 - [ ] weeklyChores
-  - [x] listWeeklyChores
+  - [ ] completeWeeklyChores
   - [ ] createWeeklyChores
   - [ ] deleteWeeklyChores
   - [ ] getWeeklyChores
+  - [x] listWeeklyChores
 - [ ] tickets
   - [ ] transferTickets
   - [ ] getTicketsByChoreType
@@ -64,6 +65,7 @@ behave -t authorization
 - [ ] Add prometheus metrics
 - [ ] Add pagination in all `list` endpoints
 - [ ] Add redoc documentation
+- [ ] Update `sanity` tag
 
 ## Deploy
 
