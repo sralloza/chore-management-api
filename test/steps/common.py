@@ -4,6 +4,9 @@ from behave import *
 @given(
     'there are {a:d} tenants, {b:d} chore types and weekly chores for the week "{week_id}"'
 )
+@given(
+    'there are {a:d} tenant, {b:d} chore type and weekly chores for the week "{week_id}"'
+)
 def step_impl(context, a, b, week_id):
     context.execute_steps(
         f"""

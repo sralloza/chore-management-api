@@ -37,6 +37,7 @@ public class WeeklyChoresController {
     @GetMapping("/{weekId}")
     public Optional<WeeklyChores> getWeeklyChores(@PathVariable("weekId") String weekId) {
         validator.validateSyntax(weekId);
+        security.requireTenant();
         return service.getByWeekId(weekId);
     }
 

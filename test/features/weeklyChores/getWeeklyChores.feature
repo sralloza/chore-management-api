@@ -1,9 +1,40 @@
+@api.weekly-chores
+@getWeeklyChores
 Feature: Weekly Chores API - getWeeklyChores
 
+    As an admin or tenant
+    I want to get the detils of the weekly chores given a specific week
+
+
+    @authorization
+    Scenario: Validate response for guest user
+        Given the field "weekId" with value "2022.01"
+        When I send a request to the Api
+        Then the response status code is "403"
+        And the error message is "Tenant access required"
+
+
+    @authorization
+    Scenario: Validate response for tenant user
+        Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
+        And the field "weekId" with value "2022.01"
+        And I use a tenant's token
+        When I send a request to the Api
+        Then the response status code is "200"
+
+
+    @authorization
+    Scenario: Validate response for admin user
+        Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
+        And the field "weekId" with value "2022.01"
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "200"
+
+
     Scenario: Get weekly chores by weekId
-        Given there is 1 tenant
-        And there is 1 chore type
-        And I create the weekly chores for the week "2022.01" using the API
+        Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
+        And I use the token of the tenant with id "1"
         When I get the weekly chores for the week "2022.01" using the API
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"

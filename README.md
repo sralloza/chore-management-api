@@ -25,9 +25,14 @@ behave -t authorization
 
 Allure can be deployed on port 8080 with `docker-compose up allure -d`.
 
-After launching the behave command, open [the latest report](http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html?redirect=false).
+Useful links:
 
-To clean the history:
+- [Latest report](http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html)
+- [Json with all the report links](http://localhost:5050/allure-docker-service/projects/default) (useful if you have some kind of json extension in your navigator)
+- [Generate report](http://localhost:5050/generate-report)
+- [Clean history](http://localhost:5050/clean-history)
+
+Useful commands:
 
 ```shell
 # Generate a report
@@ -67,7 +72,7 @@ curl http://localhost:5050/clean-history
   - [ ] completeWeeklyChores
   - [ ] createWeeklyChores
   - [x] deleteWeeklyChores
-  - [ ] getWeeklyChores
+  - [x] getWeeklyChores
   - [x] listWeeklyChores
 - [ ] tickets
   - [ ] transferTickets
