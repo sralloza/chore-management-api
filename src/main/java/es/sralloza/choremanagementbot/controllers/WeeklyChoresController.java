@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.ws.rs.QueryParam;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/weekly-chores")
@@ -35,10 +34,10 @@ public class WeeklyChoresController {
     }
 
     @GetMapping("/{weekId}")
-    public Optional<WeeklyChores> getWeeklyChores(@PathVariable("weekId") String weekId) {
+    public WeeklyChores getWeeklyChores(@PathVariable("weekId") String weekId) {
         validator.validateSyntax(weekId);
         security.requireTenant();
-        return service.getByWeekId(weekId);
+        return service.getByWeekIdOr404(weekId);
     }
 
     @PostMapping()

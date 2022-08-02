@@ -8,7 +8,7 @@ Feature: Weekly Chores API - getWeeklyChores
 
     @authorization
     Scenario: Validate response for guest user
-        Given the field "weekId" with value "2022.01"
+        Given the field "weekId" with string value "2022.01"
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "Tenant access required"
@@ -17,7 +17,7 @@ Feature: Weekly Chores API - getWeeklyChores
     @authorization
     Scenario: Validate response for tenant user
         Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
-        And the field "weekId" with value "2022.01"
+        And the field "weekId" with string value "2022.01"
         And I use a tenant's token
         When I send a request to the Api
         Then the response status code is "200"
@@ -26,7 +26,7 @@ Feature: Weekly Chores API - getWeeklyChores
     @authorization
     Scenario: Validate response for admin user
         Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
-        And the field "weekId" with value "2022.01"
+        And the field "weekId" with string value "2022.01"
         And I use the admin token
         When I send a request to the Api
         Then the response status code is "200"
@@ -35,7 +35,8 @@ Feature: Weekly Chores API - getWeeklyChores
     Scenario: Get weekly chores by weekId
         Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
         And I use the token of the tenant with id "1"
-        When I get the weekly chores for the week "2022.01" using the API
+        And the field "weekId" with string value "2022.01"
+        When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
@@ -43,8 +44,17 @@ Feature: Weekly Chores API - getWeeklyChores
             | 2022.01 | 1 |
 
 
+    Scenario: Validate error response when weekly chores not found
+        Given I use the admin token
+        And the field "weekId" with value "2022.01"
+        When I send a request to the Api
+        Then the response status code is "404"
+        And the error message is "No weekly chores found for week 2022.01"
+
+
     Scenario Outline: Validate error when trying to get weekly chores by an invalid weekId
-        When I get the weekly chores for the week "<invalid_week_id>" using the API
+        Given the field "weekId" with string value "<invalid_week_id>"
+        When I send a request to the Api
         Then the response status code is "400"
         And the error message contains "Invalid week ID: <invalid_week_id>"
 

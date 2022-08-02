@@ -6,11 +6,6 @@ from common.utils import *
 from common.weekly_chores import *
 
 
-@step('I get the weekly chores for the week "{week_id}" using the API')
-def step_impl(context, week_id):
-    context.res = context.get(f"/weekly-chores/{week_id}")
-
-
 @step(
     'I create the weekly chores for the week "{week_id}" with force={force} using the API'
 )

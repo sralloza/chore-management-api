@@ -54,7 +54,7 @@ public class WeeklyChoresService {
 
     public WeeklyChores createWeeklyChores(String weekId, @Nullable Boolean force) {
         boolean alreadyExists = weeklyChoresRepository.findAll().stream()
-                .anyMatch(weeklyChores -> weeklyChores.getWeekId().equals(weekId));
+            .anyMatch(weeklyChores -> weeklyChores.getWeekId().equals(weekId));
         if (alreadyExists) {
             throw new ConflictException("Weekly chores for week " + weekId + " already exist");
         }
@@ -68,14 +68,14 @@ public class WeeklyChoresService {
         }
 
         DBRotation lastRotation = dbRotationRepository.findAll().stream()
-                .max(Comparator.comparing(DBRotation::getWeekId))
-                .orElseThrow(() -> new RuntimeException("No rotations found creating weekly chores for week " + weekId));
+            .max(Comparator.comparing(DBRotation::getWeekId))
+            .orElseThrow(() -> new RuntimeException("No rotations found creating weekly chores for week " + weekId));
 
         int newRotation = lastRotation.getRotation() + 1;
         if (!lastRotation.getTenantIdsHash().equals(tenantsService.getTenantsHash())) {
             if (!Boolean.TRUE.equals(force)) {
                 throw new BadRequestException("Tenants have changed since weekly chore creation. Use force parameter " +
-                        "to restart the weekly chores creation.");
+                    "to restart the weekly chores creation.");
             }
             log.info("Recreating weekly chores");
             newRotation = 0;
@@ -88,8 +88,8 @@ public class WeeklyChoresService {
 
     private WeeklyChores createWeeklyChoresByRotation(String weekId, int rotation) {
         List<String> choreTypes = choreTypesRepository.findAll().stream()
-                .map(DBChoreType::getId)
-                .collect(Collectors.toList());
+            .map(DBChoreType::getId)
+            .collect(Collectors.toList());
         List<Tenant> tenants = tenantsService.listTenants();
 
         if (tenants.isEmpty()) {
@@ -105,16 +105,16 @@ public class WeeklyChoresService {
     private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
                                                               String weekId, int rotation) {
         List<Integer> tenantIdList = tenants.stream()
-                .map(Tenant::getTenantId)
-                .collect(Collectors.toList());
+            .map(Tenant::getTenantId)
+            .collect(Collectors.toList());
 
         Set<Integer> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()
-                .filter(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId))
-                .map(DBSkippedWeek::getTenantId)
-                .collect(Collectors.toSet());
+            .filter(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId))
+            .map(DBSkippedWeek::getTenantId)
+            .collect(Collectors.toSet());
         Set<Integer> tenantsNotSkippingWeek = tenantIdList.stream()
-                .filter(tenantId -> !tenantsSkippingWeek.contains(tenantId))
-                .collect(Collectors.toSet());
+            .filter(tenantId -> !tenantsSkippingWeek.contains(tenantId))
+            .collect(Collectors.toSet());
 
         int arraySize = Integer.max(choreTypes.size(), tenants.size()) * 2;
 
@@ -131,20 +131,20 @@ public class WeeklyChoresService {
         Collections.rotate(repeatedTenants, -rotation);
 
         var distributedChoreList = IntStream.range(0, choreTypes.size())
-                .mapToObj(n -> {
-                    var tenantId = repeatedTenants.get(n);
-                    return createChore(weekId,
-                            choreTypes.get(n),
-                            tenantId,
-                            tenantsSkippingWeek.contains(tenantId) ? tenantsNotSkippingWeek : null
-                    );
-                })
-                .collect(Collectors.toList());
+            .mapToObj(n -> {
+                var tenantId = repeatedTenants.get(n);
+                return createChore(weekId,
+                    choreTypes.get(n),
+                    tenantId,
+                    tenantsSkippingWeek.contains(tenantId) ? tenantsNotSkippingWeek : null
+                );
+            })
+            .collect(Collectors.toList());
 
         return new WeeklyChores()
-                .setWeekId(weekId)
-                .setChores(distributedChoreList)
-                .setRotation(rotation);
+            .setWeekId(weekId)
+            .setChores(distributedChoreList)
+            .setRotation(rotation);
     }
 
     private Chore createChore(String weekId, String type, Integer tenantId, Set<Integer> tenantIdListOverride) {
@@ -157,9 +157,9 @@ public class WeeklyChoresService {
         }
 
         var asigneeListUsernames = asigneeListIds.stream()
-                .map(tenantsService::getTenantById)
-                .map(Tenant::getUsername)
-                .collect(Collectors.toList());
+            .map(tenantsService::getTenantById)
+            .map(Tenant::getUsername)
+            .collect(Collectors.toList());
 
         return new Chore(weekId, type, asigneeListIds, asigneeListUsernames, false);
     }
@@ -172,12 +172,21 @@ public class WeeklyChoresService {
         return weeklyChoresRepository.findByWeekId(weekId);
     }
 
+    public WeeklyChores getByWeekIdOr404(String weekId) {
+        return weeklyChoresRepository.findByWeekId(weekId)
+            .orElseThrow(() -> getNotFoundException(weekId));
+    }
+
     public void deleteWeeklyChores(String weekId) {
         boolean exists = weeklyChoresRepository.findAll().stream()
-                .anyMatch(weeklyChores -> weeklyChores.getWeekId().equals(weekId));
+            .anyMatch(weeklyChores -> weeklyChores.getWeekId().equals(weekId));
         if (!exists) {
-            throw new NotFoundException("No weekly chores found for week " + weekId);
+            throw getNotFoundException(weekId);
         }
         weeklyChoresRepository.deleteByWeekId(weekId);
+    }
+
+    private NotFoundException getNotFoundException(String weekId) {
+        return new NotFoundException("No weekly chores found for week " + weekId);
     }
 }
