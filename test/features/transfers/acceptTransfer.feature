@@ -115,7 +115,7 @@ Feature: Transfers API - acceptTransfer
         And I use the token of the tenant with id "2"
         When I send a request to the Api
         Then the response status code is "200"
-        And the response timestamp attribute is at most "20" ms ago
+        And the response timestamp attribute is at most "50" ms ago
 
 
     Scenario: Validate error when accepting a chore transfer twice

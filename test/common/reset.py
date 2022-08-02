@@ -1,6 +1,7 @@
-from os import getenv
-import mysql.connector
 from logging import getLogger
+from os import getenv
+
+import mysql.connector
 
 logger = getLogger(__name__)
 DATABASES = (
