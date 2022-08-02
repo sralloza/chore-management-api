@@ -189,4 +189,8 @@ public class WeeklyChoresService {
     private NotFoundException getNotFoundException(String weekId) {
         return new NotFoundException("No weekly chores found for week " + weekId);
     }
+
+    public void completeWeeklyChores(String weekId, String choreType, Integer tenantId) {
+        weeklyChoresRepository.completeWeeklyChores(weekId, choreType, tenantId);
+    }
 }

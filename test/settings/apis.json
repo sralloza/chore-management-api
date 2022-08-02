@@ -98,5 +98,10 @@
     "path": "/weekly-chores/{weekId}",
     "pathParams": ["weekId"],
     "method": "GET"
+  },
+  "completeTask": {
+    "path": "/weekly-chores/{weekId}/choreType/{choreType}/complete",
+    "pathParams": ["weekId", "choreType"],
+    "method": "POST"
   }
 }

@@ -69,7 +69,7 @@ curl http://localhost:5050/clean-history
   - [x] getLastWeekId
   - [x] getNextWeekId
 - [ ] weeklyChores
-  - [ ] completeWeeklyChores
+  - [x] completeTask
   - [ ] createWeeklyChores
   - [x] deleteWeeklyChores
   - [x] getWeeklyChores

@@ -58,6 +58,7 @@ def step_impl(context, field, attr):
 
 @step("the fields")
 def step_impl(context):
+    context.table.require_columns(["field", "value"])
     for row in context.table:
         field = row["field"]
         value = row["value"]
