@@ -1,6 +1,7 @@
 package es.sralloza.choremanagementbot.controllers;
 
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
+import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,12 @@ public class WeeklyChoresController {
     private WeeklyChoresService service;
     @Autowired
     private WeekIdValidator validator;
+    @Autowired
+    private SimpleSecurity security;
 
     @GetMapping()
     public List<WeeklyChores> listWeeklyChores() {
+        security.requireTenant();
         return service.findAll();
     }
 

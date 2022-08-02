@@ -6,11 +6,6 @@ from common.utils import *
 from common.weekly_chores import *
 
 
-@step("I list the weekly chores using the API")
-def step_impl(context):
-    context.res = context.get("/weekly-chores")
-
-
 @step('I get the weekly chores for the week "{week_id}" using the API')
 def step_impl(context, week_id):
     context.res = context.get(f"/weekly-chores/{week_id}")
@@ -62,7 +57,9 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         f"""
-            When I list the weekly chores using the API
+            Given I use the admin token
+            When I send a request to the Api resource "listWeeklyChores"
+            Then the response status code is "200"
             And the response contains the following weekly chores
             {table_to_str(context.table, replace=True, infer=False)}
             """

@@ -20,7 +20,7 @@ jobs:
           java-version: 11
 
       - name: Launch docker-compose
-        run: docker-compose up --build -d
+        run: docker-compose up --build -d database app
 
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
