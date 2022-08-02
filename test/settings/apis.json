@@ -89,5 +89,9 @@
     "path": "/transfers/{transferId}",
     "pathParams": ["transferId"],
     "method": "GET"
+  },
+  "listWeeklyChores": {
+    "path": "/weekly-chores",
+    "method": "GET"
   }
 }

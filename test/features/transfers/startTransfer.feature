@@ -2,7 +2,8 @@
 @startTransfer
 Feature: Transfers API - startTransfer
 
-    As a tenant I want to transfer a chore to another tenant.
+    As a tenant or admin
+    I want to transfer a chore to another tenant
 
 
     @authorization
