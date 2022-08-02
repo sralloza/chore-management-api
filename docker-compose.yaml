@@ -25,7 +25,7 @@ services:
   allure:
     image: frankescobar/allure-docker-service
     environment:
-      - CHECK_RESULTS_EVERY_SECONDS=3
+      - CHECK_RESULTS_EVERY_SECONDS=NONE
       - KEEP_HISTORY=1
     volumes:
       - "./test/reports:/app/allure-results"

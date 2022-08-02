@@ -57,6 +57,7 @@ public class WeeklyChoresController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteWeeklyChores(@PathVariable("weekId") String weekId) {
         validator.validateSyntax(weekId);
+        security.requireAdmin();
         service.deleteWeeklyChores(weekId);
     }
 }

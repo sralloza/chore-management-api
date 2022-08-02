@@ -30,6 +30,9 @@ After launching the behave command, open [the latest report](http://localhost:50
 To clean the history:
 
 ```shell
+# Generate a report
+curl http://localhost:5050/generate-report
+# Clean the history
 curl http://localhost:5050/clean-history
 ```
 
