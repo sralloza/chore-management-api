@@ -72,7 +72,7 @@ curl http://localhost:5050/clean-history
   - [ ] completeWeeklyChores
   - [ ] createWeeklyChores
   - [x] deleteWeeklyChores
-  - [ ] getWeeklyChores
+  - [x] getWeeklyChores
   - [x] listWeeklyChores
 - [ ] tickets
   - [ ] transferTickets
