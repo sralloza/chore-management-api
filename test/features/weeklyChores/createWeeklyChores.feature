@@ -24,7 +24,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.16 |
             | 2022.17 |
             | 2022.18 |
-        And I list the weekly chores using the API
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response contains the following weekly chores
             | week_id | A | B | C | D |
             | 2022.01 | 1 | 2 | 3 | 4 |
@@ -50,8 +52,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.16 |
             | 2022.17 |
             | 2022.18 |
-        Then I list the weekly chores using the API
-        And the response status code is "200"
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C |
@@ -78,7 +81,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.16 |
             | 2022.17 |
             | 2022.18 |
-        And I list the weekly chores using the API
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response contains the following weekly chores
             | week_id | A | B | C | D | E |
             | 2022.01 | 1 | 2 | 3 | 1 | 2 |
@@ -105,7 +110,8 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2025.16 |
             | 2025.17 |
             | 2025.18 |
-        And I list the weekly chores using the API
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
@@ -136,7 +142,8 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2025.16 |
             | 2025.17 |
             | 2025.18 |
-        And I list the weekly chores using the API
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
@@ -167,7 +174,8 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2025.16 |
             | 2025.17 |
             | 2025.18 |
-        And I list the weekly chores using the API
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
@@ -256,8 +264,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "204"
         When I create the weekly chores for the week "2022.02" using the API
         Then the response status code is "200"
-        And I list the weekly chores using the API
-        And the response status code is "200"
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response contains the following weekly chores
             | week_id | A | B | C |
             | 2022.01 | 1 | 2 | 3 |
@@ -279,8 +288,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         When I create the weekly chores for the week "2022.03" with force=true using the API
         Then the response status code is "200"
-        And I list the weekly chores using the API
-        And the response status code is "200"
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D | E |
@@ -304,8 +314,9 @@ Feature: Weekly Chores API - createWeeklyChores
         Then the response status code is "200"
         When I create the weekly chores for next week with force=true using the API
         Then the response status code is "200"
-        And I list the weekly chores using the API
-        And the response status code is "200"
+        Given I use the admin token
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id               | A | B | C | D | E |
