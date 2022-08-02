@@ -39,18 +39,18 @@ behave -t authorization
 - transfers - acceptTransfer
 - transfers - getTransfer
 - transfers - listTransfers
+- transfers - rejectTransfer
+- transfers - startTransfer
 - weekId - getCurrentWeekId
 - weekId - getLastWeekId
 - weekId - getNextWeekId
-- transfers - rejectTransfer
+- weeklyChores - listWeeklyChores
 
 ### In progress
 
-- transfers - startTransfer
 - weeklyChores - createWeeklyChores
 - weeklyChores - deleteWeeklyChores
 - weeklyChores - getWeeklyChores
-- weeklyChores - listWeeklyChores
 
 ### Ready
 
