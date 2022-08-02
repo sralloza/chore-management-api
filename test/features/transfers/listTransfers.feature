@@ -28,7 +28,7 @@ Feature: Transfers API - listTransfers
         Then the response status code is "200"
 
 
-    Scenario Outline: List transfers when database is not empty
+    Scenario: List transfers when database is not empty
         Given there are 4 tenants, 4 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |

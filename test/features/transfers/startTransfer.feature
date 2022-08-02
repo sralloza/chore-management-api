@@ -260,7 +260,6 @@ Feature: Transfers API - startTransfer
             | 1              | 2            | A          | [B]     | week_id can't be blank        |
 
 
-    @run
     Scenario Outline: Validate error response manual validations
         And I use the admin token
         When I send a request to the Api with body params

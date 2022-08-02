@@ -36,6 +36,7 @@ def step_impl(context):
 
         attr_name = line.get("id_attr_name", "transfer_id")
         table_str = list_of_dicts_to_table_str([line])
+        # TODO: do not use step "a tenant starts a chore transfer to other tenant using the API"
         context.execute_steps(
             f"""
         When a tenant starts a chore transfer to other tenant using the API
@@ -46,20 +47,17 @@ def step_impl(context):
 
         transfer_id = getattr(context, attr_name)
 
+        template = f"""
+        Given the field "transferId" with value "{transfer_id}"
+        And I use the token of the tenant with id "{line['tenant_id_to']}"
+        When I send a request to the Api resource "{{}}"
+        Then the response status code is "200"
+        """
+
         if accepted is True:
-            context.execute_steps(
-                f"""
-                When a tenant accepts the chore transfer with id "{transfer_id}" using the API
-                Then the response status code is "200"
-                """
-            )
+            context.execute_steps(template.format("acceptTransfer"))
         elif accepted is False:
-            context.execute_steps(
-                f"""
-                When a tenant rejects the chore transfer with id "{transfer_id}" using the API
-                Then the response status code is "200"
-                """
-            )
+            context.execute_steps(template.format("rejectTransfer"))
         elif accepted is not None:
             raise ValueError(
                 f"accepted must be True, False or None, found {accepted!r}"
