@@ -21,6 +21,18 @@ behave -t sanity
 behave -t authorization
 ```
 
+### Allure
+
+Allure can be deployed on port 8080 with `docker-compose up allure -d`.
+
+After launching the behave command, open [the latest report](http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html?redirect=false).
+
+To clean the history:
+
+```shell
+curl http://localhost:5050/clean-history
+```
+
 ## Development
 
 ### Endpoints
@@ -51,7 +63,7 @@ behave -t authorization
 - [ ] weeklyChores
   - [ ] completeWeeklyChores
   - [ ] createWeeklyChores
-  - [ ] deleteWeeklyChores
+  - [x] deleteWeeklyChores
   - [ ] getWeeklyChores
   - [x] listWeeklyChores
 - [ ] tickets
