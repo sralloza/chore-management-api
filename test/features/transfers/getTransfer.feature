@@ -16,9 +16,9 @@ Feature: Transfers API - getTransfer
     @authorization
     Scenario Outline: Validate response for tenant user
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        And the following transfers are created
+            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
+            | 1              | 2            | A          | 2022.01 | None     |
         Then the response status code is "200"
         And I save the "id" attribute of the response as "transferId"
         Given I use the token of the tenant with id "<token_tenant_id>"
@@ -34,9 +34,9 @@ Feature: Transfers API - getTransfer
     @authorization
     Scenario: Validate response for admin user
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        When a tenant starts a chore transfer to other tenant using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        And the following transfers are created
+            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
+            | 1              | 2            | A          | 2022.01 | None     |
         Then the response status code is "200"
         And I save the "id" attribute of the response as "transferId"
         Given I use the token of the tenant with id "2"

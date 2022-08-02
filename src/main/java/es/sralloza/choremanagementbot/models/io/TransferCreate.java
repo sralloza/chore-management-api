@@ -13,8 +13,7 @@ import javax.validation.constraints.Positive;
 public class TransferCreate {
     @JsonProperty("tenant_id_from")
     @NotNull(message = "tenant_id_from is required")
-    @Positive(message = "tenant_id_from must be positive")
-    private Integer tenantIdFrom;
+    private String tenantIdFrom;
     @JsonProperty("tenant_id_to")
     @NotNull(message = "tenant_id_to is required")
     @Positive(message = "tenant_id_to must be positive")

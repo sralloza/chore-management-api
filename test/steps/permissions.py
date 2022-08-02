@@ -31,6 +31,9 @@ def step_impl(context, id):
         context.token = context.admin_token
         return
 
+    if id == "me":
+        raise ValueError("Can't get the token from tenant_id = 'me'")
+
     context.execute_steps(
         f"""
         Given I use the admin token

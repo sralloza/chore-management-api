@@ -1,9 +1,11 @@
 package es.sralloza.choremanagementbot.controllers;
 
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.custom.Transfer;
 import es.sralloza.choremanagementbot.models.io.TransferCreate;
 import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.TransferChoresService;
+import es.sralloza.choremanagementbot.utils.TenantIdHelper;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/transfers")
@@ -28,6 +31,8 @@ public class TransferChoresController {
     private WeekIdValidator weekIdValidator;
     @Autowired
     private SimpleSecurity security;
+    @Autowired
+    private TenantIdHelper tenantIdHelper;
 
     @GetMapping()
     public List<Transfer> listTransfers() {
@@ -44,7 +49,15 @@ public class TransferChoresController {
     @PostMapping("/start")
     public Transfer startTransfer(@RequestBody @Valid TransferCreate transferCreate) {
         weekIdValidator.validateSyntax(transferCreate.getWeekId());
-        return service.startTransfer(transferCreate.getTenantIdFrom(),
+        security.requireTenant();
+        security.requireTenantFromPath(transferCreate.getTenantIdFrom());
+        var tenantFrom = security.getTenant();
+        var tenantIdFrom = Optional.ofNullable(tenantFrom)
+            .map(Tenant::getTenantId)
+            .orElse(tenantIdHelper.parseTenantId(transferCreate.getTenantIdFrom(), "tenant_id_from"));
+
+        return service.startTransfer(
+            tenantIdFrom,
             transferCreate.getTenantIdTo(),
             transferCreate.getChoreType(),
             transferCreate.getWeekId());
