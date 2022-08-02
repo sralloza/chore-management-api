@@ -1,4 +1,3 @@
-from ast import literal_eval
 from itertools import zip_longest
 from typing import List, Optional
 
@@ -39,39 +38,19 @@ def assert_has_table(context):
     assert context.table, "Step has no table"
 
 
-def parse_table(
-    table, *, mode: str = "literal", attrs: Optional[List[str]] = None, **kwargs
-):
-    if mode not in ("literal", "replace_param", None):
-        raise ValueError(f"Unknown mode {mode}")
-
+def parse_table(table, *, infer_param_type=True, attrs: Optional[List[str]] = None):
     if not table:
         return []
-
-    parser = get_parser(mode)
 
     result = []
     for row in table:
         parsed_row = dict(row.as_dict())
-        if mode is not None:
-            for key, value in parsed_row.items():
-                if attrs is not None and key not in attrs:
-                    continue
-                try:
-                    parsed_row[key] = parser(value, **kwargs)
-                except Exception:
-                    pass
+        for key, value in parsed_row.items():
+            if attrs is not None and key not in attrs:
+                continue
+            parsed_row[key] = replace_param(value, infer_param_type=infer_param_type)
         result.append(parsed_row)
     return result
-
-
-def get_parser(mode):
-    if mode == "literal":
-        return literal_eval
-    elif mode == "replace_param":
-        return replace_param
-    else:
-        raise ValueError(f"Unknown mode {mode}")
 
 
 def list_of_dicts_to_table_str(list_of_dicts):

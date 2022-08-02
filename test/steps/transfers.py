@@ -18,6 +18,7 @@ def step_impl(context):
     for line in expected:
         line["week_id"] = str(line["week_id"])
 
+    # TODO: do not use assert_arrays_equal
     assert_arrays_equal(expected, actual)
 
 

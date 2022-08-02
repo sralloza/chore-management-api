@@ -73,9 +73,9 @@ Feature: Tenants API - deleteTenant
 
     Scenario: Validate error deleting a tenant with negative tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I transfer a chore using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        And the following transfers are created
+            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
+            | 1              | 2            | A          | 2022.01 | True     |
         Given the field "tenantId" with value "1"
         And I use the admin token
         When I send a request to the Api
@@ -85,9 +85,9 @@ Feature: Tenants API - deleteTenant
 
     Scenario: Validate error deleting a tenant with positive tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I transfer a chore using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        And the following transfers are created
+            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
+            | 1              | 2            | A          | 2022.01 | True     |
         Given the field "tenantId" with value "2"
         And I use the admin token
         When I send a request to the Api

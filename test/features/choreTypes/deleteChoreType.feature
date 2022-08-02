@@ -68,9 +68,9 @@ Feature: Chore Types API - deleteChoreType
 
     Scenario: Validate error when deleting a chore type with non balanced tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I transfer a chore using the API
-            | tenant_id_from | tenant_id_to | chore_type | week_id |
-            | 1              | 2            | A          | 2022.01 |
+        And the following transfers are created
+            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
+            | 1              | 2            | A          | 2022.01 | True     |
         And the field "choreTypeId" with value "A"
         And I use the admin token
         When I send a request to the Api
