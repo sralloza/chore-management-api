@@ -90,17 +90,25 @@ public class WeeklyChoresRepository {
     }
 
     public void completeWeeklyChores(String weekId, String choreType, @Nullable Integer tenantId) {
-        DBChore dbChore = dbChoresRepository.findAll().stream()
+        List<DBChore> dbChores = dbChoresRepository.findAll().stream()
             .filter(chore -> chore.getWeekId().equals(weekId) && chore.getChoreType().equals(choreType))
-            .findAny()
-            .orElseThrow(() -> new NotFoundException("No chores found for week " + weekId + " and type " + choreType));
-        if (tenantId != null && !tenantId.equals(dbChore.getTenantId())) {
-            throw new ForbiddenException("Can't complete task assigned to other tenant");
+            .collect(Collectors.toList());
+        if (dbChores.isEmpty()) {
+            throw new NotFoundException("No chores found for week " + weekId + " and type " + choreType);
         }
-        if (dbChore.getDone()) {
+        if (tenantId != null) {
+        dbChores.stream()
+            .filter(chore -> chore.getTenantId().equals(tenantId))
+            .findAny()
+            .orElseThrow(() -> new ForbiddenException("Can't complete task assigned to other tenant"));
+        }
+
+        if (dbChores.stream().anyMatch(DBChore::getDone)){
             throw new BadRequestException("Chore already completed");
         }
-        dbChore.setDone(true);
-        dbChoresRepository.save(dbChore);
+        for (DBChore dbChore : dbChores) {
+            dbChore.setDone(true);
+        }
+        dbChoresRepository.saveAll(dbChores);
     }
 }

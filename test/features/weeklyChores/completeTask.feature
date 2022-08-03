@@ -49,12 +49,42 @@ Feature: Weekly Chores API - completeTask
         And I use the token of the tenant with id "<tenant_id>"
         When I send a request to the Api
         Then the response status code is "204"
-        And The Api response is empty
+        And the Api response is empty
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
+        And the response attribute ".[0].chores[0].done" is "True"
+        And the response attribute ".[0].chores[1].done" is "False"
 
         Examples: tenant_id = <tenant_id>
             | tenant_id |
             | 1         |
             | admin     |
+
+
+    Scenario Outline: Complete task assigned to two users
+        Given there are 3 tenants
+        And there are 3 chore types
+        And the tenant "3" skips the week "2030.01"
+        When I create the weekly chores for the week "2030.01" using the API
+        Then the response status code is "200"
+        Given the fields
+            | field     | value   |
+            | weekId    | 2030.01 |
+            | choreType | C       |
+        And I use the token of the tenant with id "<tenant_id>"
+        When I send a request to the Api
+        Then the response status code is "204"
+        And the Api response is empty
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
+        And the response attribute ".[0].chores[0].done" is "False"
+        And the response attribute ".[0].chores[1].done" is "False"
+        And the response attribute ".[0].chores[2].done" is "True"
+
+        Examples: tenant_id = <tenant_id>
+            | tenant_id |
+            | 1         |
+            | 2         |
 
 
     Scenario: Validate error response when requesting other tenant's data
