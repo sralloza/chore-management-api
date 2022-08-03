@@ -51,7 +51,7 @@ Feature: Tenants API - unSkipWeek
         And I use the token of the tenant with id "<real_tenant_id>"
         When I send a request to the Api
         Then the response status code is "204"
-        And The Api response is empty
+        And the Api response is empty
         And I create the weekly chores for the week "2025.01" using the API
         And the database contains the following weekly chores
             | week_id | A | B | C |

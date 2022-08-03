@@ -71,7 +71,7 @@ def step_impl(context, attr, value):
     assert_response_attr(context, attr, value, to_str=True)
 
 
-@step('The response attribute "{attr}" is "{value}"')
+@step('the response attribute "{attr}" is "{value}"')
 def assert_response_attr(context, attr, value, to_str=False):
     res_json = context.res.json()
 
