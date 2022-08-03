@@ -47,11 +47,12 @@ public class WeeklyChoresController {
         return service.createNextWeekChores(force);
     }
 
-    @PostMapping("/week/{weekId}")
+    @PostMapping("/{weekId}")
     public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId,
                                            @QueryParam("force") Boolean force) {
         validator.validateSyntax(weekId);
         validator.validateTimeline(weekId);
+        security.requireAdmin();
         return service.createWeeklyChores(weekId, force);
     }
 

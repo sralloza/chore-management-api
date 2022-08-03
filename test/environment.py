@@ -28,7 +28,7 @@ def before_feature(context, feature):
 
 def get_dataset():
     dataset = {}
-    apis_path = Path(__file__).parent / "settings/apis.json"
+    apis_path = Path(__file__).parent / "settings/endpoints.json"
     dataset["apis"] = loads(apis_path.read_text())
 
     return dataset

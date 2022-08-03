@@ -50,7 +50,8 @@ behave -t authorization
   - [x] getNextWeekId
 - [ ] weeklyChores
   - [x] completeTask
-  - [ ] createWeeklyChores
+  - [x] createWeeklyChores
+  - [ ] createNextWeekChores
   - [x] deleteWeeklyChores
   - [x] getWeeklyChores
   - [x] listWeeklyChores
