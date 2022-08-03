@@ -2,6 +2,8 @@ package es.sralloza.choremanagementbot.repositories.custom;
 
 import es.sralloza.choremanagementbot.builders.ChoreMapper;
 import es.sralloza.choremanagementbot.builders.WeeklyChoresMapper;
+import es.sralloza.choremanagementbot.exceptions.BadRequestException;
+import es.sralloza.choremanagementbot.exceptions.ForbiddenException;
 import es.sralloza.choremanagementbot.exceptions.NotFoundException;
 import es.sralloza.choremanagementbot.models.custom.Chore;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
@@ -12,6 +14,7 @@ import es.sralloza.choremanagementbot.repositories.db.DBRotationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -84,5 +87,28 @@ public class WeeklyChoresRepository {
             throw new NotFoundException("No rotation found for week " + weekId);
         }
         dbRotationRepository.deleteAll(dbRotation);
+    }
+
+    public void completeWeeklyChores(String weekId, String choreType, @Nullable Integer tenantId) {
+        List<DBChore> dbChores = dbChoresRepository.findAll().stream()
+            .filter(chore -> chore.getWeekId().equals(weekId) && chore.getChoreType().equals(choreType))
+            .collect(Collectors.toList());
+        if (dbChores.isEmpty()) {
+            throw new NotFoundException("No chores found for week " + weekId + " and type " + choreType);
+        }
+        if (tenantId != null) {
+        dbChores.stream()
+            .filter(chore -> chore.getTenantId().equals(tenantId))
+            .findAny()
+            .orElseThrow(() -> new ForbiddenException("Can't complete task assigned to other tenant"));
+        }
+
+        if (dbChores.stream().anyMatch(DBChore::getDone)){
+            throw new BadRequestException("Chore already completed");
+        }
+        for (DBChore dbChore : dbChores) {
+            dbChore.setDone(true);
+        }
+        dbChoresRepository.saveAll(dbChores);
     }
 }

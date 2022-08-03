@@ -39,7 +39,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
         And the field "weekId" with string value "2022.01"
         When I send a request to the Api
         Then the response status code is "204"
-        And The Api response is empty
+        And the Api response is empty
         And the database contains the following weekly chores
 
 

@@ -11,7 +11,7 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.api_v2 import _send_request
+from common.api import _send_request
 from common.db import reset_databases
 
 

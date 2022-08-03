@@ -1,43 +1,73 @@
-import json
 from uuid import uuid4
+
+from requests import Response
+from toolium.utils.dataset import map_param
 
 from common.utils import VERSIONED_URL_TEMPLATE
 
 
-def _format_params(**kwargs):
-    params_text = ""
-    if "params" in kwargs and kwargs.get("params") is not None:
-        params_text = "?"
-        for key, value in kwargs.get("params", {}).items():
-            params_text += f"{key}={value}&"
-        params_text = params_text[:-1]
-    return params_text
+def send_request(context, endpoint=None, payload=None):
+    if endpoint is None:
+        endpoint = context.feature.name.split(" - ")[-1]
+
+    try:
+        api = map_param(f"[CONF:apis.{endpoint}]")
+    except KeyError:
+        raise ValueError(f"Invalid endpoint in feature name: {endpoint}") from None
+
+    if not isinstance(api, dict):
+        raise ValueError(f"Invalid endpoint in feature name: {endpoint}")
+
+    path = api["path"]
+    method = api["method"]
+
+    url_params = get_url_params(context, endpoint)
+    path = path.format(**url_params)
+    context.res = _send_request(context, method, path, payload)
 
 
-def request(context, method, path, **kwargs):
+def get_url_params(context, endpoint):
+    try:
+        param_names = map_param(f"[CONF:apis.{endpoint}.pathParams]")
+    except KeyError:
+        return {}
+    return {k: getattr(context, k) for k in param_names}
+
+
+# TODO: remove json attribute (backward compatibility)
+# TODO: remove params attribute (backward compatibility)
+def _send_request(context, method, path, payload=None, json=None, params=None):
+    correlator = str(uuid4())
     url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
-    pprint = print
-    if "silenced" in kwargs:
-        silenced = kwargs.pop("silenced")
-        if silenced is True:
-            pprint = lambda *x: x
-
-    correlator = str(uuid4())
-    pprint("X-Correlator".center(len(correlator), "="))
-    pprint(correlator)
-
-    params_text = _format_params(**kwargs)
-
-    pprint(f"\n{method} {path}{params_text}")
-    if "json" in kwargs:
-        pprint(f">>>> {json.dumps(kwargs['json'])}")
-
-    headers = kwargs.pop("headers", {})
+    headers = getattr(context, "headers", {})
     headers["X-Correlator"] = correlator
-    kwargs["headers"] = headers
 
-    res = context.session.request(method, url, **kwargs)
-    pprint(f"<<<< {res.status_code} {res.text}\n\n")
+    token = getattr(context, "token", None)
+    if token:
+        headers["x-token"] = token
 
+    params = params or getattr(context, "params", None)
+
+    res = context.session.request(
+        method, url, params=params, json=payload or json, timeout=5, headers=headers
+    )
+    print_res(res)
     return res
+
+
+def print_res(res: Response, length=80):
+    print(" REQUEST ".center(length, "="))
+    print(f"<<<< {res.request.method} {res.request.url}")
+    print(f"<<<< {res.request.headers}")
+    if res.request.body:
+        print(f"<<<< {res.request.body}")
+
+    print(" RESPONSE ".center(length, "="))
+    print(f">>>> {res.status_code} {res.text}")
+    if "x-correlator" in res.headers:
+        print(f">>>> X-CORRELATOR: {res.headers['x-correlator']}")
+    print(f">>>> {res.headers}")
+
+    print("=" * length)
+    print("\n")

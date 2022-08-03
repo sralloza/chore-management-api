@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementbot.controllers;
 
+import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
@@ -35,10 +36,10 @@ public class WeeklyChoresController {
     }
 
     @GetMapping("/{weekId}")
-    public Optional<WeeklyChores> getWeeklyChores(@PathVariable("weekId") String weekId) {
+    public WeeklyChores getWeeklyChores(@PathVariable("weekId") String weekId) {
         validator.validateSyntax(weekId);
         security.requireTenant();
-        return service.getByWeekId(weekId);
+        return service.getByWeekIdOr404(weekId);
     }
 
     @PostMapping()
@@ -60,5 +61,17 @@ public class WeeklyChoresController {
         validator.validateSyntax(weekId);
         security.requireAdmin();
         service.deleteWeeklyChores(weekId);
+    }
+
+    @PostMapping("/{weekId}/choreType/{choreType}/complete")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void completeWeeklyChores(@PathVariable("weekId") String weekId,
+                                     @PathVariable("choreType") String choreType) {
+        validator.validateSyntax(weekId);
+        security.requireTenant();
+        var tenantId = Optional.ofNullable(security.getTenant())
+            .map(Tenant::getTenantId)
+            .orElse(null);
+        service.completeWeeklyChores(weekId, choreType, tenantId);
     }
 }
