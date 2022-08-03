@@ -21,14 +21,3 @@ services:
       - MYSQL_DATABASE=chore-management
     ports:
       - "3306:3306"
-
-  allure:
-    image: frankescobar/allure-docker-service
-    environment:
-      - CHECK_RESULTS_EVERY_SECONDS=NONE
-      - KEEP_HISTORY=1
-    volumes:
-      - "./test/reports:/app/allure-results"
-      - "./test/history:/app/default-reports"
-    ports:
-      - 5050:5050
