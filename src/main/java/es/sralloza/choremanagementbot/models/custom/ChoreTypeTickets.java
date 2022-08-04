@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementbot.models.custom;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +15,6 @@ import java.util.Map;
 public class ChoreTypeTickets {
     private String id;
     private String description;
+    @JsonProperty("tickets_by_tenant")
     private Map<String, Integer> ticketsByTenant;
 }

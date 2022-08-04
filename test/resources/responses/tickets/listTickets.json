@@ -1,0 +1,29 @@
+[
+  {
+    "id": "A",
+    "description": "description1",
+    "tickets_by_tenant": {
+      "tenant1": 0,
+      "tenant2": 0,
+      "tenant3": 0
+    }
+  },
+  {
+    "id": "B",
+    "description": "description2",
+    "tickets_by_tenant": {
+      "tenant1": 0,
+      "tenant2": 0,
+      "tenant3": 0
+    }
+  },
+  {
+    "id": "C",
+    "description": "description3",
+    "tickets_by_tenant": {
+      "tenant1": 0,
+      "tenant2": 0,
+      "tenant3": 0
+    }
+  }
+]
