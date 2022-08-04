@@ -1,7 +1,7 @@
 def parse_tickets_res_table_str(res, sort_key=lambda x: x):
     step_1 = {}
     for line in res.json():
-        for tenant, tickets in line["ticketsByTenant"].items():
+        for tenant, tickets in line["tickets_by_tenant"].items():
             if tenant not in step_1:
                 step_1[tenant] = {}
 
