@@ -77,7 +77,6 @@ Feature: Weekly Chores API - createWeeklyChores
         Given I use the admin token
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C |
             | 2022.01 | 1 | 2 | 3 |
@@ -135,7 +134,6 @@ Feature: Weekly Chores API - createWeeklyChores
         Given I use the admin token
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B     | C | D |
             | 2025.01 | 1 | 2     | 3 | 4 |
@@ -167,7 +165,6 @@ Feature: Weekly Chores API - createWeeklyChores
         Given I use the admin token
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B     | C   | D |
             | 2025.01 | 1 | 2     | 3   | 4 |
@@ -196,10 +193,9 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2025.16 |
             | 2025.17 |
             | 2025.18 |
-        Given I use the admin token
+        And I use the admin token
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D |
             | 2025.01 | 1 | 2 | 3 | 4 |
@@ -210,6 +206,26 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2025.16 | 1 | 2 | 3 | 4 |
             | 2025.17 | 2 | 3 | 4 | 1 |
             | 2025.18 | 3 | 4 | 1 | 2 |
+
+
+    Scenario Outline: Validate multiweek syntax support
+        Given there are 4 tenants
+        And there are 4 chore types
+        And the field "weekId" with string value "<week_id>"
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "200"
+        When I send a request to the Api resource "listWeeklyChores"
+        Then the response status code is "200"
+        And the response contains the following weekly chores
+            | week_id        | A | B | C | D |
+            | <real_week_id> | 1 | 2 | 3 | 4 |
+
+        Examples:
+            | week_id | real_week_id          |
+            | next    | [NOW(%Y.%W) + 7 DAYS] |
+            | current | [NOW(%Y.%W)]          |
+            | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
     Scenario: Validate error when creating duplicate weekly chores
@@ -325,7 +341,6 @@ Feature: Weekly Chores API - createWeeklyChores
         Given I use the admin token
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
-        And the response body is validated against the json-schema "weekly-chore-list"
         And the response contains the following weekly chores
             | week_id | A | B | C | D | E |
             | 2022.01 | 1 | 2 | 3 | 1 | 2 |

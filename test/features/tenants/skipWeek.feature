@@ -80,7 +80,7 @@ Feature: Tenants API - skipWeek
             | week_id        | A | B   | C |
             | <real_week_id> | 1 | 1,3 | 3 |
 
-        Examples:
+        Examples: week_id = <week_id> | real_week_id = <real_week_id>
             | week_id | real_week_id          |
             | next    | [NOW(%Y.%W) + 7 DAYS] |
 

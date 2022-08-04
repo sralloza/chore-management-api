@@ -4,6 +4,7 @@ import es.sralloza.choremanagementbot.models.custom.Tenant;
 import es.sralloza.choremanagementbot.models.custom.WeeklyChores;
 import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
+import es.sralloza.choremanagementbot.utils.WeekIdHelper;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,8 @@ public class WeeklyChoresController {
     private WeekIdValidator validator;
     @Autowired
     private SimpleSecurity security;
+    @Autowired
+    private WeekIdHelper weekIdHelper;
 
     @GetMapping()
     public List<WeeklyChores> listWeeklyChores() {
@@ -37,6 +40,7 @@ public class WeeklyChoresController {
 
     @GetMapping("/{weekId}")
     public WeeklyChores getWeeklyChores(@PathVariable("weekId") String weekId) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
         security.requireTenant();
         return service.getByWeekIdOr404(weekId);
@@ -45,6 +49,7 @@ public class WeeklyChoresController {
     @PostMapping("/{weekId}")
     public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId,
                                            @QueryParam("force") Boolean force) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
         validator.validateTimeline(weekId);
         security.requireAdmin();
@@ -54,6 +59,7 @@ public class WeeklyChoresController {
     @DeleteMapping("/{weekId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteWeeklyChores(@PathVariable("weekId") String weekId) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
         security.requireAdmin();
         service.deleteWeeklyChores(weekId);
@@ -63,6 +69,7 @@ public class WeeklyChoresController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void completeWeeklyChores(@PathVariable("weekId") String weekId,
                                      @PathVariable("choreType") String choreType) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
         security.requireTenant();
         var tenantId = Optional.ofNullable(security.getTenant())

@@ -41,11 +41,11 @@ Feature: Weekly Chores API - completeTask
 
 
     Scenario Outline: Complete task happy path
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
+        Given there are 2 tenants, 2 chore types and weekly chores for the week "<real_week_id>"
         And the fields
-            | field     | value   |
-            | weekId    | 2022.01 |
-            | choreType | A       |
+            | field     | value     |
+            | weekId    | <week_id> |
+            | choreType | A         |
         And I use the token of the tenant with id "<tenant_id>"
         When I send a request to the Api
         Then the response status code is "204"
@@ -55,10 +55,14 @@ Feature: Weekly Chores API - completeTask
         And the response attribute ".[0].chores[0].done" is "True"
         And the response attribute ".[0].chores[1].done" is "False"
 
-        Examples: tenant_id = <tenant_id>
-            | tenant_id |
-            | 1         |
-            | admin     |
+        Examples: tenant_id = <tenant_id> | week_id = <week_id> | real_week_id = <real_week_id>
+            | tenant_id | week_id | real_week_id          |
+            | 1         | next    | [NOW(%Y.%W) + 7 DAYS] |
+            | 1         | current | [NOW(%Y.%W)]          |
+            | 1         | last    | [NOW(%Y.%W) - 7 DAYS] |
+            | admin     | next    | [NOW(%Y.%W) + 7 DAYS] |
+            | admin     | current | [NOW(%Y.%W)]          |
+            | admin     | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
     Scenario Outline: Complete task assigned to two users

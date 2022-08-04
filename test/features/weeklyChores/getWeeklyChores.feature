@@ -32,16 +32,22 @@ Feature: Weekly Chores API - getWeeklyChores
         Then the response status code is "200"
 
 
-    Scenario: Get weekly chores by weekId
-        Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
+    Scenario Outline: Get weekly chores by weekId
+        Given there are 1 tenant, 1 chore type and weekly chores for the week "<real_week_id>"
         And I use the token of the tenant with id "1"
-        And the field "weekId" with string value "2022.01"
+        And the field "weekId" with string value "<week_id>"
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore"
         And the response contains the following weekly chores
-            | week_id | A |
-            | 2022.01 | 1 |
+            | week_id        | A |
+            | <real_week_id> | 1 |
+
+        Examples: week_id = <week_id> | real_week_id = <real_week_id>
+            | week_id | real_week_id          |
+            | next    | [NOW(%Y.%W) + 7 DAYS] |
+            | current | [NOW(%Y.%W)]          |
+            | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
     Scenario: Validate error response when weekly chores not found
