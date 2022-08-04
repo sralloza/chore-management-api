@@ -42,11 +42,6 @@ public class WeeklyChoresController {
         return service.getByWeekIdOr404(weekId);
     }
 
-    @PostMapping()
-    public WeeklyChores createNextWeekChores(@QueryParam("force") Boolean force) {
-        return service.createNextWeekChores(force);
-    }
-
     @PostMapping("/{weekId}")
     public WeeklyChores createWeeklyChores(@PathVariable("weekId") String weekId,
                                            @QueryParam("force") Boolean force) {
