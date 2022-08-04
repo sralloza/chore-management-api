@@ -58,7 +58,7 @@ Feature: Weekly Chores API - getWeeklyChores
         And the error message is "No weekly chores found for week 2022.01"
 
 
-    Scenario Outline: Validate error when trying to get weekly chores by an invalid weekId
+    Scenario Outline: Validate error response when trying to get weekly chores by an invalid weekId
         Given the field "weekId" with string value "<invalid_week_id>"
         When I send a request to the Api
         Then the response status code is "400"

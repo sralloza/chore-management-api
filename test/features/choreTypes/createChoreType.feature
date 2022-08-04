@@ -86,13 +86,13 @@ Feature: Chore Types API - createChoreType
             | tenant3 | 0         |
 
 
-    Scenario: Validate error when sending no body
+    Scenario: Validate error response when sending no body
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Missing request body"
 
 
-    Scenario Outline: Validate error when sending an invalid body
+    Scenario Outline: Validate error response when sending an invalid body
         When I send a request to the Api with body
             """
             <body>
@@ -106,7 +106,7 @@ Feature: Chore Types API - createChoreType
             | "string"   | Invalid request body |
 
 
-    Scenario Outline: Validate error when missing required fields
+    Scenario Outline: Validate error response when missing required fields
         When I send a request to the Api with body params
             | param_name  | param_value   |
             | id          | <id>          |
@@ -124,7 +124,7 @@ Feature: Chore Types API - createChoreType
 
 
 
-    Scenario Outline: Validate error creating a chore type with invalid fields
+    Scenario Outline: Validate error response creating a chore type with invalid fields
         When I send a request to the Api with body params
             | param_name  | param_value   |
             | id          | <id>          |

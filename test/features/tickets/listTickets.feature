@@ -1,5 +1,6 @@
 @api.tickets
 @listTickets
+@sanity
 Feature: Tickets API - listTickets
 
     As a tenant or admin
@@ -27,7 +28,7 @@ Feature: Tickets API - listTickets
         Then the response status code is "200"
 
 
-    Scenario: list tickets happy path
+    Scenario: List tickets happy path
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         And I use the token of the tenant with id "1"
         When I send a request to the Api
@@ -36,7 +37,7 @@ Feature: Tickets API - listTickets
         And the Api response contains the expected data
 
 
-    Scenario: list tickets no tenants
+    Scenario: List tickets no tenants
         And I use the admin token
         When I send a request to the Api
         Then the response status code is "200"

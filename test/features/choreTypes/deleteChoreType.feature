@@ -48,7 +48,7 @@ Feature: Chore Types API - deleteChoreType
             """
 
 
-    Scenario: Validate error when deleting a non existing chore type
+    Scenario: Validate error response when deleting a non existing chore type
         Given the field "choreTypeId" with value "invalid"
         And I use the admin token
         When I send a request to the Api
@@ -56,7 +56,7 @@ Feature: Chore Types API - deleteChoreType
         And the error message is "No chore type found with id invalid"
 
 
-    Scenario: Validate error when deleting a chore type with pending chores
+    Scenario: Validate error response when deleting a chore type with pending chores
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
         And the field "choreTypeId" with value "A"
@@ -66,7 +66,7 @@ Feature: Chore Types API - deleteChoreType
         And the error message is "Chore type A has 2 pending chores"
 
 
-    Scenario: Validate error when deleting a chore type with non balanced tickets
+    Scenario: Validate error response when deleting a chore type with non balanced tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |

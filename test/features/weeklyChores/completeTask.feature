@@ -1,5 +1,6 @@
 @api.tenants
 @completeTask
+@sanity
 Feature: Weekly Chores API - completeTask
 
     As a tenant or admin
@@ -116,7 +117,7 @@ Feature: Weekly Chores API - completeTask
         And the error message is "Chore already completed"
 
 
-    Scenario Outline: Validate error invalid weekId
+    Scenario Outline: Validate error response invalid weekId
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the fields
             | field     | value             | as_string |
