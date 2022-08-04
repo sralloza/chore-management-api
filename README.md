@@ -48,7 +48,7 @@ behave -t authorization
   - [x] getCurrentWeekId
   - [x] getLastWeekId
   - [x] getNextWeekId
-- [ ] weeklyChores
+- [x] weeklyChores
   - [x] completeTask
   - [x] createWeeklyChores
   - [x] deleteWeeklyChores
