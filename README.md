@@ -1,6 +1,6 @@
 # Meal Planner Bot
 
-Successor of the - [Meal Planner API](https://github.com/sralloza/meal-planner).
+Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
 
 ## Testing
 
@@ -21,53 +21,16 @@ behave -t sanity
 behave -t authorization
 ```
 
-## Development
-
-### Endpoints
-
-- [x] choreTypes
-  - [x] createChoreType
-  - [x] deleteChoreType
-  - [x] getChoreType
-  - [x] listChoreTypes
-- [x] tenants
-  - [x] createTenant
-  - [x] deleteTenant
-  - [x] getTenant
-  - [x] listTenants
-  - [x] recreateTenantToken
-  - [x] skipWeek
-  - [x] unSkipWeek
-- [x] transfers
-  - [x] acceptTransfer
-  - [x] getTransfer
-  - [x] listTransfers
-  - [x] rejectTransfer
-  - [x] startTransfer
-- [x] weekId
-  - [x] getCurrentWeekId
-  - [x] getLastWeekId
-  - [x] getNextWeekId
-- [x] weeklyChores
-  - [x] completeTask
-  - [x] createWeeklyChores
-  - [x] deleteWeeklyChores
-  - [x] getWeeklyChores
-  - [x] listWeeklyChores
-- [x] tickets
-  - [x] listTickets
-
-### Other tasks
+## Pending features
 
 - [ ] Add pagination in all `list` endpoints
 - [ ] Add prometheus metrics
 - [ ] Add redoc documentation
-- [x] Update `sanity` tag
 - [ ] Fix timing tests in CI
 
 ## Deploy
 
-Docker images are provided in - [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
+Docker images are provided in [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
 
 ## Configuration
 
