@@ -54,18 +54,16 @@ behave -t authorization
   - [x] deleteWeeklyChores
   - [x] getWeeklyChores
   - [x] listWeeklyChores
-- [ ] tickets
-  - [ ] transferTickets
-  - [ ] getTicketsByChoreType
+- [x] tickets
   - [x] listTickets
 
 ### Other tasks
 
-- [ ] Fix timing tests in CI
-- [ ] Add prometheus metrics
 - [ ] Add pagination in all `list` endpoints
+- [ ] Add prometheus metrics
 - [ ] Add redoc documentation
-- [ ] Update `sanity` tag
+- [x] Update `sanity` tag
+- [ ] Fix timing tests in CI
 
 ## Deploy
 
