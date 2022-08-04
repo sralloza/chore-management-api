@@ -36,7 +36,7 @@ def get_dataset():
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
-    # check_naming(scenario)
+    check_naming(scenario)
 
     dataset.project_config = get_dataset()
     context.session = requests.Session()
@@ -79,6 +79,9 @@ def after_all(context):
 
 def check_naming(scenario):
     scenario_name = scenario.name
-    if not scenario_name.istitle():
-        msg = f"Scenario name should be titled ({scenario_name.title()})"
+    if not scenario_name[0].isupper():
+        name = scenario_name[0].upper() + scenario_name[1:]
+        msg = f"Scenario name should be titled ({name})"
         raise AssertionError(msg)
+    if "validate error" in scenario_name.lower():
+        assert "validate error response" in scenario_name.lower()

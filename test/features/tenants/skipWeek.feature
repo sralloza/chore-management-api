@@ -42,7 +42,7 @@ Feature: Tenants API - skipWeek
         Then the response status code is "204"
 
 
-    Scenario Outline: a tenant skips a single week
+    Scenario Outline: A tenant skips a single week
         Given there are 3 tenants
         And there are 3 chore types
         And the fields
@@ -85,7 +85,7 @@ Feature: Tenants API - skipWeek
             | next    | [NOW(%Y.%W) + 7 DAYS] |
 
 
-    Scenario Outline: a tenant skips the next week
+    Scenario Outline: A tenant skips the next week
         Given there are 3 tenants
         And there are 3 chore types
         And the fields
@@ -131,7 +131,7 @@ Feature: Tenants API - skipWeek
         And the error message is "You don't have permission to access other tenant's data"
 
 
-    Scenario Outline: Validate error when tenants skips an invalid week
+    Scenario Outline: Validate error response when tenants skips an invalid week
         Given there is 1 tenant
         And the fields
             | field    | value             | as_string |
@@ -153,7 +153,7 @@ Feature: Tenants API - skipWeek
             | whatever        |
 
 
-    Scenario: validate error when tenant skips a really past week
+    Scenario: Validate error response when tenant skips a really past week
         Given there is 1 tenant
         And the fields
             | field    | value   | as_string |
@@ -165,7 +165,7 @@ Feature: Tenants API - skipWeek
         And the error message is "Cannot skip a week in the past"
 
 
-    Scenario: validate error when tenant skips last week
+    Scenario: Validate error response when tenant skips last week
         Given there is 1 tenant
         And the fields
             | field    | value                 | as_string |
@@ -177,7 +177,7 @@ Feature: Tenants API - skipWeek
         And the error message is "Cannot skip a week in the past"
 
 
-    Scenario: validate error when tenant skips a week in the past
+    Scenario: Validate error response when tenant skips a week in the past
         Given there is 1 tenant
         And the fields
             | field    | value        | as_string |

@@ -89,7 +89,7 @@ Feature: Transfers API - rejectTransfer
         And the response timestamp attribute is at most "50" ms ago
 
 
-    Scenario: Validate error when rejecting a chore transfer twice
+    Scenario: Validate error response when rejecting a chore transfer twice
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
@@ -105,7 +105,7 @@ Feature: Transfers API - rejectTransfer
         And the error message contains "Transfer with id .+ already completed"
 
 
-    Scenario: Validate error when rejecting a chore transfer with invalid transfer_id
+    Scenario: Validate error response when rejecting a chore transfer with invalid transfer_id
         Given I use the admin token
         And the field "transferId" with value "999"
         When I send a request to the Api

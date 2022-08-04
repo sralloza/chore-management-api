@@ -65,7 +65,7 @@ Feature: Tenants API - getTenant
         And the error message is "You don't have permission to access other tenant's data"
 
 
-    Scenario: Validate error when requesting non existing tenant
+    Scenario: Validate error response when requesting non existing tenant
         Given the field "tenantId" with value "2"
         And I use the admin token
         When I send a request to the Api

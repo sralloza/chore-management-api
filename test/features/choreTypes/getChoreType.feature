@@ -41,7 +41,7 @@ Feature: Chore Types API - getChoreType
         And the Api response contains the expected data
 
 
-    Scenario: Validate error when getting a non existing chore type
+    Scenario: Validate error response when getting a non existing chore type
         Given the field "choreTypeId" with value "X"
         And I use the admin token
         When I send a request to the Api

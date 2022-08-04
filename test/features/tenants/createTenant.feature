@@ -52,7 +52,7 @@ Feature: Tenants API - createTenant
             | api_token  |
 
 
-    Scenario: Validate error creating a duplicate tenant
+    Scenario: Validate error response creating a duplicate tenant
         Given I use the admin token
         When I send a request to the Api with body params
             | param_name | param_value |
@@ -67,7 +67,7 @@ Feature: Tenants API - createTenant
         And the error message is "Tenant with id 111 already exists"
 
 
-    Scenario Outline: Validate error creating a tenant with invalid body
+    Scenario Outline: Validate error response creating a tenant with invalid body
         When I send a request to the Api with body
             """
             <body>
@@ -81,7 +81,7 @@ Feature: Tenants API - createTenant
             | "string"   | Invalid request body |
 
 
-    Scenario Outline: Validate error creating a tenant with an invalid tenant_id
+    Scenario Outline: Validate error response creating a tenant with an invalid tenant_id
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |
@@ -95,7 +95,7 @@ Feature: Tenants API - createTenant
             | [INT:-3]  | tenant_id must be positive |
 
 
-    Scenario Outline: Validate error creating a tenant with an invalid name
+    Scenario Outline: Validate error response creating a tenant with an invalid name
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | <username>  |

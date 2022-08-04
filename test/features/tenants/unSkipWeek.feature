@@ -43,7 +43,7 @@ Feature: Tenants API - unSkipWeek
         Then the response status code is "204"
 
 
-    Scenario Outline: a tenant unskips a single week
+    Scenario Outline: A tenant unskips a single week
         Given there are 3 tenants
         And there are 3 chore types
         And the tenant "<real_tenant_id>" skips the week "2025.01"
@@ -109,7 +109,7 @@ Feature: Tenants API - unSkipWeek
         And the error message is "You don't have permission to access other tenant's data"
 
 
-    Scenario: validate error when tenants unskips a non skipped week
+    Scenario: Validate error response when tenants unskips a non skipped week
         Given there is 1 tenant
         And the fields
             | field    | value   |
@@ -121,7 +121,7 @@ Feature: Tenants API - unSkipWeek
         And the error message is "Tenant with id 1 has not skipped the week 2022.01"
 
 
-    Scenario Outline: Validate error when tenants unskips an invalid week
+    Scenario Outline: Validate error response when tenants unskips an invalid week
         Given there is 1 tenant
         And the fields
             | field    | value             | as_string |

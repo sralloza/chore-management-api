@@ -216,7 +216,7 @@ Feature: Transfers API - startTransfer
         And the response timestamp attribute is at most "50" ms ago
 
 
-    Scenario: Validate error when a tenant tries to transfer a chore to multiple tenants
+    Scenario: Validate error response when a tenant tries to transfer a chore to multiple tenants
         Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
         And I use the token of the tenant with id "1"
         When I send a request to the Api with body params
@@ -285,7 +285,7 @@ Feature: Transfers API - startTransfer
 
 
 
-    Scenario Outline: Validate error when the tenant_id does not belong to any tenant
+    Scenario Outline: Validate error response when the tenant_id does not belong to any tenant
         Given there are 3 tenants
         And I use the admin token
         When I send a request to the Api with body params
@@ -303,7 +303,7 @@ Feature: Transfers API - startTransfer
             | 1              | 9999         |
 
 
-    Scenario: Validate error when the tenant_id_from is the same as the tenant_id_to
+    Scenario: Validate error response when the tenant_id_from is the same as the tenant_id_to
         Given I use the admin token
         When I send a request to the Api with body params
             | param_name     | param_value | as_string |
@@ -315,7 +315,7 @@ Feature: Transfers API - startTransfer
         And the error message is "Cannot transfer chore to the same tenant"
 
 
-    Scenario: Validate error when a tenant tries to transfer a chore that belongs to another tenant
+    Scenario: Validate error response when a tenant tries to transfer a chore that belongs to another tenant
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
@@ -333,7 +333,7 @@ Feature: Transfers API - startTransfer
             """
 
 
-    Scenario: Validate error when a tenant tries to transfer a chore which type does not exist
+    Scenario: Validate error response when a tenant tries to transfer a chore which type does not exist
         Given there are 3 tenants
         And I use the admin token
         When I send a request to the Api with body params

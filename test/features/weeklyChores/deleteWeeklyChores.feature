@@ -49,7 +49,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
             | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-    Scenario: Validate error when deleting an unknown weekly chore
+    Scenario: Validate error response when deleting an unknown weekly chore
         Given I use the admin token
         And the field "weekId" with string value "2022.01"
         When I send a request to the Api
@@ -57,7 +57,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
         And the error message is "No weekly chores found for week 2022.01"
 
 
-    Scenario Outline: Validate error when deleting weekly chores for invalid week
+    Scenario Outline: Validate error response when deleting weekly chores for invalid week
         Given I use the admin token
         And the field "weekId" with string value "<invalid_week_id>"
         When I send a request to the Api

@@ -229,7 +229,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-    Scenario: Validate error when creating duplicate weekly chores
+    Scenario: Validate error response when creating duplicate weekly chores
         Given there is 1 tenant
         And there is 1 chore type
         And the field "weekId" with string value "2022.01"
@@ -241,7 +241,7 @@ Feature: Weekly Chores API - createWeeklyChores
         And the error message contains "Weekly chores for week .+ already exist"
 
 
-    Scenario Outline: Validate error when creating weekly chores for invalid week
+    Scenario Outline: Validate error response when creating weekly chores for invalid week
         Given the field "weekId" with string value "<invalid_week_id>"
         And I use the admin token
         When I send a request to the Api
@@ -259,7 +259,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | whatever        |
 
 
-    Scenario Outline: Validate error when creating weekly chores for an old week
+    Scenario Outline: Validate error response when creating weekly chores for an old week
         Given there are 1 tenant, 1 chore type and weekly chores for the week "[NOW(%Y.%W)]"
         And the field "weekId" with string value "<old_week_id>"
         And I use the admin token
@@ -276,7 +276,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | [NOW(%Y.%W) - 7 DAYS] |
 
 
-    Scenario: Validate error when creating weekly chores after tenants have changed
+    Scenario: Validate error response when creating weekly chores after tenants have changed
         Given there are 3 tenants
         And there are 3 chore types
         And I create the weekly chores for the week "2022.01" using the API
@@ -348,7 +348,7 @@ Feature: Weekly Chores API - createWeeklyChores
             | 2022.02 | 2 | 3 | 1 | 2 | 3 |
             | 2022.03 | 1 | 2 | 3 | 4 | 1 |
 
-    Scenario: Validate error when creating weekly chores but there are no tenants
+    Scenario: Validate error response when creating weekly chores but there are no tenants
         Given there is 1 chore type
         And the field "weekId" with string value "2022.01"
         And I use the admin token
@@ -357,7 +357,7 @@ Feature: Weekly Chores API - createWeeklyChores
         And the error message is "Can't create weekly chores, no tenants registered"
 
 
-    Scenario: Validate error when creating weekly chores but there are no chore types
+    Scenario: Validate error response when creating weekly chores but there are no chore types
         Given there is 1 tenant
         And the field "weekId" with string value "2022.01"
         And I use the admin token

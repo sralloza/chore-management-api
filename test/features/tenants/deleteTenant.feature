@@ -53,7 +53,7 @@ Feature: Tenants API - deleteTenant
             """
 
 
-    Scenario: Validate error deleting a non-existing tenant
+    Scenario: Validate error response deleting a non-existing tenant
         Given the field "tenantId" with value "111"
         And I use the admin token
         When I send a request to the Api
@@ -61,7 +61,7 @@ Feature: Tenants API - deleteTenant
         And the error message is "No tenant found with id 111"
 
 
-    Scenario: Validate error deleting a tenant with open tasks
+    Scenario: Validate error response deleting a tenant with open tasks
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
         Given the field "tenantId" with value "1"
@@ -71,7 +71,7 @@ Feature: Tenants API - deleteTenant
         And the error message is "Tenant has 2 pending chores"
 
 
-    Scenario: Validate error deleting a tenant with negative tickets
+    Scenario: Validate error response deleting a tenant with negative tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
@@ -83,7 +83,7 @@ Feature: Tenants API - deleteTenant
         And the error message is "Tenant has unbalanced tickets"
 
 
-    Scenario: Validate error deleting a tenant with positive tickets
+    Scenario: Validate error response deleting a tenant with positive tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |

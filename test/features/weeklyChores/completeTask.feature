@@ -117,7 +117,7 @@ Feature: Weekly Chores API - completeTask
         And the error message is "Chore already completed"
 
 
-    Scenario Outline: Validate error invalid weekId
+    Scenario Outline: Validate error response invalid weekId
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the fields
             | field     | value             | as_string |
