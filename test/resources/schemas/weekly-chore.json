@@ -5,6 +5,7 @@
   "definitions": {
     "WeeklyChore": {
       "type": "object",
+      "additionalProperties": false,
       "properties": {
         "week_id": {
           "$ref": "week-id.json#/definitions/WeekID"
@@ -13,6 +14,7 @@
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "properties": {
               "week_id": {
                 "$ref": "week-id.json#/definitions/WeekID"

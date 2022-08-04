@@ -1,23 +1,30 @@
 {
   "$schema": "https://json-schema.org/draft-07/schema",
   "type": "object",
-  "$ref": "#/definitions/tenant",
+  "$ref": "#/definitions/ticket",
   "definitions": {
-    "tenant": {
+    "ticket": {
       "$schema": "https://json-schema.org/draft-07/schema",
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "tenant_id": {
-          "type": "integer"
-        },
-        "username": {
+        "id": {
           "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "tickets_by_tenant": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer"
+          }
         }
       },
       "required": [
-        "tenant_id",
-        "username"
+        "id",
+        "description",
+        "tickets_by_tenant"
       ]
     }
   }

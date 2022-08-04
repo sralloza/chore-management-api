@@ -57,7 +57,7 @@ behave -t authorization
 - [ ] tickets
   - [ ] transferTickets
   - [ ] getTicketsByChoreType
-  - [ ] listTickets
+  - [x] listTickets
 
 ### Other tasks
 
