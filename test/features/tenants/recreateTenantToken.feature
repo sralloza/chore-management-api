@@ -1,5 +1,6 @@
 @api.tenants
 @recreateTenantToken
+@sanity
 Feature: Tenants API - recreateTenantToken
 
     As an admin or tenant
@@ -65,4 +66,3 @@ Feature: Tenants API - recreateTenantToken
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "You don't have permission to access other tenant's data"
-

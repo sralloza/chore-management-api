@@ -1,5 +1,6 @@
 @api.weekly-chores
 @createWeeklyChores
+@sanity
 Feature: Weekly Chores API - createWeeklyChores
 
     As an admin

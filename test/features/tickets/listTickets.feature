@@ -1,5 +1,6 @@
 @api.tickets
 @listTickets
+@sanity
 Feature: Tickets API - listTickets
 
     As a tenant or admin

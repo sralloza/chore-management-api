@@ -1,5 +1,6 @@
 @api.transfers
 @startTransfer
+@sanity
 Feature: Transfers API - startTransfer
 
     As a tenant or admin

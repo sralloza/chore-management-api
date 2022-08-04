@@ -1,5 +1,6 @@
 @api.weekly-chores
 @listWeeklyChores
+@sanity
 Feature: Weekly Chores API - listWeeklyChores
 
     As a tenant or admin

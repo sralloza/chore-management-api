@@ -1,5 +1,6 @@
 @api.tenants
 @completeTask
+@sanity
 Feature: Weekly Chores API - completeTask
 
     As a tenant or admin

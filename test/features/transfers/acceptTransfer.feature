@@ -1,5 +1,6 @@
 @api.transfers
 @acceptTransfer
+@sanity
 Feature: Transfers API - acceptTransfer
 
     As a tenant
