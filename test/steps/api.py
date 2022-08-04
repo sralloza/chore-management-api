@@ -51,6 +51,7 @@ def step_impl(context, message=None):
 @step('the error message is "{message}"')
 def step_impl(context, message=None):
     message = message or context.text
+    message = replace_param(message, infer_param_type=False)
     assert "message" in context.res.json(), "No error message in response"
     actual = context.res.json()["message"]
 
@@ -101,7 +102,7 @@ def step_impl(context, ms):
     assert actual_ms <= ms, f"Timestamp is {actual_ms:.2f} ms ago"
 
 
-@step("The parameters to filter the request")
+@step("the parameters to filter the request")
 def step_impl(context):
     context.params = table_to_dict(context.table)
 

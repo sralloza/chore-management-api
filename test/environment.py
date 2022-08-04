@@ -28,7 +28,7 @@ def before_feature(context, feature):
 
 def get_dataset():
     dataset = {}
-    apis_path = Path(__file__).parent / "settings/apis.json"
+    apis_path = Path(__file__).parent / "settings/endpoints.json"
     dataset["apis"] = loads(apis_path.read_text())
 
     return dataset
@@ -42,7 +42,6 @@ def before_scenario(context, scenario):
     context.session = requests.Session()
 
     context.get = lambda path, **kwargs: _send_request(context, "GET", path, **kwargs)
-    context.post = lambda path, **kwargs: _send_request(context, "POST", path, **kwargs)
 
     reset_databases()
     context.res = None

@@ -65,9 +65,8 @@ Feature: Weekly Chores API - completeTask
         Given there are 3 tenants
         And there are 3 chore types
         And the tenant "3" skips the week "2030.01"
-        When I create the weekly chores for the week "2030.01" using the API
-        Then the response status code is "200"
-        Given the fields
+        And I create the weekly chores for the week "2030.01" using the API
+        And the fields
             | field     | value   |
             | weekId    | 2030.01 |
             | choreType | C       |

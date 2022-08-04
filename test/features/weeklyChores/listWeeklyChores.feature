@@ -29,12 +29,12 @@ Feature: Weekly Chores API - listWeeklyChores
     Scenario: list weekly chores
         Given there is 1 tenant
         And there is 1 chore type
-        And I use the token of the tenant with id "1"
         And I create the weekly chores for the following weeks using the API
             | week_id |
             | 2022.01 |
             | 2022.02 |
             | 2022.03 |
+        And I use the token of the tenant with id "1"
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"

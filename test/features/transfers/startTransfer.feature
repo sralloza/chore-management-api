@@ -317,8 +317,7 @@ Feature: Transfers API - startTransfer
     Scenario: Validate error when a tenant tries to transfer a chore that belongs to another tenant
         Given there are 3 tenants
         And there are 3 chore types
-        When I create the weekly chores for the week "2022.01" using the API
-        Then the response status code is "200"
+        And I create the weekly chores for the week "2022.01" using the API
         Given I use the token of the tenant with id "1"
         When I send a request to the Api with body params
             | param_name     | param_value | as_string |
