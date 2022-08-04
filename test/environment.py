@@ -42,7 +42,6 @@ def before_scenario(context, scenario):
     context.session = requests.Session()
 
     context.get = lambda path, **kwargs: _send_request(context, "GET", path, **kwargs)
-    context.post = lambda path, **kwargs: _send_request(context, "POST", path, **kwargs)
 
     reset_databases()
     context.res = None
