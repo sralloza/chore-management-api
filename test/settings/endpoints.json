@@ -108,5 +108,9 @@
     "path": "/weekly-chores/{weekId}",
     "pathParams": ["weekId"],
     "method": "POST"
+  },
+  "listTickets": {
+    "path": "/tickets",
+    "method": "GET"
   }
 }
