@@ -33,14 +33,20 @@ Feature: Weekly Chores API - deleteWeeklyChores
         Then the response status code is "204"
 
 
-    Scenario: Delete a weekly chore
-        Given there are 1 tenants, 1 chore types and weekly chores for the week "2022.01"
+    Scenario Outline: Delete a weekly chore
+        Given there are 1 tenants, 1 chore types and weekly chores for the week "<real_week_id>"
         And I use the admin token
-        And the field "weekId" with string value "2022.01"
+        And the field "weekId" with string value "<week_id>"
         When I send a request to the Api
         Then the response status code is "204"
         And the Api response is empty
         And the database contains the following weekly chores
+
+        Examples: week_id = <week_id> | real_week_id = <real_week_id>
+            | week_id | real_week_id          |
+            | next    | [NOW(%Y.%W) + 7 DAYS] |
+            | current | [NOW(%Y.%W)]          |
+            | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
     Scenario: Validate error when deleting an unknown weekly chore

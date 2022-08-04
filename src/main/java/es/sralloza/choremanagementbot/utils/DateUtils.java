@@ -42,6 +42,14 @@ public class DateUtils {
         return getWeekIdByLocalDate(localDate);
     }
 
+    public String getNextWeekId() {
+        return getWeekIdByDeltaDays(7);
+    }
+
+    public String getLastWeekId() {
+        return getWeekIdByDeltaDays(-7);
+    }
+
     public String getCurrentWeekId() {
         LocalDate localDate = dateProvider.getCurrentDate();
         return getWeekIdByLocalDate(localDate);

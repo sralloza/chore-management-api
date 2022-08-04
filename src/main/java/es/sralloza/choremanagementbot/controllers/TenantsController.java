@@ -7,6 +7,7 @@ import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.SkipWeeksService;
 import es.sralloza.choremanagementbot.services.TenantsService;
 import es.sralloza.choremanagementbot.utils.TenantIdHelper;
+import es.sralloza.choremanagementbot.utils.WeekIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +33,8 @@ public class TenantsController {
     private SkipWeeksService skipWeeksService;
     @Autowired
     private TenantIdHelper tenantIdHelper;
+    @Autowired
+    private WeekIdHelper weekIdHelper;
     @Autowired
     private SimpleSecurity security;
 
@@ -72,6 +75,7 @@ public class TenantsController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void skipWeek(@PathVariable("weekId") String weekId,
                          @PathVariable("tenantId") String tenantId) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         security.requireTenantFromPath(tenantId);
         var askedTenantId = tenantIdHelper.parseTenantId(tenantId);
         skipWeeksService.skipWeek(weekId, askedTenantId);
@@ -81,6 +85,7 @@ public class TenantsController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void unSkipWeek(@PathVariable("weekId") String weekId,
                            @PathVariable("tenantId") String tenantId) {
+        weekId = weekIdHelper.parseWeekId(weekId);
         security.requireTenantFromPath(tenantId);
         var askedTenantId = tenantIdHelper.parseTenantId(tenantId);
         skipWeeksService.unSkipWeek(weekId, askedTenantId);

@@ -64,6 +64,27 @@ Feature: Tenants API - skipWeek
             | me        | 2              |
 
 
+    Scenario Outline: Validate multiweek syntax support
+        Given there are 3 tenants
+        And there are 3 chore types
+        And the fields
+            | field    | value     | as_string |
+            | tenantId | 2         | false     |
+            | weekId   | <week_id> | true      |
+        And I use the admin token
+        When I send a request to the Api
+        Then the response status code is "204"
+        And the Api response is empty
+        Given I create the weekly chores for the week "<real_week_id>" using the API
+        And the database contains the following weekly chores
+            | week_id        | A | B   | C |
+            | <real_week_id> | 1 | 1,3 | 3 |
+
+        Examples: week_id = <week_id> | real_week_id = <real_week_id>
+            | week_id | real_week_id          |
+            | next    | [NOW(%Y.%W) + 7 DAYS] |
+
+
     Scenario Outline: a tenant skips the next week
         Given there are 3 tenants
         And there are 3 chore types
