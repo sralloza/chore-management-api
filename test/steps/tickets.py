@@ -19,7 +19,7 @@ def step_impl(context):
     Given I use the admin token
     When I send a request to the Api resource "listTickets"
     Then the response contains the following tickets
-    And I clear the token
     {table_to_str(context.table)}
+    And I clear the token
     """
     )
