@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Tenant {
     @JsonProperty("tenant_id")
-    Integer tenantId;
+    Long tenantId;
     String username;
     @JsonProperty("api_token")
     UUID apiToken;

@@ -16,5 +16,5 @@ public class ChoreTypeTickets {
     private String id;
     private String description;
     @JsonProperty("tickets_by_tenant")
-    private Map<String, Integer> ticketsByTenant;
+    private Map<String, Long> ticketsByTenant;
 }

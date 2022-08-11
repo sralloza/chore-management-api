@@ -44,22 +44,22 @@ public class TenantsService {
                 .collect(Collectors.toList());
     }
 
-    public SimpleTenant getSimpleTenantById(Integer tenantId) {
+    public SimpleTenant getSimpleTenantById(Long tenantId) {
         return simpleTenantMapper.build(getTenantById(tenantId));
     }
 
-    public Tenant getTenantById(Integer tenantId) {
+    public Tenant getTenantById(Long tenantId) {
         return getTenantById(tenantId, getNotFoundException(tenantId));
     }
 
-    public Tenant getTenantById(Integer tenantId, Supplier<? extends RuntimeException> exceptionSupplier) {
+    public Tenant getTenantById(Long tenantId, Supplier<? extends RuntimeException> exceptionSupplier) {
         return repository.findById(tenantId)
                 .map(tenantMapper::build)
                 .orElseThrow(exceptionSupplier);
     }
 
     public String getTenantsHash() {
-        Set<Integer> tenantIds = listTenants().stream()
+        Set<Long> tenantIds = listTenants().stream()
                 .map(Tenant::getTenantId)
                 .collect(Collectors.toSet());
         return DigestUtils.sha256Hex(tenantIds.toString());
@@ -76,7 +76,7 @@ public class TenantsService {
         return tenantMapper.build(tenant);
     }
 
-    public void deleteTenantById(Integer tenantId) {
+    public void deleteTenantById(Long tenantId) {
         if (!repository.existsById(tenantId)) {
             throw getNotFoundException(tenantId).get();
         }
@@ -84,7 +84,7 @@ public class TenantsService {
         Tenant tenant = getTenantById(tenantId);
         List<ChoreTypeTickets> tickets = ticketsService.listChoreTypeTickets();
         for (var choreTypeTickets : tickets) {
-            Map<String, Integer> ticketsMap = choreTypeTickets.getTicketsByTenant();
+            Map<String, Long> ticketsMap = choreTypeTickets.getTicketsByTenant();
             if (ticketsMap.get(tenant.getUsername()) != 0) {
                 throw new BadRequestException("Tenant has unbalanced tickets");
             }
@@ -104,11 +104,11 @@ public class TenantsService {
         ticketsService.deleteTicketsByTenant(tenantId);
     }
 
-    private Supplier<NotFoundException> getNotFoundException(Integer tenantId) {
+    private Supplier<NotFoundException> getNotFoundException(Long tenantId) {
         return () -> new NotFoundException("No tenant found with id " + tenantId);
     }
 
-    public Tenant recreateTenantToken(Integer id) {
+    public Tenant recreateTenantToken(Long id) {
         Tenant tenant = getTenantById(id);
         UUID uuid = UUID.randomUUID();
         tenant.setApiToken(uuid);

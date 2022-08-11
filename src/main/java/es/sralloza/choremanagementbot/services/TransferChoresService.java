@@ -51,7 +51,7 @@ public class TransferChoresService {
                 .orElseThrow(() -> new NotFoundException("No transfer found with id " + id));
     }
 
-    public Transfer registerTransfer(Integer from, Integer to, String choreType, String weekId) {
+    public Transfer registerTransfer(Long from, Long to, String choreType, String weekId) {
         DBTransfer transfer = new DBTransfer()
                 .setTenantIdFrom(from)
                 .setTenantIdTo(to)
@@ -64,7 +64,7 @@ public class TransferChoresService {
         return mapper.build(transfer);
     }
 
-    public Transfer startTransfer(Integer from, Integer to, String choreTypeId, String weekId) {
+    public Transfer startTransfer(Long from, Long to, String choreTypeId, String weekId) {
         if (from.equals(to)) {
             throw new BadRequestException("Cannot transfer chore to the same tenant");
         }
@@ -139,7 +139,7 @@ public class TransferChoresService {
 
     }
 
-    private Supplier<BadRequestException> getTenantNotFoundException(Integer tenantId) {
+    private Supplier<BadRequestException> getTenantNotFoundException(Long tenantId) {
         return () -> new BadRequestException("Tenant with id " + tenantId + " does not exist");
     }
 }

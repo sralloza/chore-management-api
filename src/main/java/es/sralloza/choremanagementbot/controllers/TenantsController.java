@@ -47,7 +47,7 @@ public class TenantsController {
     @GetMapping("/{id}")
     public SimpleTenant getTenant(@PathVariable String id) {
         security.requireTenantFromPath(id);
-        Integer askedTenantId = tenantIdHelper.parseTenantId(id);
+        Long askedTenantId = tenantIdHelper.parseTenantId(id);
         return tenantsService.getSimpleTenantById(askedTenantId);
     }
 
@@ -60,13 +60,13 @@ public class TenantsController {
     @PostMapping("/{id}/recreate-token")
     public Tenant recreateTenantToken(@PathVariable String id) {
         security.requireTenantFromPath(id);
-        Integer askedTenantId = tenantIdHelper.parseTenantId(id);
+        Long askedTenantId = tenantIdHelper.parseTenantId(id);
         return tenantsService.recreateTenantToken(askedTenantId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(value = NO_CONTENT)
-    public void deleteTenant(@PathVariable("id") Integer tenantId) {
+    public void deleteTenant(@PathVariable("id") Long tenantId) {
         security.requireAdmin();
         tenantsService.deleteTenantById(tenantId);
     }

@@ -12,9 +12,9 @@ public class Transfer {
     private Long id;
     private LocalDateTime timestamp;
     @JsonProperty("tenant_id_from")
-    private Integer tenantIdFrom;
+    private Long tenantIdFrom;
     @JsonProperty("tenant_id_to")
-    private Integer tenantIdTo;
+    private Long tenantIdTo;
     @JsonProperty("chore_type")
     private String choreType;
     @JsonProperty("week_id")

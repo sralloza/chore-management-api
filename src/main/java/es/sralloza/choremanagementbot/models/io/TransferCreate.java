@@ -17,7 +17,7 @@ public class TransferCreate {
     @JsonProperty("tenant_id_to")
     @NotNull(message = "tenant_id_to is required")
     @Positive(message = "tenant_id_to must be positive")
-    private Integer tenantIdTo;
+    private Long tenantIdTo;
     @JsonProperty("chore_type")
     @NotNull(message = "chore_type is required")
     @NotBlank(message = "chore_type can't be blank")

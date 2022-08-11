@@ -38,19 +38,19 @@ public class TicketsService {
                 .findAny();
     }
 
-    public void createTicketsForTenant(Integer tenantId) {
+    public void createTicketsForTenant(Long tenantId) {
         dbTicketsRepository.saveAll(dbChoreTypesRepository.findAll().stream()
-                .map(choreType -> new DBTicket(null, choreType.getId(), tenantId, 0))
+                .map(choreType -> new DBTicket(null, choreType.getId(), tenantId, 0L))
                 .collect(Collectors.toList()));
     }
 
     public void createTicketsForChoreType(String choreTypeId) {
         dbTicketsRepository.saveAll(tenantsService.listTenants().stream()
-                .map(tenant -> new DBTicket(null, choreTypeId, tenant.getTenantId(), 0))
+                .map(tenant -> new DBTicket(null, choreTypeId, tenant.getTenantId(), 0L))
                 .collect(Collectors.toList()));
     }
 
-    public void addTicketsToTenant(Integer tenantId, String choreType, int nTickets) {
+    public void addTicketsToTenant(Long tenantId, String choreType, int nTickets) {
         DBTicket tickets = dbTicketsRepository.findAll().stream()
                 .filter(dbTicket -> dbTicket.getChoreType().equals(choreType))
                 .filter(dbTicket -> dbTicket.getTenantId().equals(tenantId))
@@ -61,7 +61,7 @@ public class TicketsService {
         dbTicketsRepository.save(tickets);
     }
 
-    public void deleteTicketsByTenant(Integer tenantId) {
+    public void deleteTicketsByTenant(Long tenantId) {
         var tickets = dbTicketsRepository.findAll().stream()
                 .filter(ticket -> ticket.getTenantId().equals(tenantId))
                 .collect(Collectors.toList());

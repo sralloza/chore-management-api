@@ -19,7 +19,7 @@ public class TenantCreate {
     @JsonProperty("tenant_id")
     @NotNull(message = "tenant_id is required")
     @Positive(message = "tenant_id must be positive")
-    Integer tenantId;
+    Long tenantId;
 
     @NotNull(message = "username is required")
     @NotBlank(message = "username can't be blank")

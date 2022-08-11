@@ -27,8 +27,8 @@ public class DBTicket {
     private String choreType;
 
     @Column(length = 50, nullable = false)
-    private Integer tenantId;
+    private Long tenantId;
 
     @Column(nullable = false)
-    private Integer tickets;
+    private Long tickets;
 }

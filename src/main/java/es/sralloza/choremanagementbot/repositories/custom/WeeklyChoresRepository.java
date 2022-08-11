@@ -89,7 +89,7 @@ public class WeeklyChoresRepository {
         dbRotationRepository.deleteAll(dbRotation);
     }
 
-    public void completeWeeklyChores(String weekId, String choreType, @Nullable Integer tenantId) {
+    public void completeWeeklyChores(String weekId, String choreType, @Nullable Long tenantId) {
         List<DBChore> dbChores = dbChoresRepository.findAll().stream()
             .filter(chore -> chore.getWeekId().equals(weekId) && chore.getChoreType().equals(choreType))
             .collect(Collectors.toList());

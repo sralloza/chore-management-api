@@ -12,11 +12,11 @@ public class TenantIdHelper {
     @Autowired
     private SimpleSecurity security;
 
-    public Integer parseTenantId(String pathVariable) {
+    public Long parseTenantId(String pathVariable) {
         return parseTenantId(pathVariable, null);
     }
 
-    public Integer parseTenantId(String pathVariable, @Nullable String pathName) {
+    public Long parseTenantId(String pathVariable, @Nullable String pathName) {
         if (pathVariable.equals("me")) {
             if (security.isAdmin()) {
                 throw new BadRequestException("Cannot use keyword me with an admin token");
@@ -24,7 +24,7 @@ public class TenantIdHelper {
             return security.getTenant().getTenantId();
         }
         try {
-            int tenantId = Integer.parseInt(pathVariable);
+            long tenantId = Long.parseLong(pathVariable);
             if (tenantId <= 0 && pathName != null) {
                 throw new BadRequestException(pathName + " must be positive");
             }

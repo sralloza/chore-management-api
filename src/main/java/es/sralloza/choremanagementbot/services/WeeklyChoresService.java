@@ -104,15 +104,15 @@ public class WeeklyChoresService {
 
     private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
                                                               String weekId, int rotation) {
-        List<Integer> tenantIdList = tenants.stream()
+        List<Long> tenantIdList = tenants.stream()
             .map(Tenant::getTenantId)
             .collect(Collectors.toList());
 
-        Set<Integer> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()
+        Set<Long> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()
             .filter(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId))
             .map(DBSkippedWeek::getTenantId)
             .collect(Collectors.toSet());
-        Set<Integer> tenantsNotSkippingWeek = tenantIdList.stream()
+        Set<Long> tenantsNotSkippingWeek = tenantIdList.stream()
             .filter(tenantId -> !tenantsSkippingWeek.contains(tenantId))
             .collect(Collectors.toSet());
 
@@ -127,7 +127,7 @@ public class WeeklyChoresService {
         }
         rotation = rotation % tenants.size();
 
-        List<Integer> repeatedTenants = choreUtils.repeatArray(tenantIdList, arraySize);
+        List<Long> repeatedTenants = choreUtils.repeatArray(tenantIdList, arraySize);
         Collections.rotate(repeatedTenants, -rotation);
 
         var distributedChoreList = IntStream.range(0, choreTypes.size())
@@ -147,8 +147,8 @@ public class WeeklyChoresService {
             .setRotation(rotation);
     }
 
-    private Chore createChore(String weekId, String type, Integer tenantId, Set<Integer> tenantIdListOverride) {
-        List<Integer> asigneeListIds = new ArrayList<>();
+    private Chore createChore(String weekId, String type, Long tenantId, Set<Long> tenantIdListOverride) {
+        List<Long> asigneeListIds = new ArrayList<>();
 
         if (tenantIdListOverride == null || tenantIdListOverride.isEmpty()) {
             asigneeListIds.add(tenantId);
@@ -190,7 +190,7 @@ public class WeeklyChoresService {
         return new NotFoundException("No weekly chores found for week " + weekId);
     }
 
-    public void completeWeeklyChores(String weekId, String choreType, Integer tenantId) {
+    public void completeWeeklyChores(String weekId, String choreType, Long tenantId) {
         weeklyChoresRepository.completeWeeklyChores(weekId, choreType, tenantId);
     }
 }

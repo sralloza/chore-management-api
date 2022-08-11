@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class DBTenant {
     @Id
-    private Integer tenantId;
+    private Long tenantId;
 
     @Column(length = 50, nullable = false)
     private String username;

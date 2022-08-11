@@ -21,7 +21,7 @@ public class ChoreTypeTicketsMapper {
     }
 
     public ChoreTypeTickets build(DBChoreType dbChoreType, List<DBTicket> tickets) {
-        Map<String, Integer> ticketsByTenant = tickets.stream()
+        Map<String, Long> ticketsByTenant = tickets.stream()
                 .filter(dbTicket -> dbTicket.getChoreType().equals(dbChoreType.getId()))
                 .collect(Collectors.toMap(this::dbTicketToTenantUsername, DBTicket::getTickets));
         return new ChoreTypeTickets()

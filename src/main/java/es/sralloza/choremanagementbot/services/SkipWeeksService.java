@@ -24,7 +24,7 @@ public class SkipWeeksService {
     @Autowired
     private DateProvider dateProvider;
 
-    public void skipWeek(String weekId, Integer tenantId) {
+    public void skipWeek(String weekId, Long tenantId) {
         weekIdValidator.validateSyntax(weekId);
         validatePastWeekId(weekId);
 
@@ -38,7 +38,7 @@ public class SkipWeeksService {
         repository.save(ignoredWeek);
     }
 
-    public void unSkipWeek(String weekId, Integer tenantId) {
+    public void unSkipWeek(String weekId, Long tenantId) {
         weekIdValidator.validateSyntax(weekId);
         var skippedWeek = repository.findByWeekIdAndTenantId(weekId, tenantId);
 
@@ -63,7 +63,7 @@ public class SkipWeeksService {
         }
     }
 
-    public void deleteSkipWeeksByTenantId(Integer tenantId) {
+    public void deleteSkipWeeksByTenantId(Long tenantId) {
         var skippedWeeks = repository.findAll().stream()
                 .filter(week -> week.getTenantId().equals(tenantId))
                 .collect(Collectors.toList());

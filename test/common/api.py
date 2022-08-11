@@ -34,9 +34,7 @@ def get_url_params(context, endpoint):
     return {k: getattr(context, k) for k in param_names}
 
 
-# TODO: remove json attribute (backward compatibility)
-# TODO: remove params attribute (backward compatibility)
-def _send_request(context, method, path, payload=None, json=None, params=None):
+def _send_request(context, method, path, payload=None):
     correlator = str(uuid4())
     url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
@@ -47,10 +45,10 @@ def _send_request(context, method, path, payload=None, json=None, params=None):
     if token:
         headers["x-token"] = token
 
-    params = params or getattr(context, "params", None)
+    params = getattr(context, "params", None)
 
     res = context.session.request(
-        method, url, params=params, json=payload or json, timeout=5, headers=headers
+        method, url, params=params, json=payload, timeout=5, headers=headers
     )
     print_res(res)
     return res

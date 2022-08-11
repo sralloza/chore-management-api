@@ -6,6 +6,7 @@ import es.sralloza.choremanagementbot.security.SimpleSecurity;
 import es.sralloza.choremanagementbot.services.WeeklyChoresService;
 import es.sralloza.choremanagementbot.utils.WeekIdHelper;
 import es.sralloza.choremanagementbot.validator.WeekIdValidator;
+import io.micrometer.core.annotation.Timed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;

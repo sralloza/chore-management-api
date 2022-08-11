@@ -27,5 +27,5 @@ public class DBSkippedWeek {
     private String weekId;
 
     @Column(nullable = false)
-    private Integer tenantId;
+    private Long tenantId;
 }
