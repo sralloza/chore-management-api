@@ -4,11 +4,6 @@ from common.tickets import parse_tickets_res_table_str
 from common.utils import assert_arrays_equal, parse_table, table_to_str
 
 
-@step("I list the tickets using the API")
-def step_impl(context):
-    context.res = context.get("/tickets")
-
-
 @step("The response contains the following tickets")
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
@@ -21,8 +16,10 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         f"""
-    Given I list the tickets using the API
-    And the response contains the following tickets
+    Given I use the admin token
+    When I send a request to the Api resource "listTickets"
+    Then the response contains the following tickets
     {table_to_str(context.table)}
+    And I clear the token
     """
     )
