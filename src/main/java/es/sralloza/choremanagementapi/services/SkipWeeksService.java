@@ -26,21 +26,22 @@ public class SkipWeeksService {
 
     public void skipWeek(String weekId, Long tenantId) {
         weekIdValidator.validateSyntax(weekId);
-        validatePastWeekId(weekId);
+        validatePastWeekId(weekId, "skip");
 
         if (repository.findByWeekIdAndTenantId(weekId, tenantId).isPresent()) {
             throw new BadRequestException("Tenant with id " + tenantId + " has already skipped the week " + weekId);
         }
 
         var ignoredWeek = new DBSkippedWeek()
-                .setWeekId(weekId)
-                .setTenantId(tenantId);
+            .setWeekId(weekId)
+            .setTenantId(tenantId);
         repository.save(ignoredWeek);
     }
 
     public void unSkipWeek(String weekId, Long tenantId) {
         weekIdValidator.validateSyntax(weekId);
         var skippedWeek = repository.findByWeekIdAndTenantId(weekId, tenantId);
+        validatePastWeekId(weekId, "unskip");
 
         if (skippedWeek.isEmpty()) {
             throw new BadRequestException("Tenant with id " + tenantId + " has not skipped the week " + weekId);
@@ -49,24 +50,24 @@ public class SkipWeeksService {
         repository.delete(skippedWeek.get());
     }
 
-    private void validatePastWeekId(String weekId) {
+    private void validatePastWeekId(String weekId, String action) {
         if (weekId.equals(dateUtils.getCurrentWeekId())) {
-            throw new BadRequestException("Cannot skip the current week");
+            throw new BadRequestException("Cannot " + action + " the current week");
         }
         var weekDate = dateUtils.getLocalDateByWeekId(weekId);
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         var currentDate = dateProvider.getCurrentDate()
-                .with(weekFields.dayOfWeek(), 1);
+            .with(weekFields.dayOfWeek(), 1);
 
         if (weekDate.isBefore(currentDate)) {
-            throw new BadRequestException("Cannot skip a week in the past");
+            throw new BadRequestException("Cannot " + action + " a week in the past");
         }
     }
 
     public void deleteSkipWeeksByTenantId(Long tenantId) {
         var skippedWeeks = repository.findAll().stream()
-                .filter(week -> week.getTenantId().equals(tenantId))
-                .collect(Collectors.toList());
+            .filter(week -> week.getTenantId().equals(tenantId))
+            .collect(Collectors.toList());
         repository.deleteAll(skippedWeeks);
     }
 }
