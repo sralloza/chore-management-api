@@ -85,6 +85,19 @@ Feature: Tenants API - unSkipWeek
             | next    | [NOW(%Y.%W) + 7 DAYS] |
 
 
+    Scenario: Validate error response when unskipping an old week
+        Given there is 1 tenant
+        And I make the tenant "1" skip the week "2022.01" editing the database
+        And I use the admin token
+        And the fields
+            | field    | value   |
+            | tenantId | 1       |
+            | weekId   | 2022.01 |
+        When I send a request to the Api
+        Then the response status code is "400"
+        And the error message is "Cannot unskip a week in the past"
+
+
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
         And I use the admin token
@@ -114,11 +127,11 @@ Feature: Tenants API - unSkipWeek
         And the fields
             | field    | value   |
             | tenantId | 1       |
-            | weekId   | 2022.01 |
+            | weekId   | 2025.01 |
         And I use the token of the tenant with id "1"
         When I send a request to the Api
         Then the response status code is "400"
-        And the error message is "Tenant with id 1 has not skipped the week 2022.01"
+        And the error message is "Tenant with id 1 has not skipped the week 2025.01"
 
 
     Scenario Outline: Validate error response when tenants unskips an invalid week
