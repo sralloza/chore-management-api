@@ -1,6 +1,7 @@
 from string import ascii_uppercase
 
 from behave import *
+from toolium.utils.dataset import map_param
 
 from common.utils import *
 
@@ -19,3 +20,20 @@ def step_impl(context, chore_types):
             And I clear the token
             """
         )
+
+
+@then('the response contains the simple chores "{ids}"')
+def step_impl(context, ids):
+    ids = replace_param(ids)
+    if not ids:
+        ids = []
+    elif isinstance(ids, str):
+        ids = list(map(int, ids.replace(" ", "").split(",")))
+    elif isinstance(ids, int):
+        ids = [ids]
+
+    original = map_param("[CONF:examples.simple_chore_types]")
+    res_json = context.res.json()
+    expected = [original[x - 1] for x in ids]
+
+    assert_arrays_equal(expected, res_json)

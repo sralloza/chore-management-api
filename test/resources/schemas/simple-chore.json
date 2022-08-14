@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "type": "object",
+  "$ref": "#/definitions/ChoreType",
+  "definitions": {
+    "SimpleChore": {
+      "additionalProperties": false,
+      "properties": {
+        "done": {
+          "type": "boolean"
+        },
+        "chore_type": {
+          "type": "string"
+        },
+        "tenant_id": {
+          "type": "integer"
+        },
+        "week_id": {
+          "$ref": "week-id.json#/definitions/WeekID"
+        }
+      },
+      "required": [
+        "done",
+        "chore_type",
+        "tenant_id",
+        "week_id"
+      ]
+    }
+  }
+}
