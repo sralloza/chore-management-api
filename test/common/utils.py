@@ -110,9 +110,9 @@ def _replace_obj(obj: dict):
                 if isinstance(item, dict):
                     _replace_obj(item)
                 else:
-                    obj[key][i] = replace_param(item)
+                    obj[key][i] = replace_param(item, infer_param_type=False)
         else:
-            obj[key] = replace_param(value)
+            obj[key] = replace_param(value, infer_param_type=False)
 
 
 def payload_to_table_format(params):

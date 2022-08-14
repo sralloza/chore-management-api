@@ -40,3 +40,47 @@ Feature: Weekly Chores API - listWeeklyChores
         Then the response status code is "200"
         And the response body is validated against the json-schema "weekly-chore-list"
         And the Api response contains the expected data
+
+
+    Scenario Outline: List missing weekly chores
+        Given there are 2 tenants
+        And there are 2 chore types
+        And I create the weekly chores for the following weeks using the API
+            | week_id |
+            | 2022.01 |
+            | 2022.02 |
+            | 2022.03 |
+        And I use the admin token
+        And the fields
+            | field     | value   |
+            | choreType | A       |
+            | weekId    | 2022.01 |
+        When I send a request to the Api resource "completeTask"
+        And the fields
+            | field     | value   |
+            | choreType | B       |
+            | weekId    | 2022.01 |
+        When I send a request to the Api resource "completeTask"
+        Then the response status code is "204"
+        And the fields
+            | field     | value   |
+            | choreType | A       |
+            | weekId    | 2022.02 |
+        When I send a request to the Api resource "completeTask"
+        Then the response status code is "204"
+        Given I use the token of the tenant with id "1"
+        And the parameters to filter the request
+            | param_name  | param_value    |
+            | missingOnly | <missing_only> |
+        When I send a request to the Api
+        Then the response status code is "200"
+        And the response body is validated against the json-schema "weekly-chore-list"
+        And the Api response contains the expected data
+            """
+            <expected_json>
+            """
+
+        Examples:
+            | missing_only | expected_json                    |
+            | [TRUE]       | listWeeklyChoresMissingOnlyTrue  |
+            | [FALSE]      | listWeeklyChoresMissingOnlyFalse |

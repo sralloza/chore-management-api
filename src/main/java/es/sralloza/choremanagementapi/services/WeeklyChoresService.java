@@ -164,8 +164,10 @@ public class WeeklyChoresService {
         return new Chore(weekId, type, asigneeListIds, asigneeListUsernames, false);
     }
 
-    public List<WeeklyChores> findAll() {
-        return weeklyChoresRepository.findAll();
+    public List<WeeklyChores> findAll(Boolean missingOnly) {
+        return weeklyChoresRepository.findAll().stream()
+            .filter(chore -> missingOnly == null || choreUtils.isMissing(chore).equals(missingOnly))
+            .collect(Collectors.toList());
     }
 
     public Optional<WeeklyChores> getByWeekId(String weekId) {

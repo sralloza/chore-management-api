@@ -37,7 +37,7 @@ def step_impl(context):
             assert body_params == res_json, msg
             return
         except JSONDecodeError:
-            json_file = RESPONSES_PATH / context.text.strip()
+            json_file = RESPONSES_PATH / context.api / f"{context.text.strip()}.json"
 
     if not json_file:
         json_file = RESPONSES_PATH / f"{context.api}/{context.resource}.json"
