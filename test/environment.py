@@ -34,14 +34,20 @@ def get_dataset():
     return dataset
 
 
+def get_settings():
+    settings = {}
+    settings_path = Path(__file__).parent / "settings/settings.json"
+    settings = loads(settings_path.read_text())
+    settings.update(get_dataset())
+    return settings
+
+
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
     check_naming(scenario)
 
-    dataset.project_config = get_dataset()
+    dataset.project_config = get_settings()
     context.session = requests.Session()
-
-    context.get = lambda path, **kwargs: _send_request(context, "GET", path, **kwargs)
 
     reset_databases()
     context.res = None

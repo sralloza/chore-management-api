@@ -112,5 +112,9 @@
   "listTickets": {
     "path": "/tickets",
     "method": "GET"
+  },
+  "listSimpleChores": {
+    "path": "/simple-chores",
+    "method": "GET"
   }
 }

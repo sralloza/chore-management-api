@@ -1,0 +1,44 @@
+{
+  "examples": {
+    "simple_chore_types": [
+      { "done": true, "chore_type": "A", "tenant_id": 1, "week_id": "2030.01" },
+      {
+        "done": false,
+        "chore_type": "B",
+        "tenant_id": 2,
+        "week_id": "2030.01"
+      },
+      {
+        "done": false,
+        "chore_type": "C",
+        "tenant_id": 3,
+        "week_id": "2030.01"
+      },
+      {
+        "done": false,
+        "chore_type": "D",
+        "tenant_id": 4,
+        "week_id": "2030.01"
+      },
+      {
+        "done": false,
+        "chore_type": "A",
+        "tenant_id": 2,
+        "week_id": "2030.02"
+      },
+      {
+        "done": false,
+        "chore_type": "B",
+        "tenant_id": 3,
+        "week_id": "2030.02"
+      },
+      {
+        "done": false,
+        "chore_type": "C",
+        "tenant_id": 4,
+        "week_id": "2030.02"
+      },
+      { "done": false, "chore_type": "D", "tenant_id": 1, "week_id": "2030.02" }
+    ]
+  }
+}
