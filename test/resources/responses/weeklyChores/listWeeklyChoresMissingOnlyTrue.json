@@ -1,0 +1,58 @@
+[
+  {
+    "chores": [
+      {
+        "type": "A",
+        "done": true,
+        "week_id": "2022.02",
+        "assigned_ids": [
+          2
+        ],
+        "assigned_usernames": [
+          "tenant2"
+        ]
+      },
+      {
+        "type": "B",
+        "done": false,
+        "week_id": "2022.02",
+        "assigned_ids": [
+          1
+        ],
+        "assigned_usernames": [
+          "tenant1"
+        ]
+      }
+    ],
+    "rotation": 1,
+    "week_id": "2022.02"
+  },
+  {
+    "chores": [
+      {
+        "type": "A",
+        "done": false,
+        "week_id": "2022.03",
+        "assigned_ids": [
+          1
+        ],
+        "assigned_usernames": [
+          "tenant1"
+        ]
+      },
+      {
+        "type": "B",
+        "done": false,
+        "week_id": "2022.03",
+        "assigned_ids": [
+          2
+        ],
+        "assigned_usernames": [
+          "tenant2"
+        ]
+      }
+    ],
+    "rotation": 0,
+    "week_id": "2022.03"
+  }
+]

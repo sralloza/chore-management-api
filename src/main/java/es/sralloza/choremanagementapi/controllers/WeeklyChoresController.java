@@ -33,9 +33,9 @@ public class WeeklyChoresController {
     private WeekIdHelper weekIdHelper;
 
     @GetMapping()
-    public List<WeeklyChores> listWeeklyChores() {
+    public List<WeeklyChores> listWeeklyChores(@QueryParam("missingOnly") Boolean missingOnly) {
         security.requireTenant();
-        return service.findAll();
+        return service.findAll(missingOnly);
     }
 
     @GetMapping("/{weekId}")

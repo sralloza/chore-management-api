@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementapi.utils;
 
+import es.sralloza.choremanagementapi.models.custom.WeeklyChores;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,5 +19,10 @@ public class ChoreUtils {
             i++;
         }
         return result;
+    }
+
+    public Boolean isMissing(WeeklyChores weeklyChore) {
+        return weeklyChore.getChores().stream()
+            .anyMatch(chore -> !chore.getDone());
     }
 }
