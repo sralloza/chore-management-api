@@ -1,0 +1,294 @@
+# This is an **example** API to demonstrate features of OpenAPI specification.
+# It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
+
+openapi: "3.0.1"
+info:
+  version: '1.0.0'
+
+  title: Chore Management # Replace with your API title
+  # Keep it simple. Don't add "API" or version at the end of the string.
+
+  contact:
+    email: sralloza@gmail.com # [Optional] Replace with your contact email
+    url: https://github.com/sralloza # [Optional] Replace with link to your contact form
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  x-logo:
+    url: 'https://redocly.github.io/openapi-template/logo.png'
+
+  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
+  description: |
+    API to manage the chores with the flatmates in a shared flat.
+
+externalDocs:
+ description: Github Repo
+ url: 'https://github.com/sralloza/chore-management-api'
+
+tags:
+  - name: Chore Types
+  - name: Simple Chores
+  - name: Tenants
+  - name: Tickets
+  - name: Transfers
+  - name: WeekIds
+  - name: Weekly Chores
+
+servers:
+  - url: 'https://chore-management-api.sralloza.es/v1'
+
+paths:
+  /chore-types:
+    get:
+      tags:
+        - Chore Types
+      summary: List defined chore types
+      description: List the defined chore types.
+      operationId: listChoreTypes
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoreType'
+              examples:
+                chore type list:
+                  $ref: "#/components/examples/ChoreTypeList"
+        403:
+          $ref: "#/components/responses/ForbiddenErrorTenantRequired"
+    post:
+      tags:
+        - Chore Types
+      summary: Create chore type
+      description: Define a new chore type.
+      operationId: createChoreType
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        description: chore type
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChoreType'
+            examples:
+              ChoreType:
+                $ref: '#/components/examples/ChoreType'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoreType'
+              examples:
+                ChoreType:
+                  $ref: '#/components/examples/ChoreType'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+
+  /chore-types/{id}:
+    get:
+      tags:
+        - Chore Types
+      summary: Get chore type
+      description: Get the details of a defined chore type using its id.
+      operationId: getChoreType
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ChoreTypeId'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoreType'
+              examples:
+                ChoreType:
+                  $ref: '#/components/examples/ChoreType'
+        404:
+          # description: Chore type not found
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorTenantRequired'
+
+components:
+  examples:
+    ChoreTypeList:
+      value:
+        - id: livingRoom
+          name: Living Room
+          description: Clean the living room and the hallway
+    ChoreType:
+      value:
+        id: livingRoom
+        name: Living Room
+        description: Clean the living room and the hallway
+
+  responses:
+    ForbiddenErrorAdminRequired:
+      description: Admin access required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Forbidden
+            message: Admin access required
+            path: /some-url
+            status: 403
+            timestamp: 2022-09-04T14:26:40.381+00:00
+
+    ForbiddenErrorTenantRequired:
+      description: Tenant or admin access required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            error: Forbidden
+            message: Tenant access required
+            path: /some-url
+            status: 403
+            timestamp: 2022-09-04T14:26:40.381+00:00
+
+    ValidationError:
+      description: Request contains invalid data
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Error'
+              - type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SingleValidationError'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: Not Found
+            message: Resource not found
+            path: /some-url
+            status: 403
+            timestamp: 2022-09-04T14:26:40.381+00:00
+
+  schemas:
+    ChoreTypeId:
+      description: ID of a chore type
+      type: string
+      minLength: 1
+      maxLength: 25
+
+    ChoreTypeName:
+      description: friendly name of a chore type
+      type: string
+      minLength: 1
+      maxLength: 50
+
+    ChoreTypeDescription:
+      description: styled description of a chore type with markdown
+      type: string
+      minLength: 1
+      maxLength: 255
+
+    ChoreType:
+      description: defined type of chore
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/ChoreTypeId'
+        name:
+          $ref: '#/components/schemas/ChoreTypeName'
+        description:
+          $ref: '#/components/schemas/ChoreTypeDescription'
+      required:
+      - id
+      - name
+      - description
+
+    Error:
+      description: generic API error
+      type: object
+      additionalProperties: false
+      properties:
+        error:
+          type: string
+          description: Error message associated with the status code
+        message:
+          type: string
+          description: A human readable description of what the event represent
+        path:
+          type: string
+          description: Path of the endpoint which generated the error
+        status:
+          type: integer
+          description: Status code of the request
+        timestamp:
+          type: string
+          format: datetime
+          description: Datetime when the error was generated
+      required:
+        - error
+        - message
+        - path
+        - status
+        - timestamp
+
+    SingleValidationError:
+      description: Validation error
+      type: object
+      additionalProperties: false
+      properties:
+        codes:
+          type: array
+          items:
+            type: string
+        arguments:
+          type: object
+        defaultMessage:
+          type: string
+        objectName:
+          type: string
+        field:
+          type: string
+        rejectedValue:
+          type: string
+        bindingFailure:
+          type: boolean
+        code:
+          type: string
+      required:
+        - codes
+        - arguments
+        - defaultMessage
+        - objectName
+        - field
+        - bindingFailure
+        - code
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-token
