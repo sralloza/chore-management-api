@@ -4,22 +4,22 @@
 openapi: "3.0.1"
 info:
   version: '1.0.0'
-
-  title: Chore Management # Replace with your API title
-  # Keep it simple. Don't add "API" or version at the end of the string.
-
+  title: Chore Management
   contact:
-    email: sralloza@gmail.com # [Optional] Replace with your contact email
-    url: https://github.com/sralloza # [Optional] Replace with link to your contact form
+    email: sralloza@gmail.com
+    url: https://github.com/sralloza
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  x-logo:
-    url: 'https://redocly.github.io/openapi-template/logo.png'
 
-  # Describe your API here, you can use GFM (https://guides.github.com/features/mastering-markdown) here
   description: |
     API to manage the chores with the flatmates in a shared flat.
+
+    Concepts:
+
+    - **Flatmate**: Each person living in the same flat.
+    - **Chore Type**: Minimum division of the chores of the flat. For example, if the common rooms in a flat are a bathroom, kitchen and a living room we can define 3 chore types: bathroom, kitchen and livingRoom so each week they are asigned to a different flatmate.
+    - **Week ID**: Weeks are identified by the year and the week number, like "2022.03" (the third week of 2022).
 
 externalDocs:
  description: Github Repo
@@ -27,12 +27,9 @@ externalDocs:
 
 tags:
   - name: Chore Types
-  - name: Simple Chores
-  - name: Tenants
-  - name: Tickets
-  - name: Transfers
-  - name: WeekIds
-  - name: Weekly Chores
+    description: Operations with chore types
+  - name: Week IDs
+    description: Operations with week identifiers
 
 servers:
   - url: 'https://chore-management-api.sralloza.es/v1'
@@ -90,6 +87,7 @@ paths:
                 ChoreType:
                   $ref: '#/components/examples/ChoreType'
         400:
+          # TODO: define error model
           $ref: '#/components/responses/ValidationError'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
@@ -120,10 +118,77 @@ paths:
                 ChoreType:
                   $ref: '#/components/examples/ChoreType'
         404:
-          # description: Chore type not found
           $ref: '#/components/responses/NotFound'
         403:
           $ref: '#/components/responses/ForbiddenErrorTenantRequired'
+    delete:
+      tags:
+        - Chore Types
+      summary: Delete chore type
+      description: Delete a chore type by id
+      operationId: deleteChoreType
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/ChoreTypeId'
+      responses:
+        204:
+          description: OK
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        400:
+          description: Bad Request
+
+  /week-id/last:
+    get:
+      tags:
+        - Week IDs
+      summary: Get last week ID
+      description: Get last week's identifier
+      operationId: getLastWeekId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeekID'
+
+  /week-id/current:
+    get:
+      tags:
+        - Week IDs
+      summary: Get current week ID
+      description: Get the current week identifier
+      operationId: getCurrentWeekId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeekID'
+
+  /week-id/next:
+    get:
+      tags:
+        - Week IDs
+      summary: Get next week ID
+      description: Get next week's identifier
+      operationId: getNextWeekId
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WeekID'
 
 components:
   examples:
@@ -178,6 +243,31 @@ components:
                     type: array
                     items:
                       $ref: '#/components/schemas/SingleValidationError'
+          example:
+            timestamp: '2022-09-04T21:17:15.900+00:00'
+            status: 400
+            error: Bad Request
+            message: 'Validation failed for object=''exampleModel''. Error count: 1'
+            errors:
+              - codes:
+                  - NotBlank.exampleModel.attribute
+                  - NotBlank.attribute
+                  - NotBlank.java.lang.String
+                  - NotBlank
+                arguments:
+                  - codes:
+                      - exampleModel.attribute
+                      - attribute
+                    arguments: null
+                    defaultMessage: attribute
+                    code: attribute
+                defaultMessage: attribute can't be blank
+                objectName: attribute
+                field: attribute
+                rejectedValue: null
+                bindingFailure: false
+                code: NotBlank
+            path: /some-path
 
     NotFound:
       description: Resource not found
@@ -226,6 +316,12 @@ components:
       - id
       - name
       - description
+
+    WeekID:
+      description: Week identifier
+      type: string
+      pattern: "\\d{4}\\.\\d{2}"
+      example: "2022.03"
 
     Error:
       description: generic API error
