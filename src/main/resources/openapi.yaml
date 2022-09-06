@@ -3,7 +3,7 @@
 
 openapi: "3.0.1"
 info:
-  version: '1.0.0'
+  version: '1.0.0 - DRAFT VERSION'
   title: Chore Management
   contact:
     email: sralloza@gmail.com
@@ -15,19 +15,46 @@ info:
   description: |
     API to manage the chores with the flatmates in a shared flat.
 
-    Concepts:
+    # Concepts
 
-    - **Flatmate**: Each person living in the same flat.
-    - **Chore Type**: Minimum division of the chores of the flat. For example, if the common rooms in a flat are a bathroom, kitchen and a living room we can define 3 chore types: bathroom, kitchen and livingRoom so each week they are asigned to a different flatmate.
-    - **Week ID**: Weeks are identified by the year and the week number, like "2022.03" (the third week of 2022).
+    - **User**: Each person living in the same flat, a flatmate.
+    - **Flat**: A flat. Each user and chore is assigned to a different flat. This API is multi-flat, it can manage the chores of multiple flats. The flat is selected by the `x-flat` header. For more info about the `x-flat` header, please read the [multiflat](#section/Concepts/Multiflat) section.
+    - **Chore Type**: A defined chore that needs to be executed weekly in the flat. Each chore type will be assigned weekly to a different flatmate.
+    - **Weekly chores**: Chores grouped by week.
+    - **Week ID**: Weeks are identified by the year and the week number, like `2022.03` (the third week of 2022).
+    - **Ticket**: Number of chores of a specific type that the user is owed. For more info, read the [tickets system](#section/Concepts/Tickets-system) section.
+
+    ## Multiflat
+
+    As said before, the flat is selected by the `x-flat` header. If the header is not supplied, it will take the default value (`default-flat`). This flat should be created by default and should not be used.
+
+    To create a flat, ask the API manager (who has the admin token) to create a flat. You will be given the flat token, which you can use to register users, schedule weekly chores and more.
+
+    ## Tickets system
+
+    This API supports chore transfers. When a user transfers a chore to other user, a ticket also is transferred. A ticket is like a currency, +1 tickets means that the user is owed a chore (in the future another user will complete his chore), and -1 tickets means that the user owns a chore (in the future he will complete another user's chore).
+
+    Diferent chore types are considered non equivalent, so a ticket of (the chore type) X can not be compensated with a ticket of type Y.
+
+    # Authorization
+
+    This API uses api key based authorization. There are 3 types of api keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
+
+    1. **Admin token**: there is only one. It has permission to do anything, from creating a new flat to mark a chore as completed.
+    2. **Flat token**: there is one for each flat. It has permission to manage the flat assigned and the users assigned to the flat.
+    3. **User token**: there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
 
 externalDocs:
  description: Github Repo
  url: 'https://github.com/sralloza/chore-management-api'
 
 tags:
+  - name: Flats
+    description: Operations with flats.
   - name: Chore Types
     description: Operations with chore types
+  - name: Users
+    description: Operations with users
   - name: Week IDs
     description: Operations with week identifiers
 
@@ -35,6 +62,91 @@ servers:
   - url: 'https://chore-management-api.sralloza.es/v1'
 
 paths:
+  /flats:
+    post:
+      tags:
+        - Flats
+      summary: Create flat
+      description: Create new flat. The admin token is required to create a new flat.
+      operationId: createFlat
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlatCreate'
+            examples:
+              FlatCreate:
+                $ref: '#/components/examples/FlatCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/Flat'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+    get:
+      tags:
+        - Flats
+      summary: List flats
+      description: List existing flats. Must use the admin token.
+      operationId: listFlats
+      security:
+        - ApiKeyAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlatList'
+              examples:
+                FlatList:
+                  $ref: '#/components/examples/FlatList'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+
+  /flats/{id}:
+    get:
+      tags:
+        - Flats
+      summary: Get flat
+      description: Get flat details by id
+      operationId: getFlat
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/FlatName'
+      responses:
+        200:
+          $ref: '#/components/responses/Flat'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+    delete:
+      tags:
+        - Flats
+      summary: Delete flat
+      description: Delete flat by id
+      operationId: deleteFlat
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/FlatName'
+      responses:
+        204:
+          description: OK
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+
   /chore-types:
     get:
       tags:
@@ -57,7 +169,7 @@ paths:
                 chore type list:
                   $ref: "#/components/examples/ChoreTypeList"
         403:
-          $ref: "#/components/responses/ForbiddenErrorTenantRequired"
+          $ref: "#/components/responses/ForbiddenErrorUserRequired"
     post:
       tags:
         - Chore Types
@@ -67,7 +179,6 @@ paths:
       security:
         - ApiKeyAuth: []
       requestBody:
-        description: chore type
         required: true
         content:
           application/json:
@@ -120,7 +231,7 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
         403:
-          $ref: '#/components/responses/ForbiddenErrorTenantRequired'
+          $ref: '#/components/responses/ForbiddenErrorUserRequired'
     delete:
       tags:
         - Chore Types
@@ -190,6 +301,27 @@ paths:
               schema:
                 $ref: '#/components/schemas/WeekID'
 
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by id
+      description: Get user information by id
+      operationId: getUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserIdPath'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
 components:
   examples:
     ChoreTypeList:
@@ -197,13 +329,39 @@ components:
         - id: livingRoom
           name: Living Room
           description: Clean the living room and the hallway
+
     ChoreType:
       value:
         id: livingRoom
         name: Living Room
         description: Clean the living room and the hallway
 
+    FlatCreate:
+      value:
+        name: flat-example
+
+    Flat:
+      value:
+        name: flat-example
+        token: ea427902-2db8-11ed-a261-0242ac120002
+
+    FlatList:
+      value:
+        - name: flat-example
+          token: ea427902-2db8-11ed-a261-0242ac120002
+
+
   responses:
+    Flat:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Flat'
+          examples:
+            Flat:
+              $ref: '#/components/examples/Flat'
+
     ForbiddenErrorAdminRequired:
       description: Admin access required
       content:
@@ -211,24 +369,25 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            error: Forbidden
             message: Admin access required
-            path: /some-url
-            status: 403
-            timestamp: 2022-09-04T14:26:40.381+00:00
 
-    ForbiddenErrorTenantRequired:
-      description: Tenant or admin access required
+    ForbiddenErrorFlatRequired:
+      description: Flat administration access required
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
           example:
-            error: Forbidden
-            message: Tenant access required
-            path: /some-url
-            status: 403
-            timestamp: 2022-09-04T14:26:40.381+00:00
+            message: Flat administration access required
+
+    ForbiddenErrorUserRequired:
+      description: User access required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            message: User access required
 
     ValidationError:
       description: Request contains invalid data
@@ -276,11 +435,7 @@ components:
           schema:
             $ref: '#/components/schemas/Error'
           example:
-            error: Not Found
             message: Resource not found
-            path: /some-url
-            status: 403
-            timestamp: 2022-09-04T14:26:40.381+00:00
 
   schemas:
     ChoreTypeId:
@@ -317,10 +472,76 @@ components:
       - name
       - description
 
+    Flat:
+      description: Registered flat
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          $ref: '#/components/schemas/FlatName'
+        token:
+          type: string
+          description: Admin flat token
+          format: uuid
+      required:
+        - name
+        - token
+
+    FlatName:
+      type: string
+      description: Name of the flat
+      pattern: '[a-z\-]+'
+
+    FlatList:
+      description: List of registered flats
+      type: array
+      items:
+        $ref: '#/components/schemas/Flat'
+
+    FlatCreate:
+      description: Register new flat
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Name of the flat. Must be lowercase with dashes.
+          pattern: '[a-z\-]+'
+      required:
+        - name
+
+    User:
+      description: Registered user
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          # TODO: fill size (a java long)
+          type: integer
+        username:
+          # TODO: fill size limits
+          type: string
+        api_token:
+          type: string
+          format: uuid
+      required:
+        - id
+        - username
+        - api_token
+
+    UserIdPath:
+      # TODO: fill
+      description: user id. This value should be replaced with
+      type: object
+      anyOf:
+        - type: string
+          format: enum
+        - type: integer
+
     WeekID:
       description: Week identifier
       type: string
-      pattern: "\\d{4}\\.\\d{2}"
+      pattern: '\d{4}\.\d{2}'
       example: "2022.03"
 
     Error:
@@ -328,28 +549,11 @@ components:
       type: object
       additionalProperties: false
       properties:
-        error:
-          type: string
-          description: Error message associated with the status code
         message:
           type: string
           description: A human readable description of what the event represent
-        path:
-          type: string
-          description: Path of the endpoint which generated the error
-        status:
-          type: integer
-          description: Status code of the request
-        timestamp:
-          type: string
-          format: datetime
-          description: Datetime when the error was generated
       required:
-        - error
         - message
-        - path
-        - status
-        - timestamp
 
     SingleValidationError:
       description: Validation error
