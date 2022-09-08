@@ -322,11 +322,7 @@ paths:
       operationId: getLastWeekId
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WeekID'
+          $ref: '#/components/responses/WeekID'
 
   /week-id/current:
     get:
@@ -337,11 +333,7 @@ paths:
       operationId: getCurrentWeekId
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WeekID'
+          $ref: '#/components/responses/WeekID'
 
   /week-id/next:
     get:
@@ -352,11 +344,7 @@ paths:
       operationId: getNextWeekId
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/WeekID'
+          $ref: '#/components/responses/WeekID'
 
   /users/{id}:
     get:
@@ -549,6 +537,22 @@ components:
                 bindingFailure: false
                 code: NotBlank
             path: /some-path
+
+    WeekID:
+      description: OK
+      content:
+        application/json:
+          schema:
+            description: The week identifier
+            type: object
+            additionalProperties: false
+            properties:
+              week_id:
+                $ref: '#/components/schemas/WeekID'
+            required:
+              - week_id
+          example:
+            week_id: "2022.03"
 
   schemas:
     ChoreType:
