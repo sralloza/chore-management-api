@@ -382,7 +382,27 @@ paths:
         409:
           $ref: '#/components/responses/Conflict'
 
-
+    get:
+      tags:
+        - Users
+      summary: List users
+      description: List all flat users
+      operationId: listUsers
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: '#/components/schemas/XFlatHeader'
+      responses:
+        200:
+          $ref: '#/components/responses/UserList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
 
 components:
   examples:
@@ -448,7 +468,7 @@ components:
         message: User access required
 
     User:
-      description: Register new user
+      description: A User
       value:
         username: user-example
         id: 123456789
@@ -459,6 +479,16 @@ components:
       value:
         username: user-example
         id: 123456789
+
+    UserList:
+      description: A list of users
+      value:
+        - username: user-example-1
+          id: 123456789
+          api_token: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+        - username: user-example-2
+          id: 987654321
+          api_token: c26c9865-6d47-4f66-b586-7b489c72624e
 
   responses:
     Conflict:
@@ -553,6 +583,18 @@ components:
           examples:
             User:
               $ref: '#/components/examples/User'
+
+    UserList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+          examples:
+            UserList:
+              $ref: '#/components/examples/UserList'
 
     ValidationError:
       description: Request contains invalid data
