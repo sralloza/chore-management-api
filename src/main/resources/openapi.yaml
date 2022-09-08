@@ -26,7 +26,15 @@ info:
 
     ## Multiflat
 
-    As said before, the flat is selected by the `x-flat` header. If the header is not supplied, it will take the default value (`default-flat`). This flat should be created by default and should not be used.
+    <!-- TODO: decide what is more important: header vs token (what happens if I send both)
+
+    Suggestion:
+    - If a user or flat token is used without the header, get the flat from the token.
+    - If the header is sent with the admin token, get the flat from the header.
+    - If a user or flat token is used with the header, return the errror:
+      {"message": "Can't use the x-token header without the admin key"}
+    -->
+    As said before, the flat is selected by the `x-flat` header. If the header is not supplied and the admin token is supplied, it will take the default value (`default-flat`). This flat should be created by default and should not be used. When using a token other other than the admin token (either a flat admin token or a user token) the `x-flat` header should not be sent, as the flat is selected by the token's associated flat.
 
     To create a flat, ask the API manager (who has the admin token) to create a flat. You will be given the flat token, which you can use to register users, schedule weekly chores and more.
 
@@ -36,13 +44,16 @@ info:
 
     Diferent chore types are considered non equivalent, so a ticket of (the chore type) X can not be compensated with a ticket of type Y.
 
+    ## Chore Assignements
+    <!-- TODO: fill -->
+
     # Authorization
 
-    This API uses api key based authorization. There are 3 types of api keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
+    Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
 
-    1. **Admin token**: there is only one. It has permission to do anything, from creating a new flat to mark a chore as completed.
-    2. **Flat token**: there is one for each flat. It has permission to manage the flat assigned and the users assigned to the flat.
-    3. **User token**: there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
+    1. **Admin API key** (_AdminApiKey_): there is only one. It has permission to do anything, from creating a new flat to mark a chore as completed.
+    2. **Flat API key** (_FlatAdminApiKey_): there is one for each flat. It has permission to manage the flat assigned and the users assigned to the flat.
+    3. **User API key** (_UserApiKey_): there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
 
 externalDocs:
  description: Github Repo
@@ -67,10 +78,10 @@ paths:
       tags:
         - Flats
       summary: Create flat
-      description: Create new flat. The admin token is required to create a new flat.
+      description: Create new flat.
       operationId: createFlat
       security:
-        - ApiKeyAuth: []
+        - AdminApiKey: []
       requestBody:
         required: true
         content:
@@ -89,10 +100,10 @@ paths:
       tags:
         - Flats
       summary: List flats
-      description: List existing flats. Must use the admin token.
+      description: List existing flats.
       operationId: listFlats
       security:
-        - ApiKeyAuth: []
+        - AdminApiKey: []
       responses:
         200:
           description: OK
@@ -114,7 +125,7 @@ paths:
       description: Get flat details by id
       operationId: getFlat
       security:
-        - ApiKeyAuth: []
+        - FlatAdminApiKey: []
       parameters:
         - name: id
           in: path
@@ -126,6 +137,8 @@ paths:
           $ref: '#/components/responses/Flat'
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
 
     delete:
       tags:
@@ -134,7 +147,7 @@ paths:
       description: Delete flat by id
       operationId: deleteFlat
       security:
-        - ApiKeyAuth: []
+        - FlatAdminApiKey: []
       parameters:
         - name: id
           in: path
@@ -146,6 +159,8 @@ paths:
           description: OK
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
 
   /chore-types:
     get:
@@ -155,7 +170,13 @@ paths:
       description: List the defined chore types.
       operationId: listChoreTypes
       security:
-        - ApiKeyAuth: []
+        - UserApiKey: []
+      parameters:
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: '#/components/schemas/XFlatHeader'
       responses:
         200:
           description: OK
@@ -177,7 +198,13 @@ paths:
       description: Define a new chore type.
       operationId: createChoreType
       security:
-        - ApiKeyAuth: []
+        - FlatAdminApiKey: []
+      parameters:
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: '#/components/schemas/XFlatHeader'
       requestBody:
         required: true
         content:
@@ -198,7 +225,6 @@ paths:
                 ChoreType:
                   $ref: '#/components/examples/ChoreType'
         400:
-          # TODO: define error model
           $ref: '#/components/responses/ValidationError'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
@@ -211,13 +237,18 @@ paths:
       description: Get the details of a defined chore type using its id.
       operationId: getChoreType
       security:
-        - ApiKeyAuth: []
+        - UserApiKey: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             $ref: '#/components/schemas/ChoreTypeId'
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: '#/components/schemas/XFlatHeader'
       responses:
         200:
           description: OK
@@ -239,13 +270,18 @@ paths:
       description: Delete a chore type by id
       operationId: deleteChoreType
       security:
-        - ApiKeyAuth: []
+        - FlatAdminApiKey: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
             $ref: '#/components/schemas/ChoreTypeId'
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: '#/components/schemas/XFlatHeader'
       responses:
         204:
           description: OK
@@ -253,8 +289,6 @@ paths:
           $ref: '#/components/responses/NotFound'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
-        400:
-          description: Bad Request
 
   /week-id/last:
     get:
@@ -350,8 +384,42 @@ components:
         - name: flat-example
           token: ea427902-2db8-11ed-a261-0242ac120002
 
+    AdminAccessRequired:
+      description: The admin token is required
+      value:
+       mmesage: Admin access required
+
+    FlatAccessRequired:
+      description: An administration flat token is required
+      value:
+        message: Flat administration access required
+
+    UserAccessRequired:
+      description: A user token is required
+      value:
+        message: User access required
+
+    InvalidFlatRequested:
+      description: The token provided does not grant access to the flat requested
+      value:
+        message: You don't have permission to access this flat's information
+
+    FlatHeaderRequired:
+      description: The admin token is used without the `x-flat` header
+      value:
+        message: The admin token must be used with the x-flat header
 
   responses:
+    FlatHeaderRequired:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            FlatHeaderRequired:
+              $ref: '#/components/examples/FlatHeaderRequired'
+
     Flat:
       description: OK
       content:
@@ -362,32 +430,51 @@ components:
             Flat:
               $ref: '#/components/examples/Flat'
 
-    ForbiddenErrorAdminRequired:
-      description: Admin access required
+    InvalidFlatRequested:
+      description: Forbidden
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            message: Admin access required
+          examples:
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
+
+    ForbiddenErrorAdminRequired:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            AdminAccessRequired:
+              $ref: '#/components/examples/AdminAccessRequired'
+            FlatHeaderRequired:
+              $ref: '#/components/examples/FlatHeaderRequired'
 
     ForbiddenErrorFlatRequired:
-      description: Flat administration access required
+      description: Forbidden
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            message: Flat administration access required
+          examples:
+            FlatAccessRequired:
+              $ref: '#/components/examples/FlatAccessRequired'
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
 
     ForbiddenErrorUserRequired:
-      description: User access required
+      description: Forbidden
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            message: User access required
+          examples:
+            UserAccessRequired:
+              $ref: '#/components/examples/UserAccessRequired'
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
 
     ValidationError:
       description: Request contains invalid data
@@ -439,25 +526,25 @@ components:
 
   schemas:
     ChoreTypeId:
-      description: ID of a chore type
+      description: ID of the chore type
       type: string
       minLength: 1
       maxLength: 25
 
     ChoreTypeName:
-      description: friendly name of a chore type
+      description: Friendly name of the chore type
       type: string
       minLength: 1
       maxLength: 50
 
     ChoreTypeDescription:
-      description: styled description of a chore type with markdown
+      description: Styled description of the chore type with markdown
       type: string
       minLength: 1
       maxLength: 255
 
     ChoreType:
-      description: defined type of chore
+      description: Defined type of chore
       type: object
       additionalProperties: false
       properties:
@@ -587,8 +674,20 @@ components:
         - bindingFailure
         - code
 
+    XFlatHeader:
+      type: string
+      description: Name of the flat. For more info please refer to the [multiflat](#section/Concepts/Multiflat) section
+
   securitySchemes:
-    ApiKeyAuth:
+    UserApiKey:
+      type: apiKey
+      in: header
+      name: x-token
+    FlatAdminApiKey:
+      type: apiKey
+      in: header
+      name: x-token
+    AdminApiKey:
       type: apiKey
       in: header
       name: x-token
