@@ -404,6 +404,81 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
 
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user
+      description: Get user by id
+      operationId: getUser
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserIdPath"
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: "#/components/schemas/XFlatHeader"
+      responses:
+        200:
+          $ref: '#/components/responses/User'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Delete user by id
+      operationId: deleteUser
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UserIdPath"
+        - name: x-flat
+          in: header
+          required: false
+          schema:
+            $ref: "#/components/schemas/XFlatHeader"
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                UnbalancedTickets:
+                  description: Cannot delete user with unbalanced tickets
+                  value:
+                    message: User has unbalanced tickets
+                PendingChores:
+                  description: Cannot delete user with pending chores
+                  value:
+                    message: User has pending chores
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
+
 components:
   examples:
     AdminAccessRequired:
@@ -472,7 +547,7 @@ components:
       value:
         username: user-example
         id: 123456789
-        api_token: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+        api_key: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
 
     UserCreate:
       description: Register new user
@@ -485,10 +560,19 @@ components:
       value:
         - username: user-example-1
           id: 123456789
-          api_token: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+          api_key: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
         - username: user-example-2
           id: 987654321
-          api_token: c26c9865-6d47-4f66-b586-7b489c72624e
+          api_key: c26c9865-6d47-4f66-b586-7b489c72624e
+
+    ValidationError:
+      description: Validation error
+      value:
+        message: ValidationError
+        errors:
+          - message: Username must be a string
+            value: 123
+            location: body.username
 
   responses:
     Conflict:
@@ -597,43 +681,15 @@ components:
               $ref: '#/components/examples/UserList'
 
     ValidationError:
-      description: Request contains invalid data
+      description: Bad Request
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: '#/components/schemas/Error'
-              - type: object
-                properties:
-                  errors:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/SingleValidationError'
-          example:
-            timestamp: '2022-09-04T21:17:15.900+00:00'
-            status: 400
-            error: Bad Request
-            message: 'Validation failed for object=''exampleModel''. Error count: 1'
-            errors:
-              - codes:
-                  - NotBlank.exampleModel.attribute
-                  - NotBlank.attribute
-                  - NotBlank.java.lang.String
-                  - NotBlank
-                arguments:
-                  - codes:
-                      - exampleModel.attribute
-                      - attribute
-                    arguments: null
-                    defaultMessage: attribute
-                    code: attribute
-                defaultMessage: attribute can't be blank
-                objectName: attribute
-                field: attribute
-                rejectedValue: null
-                bindingFailure: false
-                code: NotBlank
-            path: /some-path
+            $ref: '#/components/schemas/ValidationError'
+
+          examples:
+            ValidationError:
+              $ref: '#/components/examples/ValidationError'
 
     WeekID:
       description: OK
@@ -664,9 +720,9 @@ components:
         description:
           $ref: '#/components/schemas/ChoreTypeDescription'
       required:
-      - id
-      - name
-      - description
+        - id
+        - name
+        - description
 
     ChoreTypeDescription:
       description: Styled description of the chore type with markdown
@@ -739,32 +795,19 @@ components:
       type: object
       additionalProperties: false
       properties:
-        codes:
-          type: array
-          items:
-            type: string
-        arguments:
-          type: object
-        defaultMessage:
+        message:
           type: string
-        objectName:
+          description: A human readable description of what the validation error
+        value:
           type: string
-        field:
+          description: The value that caused the validation error
+        location:
           type: string
-        rejectedValue:
-          type: string
-        bindingFailure:
-          type: boolean
-        code:
-          type: string
+          description: Path to the attribute that caused the validation error
       required:
-        - codes
-        - arguments
-        - defaultMessage
-        - objectName
-        - field
-        - bindingFailure
-        - code
+        - message
+        - value
+        - location
 
     User:
       description: Registered user
@@ -773,12 +816,12 @@ components:
       allOf:
         - $ref: '#/components/schemas/UserCreate'
         - properties:
-            api_token:
+            api_key:
               type: string
               format: uuid
               description: User's API token
           required:
-            - api_token
+            - api_key
 
     UserCreate:
       description: Register new user
@@ -786,9 +829,7 @@ components:
       additionalProperties: false
       properties:
         id:
-          type: integer
-          description: User identifier
-          format: int64
+          $ref: "#/components/schemas/UserID"
         username:
           type: string
           description: User's nickname
@@ -799,13 +840,29 @@ components:
         - username
 
     UserIdPath:
-      # TODO: fill
-      description: user id. This value should be replaced with
-      type: object
+      description: User ID. This value should be set to the special keyword `me` when using a user API key.
       anyOf:
         - type: string
-          format: enum
-        - type: integer
+          enum: [me]
+        - $ref: "#/components/schemas/UserID"
+
+    UserID:
+      description: User identifier
+      type: integer
+      format: int64
+
+    ValidationError:
+      description: Validation error
+      allOf:
+        - $ref: '#/components/schemas/Error'
+        - type: object
+          properties:
+            errors:
+              type: array
+              items:
+                $ref: '#/components/schemas/SingleValidationError'
+          required:
+            - errors
 
     XFlatHeader:
       type: string
