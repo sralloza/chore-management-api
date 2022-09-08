@@ -358,11 +358,10 @@ paths:
 
 components:
   examples:
-    ChoreTypeList:
+    AdminAccessRequired:
+      description: The admin token is required
       value:
-        - id: livingRoom
-          name: Living Room
-          description: Clean the living room and the hallway
+        mmesage: Admin access required
 
     ChoreType:
       value:
@@ -370,56 +369,48 @@ components:
         name: Living Room
         description: Clean the living room and the hallway
 
-    FlatCreate:
+    ChoreTypeList:
       value:
-        name: flat-example
+        - id: livingRoom
+          name: Living Room
+          description: Clean the living room and the hallway
 
     Flat:
       value:
         name: flat-example
         token: ea427902-2db8-11ed-a261-0242ac120002
 
-    FlatList:
-      value:
-        - name: flat-example
-          token: ea427902-2db8-11ed-a261-0242ac120002
-
-    AdminAccessRequired:
-      description: The admin token is required
-      value:
-       mmesage: Admin access required
-
     FlatAccessRequired:
       description: An administration flat token is required
       value:
         message: Flat administration access required
 
-    UserAccessRequired:
-      description: A user token is required
+    FlatCreate:
       value:
-        message: User access required
-
-    InvalidFlatRequested:
-      description: The token provided does not grant access to the flat requested
-      value:
-        message: You don't have permission to access this flat's information
+        name: flat-example
 
     FlatHeaderRequired:
       description: The admin token is used without the `x-flat` header
       value:
         message: The admin token must be used with the x-flat header
 
-  responses:
-    FlatHeaderRequired:
-      description: Bad Request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          examples:
-            FlatHeaderRequired:
-              $ref: '#/components/examples/FlatHeaderRequired'
+    FlatList:
+      value:
+        - name: flat-example
+          token: ea427902-2db8-11ed-a261-0242ac120002
 
+    InvalidFlatRequested:
+      description: The token provided does not grant access to the flat requested
+      value:
+        message: You don't have permission to access this flat's information
+
+    UserAccessRequired:
+      description: A user token is required
+      value:
+        message: User access required
+
+
+  responses:
     Flat:
       description: OK
       content:
@@ -430,15 +421,15 @@ components:
             Flat:
               $ref: '#/components/examples/Flat'
 
-    InvalidFlatRequested:
-      description: Forbidden
+    FlatHeaderRequired:
+      description: Bad Request
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/Error"
+            $ref: '#/components/schemas/Error'
           examples:
-            InvalidFlatRequested:
-              $ref: '#/components/examples/InvalidFlatRequested'
+            FlatHeaderRequired:
+              $ref: '#/components/examples/FlatHeaderRequired'
 
     ForbiddenErrorAdminRequired:
       description: Forbidden
@@ -475,6 +466,25 @@ components:
               $ref: '#/components/examples/UserAccessRequired'
             InvalidFlatRequested:
               $ref: '#/components/examples/InvalidFlatRequested'
+
+    InvalidFlatRequested:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found
 
     ValidationError:
       description: Request contains invalid data
@@ -515,34 +525,7 @@ components:
                 code: NotBlank
             path: /some-path
 
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            message: Resource not found
-
   schemas:
-    ChoreTypeId:
-      description: ID of the chore type
-      type: string
-      minLength: 1
-      maxLength: 25
-
-    ChoreTypeName:
-      description: Friendly name of the chore type
-      type: string
-      minLength: 1
-      maxLength: 50
-
-    ChoreTypeDescription:
-      description: Styled description of the chore type with markdown
-      type: string
-      minLength: 1
-      maxLength: 255
-
     ChoreType:
       description: Defined type of chore
       type: object
@@ -559,6 +542,35 @@ components:
       - name
       - description
 
+    ChoreTypeDescription:
+      description: Styled description of the chore type with markdown
+      type: string
+      minLength: 1
+      maxLength: 255
+
+    ChoreTypeId:
+      description: ID of the chore type
+      type: string
+      minLength: 1
+      maxLength: 25
+
+    ChoreTypeName:
+      description: Friendly name of the chore type
+      type: string
+      minLength: 1
+      maxLength: 50
+
+    Error:
+      description: generic API error
+      type: object
+      additionalProperties: false
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+      required:
+        - message
+
     Flat:
       description: Registered flat
       type: object
@@ -574,17 +586,6 @@ components:
         - name
         - token
 
-    FlatName:
-      type: string
-      description: Name of the flat
-      pattern: '[a-z\-]+'
-
-    FlatList:
-      description: List of registered flats
-      type: array
-      items:
-        $ref: '#/components/schemas/Flat'
-
     FlatCreate:
       description: Register new flat
       type: object
@@ -596,51 +597,16 @@ components:
           pattern: '[a-z\-]+'
       required:
         - name
+    FlatList:
+      description: List of registered flats
+      type: array
+      items:
+        $ref: '#/components/schemas/Flat'
 
-    User:
-      description: Registered user
-      type: object
-      additionalProperties: false
-      properties:
-        id:
-          # TODO: fill size (a java long)
-          type: integer
-        username:
-          # TODO: fill size limits
-          type: string
-        api_token:
-          type: string
-          format: uuid
-      required:
-        - id
-        - username
-        - api_token
-
-    UserIdPath:
-      # TODO: fill
-      description: user id. This value should be replaced with
-      type: object
-      anyOf:
-        - type: string
-          format: enum
-        - type: integer
-
-    WeekID:
-      description: Week identifier
+    FlatName:
       type: string
-      pattern: '\d{4}\.\d{2}'
-      example: "2022.03"
-
-    Error:
-      description: generic API error
-      type: object
-      additionalProperties: false
-      properties:
-        message:
-          type: string
-          description: A human readable description of what the event represent
-      required:
-        - message
+      description: Name of the flat
+      pattern: '[a-z\-]+'
 
     SingleValidationError:
       description: Validation error
@@ -674,12 +640,46 @@ components:
         - bindingFailure
         - code
 
+    User:
+      description: Registered user
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          # TODO: fill size (a java long)
+          type: integer
+        username:
+          # TODO: fill size limits
+          type: string
+        api_token:
+          type: string
+          format: uuid
+      required:
+        - id
+        - username
+        - api_token
+
+    UserIdPath:
+      # TODO: fill
+      description: user id. This value should be replaced with
+      type: object
+      anyOf:
+        - type: string
+          format: enum
+        - type: integer
+
     XFlatHeader:
       type: string
       description: Name of the flat. For more info please refer to the [multiflat](#section/Concepts/Multiflat) section
 
+    WeekID:
+      description: Week identifier
+      type: string
+      pattern: '\d{4}\.\d{2}'
+      example: "2022.03"
+
   securitySchemes:
-    UserApiKey:
+    AdminApiKey:
       type: apiKey
       in: header
       name: x-token
@@ -687,7 +687,7 @@ components:
       type: apiKey
       in: header
       name: x-token
-    AdminApiKey:
+    UserApiKey:
       type: apiKey
       in: header
       name: x-token
