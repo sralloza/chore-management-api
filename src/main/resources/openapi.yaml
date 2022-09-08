@@ -90,6 +90,8 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/Flat'
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
     get:
@@ -110,6 +112,8 @@ paths:
               examples:
                 FlatList:
                   $ref: '#/components/examples/FlatList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
 
@@ -131,6 +135,8 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/Flat'
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           description: Forbidden
           content:
@@ -164,6 +170,8 @@ paths:
       responses:
         204:
           description: OK
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
         404:
@@ -196,6 +204,8 @@ paths:
               examples:
                 chore type list:
                   $ref: "#/components/examples/ChoreTypeList"
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           $ref: "#/components/responses/ForbiddenErrorUserRequired"
     post:
@@ -233,6 +243,8 @@ paths:
                   $ref: '#/components/examples/ChoreType'
         400:
           $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
 
@@ -266,6 +278,8 @@ paths:
               examples:
                 ChoreType:
                   $ref: '#/components/examples/ChoreType'
+        401:
+          $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
         403:
@@ -292,6 +306,8 @@ paths:
       responses:
         204:
           description: OK
+        401:
+          $ref: '#/components/responses/Unauthorized'
         404:
           $ref: '#/components/responses/NotFound'
         403:
@@ -411,11 +427,15 @@ components:
       value:
         message: You don't have permission to access this flat's information
 
+    UnuthorizedError:
+      description: An API key is needed
+      value:
+        message: An API key is needed
+
     UserAccessRequired:
       description: A user token is required
       value:
         message: User access required
-
 
   responses:
     Flat:
@@ -480,6 +500,16 @@ components:
             $ref: '#/components/schemas/Error'
           example:
             message: Resource not found
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            UnuthorizedError:
+              $ref: '#/components/examples/UnuthorizedError'
 
     ValidationError:
       description: Request contains invalid data
