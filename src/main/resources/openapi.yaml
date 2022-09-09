@@ -64,6 +64,8 @@ tags:
     description: Operations with users
   - name: Simple Chores
     description: Operations with chores in simple format
+  - name: Tickets
+    description: Operations with tickets
   - name: Week IDs
     description: Operations with week identifiers
 
@@ -471,6 +473,23 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
 
+  /tickets:
+    get:
+      tags:
+        - Tickets
+      summary: List tickets
+      description: List all tickets
+      operationId: listTickets
+      security:
+        - FlatAdminApiKey: []
+      responses:
+        200:
+          $ref: '#/components/responses/TicketList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
 components:
   examples:
     AdminAccessRequired:
@@ -535,6 +554,22 @@ components:
           user_id: 2
           week_id: "2022.01"
           done: false
+
+    TicketList:
+      description: List of chore tickets
+      value:
+        - id: A
+          description: description-A
+          tickets_by_tenant:
+            1: -1
+            2: -1
+            3: 2
+        - id: B
+          description: description-B
+          tickets_by_tenant:
+            1: -1
+            2: 0
+            3: 1
 
     UnuthorizedError:
       description: An API key is needed
@@ -708,6 +743,15 @@ components:
           examples:
             SimpleChoreList:
               $ref: '#/components/examples/SimpleChoreList'
+    TicketList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TicketList'
+          examples:
+            TicketList:
+              $ref: '#/components/examples/TicketList'
 
     Unauthorized:
       description: Unauthorized
@@ -840,6 +884,7 @@ components:
           pattern: '[a-z\-]+'
       required:
         - name
+
     FlatList:
       description: List of registered flats
       type: array
@@ -895,6 +940,33 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/SimpleChore'
+
+    Ticket:
+      description: Chore ticket
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/ChoreTypeId'
+        description:
+          $ref: '#/components/schemas/ChoreTypeDescription'
+        tickets_by_tenant:
+          type: object
+          description: Tickets grouped by tenant. The key is the userID.
+          additionalProperties:
+            description: Number of tickets of this type the user has.
+            type: integer
+            format: int32
+      required:
+        - id
+        - description
+        - tickets_by_tenant
+
+    TicketList:
+        description: List of chore tickets
+        type: array
+        items:
+          $ref: '#/components/schemas/Ticket'
 
     User:
       description: Registered user
