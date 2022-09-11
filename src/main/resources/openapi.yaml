@@ -43,6 +43,14 @@ info:
     ## Chore Assignements
     <!-- TODO: fill -->
 
+    ### Initial chore assignments
+
+    ### Skip week
+
+    There are occasions when user would want to skip a week. For example, when a user is on vacation. In this case, the user must tell the API to remove himself from the pool when the chores are assigned. This can be done by using the [skipWeek](#tag/Skip-Chores/operation/skipWeek) operation.
+
+    If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek](#tag/Skip-Chores/operation/undoSkipWeek) operation.
+
     # Authorization
 
     Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
@@ -66,6 +74,8 @@ tags:
     description: Operations with chores in simple format
   - name: Tickets
     description: Operations with tickets
+  - name: Skip Chores
+    description: Operations to skip weekly chores assignments
   - name: Week IDs
     description: Operations with week identifiers
 
@@ -121,7 +131,7 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
 
-  /flats/{id}:
+  /flats/{flat_id}:
     get:
       tags:
         - Flats
@@ -236,7 +246,7 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
 
-  /chore-types/{id}:
+  /chore-types/{chore_type_id}:
     get:
       tags:
         - Chore Types
@@ -368,7 +378,7 @@ paths:
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
 
-  /users/{id}:
+  /users/{user_id}:
     get:
       tags:
         - Users
@@ -485,6 +495,72 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/TicketList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+  /users/{user_id}/skip/{week_id}:
+    post:
+      tags:
+        - Skip Chores
+      summary: Skip weekly chores
+      description: Skip weekly chores for a user
+      operationId: skipWeek
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: '#/components/parameters/WeekIDPath'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  $ref: '#/components/examples/ValidationError'
+                WeekAlreadySkipped: 
+                  description: Week already skipped
+                  value:
+                    message: The user has already skipped the week
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+    delete:
+      tags:
+        - Skip Chores
+      summary: Undo skip weekly chores
+      description: Undo skip weekly chores for a user
+      operationId: undoSkipWeek
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: '#/components/parameters/WeekIDPath'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  $ref: '#/components/examples/ValidationError'
+                WeekNotSkipped:
+                  description: Week not skipped
+                  value:
+                    message: The user has not skipped the week
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
@@ -615,14 +691,14 @@ components:
 
   parameters:
     ChoreTypeID:
-      name: id
+      name: chore_type_id
       in: path
       required: true
       schema:
         $ref: '#/components/schemas/ChoreTypeId'
 
     FlatName:
-      name: id
+      name: flat_id
       in: path
       required: true
       schema:
@@ -647,11 +723,18 @@ components:
         default: 100
 
     UserIDPath:
-      name: id
+      name: user_id
       in: path
       required: true
       schema:
         $ref: "#/components/schemas/UserIDMe"
+
+    WeekIDPath:
+      name: week_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/WeekID"
 
     XFlatHeader:
       name: x-flat
@@ -1020,8 +1103,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/SingleValidationError'
-          required:
-            - errors
 
     XFlatHeader:
       type: string
