@@ -3,7 +3,7 @@
 
 openapi: "3.0.1"
 info:
-  version: '1.0.0 - DRAFT VERSION'
+  version: '0.1.0'
   title: Chore Management
   contact:
     email: sralloza@gmail.com
@@ -24,28 +24,84 @@ info:
     - **Week ID**: Weeks are identified by the year and the week number, like `2022.03` (the third week of 2022).
     - **Ticket**: Number of chores of a specific type that the user is owed. For more info, read the [tickets system](#section/Concepts/Tickets-system) section.
 
-    ## Multiflat
+    # Multiflat
 
-    ### Creating a flat
+    ## Creating a flat
 
     To create a flat, ask the API manager (who has the admin token) to create a flat. You will be given the flat token, which you can use to register users, schedule weekly chores and more.
 
-    ### Selecting a flat
+    ## Selecting a flat
 
     By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `x-flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the x-flat header without the admin key`.
 
-    ## Tickets system
+    # Tickets system
 
     This API supports chore transfers. When a user transfers a chore to other user, a ticket also is transferred. A ticket is like a currency, +1 tickets means that the user is owed a chore (in the future another user will complete his chore), and -1 tickets means that the user owns a chore (in the future he will complete another user's chore).
 
     Diferent chore types are considered non equivalent, so a ticket of (the chore type) X can not be compensated with a ticket of type Y.
 
-    ## Chore Assignements
-    <!-- TODO: fill -->
+    # Chore Assignements
 
-    ### Initial chore assignments
+    You can assign weekly chores using the [createWeeklyChores](#) endpoint.
 
-    ### Skip week
+    ## Examples
+
+    ### Normal chore assignments, same number of users and chores
+    Here is an example of the normal chore creation, with 3 users and 3 chore types.
+
+    | Week | Chore A | Chore B | Chore C
+    | ---- | ------- | ------- | ------- |
+    | 1    | User 1  | User 2  | User 3  |
+    | 2    | User 2  | User 3  | User 1  |
+    | 3    | User 3  | User 1  | User 2  |
+
+    ### More chores than users
+
+    **What happens if there are more chores than users?** Some tenants will have to complete more than one task in the same week.
+
+    | Week | Chore A | Chore B | Chore C | Chore D |
+    | ---- | ------- | ------- | ------- | ------- |
+    | 1    | User 1  | User 2  | User 3  | User 1  |
+    | 2    | User 2  | User 3  | User 1  | User 2  |
+    | 3    | User 3  | User 1  | User 2  | User 3  |
+    | 4    | User 1  | User 2  | User 3  | User 1  |
+
+    ### More users than chores
+
+    **What happens if there are more users than chores?** Some users will have no chores some weeks.
+
+    | Week | Chore A | Chore B |
+    | ---- | ------- | ------- |
+    | 1    | User 1  | User 2  |
+    | 2    | User 3  | User 1  |
+    | 3    | User 2  | User 3  |
+    | 4    | User 1  | User 2  |
+
+    ## How are chores assigned the first time
+
+    The best explanation is an example.
+
+    - Users: 501, 293, 381
+    - Chore types: garden, kitchen and dishes
+
+    Sorting the users and chore types:
+
+    - Users: 293, 381, 501
+    - Chore types: dishes, garden, kitchen
+
+    So, these will be the default chore assignments:
+
+    | Week | dishes | garden | kitchen |
+    | ---- | ------ | ------ | ------- |
+    | 1    | 293    | 381    | 501     |
+    | 2    | 381    | 501    | 293     |
+    | 3    | 501    | 293    | 381     |
+
+    If you want to assign the first time dishes to the user 501, garden to the user 293 and kitchen to the user 281, you will have to use the [editFlatSettings](#tag/Flats/operation/editFlatSettings) operation and send the `assignment_order` parameter set to `[501, 293, 381]` (the assignments of the first week sorted alphabetically by the chore ID).
+
+    The next weeks the chores will rotate. To ensure the chores will be assigned with the order you want, you can use the `dry_run` parameter in the [createWeeklyChores](#) operation. This will return the chore assignments without actually creating them. If you detect the rotation is not correct, you can use the [editFlatSettings](#tag/Flats/operation/editFlatSettings) operation to set the rotation.
+
+    ## Skip week
 
     There are occasions when user would want to skip a week. For example, when a user is on vacation. In this case, the user must tell the API to remove himself from the pool when the chores are assigned. This can be done by using the [skipWeek](#tag/Skip-Chores/operation/skipWeek) operation.
 
@@ -70,7 +126,7 @@ tags:
     description: Operations with chore types
   - name: Users
     description: Operations with users
-  - name: Simple Chores
+  - name: Chores
     description: Operations with chores in simple format
   - name: Tickets
     description: Operations with tickets
@@ -176,6 +232,52 @@ paths:
       responses:
         204:
           description: OK
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
+  /flats/{flat_id}/settings:
+    put:
+      tags:
+        - Flats
+      summary: Edit flat settings
+      description: Edit flat settings
+      operationId: editFlatSettings
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/FlatName'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlatSettings'
+            examples:
+              FlatSettings:
+                $ref: '#/components/examples/FlatSettings'
+      responses:
+        200:
+          $ref: '#/components/responses/FlatSettings'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                ValidationError:
+                  $ref: '#/components/examples/ValidationError'
+                InvalidInitialAssignments:
+                  description: All users are not defined in initial_assignments
+                  value:
+                    message: All users are not defined in initial_assignments
+                InvalidInitialAssignmentsUserNotFound:
+                  description: A user was mentioned in initial_assignments but it does not exist
+                  value:
+                    message: User with id=1001 was mentioned in initial_assignments but it does not exist
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
@@ -436,13 +538,13 @@ paths:
         404:
           $ref: '#/components/responses/NotFound'
 
-  /simple-chores:
+  /chores:
     get:
       tags:
-        - Simple Chores
-      summary: List simple Chores
-      description: List all simple chores
-      operationId: listSimpleChores
+        - Chores
+      summary: List Chores
+      description: List all chores without grouping them
+      operationId: listChores
       security:
         - FlatAdminApiKey: []
       parameters:
@@ -473,6 +575,8 @@ paths:
             type: boolean
         - $ref: '#/components/parameters/Offset'
         - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/StartWeekID'
+        - $ref: '#/components/parameters/EndWeekID'
       responses:
         200:
           $ref: '#/components/responses/SimpleChoreList'
@@ -525,7 +629,7 @@ paths:
               examples:
                 ValidationError:
                   $ref: '#/components/examples/ValidationError'
-                WeekAlreadySkipped: 
+                WeekAlreadySkipped:
                   description: Week already skipped
                   value:
                     message: The user has already skipped the week
@@ -608,6 +712,14 @@ components:
       value:
         - name: flat-example
           token: ea427902-2db8-11ed-a261-0242ac120002
+
+    FlatSettings:
+      value:
+        assignment_order:
+          - 10001
+          - 20002
+          - 30003
+        rotation_sign: positive
 
     InvalidFlatHeaderUse:
       description: The `x-flat` header was sent without an admin key
@@ -697,6 +809,14 @@ components:
       schema:
         $ref: '#/components/schemas/ChoreTypeId'
 
+    EndWeekID:
+      name: end_week_id
+      in: query
+      description: End week ID to filter, including it
+      required: false
+      schema:
+        $ref: '#/components/schemas/WeekId'
+
     FlatName:
       name: flat_id
       in: path
@@ -721,6 +841,14 @@ components:
       schema:
         type: integer
         default: 100
+
+    StartWeekID:
+      name: start_week_id
+      in: query
+      description: Start week ID to filter, including it
+      required: false
+      schema:
+        $ref: '#/components/schemas/WeekID'
 
     UserIDPath:
       name: user_id
@@ -763,6 +891,16 @@ components:
           examples:
             Flat:
               $ref: '#/components/examples/Flat'
+
+    FlatSettings:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FlatSettingsRequired'
+          examples:
+            FlatSettings:
+              $ref: '#/components/examples/FlatSettings'
 
     ForbiddenErrorAdminRequired:
       description: Forbidden
@@ -978,6 +1116,29 @@ components:
       type: string
       description: Name of the flat
       pattern: '[a-z\-]+'
+
+    FlatSettings:
+      type: object
+      description: Flat settings
+      additionalProperties: false
+      properties:
+        rotation_sign:
+          type: string
+          enum: [positive, negative]
+          default: positive
+          description: When assigning weekly chores, should the rotation be positive or negative
+        assignment_order:
+          type: array
+          description: Order in which users are assigned chores
+          items:
+            $ref: '#/components/schemas/UserID'
+
+    FlatSettingsRequired:
+      allOf:
+        - $ref: '#/components/schemas/FlatSettings'
+        - required:
+          - rotation_sign
+          - assignment_order
 
     SingleValidationError:
       description: Validation error
