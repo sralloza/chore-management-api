@@ -1,7 +1,9 @@
-# This is an **example** API to demonstrate features of OpenAPI specification.
-# It doesn't cover all OpenAPI features. For more full example check out: https://github.com/APIs-guru/petstore_extended
-
 openapi: "3.0.1"
+
+servers:
+  - url: https://chore-management-api.sralloza.es/v1
+    description: Production server
+
 info:
   version: '0.1.0'
   title: Chore Management
@@ -107,6 +109,10 @@ info:
 
     If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek](#tag/Skip-Chores/operation/undoSkipWeek) operation.
 
+    # Internationalization
+
+    This API supports error messages internationalization. The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
+
     # Authorization
 
     Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
@@ -134,9 +140,6 @@ tags:
     description: Operations to skip weekly chores assignments
   - name: Week IDs
     description: Operations with week identifiers
-
-servers:
-  - url: 'https://chore-management-api.sralloza.es/v1'
 
 paths:
   /flats:
@@ -172,20 +175,19 @@ paths:
       operationId: listFlats
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
       responses:
         200:
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/FlatList'
-              examples:
-                FlatList:
-                  $ref: '#/components/examples/FlatList'
+          $ref: '#/components/responses/FlatList'
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        422:
+          $ref: '#/components/responses/PaginationQueryParamsValidationError'
 
   /flats/{flat_id}:
     get:
@@ -712,6 +714,12 @@ components:
       value:
         - name: flat-example
           token: ea427902-2db8-11ed-a261-0242ac120002
+          settings:
+            assignment_order:
+              - 10001
+              - 20002
+              - 30003
+            rotation_sign: positive
 
     FlatSettings:
       value:
@@ -802,6 +810,19 @@ components:
             location: body.username
 
   parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      description: Language to use for error messages
+      required: false
+      schema:
+        type: string
+        enum:
+          - en
+          - es
+        default: "en"
+      example: es
+
     ChoreTypeID:
       name: chore_type_id
       in: path
@@ -815,7 +836,7 @@ components:
       description: End week ID to filter, including it
       required: false
       schema:
-        $ref: '#/components/schemas/WeekId'
+        $ref: '#/components/schemas/WeekID'
 
     FlatName:
       name: flat_id
@@ -832,6 +853,7 @@ components:
       schema:
         type: integer
         default: 0
+      example: 10
 
     Limit:
       in: query
@@ -841,6 +863,7 @@ components:
       schema:
         type: integer
         default: 100
+      example: 20
 
     StartWeekID:
       name: start_week_id
@@ -892,6 +915,16 @@ components:
             Flat:
               $ref: '#/components/examples/Flat'
 
+    FlatList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FlatList'
+          examples:
+            FlatList:
+              $ref: '#/components/examples/FlatList'
+
     FlatSettings:
       description: OK
       content:
@@ -925,7 +958,7 @@ components:
               $ref: '#/components/examples/InvalidFlatHeaderUse'
 
     ForbiddenErrorUserRequired:
-      description: Forbidden
+      description: User access required
       content:
         application/json:
           schema:
@@ -955,6 +988,22 @@ components:
           example:
             message: Resource not found
 
+    PaginationQueryParamsValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+          examples:
+            ValidationError:
+              description: The query params are not valid
+              value:
+                errors:
+                  - field: query.limit
+                    message: must be an integer
+                  - field: query.offset
+                    message: must be greater than or equal to 0
+
     SimpleChoreList:
       description: OK
       content:
@@ -975,7 +1024,7 @@ components:
               $ref: '#/components/examples/TicketList'
 
     Unauthorized:
-      description: Unauthorized
+      description: Missing API Key
       content:
         application/json:
           schema:
@@ -1090,9 +1139,12 @@ components:
           type: string
           description: Admin flat token
           format: uuid
+        settings:
+          $ref: '#/components/schemas/FlatSettings'
       required:
         - name
         - token
+        - settings
 
     FlatCreate:
       description: Register new flat
@@ -1132,6 +1184,9 @@ components:
           description: Order in which users are assigned chores
           items:
             $ref: '#/components/schemas/UserID'
+      required:
+        - rotation_sign
+        - assignment_order
 
     FlatSettingsRequired:
       allOf:
@@ -1256,14 +1311,12 @@ components:
 
     ValidationError:
       description: Validation error
-      allOf:
-        - $ref: '#/components/schemas/Error'
-        - type: object
-          properties:
-            errors:
-              type: array
-              items:
-                $ref: '#/components/schemas/SingleValidationError'
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleValidationError'
 
     XFlatHeader:
       type: string
