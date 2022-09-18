@@ -113,6 +113,8 @@ info:
 
     This API supports error messages internationalization. The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
 
+    **Warning**: If the language is not supported or is invalid, the API will return an error in the default language.
+
     # Authorization
 
     Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
@@ -151,6 +153,8 @@ paths:
       operationId: createFlat
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
       requestBody:
         required: true
         content:
@@ -163,10 +167,26 @@ paths:
       responses:
         200:
           $ref: '#/components/responses/Flat'
+        400:
+          $ref: '#/components/responses/InvalidJson'
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  description: Validation error
+                  value:
+                    errors:
+                      - field: body.name
+                        message: The name field is required
+
     get:
       tags:
         - Flats
@@ -698,8 +718,14 @@ components:
 
     Flat:
       value:
-        name: flat-example
-        token: ea427902-2db8-11ed-a261-0242ac120002
+        - name: flat-example
+          token: ea427902-2db8-11ed-a261-0242ac120002
+          settings:
+            assignment_order:
+              - 10001
+              - 20002
+              - 30003
+            rotation_sign: positive
 
     FlatAccessRequired:
       description: An administration flat token is required
@@ -738,6 +764,11 @@ components:
       description: The token provided does not grant access to the flat requested
       value:
         message: You don't have permission to access this flat's information
+
+    InvalidJson:
+      description: The JSON sent is invalid
+      value:
+        message: The request payload is not a valid JSON
 
     SimpleChoreList:
       description: List of simple chores
@@ -979,6 +1010,16 @@ components:
             InvalidFlatRequested:
               $ref: '#/components/examples/InvalidFlatRequested'
 
+    InvalidJson:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidJson:
+              $ref: '#/components/examples/InvalidJson'
+
     NotFound:
       description: Resource not found
       content:
@@ -1001,8 +1042,10 @@ components:
                 errors:
                   - field: query.limit
                     message: must be an integer
+                    value: "not an integer"
                   - field: query.offset
                     message: must be greater than or equal to 0
+                    value: -5
 
     SimpleChoreList:
       description: OK
@@ -1152,9 +1195,7 @@ components:
       additionalProperties: false
       properties:
         name:
-          type: string
-          description: Name of the flat. Must be lowercase with dashes.
-          pattern: '[a-z\-]+'
+          $ref: '#/components/schemas/FlatName'
       required:
         - name
 
@@ -1211,7 +1252,6 @@ components:
           description: Path to the attribute that caused the validation error
       required:
         - message
-        - value
         - location
 
     SimpleChore:
