@@ -257,9 +257,10 @@ paths:
         401:
           $ref: '#/components/responses/Unauthorized'
         403:
-          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
         404:
           $ref: '#/components/responses/NotFound'
+
   /flats/{flat_id}/settings:
     put:
       tags:
@@ -334,6 +335,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: "#/components/responses/ForbiddenErrorUserRequired"
+
     post:
       tags:
         - Chore Types
@@ -398,6 +400,7 @@ paths:
           $ref: '#/components/responses/NotFound'
         403:
           $ref: '#/components/responses/ForbiddenErrorUserRequired'
+
     delete:
       tags:
         - Chore Types
@@ -525,6 +528,7 @@ paths:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
         404:
           $ref: '#/components/responses/NotFound'
+
     delete:
       tags:
         - Users
@@ -659,6 +663,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+          
     delete:
       tags:
         - Skip Chores
@@ -988,6 +993,20 @@ components:
             InvalidFlatHeaderUse:
               $ref: '#/components/examples/InvalidFlatHeaderUse'
 
+    ForbiddenErrorInvalidFlatRequested:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            FlatAccessRequired:
+              $ref: '#/components/examples/FlatAccessRequired'
+            InvalidFlatHeaderUse:
+              $ref: '#/components/examples/InvalidFlatHeaderUse'
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
+
     ForbiddenErrorUserRequired:
       description: User access required
       content:
@@ -1207,8 +1226,19 @@ components:
 
     FlatName:
       type: string
-      description: Name of the flat
+      description: Name of the flat. This value should be set to the special keyword `me` when using a Flat API key.
+      oneOf:
+        - $ref: '#/components/schemas/FlatNameString'
+        - $ref: '#/components/schemas/FlatNameMe'
+
+    FlatNameString:
+      type: string
       pattern: '[a-z\-]+'
+
+    FlatNameMe:
+      type: string
+      enum:
+        - me
 
     FlatSettings:
       type: object
