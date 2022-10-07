@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+# TODO: should support al list of addresses, like "database:3306,redis:6379"
 if [[ -z "${WAIT_FOR_IT_ADDRESS}" ]]; then
   echo "Skipping wait-for-it ($$WAIT_FOR_IT_ADDRESS is not defined)"
 else

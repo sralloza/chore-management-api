@@ -6,6 +6,7 @@ services:
     container_name: app
     environment:
       - ADMIN_TOKEN=bc6acdd7-9de0-495f-86ea-20beda48d626
+      - APPLICATION_SECRET=whatever
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_HOST=database

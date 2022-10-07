@@ -3,6 +3,7 @@ package es.sralloza.choremanagementapi.services;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,8 @@ import java.util.UUID;
 @Service
 public class JWTService {
     public static final String ISSUER = "chore-management-api";
+
+    @Autowired
     @Value("${application-secret}")
     private String applicationSecret;
 
