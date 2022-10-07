@@ -27,7 +27,7 @@ public class DBChore {
     private String choreType;
 
     @Column(nullable = false)
-    private Long tenantId;
+    private Long userId;
 
     @Column(length = 50, nullable = false)
     private String weekId;

@@ -27,10 +27,10 @@ public class DBTransfer {
     private Long timestamp;
 
     @Column(nullable = false)
-    private Long tenantIdFrom;
+    private Long userIdFrom;
 
     @Column(nullable = false)
-    private Long tenantIdTo;
+    private Long userIdTo;
 
     @Column(length = 50, nullable = false)
     private String choreType;

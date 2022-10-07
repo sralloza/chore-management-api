@@ -15,11 +15,11 @@ import javax.validation.constraints.Size;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class TenantCreate {
-    @JsonProperty("tenant_id")
-    @NotNull(message = "tenant_id is required")
-    @Positive(message = "tenant_id must be positive")
-    Long tenantId;
+public class UserCreate {
+    @JsonProperty("user_id")
+    @NotNull(message = "user_id is required")
+    @Positive(message = "user_id must be positive")
+    Long user_id;
 
     @NotNull(message = "username is required")
     @NotBlank(message = "username can't be blank")

@@ -6,16 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.UUID;
-
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tenant {
-    @JsonProperty("tenant_id")
-    Long tenantId;
+public class SimpleUser {
+    @JsonProperty("user_id")
+    Long userId;
     String username;
-    @JsonProperty("api_token")
-    UUID apiToken;
 }

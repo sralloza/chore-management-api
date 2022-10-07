@@ -4,7 +4,7 @@ import es.sralloza.choremanagementapi.exceptions.BadRequestException;
 import es.sralloza.choremanagementapi.exceptions.ConflictException;
 import es.sralloza.choremanagementapi.exceptions.NotFoundException;
 import es.sralloza.choremanagementapi.models.custom.Chore;
-import es.sralloza.choremanagementapi.models.custom.Tenant;
+import es.sralloza.choremanagementapi.models.custom.User;
 import es.sralloza.choremanagementapi.models.custom.WeeklyChores;
 import es.sralloza.choremanagementapi.models.db.DBChoreType;
 import es.sralloza.choremanagementapi.models.db.DBRotation;
@@ -37,7 +37,7 @@ public class WeeklyChoresService {
     @Autowired
     private DBChoreTypesRepository choreTypesRepository;
     @Autowired
-    private TenantsService tenantsService;
+    private UsersService usersService;
     @Autowired
     private DBRotationRepository dbRotationRepository;
     @Autowired
@@ -63,7 +63,7 @@ public class WeeklyChoresService {
 
         if (weeklyChoresList.isEmpty()) {
             WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, 0);
-            weeklyChoresRepository.save(weeklyChores, tenantsService.getTenantsHash());
+            weeklyChoresRepository.save(weeklyChores, usersService.getUsersHash());
             return weeklyChores;
         }
 
@@ -72,9 +72,9 @@ public class WeeklyChoresService {
             .orElseThrow(() -> new RuntimeException("No rotations found creating weekly chores for week " + weekId));
 
         int newRotation = lastRotation.getRotation() + 1;
-        if (!lastRotation.getTenantIdsHash().equals(tenantsService.getTenantsHash())) {
+        if (!lastRotation.getUsersIdHash().equals(usersService.getUsersHash())) {
             if (!Boolean.TRUE.equals(force)) {
-                throw new BadRequestException("Tenants have changed since weekly chore creation. Use force parameter " +
+                throw new BadRequestException("Users have changed since weekly chore creation. Use force parameter " +
                     "to restart the weekly chores creation.");
             }
             log.info("Recreating weekly chores");
@@ -82,7 +82,7 @@ public class WeeklyChoresService {
         }
 
         WeeklyChores weeklyChores = createWeeklyChoresByRotation(weekId, newRotation);
-        weeklyChoresRepository.save(weeklyChores, tenantsService.getTenantsHash());
+        weeklyChoresRepository.save(weeklyChores, usersService.getUsersHash());
         return weeklyChores;
     }
 
@@ -90,53 +90,53 @@ public class WeeklyChoresService {
         List<String> choreTypes = choreTypesRepository.findAll().stream()
             .map(DBChoreType::getId)
             .collect(Collectors.toList());
-        List<Tenant> tenants = tenantsService.listTenants();
+        List<User> users = usersService.listUsers();
 
-        if (tenants.isEmpty()) {
-            throw new BadRequestException("Can't create weekly chores, no tenants registered");
+        if (users.isEmpty()) {
+            throw new BadRequestException("Can't create weekly chores, no users registered");
         }
 
         if (choreTypes.isEmpty()) {
             throw new BadRequestException("Can't create weekly chores, no chore types registered");
         }
-        return createWeeklyChoresDistributingChores(choreTypes, tenants, weekId, rotation);
+        return createWeeklyChoresDistributingChores(choreTypes, users, weekId, rotation);
     }
 
-    private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<Tenant> tenants,
+    private WeeklyChores createWeeklyChoresDistributingChores(List<String> choreTypes, List<User> users,
                                                               String weekId, int rotation) {
-        List<Long> tenantIdList = tenants.stream()
-            .map(Tenant::getTenantId)
+        List<Long> userIdList = users.stream()
+            .map(User::getUserId)
             .collect(Collectors.toList());
 
-        Set<Long> tenantsSkippingWeek = dbSkippedWeekRepository.findAll().stream()
+        Set<Long> usersSkippingWeek = dbSkippedWeekRepository.findAll().stream()
             .filter(dbSkippedWeek -> dbSkippedWeek.getWeekId().equals(weekId))
-            .map(DBSkippedWeek::getTenantId)
+            .map(DBSkippedWeek::getUserId)
             .collect(Collectors.toSet());
-        Set<Long> tenantsNotSkippingWeek = tenantIdList.stream()
-            .filter(tenantId -> !tenantsSkippingWeek.contains(tenantId))
+        Set<Long> usersNotSkippingWeek = userIdList.stream()
+            .filter(userId -> !usersSkippingWeek.contains(userId))
             .collect(Collectors.toSet());
 
-        int arraySize = Integer.max(choreTypes.size(), tenants.size()) * 2;
+        int arraySize = Integer.max(choreTypes.size(), users.size()) * 2;
 
-        if (tenantsNotSkippingWeek.size() == 1) {
-            var tenantAlone = tenantsNotSkippingWeek.iterator().next();
+        if (usersNotSkippingWeek.size() == 1) {
+            var userAlone = usersNotSkippingWeek.iterator().next();
             rotation--;
-            for (int i = 0; i < tenants.size(); i++) {
-                tenantIdList.set(i, tenantAlone);
+            for (int i = 0; i < users.size(); i++) {
+                userIdList.set(i, userAlone);
             }
         }
-        rotation = rotation % tenants.size();
+        rotation = rotation % users.size();
 
-        List<Long> repeatedTenants = choreUtils.repeatArray(tenantIdList, arraySize);
-        Collections.rotate(repeatedTenants, -rotation);
+        List<Long> repeatedUsers = choreUtils.repeatArray(userIdList, arraySize);
+        Collections.rotate(repeatedUsers, -rotation);
 
         var distributedChoreList = IntStream.range(0, choreTypes.size())
             .mapToObj(n -> {
-                var tenantId = repeatedTenants.get(n);
+                var userId = repeatedUsers.get(n);
                 return createChore(weekId,
                     choreTypes.get(n),
-                    tenantId,
-                    tenantsSkippingWeek.contains(tenantId) ? tenantsNotSkippingWeek : null
+                    userId,
+                    usersSkippingWeek.contains(userId) ? usersNotSkippingWeek : null
                 );
             })
             .collect(Collectors.toList());
@@ -147,18 +147,18 @@ public class WeeklyChoresService {
             .setRotation(rotation);
     }
 
-    private Chore createChore(String weekId, String type, Long tenantId, Set<Long> tenantIdListOverride) {
+    private Chore createChore(String weekId, String type, Long userId, Set<Long> userIdListOverride) {
         List<Long> asigneeListIds = new ArrayList<>();
 
-        if (tenantIdListOverride == null || tenantIdListOverride.isEmpty()) {
-            asigneeListIds.add(tenantId);
+        if (userIdListOverride == null || userIdListOverride.isEmpty()) {
+            asigneeListIds.add(userId);
         } else {
-            asigneeListIds.addAll(tenantIdListOverride);
+            asigneeListIds.addAll(userIdListOverride);
         }
 
         var asigneeListUsernames = asigneeListIds.stream()
-            .map(tenantsService::getTenantById)
-            .map(Tenant::getUsername)
+            .map(usersService::getUserById)
+            .map(User::getUsername)
             .collect(Collectors.toList());
 
         return new Chore(weekId, type, asigneeListIds, asigneeListUsernames, false);
@@ -192,7 +192,7 @@ public class WeeklyChoresService {
         return new NotFoundException("No weekly chores found for week " + weekId);
     }
 
-    public void completeWeeklyChores(String weekId, String choreType, Long tenantId) {
-        weeklyChoresRepository.completeWeeklyChores(weekId, choreType, tenantId);
+    public void completeWeeklyChores(String weekId, String choreType, Long userId) {
+        weeklyChoresRepository.completeWeeklyChores(weekId, choreType, userId);
     }
 }

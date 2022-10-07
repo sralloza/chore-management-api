@@ -56,7 +56,7 @@ public class WeeklyChoresRepository {
                 .collect(Collectors.toList());
     }
 
-    public void save(WeeklyChores weeklyChores, String tenantsHash) {
+    public void save(WeeklyChores weeklyChores, String usersHash) {
         List<Chore> chores = weeklyChores.getChores();
         List<DBChore> result = chores.stream()
                 .map(choreMapper::splitChore)
@@ -66,7 +66,7 @@ public class WeeklyChoresRepository {
         var rotation = new DBRotation()
                 .setWeekId(weeklyChores.getWeekId())
                 .setRotation(weeklyChores.getRotation())
-                .setTenantIdsHash(tenantsHash);
+                .setUsersIdHash(usersHash);
         dbRotationRepository.save(rotation);
         dbChoresRepository.saveAll(result);
     }
@@ -89,18 +89,18 @@ public class WeeklyChoresRepository {
         dbRotationRepository.deleteAll(dbRotation);
     }
 
-    public void completeWeeklyChores(String weekId, String choreType, @Nullable Long tenantId) {
+    public void completeWeeklyChores(String weekId, String choreType, @Nullable Long userId) {
         List<DBChore> dbChores = dbChoresRepository.findAll().stream()
             .filter(chore -> chore.getWeekId().equals(weekId) && chore.getChoreType().equals(choreType))
             .collect(Collectors.toList());
         if (dbChores.isEmpty()) {
             throw new NotFoundException("No chores found for week " + weekId + " and type " + choreType);
         }
-        if (tenantId != null) {
+        if (userId != null) {
         dbChores.stream()
-            .filter(chore -> chore.getTenantId().equals(tenantId))
+            .filter(chore -> chore.getUserId().equals(userId))
             .findAny()
-            .orElseThrow(() -> new ForbiddenException("Can't complete task assigned to other tenant"));
+            .orElseThrow(() -> new ForbiddenException("Can't complete task assigned to other user"));
         }
 
         if (dbChores.stream().anyMatch(DBChore::getDone)){

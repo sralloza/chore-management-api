@@ -15,6 +15,6 @@ import java.util.Map;
 public class ChoreTypeTickets {
     private String id;
     private String description;
-    @JsonProperty("tickets_by_tenant")
-    private Map<String, Long> ticketsByTenant;
+    @JsonProperty("tickets_by_user")
+    private Map<String, Long> ticketsByUser;
 }

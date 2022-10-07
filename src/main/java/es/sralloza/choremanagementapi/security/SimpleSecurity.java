@@ -2,9 +2,9 @@ package es.sralloza.choremanagementapi.security;
 
 import es.sralloza.choremanagementapi.exceptions.ForbiddenException;
 import es.sralloza.choremanagementapi.exceptions.UnauthorizedException;
-import es.sralloza.choremanagementapi.models.custom.Tenant;
-import es.sralloza.choremanagementapi.services.TenantsService;
-import es.sralloza.choremanagementapi.utils.TenantIdHelper;
+import es.sralloza.choremanagementapi.models.custom.User;
+import es.sralloza.choremanagementapi.services.UsersService;
+import es.sralloza.choremanagementapi.utils.UserIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,9 @@ public class SimpleSecurity {
     @Autowired
     private HttpServletRequest request;
     @Autowired
-    private TenantsService tenantsService;
+    private UsersService usersService;
     @Autowired
-    private TenantIdHelper tenantIdHelper;
+    private UserIdHelper userIdHelper;
 
     public void requireAdmin() {
         if (!isAdmin()) {
@@ -31,27 +31,27 @@ public class SimpleSecurity {
         }
     }
 
-    public void requireTenant() {
-        if (!isTenant()) {
-            throw new ForbiddenException("Tenant access required");
+    public void requireUser() {
+        if (!isUser()) {
+            throw new ForbiddenException("User access required");
         }
     }
 
-    public Tenant getTenant() {
+    public User getUser() {
         var apiKey = getApiKey();
-        return tenantsService.listTenants().stream()
+        return usersService.listUsers().stream()
             .filter(t -> t.getApiToken().toString().equals(apiKey))
             .findAny()
             .orElse(null);
     }
 
-    public void requireTenantFromPath(String tenantId) {
-        requireTenant();
-        var userTenantId = getTenant();
-        var askedTenantId = tenantIdHelper.parseTenantId(tenantId);
-        if (userTenantId != null) {
-            if (!askedTenantId.equals(userTenantId.getTenantId())) {
-                throw new ForbiddenException("You don't have permission to access other tenant's data");
+    public void requireUserFromPath(String userId) {
+        requireUser();
+        var realUserId = getUser();
+        var askedUserId = userIdHelper.parseUserId(userId);
+        if (realUserId != null) {
+            if (!askedUserId.equals(realUserId.getUserId())) {
+                throw new ForbiddenException("You don't have permission to access other user's data");
             }
         }
     }
@@ -60,11 +60,11 @@ public class SimpleSecurity {
         return principalRequestValue.equals(getApiKey());
     }
 
-    public boolean isTenant() {
+    public boolean isUser() {
         if (isAdmin()) {
             return true;
         }
-        return tenantsService.listTenants().stream()
+        return usersService.listUsers().stream()
             .anyMatch(t -> t.getApiToken().toString().equals(getApiKey()));
     }
 
