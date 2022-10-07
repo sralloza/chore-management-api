@@ -1,5 +1,6 @@
 {
   "examples": {
+    "expired_flat_create_code": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTA5MDg4NSwiaWF0IjoxNjY1MDkwNTg1fQ.DfnlyVxwliKslcKn6Kykn3SeGyA_FhmcvhIQ2Qpd-ME",
     "simple_chore_types": [
       { "done": true, "chore_type": "A", "tenant_id": 1, "week_id": "2030.01" },
       {

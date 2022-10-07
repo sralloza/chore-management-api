@@ -116,5 +116,13 @@
   "listSimpleChores": {
     "path": "/simple-chores",
     "method": "GET"
+  },
+  "requestFlatCreateCode": {
+    "path": "/flats/create-code",
+    "method": "POST"
+  },
+  "createFlat": {
+    "path": "/flats",
+    "method": "POST"
   }
 }

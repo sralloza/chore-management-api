@@ -1,14 +1,11 @@
 import json
-import os
 import re
 from datetime import datetime
-from pathlib import Path
 
 import jq
 from behave import *
 from dateutil.parser import parse
 from hamcrest import *
-from jsonschema import FormatChecker, RefResolver, ValidationError, validate
 from toolium.utils.dataset import replace_param
 
 from common.api import send_request
@@ -57,31 +54,6 @@ def step_impl(context, message=None):
 
     msg = 'The error message should be "{}", but it is "{}"'
     assert actual == message, msg.format(message, actual)
-
-
-@then('the response body is validated against the json-schema "{schema}"')
-def step_impl(context, schema):
-    schema = Path(__file__).parent.parent / f"resources/schemas/{schema}.json"
-    with open(schema) as f:
-        json_schema = json.load(f)
-
-    json_schema_dir = os.path.dirname(os.path.realpath(schema))
-    resolver = RefResolver(
-        referrer=json_schema, base_uri="file://" + json_schema_dir + "/"
-    )
-
-    api_response = context.res.json()
-
-    try:
-        validate(
-            api_response,
-            json_schema,
-            resolver=resolver,
-            format_checker=FormatChecker(),
-        )
-    except ValidationError as exc:
-        msg = f"- Json Schema ValidationError: {exc.message}"
-        assert False, msg
 
 
 @step('the response timestamp attribute is at most "{ms:d}" ms ago')
@@ -159,6 +131,12 @@ def step_impl(context):
         value = row["value"]
         to_str = row.get("as_string", "fals").lower() == "true"
         set_field_to_context(context, field, value, to_str=to_str)
+
+
+@step('I clear the "{attr}" attribute of the context')
+def step_impl(context, attr):
+    if hasattr(context, attr):
+        delattr(context, attr)
 
 
 @step('the response attribute "{attr}" as string is "{value}"')

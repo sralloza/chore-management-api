@@ -24,6 +24,8 @@ def before_feature(context, feature):
     tlm_before_feature(context, feature)
     context.api = Path(feature.filename).parent.name
     context.resource = feature.name.split(" - ")[-1]
+    context.operation_id = context.resource
+    context.storage = {}
 
 
 def get_dataset():

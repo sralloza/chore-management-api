@@ -173,6 +173,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         403:
           $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        409:
+          $ref: '#/components/responses/Conflict'
         422:
           description: Validation error
           content:
@@ -311,6 +313,31 @@ paths:
           $ref: '#/components/responses/NotFound'
         422:
           $ref: '#/components/responses/ValidationError'
+
+  /flat-token:
+    post:
+      tags:
+        - Flats
+      summary: Request a flat token
+      description: Request a flat token, which can be used later to create a flat.
+      operationId: requestFlatCreateCode
+      security:
+        - AdminApiKey: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlatCreateCode'
+              examples:
+                FlatCreateCode:
+                  $ref: '#/components/examples/FlatCreateCode'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          # TODO: 401 - Invalid create code
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
 
   /chore-types:
     get:
@@ -731,7 +758,7 @@ components:
     Flat:
       value:
         - name: flat-example
-          token: ea427902-2db8-11ed-a261-0242ac120002
+          api_key: ea427902-2db8-11ed-a261-0242ac120002
           settings:
             assignment_order:
               - 10001
@@ -746,8 +773,13 @@ components:
 
     FlatCreate:
       value:
-        invite_code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ1NzUyMDAsImVhdCI6MTY2NDU3NTUwMH0.QyjBrNXfbwhyRAjawdRveI8vuMCo3lUwbVnvdlwi5oE
+        create_code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ1NzUyMDAsImVhdCI6MTY2NDU3NTUwMH0.QyjBrNXfbwhyRAjawdRveI8vuMCo3lUwbVnvdlwi5oE
         name: flat-example
+
+    FlatCreateCode:
+      value:
+        code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ1NzUyMDAsImVhdCI6MTY2NDU3NTUwMH0.QyjBrNXfbwhyRAjawdRveI8vuMCo3lUwbVnvdlwi5oE
+        expires_at: 2022-10-06T17:41:08+00:00
 
     FlatList:
       value:
@@ -812,9 +844,9 @@ components:
             3: 1
 
     UnuthorizedError:
-      description: An API key is needed
+      description: Missing API key
       value:
-        message: An API key is needed
+        message: Missing API key
 
     UserAccessRequired:
       description: A user token is required
@@ -1178,7 +1210,7 @@ components:
     ChoreTypeID:
       description: ID of the chore type
       type: string
-      pattern: '^[a-z]+$'
+      pattern: '^[a-z-]+$'
       minLength: 1
       maxLength: 25
 
@@ -1205,16 +1237,16 @@ components:
       additionalProperties: false
       properties:
         name:
-          $ref: '#/components/schemas/FlatName'
-        token:
+          $ref: '#/components/schemas/FlatNameString'
+        api_key:
           type: string
-          description: Admin flat token
+          description: Admin flat API key
           format: uuid
         settings:
           $ref: '#/components/schemas/FlatSettingsRequired'
       required:
         - name
-        - token
+        - api_key
         - settings
 
     FlatCreate:
@@ -1222,15 +1254,33 @@ components:
       type: object
       additionalProperties: false
       properties:
-        invite_code:
+        create_code:
           type: string
           format: jwt
-          description: Invite code to create the flat
+          description: Temporal code to create the flat
         name:
           $ref: '#/components/schemas/FlatName'
       required:
-        - invite_code
+        - create_code
         - name
+
+    FlatCreateCode:
+      description: Code to create a new flat
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          format: jwt
+          description: Code to create a new flat
+        expires_at:
+          type: string
+          format: date-time
+          description: Expiration date of the code
+
+      required:
+        - code
+        - expires_at
 
     FlatList:
       description: List of registered flats
@@ -1247,7 +1297,7 @@ components:
 
     FlatNameString:
       type: string
-      pattern: '^[a-z]+$'
+      pattern: '^[a-z-]+$'
 
     FlatNameMe:
       type: string
