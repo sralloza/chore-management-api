@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,11 @@ public class FlatsService {
         return dbFlatsRepository.findAll().stream()
             .map(flatMapper::build)
             .collect(Collectors.toList());
+    }
+
+    public Optional<Flat> getFlatByApiKey(String apiKey) {
+        return dbFlatsRepository.findByApiKey(UUID.fromString(apiKey))
+            .map(flatMapper::build);
     }
 
     public Flat createFlat(FlatCreate flatCreate) {

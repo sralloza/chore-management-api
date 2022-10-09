@@ -47,18 +47,16 @@ public class SimpleSecurity {
         }
         var apiKey = getApiKey();
         if (isFlatOwner()) {
-            return flatsService.listFlats().stream()
-                .filter(flat -> flat.getApiKey().toString().equals(apiKey))
-                .findAny()
+            return flatsService.getFlatByApiKey(apiKey)
                 .map(Flat::getName)
                 .orElse(null);
         }
+
         return usersService.listUsers().stream()
             .filter(user -> user.getApiKey().toString().equals(apiKey))
             .findAny()
             .map(User::getFlatName)
             .orElse(null);
-
     }
 
     public User getUser() {
