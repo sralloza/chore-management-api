@@ -36,7 +36,7 @@ Feature: Weekly Chores API - completeTask
             | field     | value   |
             | weekId    | 2022.01 |
             | choreType | A       |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 

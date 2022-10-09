@@ -29,36 +29,36 @@
     "path": "/chore-types",
     "method": "POST"
   },
-  "createTenant": {
-    "path": "/tenants",
+  "createUser": {
+    "path": "/users",
     "method": "POST"
   },
-  "deleteTenant": {
-    "path": "/tenants/{tenantId}",
+  "deleteUser": {
+    "path": "/users/{tenantId}",
     "pathParams": ["tenantId"],
     "method": "DELETE"
   },
-  "getTenant": {
-    "path": "/tenants/{tenantId}",
+  "getUser": {
+    "path": "/users/{tenantId}",
     "pathParams": ["tenantId"],
     "method": "GET"
   },
-  "listTenants": {
-    "path": "/tenants",
+  "listUsers": {
+    "path": "/users",
     "method": "GET"
   },
-  "recreateTenantToken": {
-    "path": "/tenants/{tenantId}/recreate-token",
+  "recreateUserToken": {
+    "path": "/users/{tenantId}/recreate-token",
     "pathParams": ["tenantId"],
     "method": "POST"
   },
   "skipWeek": {
-    "path": "/tenants/{tenantId}/skip/{weekId}",
+    "path": "/users/{tenantId}/skip/{weekId}",
     "pathParams": ["tenantId", "weekId"],
     "method": "POST"
   },
   "unSkipWeek": {
-    "path": "/tenants/{tenantId}/unskip/{weekId}",
+    "path": "/users/{tenantId}/unskip/{weekId}",
     "pathParams": ["tenantId", "weekId"],
     "method": "POST"
   },

@@ -2,7 +2,9 @@ package es.sralloza.choremanagementapi.security;
 
 import es.sralloza.choremanagementapi.exceptions.ForbiddenException;
 import es.sralloza.choremanagementapi.exceptions.UnauthorizedException;
+import es.sralloza.choremanagementapi.models.custom.Flat;
 import es.sralloza.choremanagementapi.models.custom.User;
+import es.sralloza.choremanagementapi.services.FlatsService;
 import es.sralloza.choremanagementapi.services.UsersService;
 import es.sralloza.choremanagementapi.utils.UserIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class SimpleSecurity {
     @Autowired
     private UsersService usersService;
     @Autowired
+    private FlatsService flatsService;
+    @Autowired
     private UserIdHelper userIdHelper;
 
     public void requireAdmin() {
@@ -37,10 +41,30 @@ public class SimpleSecurity {
         }
     }
 
+    public String getFlatName() {
+        if (isAdmin()) {
+            return request.getHeader("X-Flat");
+        }
+        var apiKey = getApiKey();
+        if (isFlatOwner()) {
+            return flatsService.listFlats().stream()
+                .filter(flat -> flat.getApiKey().toString().equals(apiKey))
+                .findAny()
+                .map(Flat::getName)
+                .orElse(null);
+        }
+        return usersService.listUsers().stream()
+            .filter(user -> user.getApiKey().toString().equals(apiKey))
+            .findAny()
+            .map(User::getFlatName)
+            .orElse(null);
+
+    }
+
     public User getUser() {
         var apiKey = getApiKey();
         return usersService.listUsers().stream()
-            .filter(t -> t.getApiToken().toString().equals(apiKey))
+            .filter(t -> t.getApiKey().toString().equals(apiKey))
             .findAny()
             .orElse(null);
     }
@@ -60,12 +84,14 @@ public class SimpleSecurity {
         return principalRequestValue.equals(getApiKey());
     }
 
+    public boolean isFlatOwner() {
+        var apiKey = getApiKey();
+        return flatsService.listFlats().stream().anyMatch(t -> t.getApiKey().toString().equals(apiKey));
+    }
+
     public boolean isUser() {
-        if (isAdmin()) {
-            return true;
-        }
-        return usersService.listUsers().stream()
-            .anyMatch(t -> t.getApiToken().toString().equals(getApiKey()));
+        var apiKey = getApiKey();
+        return usersService.listUsers().stream().anyMatch(t -> t.getApiKey().toString().equals(apiKey));
     }
 
     private String getApiKey() {

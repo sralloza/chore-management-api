@@ -25,4 +25,7 @@ public class DBUser {
 
     @Column(length = 36, nullable = false)
     private String apiToken;
+
+    @Column(nullable = false)
+    private String flatName;
 }

@@ -1,11 +1,14 @@
 from behave import *
+from hamcrest import assert_that, is_in
+
+VALID_API_KEYS = ("admin", "flat", "user")
 
 
 @step("I use a tenant's token")
 def step_impl(context):
     context.execute_steps(
         """
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
         """
@@ -15,7 +18,7 @@ def step_impl(context):
         context.execute_steps(
             """
             Given There is 1 tenant
-            And I use the admin token
+            And I use the admin API key
             When I send a request to the Api resource "listTenants"
             Then the response status code is "200"
             """
@@ -36,7 +39,7 @@ def step_impl(context, id):
 
     context.execute_steps(
         f"""
-        Given I use the admin token
+        Given I use the admin API key
         And the field "tenantId" with value "{id}"
         When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
@@ -48,9 +51,10 @@ def step_impl(context, id):
     context.res = None
 
 
-@step("I use the admin token")
-def step_impl(context):
-    context.token = context.admin_token
+@step("I use the {api_key} API key")
+def step_impl(context, api_key):
+    assert_that(api_key, is_in(VALID_API_KEYS))
+    context.token = getattr(context, f"{api_key}_api_key")
 
 
 @step("I clear the token")

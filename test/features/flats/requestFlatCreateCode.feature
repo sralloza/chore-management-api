@@ -1,6 +1,5 @@
 @api.flats
 @requestFlatCreateCode
-@sanity
 Feature: Flats API - requestFlatCreateCode
 
     As an admin
@@ -15,39 +14,35 @@ Feature: Flats API - requestFlatCreateCode
         And the error message is "Missing API key"
 
 
-    # IMPEDDED: need to implement getFlat operation
-    # @authorization
-    # Scenario: Validate response for flat admin
-    #     Given I create a flat
-    #     And I use a flat token
-    #     When I send a request to the Api
-    #     Then the response status code is "403"
-    #     And the error message is "Admin access required"
+    @authorization
+    Scenario: Validate response for user
+        Given I create a flat with a user
+        And I use the user API key
+        When I send a request to the Api
+        Then the response status code is "403"
+        And the response status code is defined
+        And the error message is "Admin access required"
 
 
-    # IMPEDDED: need to implement getFlat operation
-    # @authorization
-    # Scenario: Validate response for tenant
-    #     Given there is 1 flat
-    #     Given there is 1 tenant
-    #     And I use a tenant's token
-    #     When I send a request to the Api
-    #     Then the response status code is "200"
-
-    # Scenario: Validate response for flat admin
+    @authorization
+    Scenario: Validate response for flat admin
+        Given I create a flat
+        And I use the flat API key
+        When I send a request to the Api
+        Then the response status code is "403"
+        And the response status code is defined
+        And the error message is "Admin access required"
 
 
-    # IMPEDDED: need to implement getFlat operation
-    # @authorization
-    # Scenario: Validate response for admin
-    #     Given there is 1 tenant
-    #     And I use the admin token
-    #     When I send a request to the Api
-    #     Then the response status code is "200"
+    @authorization
+    Scenario: Validate response for admin
+        Given I use the admin API key
+        When I send a request to the Api
+        Then the response status code is "200"
 
 
     Scenario: Request flat create code
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema

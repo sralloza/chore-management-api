@@ -3,7 +3,6 @@ package es.sralloza.choremanagementapi.services;
 import es.sralloza.choremanagementapi.builders.FlatMapper;
 import es.sralloza.choremanagementapi.exceptions.ConflictException;
 import es.sralloza.choremanagementapi.exceptions.ForbiddenException;
-import es.sralloza.choremanagementapi.exceptions.UnprocesableEntity;
 import es.sralloza.choremanagementapi.models.custom.Flat;
 import es.sralloza.choremanagementapi.models.custom.FlatCreateCode;
 import es.sralloza.choremanagementapi.models.db.DBFlat;
@@ -15,7 +14,9 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class FlatsService {
@@ -38,13 +39,19 @@ public class FlatsService {
             .setExpiresAt(OffsetDateTime.ofInstant(Instant.ofEpochMilli(next5Mins), ZoneId.systemDefault()));
     }
 
+    public List<Flat> listFlats() {
+        return dbFlatsRepository.findAll().stream()
+            .map(flatMapper::build)
+            .collect(Collectors.toList());
+    }
+
     public Flat createFlat(FlatCreate flatCreate) {
         if (!jwtService.isTokenValid(flatCreate.getCreateCode())) {
-            throw new UnprocesableEntity("Invalid create code");
+            throw new ForbiddenException("Invalid create code");
         }
 
         if (redisService.get(flatCreate.getCreateCode()) != null) {
-            throw new UnprocesableEntity("Invalid create code");
+            throw new ForbiddenException("Invalid create code");
         }
 
         if (dbFlatsRepository.existsById(flatCreate.getName())) {

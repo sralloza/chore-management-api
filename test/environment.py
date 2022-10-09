@@ -11,13 +11,12 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.api import _send_request
 from common.db import reset_databases
 
 
 def before_all(context):
     tlm_before_all(context)
-    context.admin_token = "bc6acdd7-9de0-495f-86ea-20beda48d626"
+    context.admin_api_key = "bc6acdd7-9de0-495f-86ea-20beda48d626"
 
 
 def before_feature(context, feature):

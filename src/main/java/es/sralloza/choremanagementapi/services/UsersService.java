@@ -65,12 +65,12 @@ public class UsersService {
         return DigestUtils.sha256Hex(userIds.toString());
     }
 
-    public User createUser(UserCreate userCreate) {
+    public User createUser(UserCreate userCreate, String flatName) {
         if (repository.existsById(userCreate.getUser_id())) {
             throw new ConflictException("User with id " + userCreate.getUser_id() + " already exists");
         }
         String uuid = UUID.randomUUID().toString();
-        var user = new DBUser(userCreate.getUser_id(), userCreate.getUsername(), uuid);
+        var user = new DBUser(userCreate.getUser_id(), userCreate.getUsername(), uuid, flatName);
         repository.save(user);
         ticketsService.createTicketsForUser(user.getUserId());
         return userMapper.build(user);
@@ -111,7 +111,7 @@ public class UsersService {
     public User recreateUserToken(Long id) {
         User user = getUserById(id);
         UUID uuid = UUID.randomUUID();
-        user.setApiToken(uuid);
+        user.setApiKey(uuid);
         repository.save(userMapper.build(user));
         return user;
     }

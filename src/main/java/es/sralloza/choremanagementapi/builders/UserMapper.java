@@ -12,13 +12,15 @@ public class UserMapper {
         return new User()
             .setUserId(dbUser.getUserId())
             .setUsername(dbUser.getUsername())
-            .setApiToken(UUID.fromString(dbUser.getApiToken()));
+            .setApiKey(UUID.fromString(dbUser.getApiToken()))
+            .setFlatName(dbUser.getFlatName());
     }
 
     public DBUser build(User user) {
         return new DBUser()
             .setUserId(user.getUserId())
             .setUsername(user.getUsername())
-            .setApiToken(user.getApiToken().toString());
+            .setApiToken(user.getApiKey().toString())
+            .setFlatName(user.getFlatName());
     }
 }

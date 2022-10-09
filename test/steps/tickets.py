@@ -16,7 +16,7 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         f"""
-    Given I use the admin token
+    Given I use the admin API key
     When I send a request to the Api resource "listTickets"
     Then the response contains the following tickets
     {table_to_str(context.table)}

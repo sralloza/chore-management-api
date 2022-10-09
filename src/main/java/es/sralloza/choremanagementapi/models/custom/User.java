@@ -1,5 +1,6 @@
 package es.sralloza.choremanagementapi.models.custom;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +15,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User {
     @JsonProperty("user_id")
-    Long userId;
-    String username;
-    @JsonProperty("api_token")
-    UUID apiToken;
+    private Long userId;
+    private String username;
+    @JsonProperty("api_key")
+    private UUID apiKey;
+    @JsonIgnore
+    private String flatName;
 }

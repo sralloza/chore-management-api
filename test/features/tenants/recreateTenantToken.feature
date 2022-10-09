@@ -27,7 +27,7 @@ Feature: Tenants API - recreateTenantToken
     Scenario: Validate response for admin user
         Given there is 1 tenant
         And the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -35,7 +35,7 @@ Feature: Tenants API - recreateTenantToken
     Scenario: Recreate tenant token
         Given there is 1 tenant
         And the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api resource "listTenants"
         Then the response status code is "200"
         And I save the "api_token" attribute of the response with "tenant_id=1" as "api_token"
@@ -52,7 +52,7 @@ Feature: Tenants API - recreateTenantToken
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         And the field "tenantId" with value "me"
         When I send a request to the Api
         Then the response status code is "400"

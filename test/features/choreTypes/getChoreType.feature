@@ -26,7 +26,7 @@ Feature: Chore Types API - getChoreType
     Scenario: Validate response for admin user
         Given there is 1 chore type
         And the field "choreTypeId" with value "A"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -34,7 +34,7 @@ Feature: Chore Types API - getChoreType
     Scenario: Get a chore type
         Given there is 1 chore type
         And the field "choreTypeId" with value "A"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type"
@@ -43,7 +43,7 @@ Feature: Chore Types API - getChoreType
 
     Scenario: Validate error response when getting a non existing chore type
         Given the field "choreTypeId" with value "X"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No chore type found with id X"

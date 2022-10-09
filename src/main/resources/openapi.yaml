@@ -111,7 +111,7 @@ info:
 
     # Internationalization
 
-    This API supports error messages internationalization. The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
+    This API supports error message internationalization only in user-scoped endpoints (those that need a user API key). The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
 
     **Warning**: If the language is not supported or is invalid, the API will return an error in the default language.
 
@@ -151,10 +151,6 @@ paths:
       summary: Create flat
       description: Create new flat.
       operationId: createFlat
-      security:
-        - FlatAdminApiKey: []
-      parameters:
-        - $ref: '#/components/parameters/AcceptLanguage'
       requestBody:
         required: true
         content:
@@ -169,10 +165,17 @@ paths:
           $ref: '#/components/responses/Flat'
         400:
           $ref: '#/components/responses/InvalidJson'
-        401:
-          $ref: '#/components/responses/Unauthorized'
         403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+          description: Invalid create code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidCode:
+                  description: Invalid create code
+                  value:
+                    message: Invalid create code
         409:
           $ref: '#/components/responses/Conflict'
         422:
@@ -318,8 +321,8 @@ paths:
     post:
       tags:
         - Flats
-      summary: Request a flat token
-      description: Request a flat token, which can be used later to create a flat.
+      summary: Request a flat-create code
+      description: Request a flat-create code, which can be used later to create a flat. The code can only be used to create one flat, after that it will be considered invalid.
       operationId: requestFlatCreateCode
       security:
         - AdminApiKey: []
@@ -813,7 +816,12 @@ components:
     InvalidJson:
       description: The JSON sent is invalid
       value:
-        message: The request payload is not a valid JSON
+        message: Invalid request body
+
+    MissingBody:
+      description: The request is missing body
+      value:
+        message: Missing request body
 
     SimpleChoreList:
       description: List of simple chores
@@ -1076,6 +1084,8 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
           examples:
+            MissingBody:
+              $ref: '#/components/examples/MissingBody'
             InvalidJson:
               $ref: '#/components/examples/InvalidJson'
 

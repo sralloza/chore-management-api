@@ -11,9 +11,9 @@ DATABASES = (
     "flats",
     "rotations",
     "skipped_weeks",
-    "tenants",
     "tickets",
     "transfers",
+    "users",
 )
 
 

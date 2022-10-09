@@ -25,7 +25,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
-@RequestMapping("/v1/users")
+@RequestMapping("/api/v1/users")
 public class UsersController {
     @Autowired
     private UsersService usersService;
@@ -53,8 +53,9 @@ public class UsersController {
 
     @PostMapping()
     public User createUser(@RequestBody @Valid UserCreate userCreate) {
-        security.requireAdmin();
-        return usersService.createUser(userCreate);
+        // security.requireAdmin();
+        var flatName = security.getFlatName();
+        return usersService.createUser(userCreate, flatName);
     }
 
     @PostMapping("/{id}/recreate-token")
