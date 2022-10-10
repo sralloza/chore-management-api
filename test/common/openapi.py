@@ -21,14 +21,28 @@ def get_defined_schemas():
     return schemas
 
 
-def get_current_operation(context):
+def get_operations():
+    operations = []
     data = get_openapi()
+    for path in data["paths"]:
+        for method in data["paths"][path]:
+            operation = data["paths"][path][method]
+            operation["path"] = path
+            operation["method"] = method
+            operations.append(operation)
+    return operations
 
+
+def get_operation(operation_id):
+    operations = [k for k in get_operations() if k["operationId"] == operation_id]
+    if len(operations) != 1:
+        raise ValueError(f"Operation {operation_id} not found in openapi.yaml")
+    return operations[0]
+
+
+def get_current_operation(context):
     operations = [
-        k
-        for x in data["paths"].keys()
-        for k in data["paths"][x].values()
-        if k["operationId"] == context.operation_id
+        k for k in get_operations() if k["operationId"] == context.operation_id
     ]
     if len(operations) != 1:
         raise ValueError(f"Operation {context.operation_id} not found in openapi.yaml")
