@@ -317,7 +317,7 @@ paths:
         422:
           $ref: '#/components/responses/ValidationError'
 
-  /flat-token:
+  /flats/create-code:
     post:
       tags:
         - Flats
@@ -776,13 +776,13 @@ components:
 
     FlatCreate:
       value:
-        create_code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ1NzUyMDAsImVhdCI6MTY2NDU3NTUwMH0.QyjBrNXfbwhyRAjawdRveI8vuMCo3lUwbVnvdlwi5oE
+        create_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MjE2MjA1Mi02ZTg2LTQzNmMtYjg4OS0xMjk1NDM4M2ZiYmIiLCJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTMxNzI3NCwiaWF0IjoxNjY1MzE2OTc0fQ.hbQSg6Asvm7TpAlQDUxnhUlUEqGn2K-DsecFLHDsF3I
         name: flat-example
 
     FlatCreateCode:
       value:
-        code: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjQ1NzUyMDAsImVhdCI6MTY2NDU3NTUwMH0.QyjBrNXfbwhyRAjawdRveI8vuMCo3lUwbVnvdlwi5oE
-        expires_at: 2022-10-06T17:41:08+00:00
+        code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MjE2MjA1Mi02ZTg2LTQzNmMtYjg4OS0xMjk1NDM4M2ZiYmIiLCJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTMxNzI3NCwiaWF0IjoxNjY1MzE2OTc0fQ.hbQSg6Asvm7TpAlQDUxnhUlUEqGn2K-DsecFLHDsF3I
+        expires_at: 2022-10-09T14:07:54.602+02:00
 
     FlatList:
       value:
@@ -1269,7 +1269,7 @@ components:
           format: jwt
           description: Temporal code to create the flat
         name:
-          $ref: '#/components/schemas/FlatName'
+          $ref: '#/components/schemas/FlatNameString'
       required:
         - create_code
         - name
@@ -1285,7 +1285,7 @@ components:
           description: Code to create a new flat
         expires_at:
           type: string
-          format: date-time
+          format: datetime
           description: Expiration date of the code
 
       required:

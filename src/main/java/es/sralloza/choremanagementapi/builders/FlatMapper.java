@@ -2,6 +2,7 @@ package es.sralloza.choremanagementapi.builders;
 
 import es.sralloza.choremanagementapi.models.custom.Flat;
 import es.sralloza.choremanagementapi.models.custom.FlatSettings;
+import es.sralloza.choremanagementapi.models.db.DBFlat;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class FlatMapper {
-    public Flat build(es.sralloza.choremanagementapi.models.db.DBFlat dbFlat) {
+    public Flat build(DBFlat dbFlat) {
         return new Flat()
             .setName(dbFlat.getName())
             .setSettings(new FlatSettings()

@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface DBFlatsRepository extends JpaRepository<DBFlat, String> {
-    Optional<DBFlat> findByApiKey(UUID apiKey);
+    Optional<DBFlat> findByApiKey(String apiKey);
 }

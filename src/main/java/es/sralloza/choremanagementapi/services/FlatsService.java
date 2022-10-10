@@ -47,7 +47,7 @@ public class FlatsService {
     }
 
     public Optional<Flat> getFlatByApiKey(String apiKey) {
-        return dbFlatsRepository.findByApiKey(UUID.fromString(apiKey))
+        return dbFlatsRepository.findByApiKey(apiKey)
             .map(flatMapper::build);
     }
 
