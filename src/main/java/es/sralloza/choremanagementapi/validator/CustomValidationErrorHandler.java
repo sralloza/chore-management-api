@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -54,6 +55,12 @@ public class CustomValidationErrorHandler {
     public ResponseEntity<ErrorResponse> handle(HttpRequestMethodNotSupportedException exception) {
         var response = new ErrorResponse().setMessage(exception.getMessage());
         return new ResponseEntity<>(response, null, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler({NoHandlerFoundException.class})
+    public ResponseEntity<ErrorResponse> handle(NoHandlerFoundException exception) {
+        var response = new ErrorResponse().setMessage("Not found");
+        return new ResponseEntity<>(response, null, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
