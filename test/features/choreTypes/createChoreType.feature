@@ -1,3 +1,4 @@
+@old
 @api.chore-types
 @createChoreType
 Feature: Chore Types API - createChoreType

@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @deleteTenant
 Feature: Tenants API - deleteTenant

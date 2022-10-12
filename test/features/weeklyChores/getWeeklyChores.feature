@@ -1,3 +1,4 @@
+@old
 @api.weekly-chores
 @getWeeklyChores
 Feature: Weekly Chores API - getWeeklyChores

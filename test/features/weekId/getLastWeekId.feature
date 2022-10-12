@@ -1,3 +1,4 @@
+@old
 @api.week-id
 @getLastWeekId
 Feature: Week ID API - getLastWeekId

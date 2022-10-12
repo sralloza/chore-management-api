@@ -1,3 +1,4 @@
+@old
 @api.weekly-chores
 @deleteWeeklyChores
 Feature: Weekly Chores API - deleteWeeklyChores

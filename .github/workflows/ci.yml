@@ -20,19 +20,18 @@ jobs:
           java-version: 11
 
       - name: Launch docker-compose
-        run: docker-compose up --build -d database app
+        run: docker-compose up --build -d
 
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
-          poetry-version: 1.1.13
+          poetry-version: 1.2.2
 
       - name: Install
         run: poetry install
 
       - name: Run tests e2e
-        #  TODO: do not skip timing tests
-        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t=-timing -t=-broken
+        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t=-old
 
       - uses: actions/upload-artifact@v2
         if: always()

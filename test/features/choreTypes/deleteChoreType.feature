@@ -1,3 +1,4 @@
+@old
 @api.chore-types
 @deleteChoreType
 Feature: Chore Types API - deleteChoreType

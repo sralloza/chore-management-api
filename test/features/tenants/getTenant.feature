@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @getTenant
 Feature: Tenants API - getTenant
