@@ -5,14 +5,15 @@ servers:
     description: Production server
 
 info:
-  version: '0.1.0'
+  version: "0.1.0"
   title: Chore Management
   contact:
+    name: Diego Alloza González
     email: sralloza@gmail.com
     url: https://github.com/sralloza
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 
   description: |
     API to manage the chores with the flatmates in a shared flat.
@@ -124,8 +125,8 @@ info:
     3. **User API key** (_UserApiKey_): there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
 
 externalDocs:
- description: Github Repo
- url: 'https://github.com/sralloza/chore-management-api'
+  description: Github Repo
+  url: "https://github.com/sralloza/chore-management-api"
 
 tags:
   - name: Flats
@@ -156,34 +157,34 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FlatCreate'
+              $ref: "#/components/schemas/FlatCreate"
             examples:
               FlatCreate:
-                $ref: '#/components/examples/FlatCreate'
+                $ref: "#/components/examples/FlatCreate"
       responses:
-        200:
-          $ref: '#/components/responses/Flat'
-        400:
-          $ref: '#/components/responses/InvalidJson'
-        403:
+        "200":
+          $ref: "#/components/responses/Flat"
+        "400":
+          $ref: "#/components/responses/InvalidJson"
+        "403":
           description: Invalid create code
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 InvalidCode:
                   description: Invalid create code
                   value:
                     message: Invalid create code
-        409:
-          $ref: '#/components/responses/Conflict'
-        422:
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                $ref: "#/components/schemas/ValidationError"
               examples:
                 ValidationError:
                   description: Validation error
@@ -201,18 +202,18 @@ paths:
       security:
         - AdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/AcceptLanguage'
-        - $ref: '#/components/parameters/Limit'
-        - $ref: '#/components/parameters/Offset'
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/Offset"
       responses:
-        200:
-          $ref: '#/components/responses/FlatList'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
-        422:
-          $ref: '#/components/responses/PaginationQueryParamsValidationError'
+        "200":
+          $ref: "#/components/responses/FlatList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
+        "422":
+          $ref: "#/components/responses/PaginationQueryParamsValidationError"
 
   /flats/{flat_id}:
     get:
@@ -224,14 +225,14 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/AcceptLanguage'
-        - $ref: '#/components/parameters/FlatName'
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/FlatName"
       responses:
-        200:
-          $ref: '#/components/responses/Flat'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
+        "200":
+          $ref: "#/components/responses/Flat"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
           description: Forbidden
           content:
             application/json:
@@ -239,13 +240,13 @@ paths:
                 $ref: "#/components/schemas/Error"
               examples:
                 FlatAccessRequired:
-                  $ref: '#/components/examples/FlatAccessRequired'
+                  $ref: "#/components/examples/FlatAccessRequired"
                 InvalidFlatHeaderUse:
-                  $ref: '#/components/examples/InvalidFlatHeaderUse'
+                  $ref: "#/components/examples/InvalidFlatHeaderUse"
                 InvalidFlatRequested:
-                  $ref: '#/components/examples/InvalidFlatRequested'
-        404:
-          $ref: '#/components/responses/NotFound'
+                  $ref: "#/components/examples/InvalidFlatRequested"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       tags:
@@ -256,17 +257,17 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/AcceptLanguage'
-        - $ref: '#/components/parameters/FlatName'
+        - $ref: "#/components/parameters/AcceptLanguage"
+        - $ref: "#/components/parameters/FlatName"
       responses:
-        204:
+        "204":
           description: OK
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
-        404:
-          $ref: '#/components/responses/NotFound'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /flats/{flat_id}/settings:
     put:
@@ -278,28 +279,28 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/FlatName'
+        - $ref: "#/components/parameters/FlatName"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FlatSettings'
+              $ref: "#/components/schemas/FlatSettings"
             examples:
               FlatSettings:
-                $ref: '#/components/examples/FlatSettings'
+                $ref: "#/components/examples/FlatSettings"
       responses:
-        200:
-          $ref: '#/components/responses/FlatSettings'
-        400:
+        "200":
+          $ref: "#/components/responses/FlatSettings"
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 InvalidJson:
-                  $ref: '#/components/examples/InvalidJson'
+                  $ref: "#/components/examples/InvalidJson"
                 InvalidInitialAssignments:
                   description: All users are not defined in initial_assignments
                   value:
@@ -308,14 +309,14 @@ paths:
                   description: A user was mentioned in initial_assignments but it does not exist
                   value:
                     message: User with id=1001 was mentioned in initial_assignments but it does not exist
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
-        404:
-          $ref: '#/components/responses/NotFound'
-        422:
-          $ref: '#/components/responses/ValidationError'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
 
   /flats/create-code:
     post:
@@ -327,20 +328,20 @@ paths:
       security:
         - AdminApiKey: []
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FlatCreateCode'
+                $ref: "#/components/schemas/FlatCreateCode"
               examples:
                 FlatCreateCode:
-                  $ref: '#/components/examples/FlatCreateCode'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
+                  $ref: "#/components/examples/FlatCreateCode"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
           # TODO: 401 - Invalid create code
-          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
 
   /chore-types:
     get:
@@ -352,22 +353,22 @@ paths:
       security:
         - UserApiKey: []
       parameters:
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ChoreType'
+                  $ref: "#/components/schemas/ChoreType"
               examples:
                 chore type list:
                   $ref: "#/components/examples/ChoreTypeList"
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
           $ref: "#/components/responses/ForbiddenErrorUserRequired"
 
     post:
@@ -379,34 +380,34 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ChoreType'
+              $ref: "#/components/schemas/ChoreType"
             examples:
               ChoreType:
-                $ref: '#/components/examples/ChoreType'
+                $ref: "#/components/examples/ChoreType"
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChoreType'
+                $ref: "#/components/schemas/ChoreType"
               examples:
                 ChoreType:
-                  $ref: '#/components/examples/ChoreType'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
-        409:
-          $ref: '#/components/responses/Conflict'
-        422:
-          $ref: '#/components/responses/ValidationError'
+                  $ref: "#/components/examples/ChoreType"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/ValidationError"
 
   /chore-types/{chore_type_id}:
     get:
@@ -418,24 +419,24 @@ paths:
       security:
         - UserApiKey: []
       parameters:
-        - $ref: '#/components/parameters/ChoreTypeID'
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChoreType'
+                $ref: "#/components/schemas/ChoreType"
               examples:
                 ChoreType:
-                  $ref: '#/components/examples/ChoreType'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        404:
-          $ref: '#/components/responses/NotFound'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorUserRequired'
+                  $ref: "#/components/examples/ChoreType"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorUserRequired"
 
     delete:
       tags:
@@ -446,18 +447,18 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/ChoreTypeID'
-        - $ref: '#/components/parameters/XFlatHeader'
-        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: "#/components/parameters/XFlatHeader"
+        - $ref: "#/components/parameters/AcceptLanguage"
       responses:
-        204:
+        "204":
           description: OK
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        404:
-          $ref: '#/components/responses/NotFound'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
 
   /week-id/last:
     get:
@@ -467,8 +468,8 @@ paths:
       description: Get last week's identifier
       operationId: getLastWeekId
       responses:
-        200:
-          $ref: '#/components/responses/WeekID'
+        "200":
+          $ref: "#/components/responses/WeekID"
 
   /week-id/current:
     get:
@@ -478,8 +479,8 @@ paths:
       description: Get the current week identifier
       operationId: getCurrentWeekId
       responses:
-        200:
-          $ref: '#/components/responses/WeekID'
+        "200":
+          $ref: "#/components/responses/WeekID"
 
   /week-id/next:
     get:
@@ -489,8 +490,8 @@ paths:
       description: Get next week's identifier
       operationId: getNextWeekId
       responses:
-        200:
-          $ref: '#/components/responses/WeekID'
+        "200":
+          $ref: "#/components/responses/WeekID"
 
   /users:
     post:
@@ -502,27 +503,27 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserCreate'
+              $ref: "#/components/schemas/UserCreate"
             examples:
               UserCreate:
-                $ref: '#/components/examples/UserCreate'
+                $ref: "#/components/examples/UserCreate"
       responses:
-        200:
-          $ref: '#/components/responses/User'
-        400:
-          $ref: '#/components/responses/ValidationError'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
-        409:
-          $ref: '#/components/responses/Conflict'
+        "200":
+          $ref: "#/components/responses/User"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
+        "409":
+          $ref: "#/components/responses/Conflict"
 
     get:
       tags:
@@ -533,14 +534,14 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        200:
-          $ref: '#/components/responses/UserList'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        "200":
+          $ref: "#/components/responses/UserList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
 
   /users/{user_id}:
     get:
@@ -552,19 +553,19 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/UserIDPath'
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/UserIDPath"
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        200:
-          $ref: '#/components/responses/User'
-        400:
-          $ref: '#/components/responses/ValidationError'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
-        404:
-          $ref: '#/components/responses/NotFound'
+        "200":
+          $ref: "#/components/responses/User"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
     delete:
       tags:
@@ -575,16 +576,16 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: "#/components/parameters/UserIDPath"
       responses:
-        204:
+        "204":
           description: OK
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
+                $ref: "#/components/schemas/Error"
               examples:
                 UnbalancedTickets:
                   description: Cannot delete user with unbalanced tickets
@@ -594,12 +595,12 @@ paths:
                   description: Cannot delete user with pending chores
                   value:
                     message: User has pending chores
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
-        404:
-          $ref: '#/components/responses/NotFound'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /chores:
     get:
@@ -611,7 +612,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/XFlatHeader"
         - name: type_id
           description: Chore type to filter the chores
           in: query
@@ -623,32 +624,32 @@ paths:
           required: false
           description: User to filter the chores. This value should be set to the special keyword `me` when using a user API key.
           schema:
-            $ref: '#/components/schemas/UserIDMe'
+            $ref: "#/components/schemas/UserIDMe"
         - name: week_id
           in: query
           required: false
           description: Week ID to filter the chores
           schema:
-            $ref: '#/components/schemas/WeekID'
+            $ref: "#/components/schemas/WeekID"
         - name: done
           in: query
           required: false
           description: Filter by done status
           schema:
             type: boolean
-        - $ref: '#/components/parameters/Offset'
-        - $ref: '#/components/parameters/Limit'
-        - $ref: '#/components/parameters/StartWeekID'
-        - $ref: '#/components/parameters/EndWeekID'
+        - $ref: "#/components/parameters/Offset"
+        - $ref: "#/components/parameters/Limit"
+        - $ref: "#/components/parameters/StartWeekID"
+        - $ref: "#/components/parameters/EndWeekID"
       responses:
-        200:
-          $ref: '#/components/responses/SimpleChoreList'
-        400:
-          $ref: '#/components/responses/ValidationError'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        "200":
+          $ref: "#/components/responses/SimpleChoreList"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
 
   /tickets:
     get:
@@ -660,12 +661,12 @@ paths:
       security:
         - FlatAdminApiKey: []
       responses:
-        200:
-          $ref: '#/components/responses/TicketList'
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        "200":
+          $ref: "#/components/responses/TicketList"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
 
   /users/{user_id}/skip/{week_id}:
     post:
@@ -677,29 +678,29 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/UserIDPath'
-        - $ref: '#/components/parameters/WeekIDPath'
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/UserIDPath"
+        - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        204:
+        "204":
           description: OK
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                $ref: "#/components/schemas/ValidationError"
               examples:
                 ValidationError:
-                  $ref: '#/components/examples/ValidationError'
+                  $ref: "#/components/examples/ValidationError"
                 WeekAlreadySkipped:
                   description: Week already skipped
                   value:
                     message: The user has already skipped the week
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
 
     delete:
       tags:
@@ -710,29 +711,29 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
-        - $ref: '#/components/parameters/UserIDPath'
-        - $ref: '#/components/parameters/WeekIDPath'
-        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: "#/components/parameters/UserIDPath"
+        - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
-        204:
+        "204":
           description: OK
-        400:
+        "400":
           description: Bad Request
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationError'
+                $ref: "#/components/schemas/ValidationError"
               examples:
                 ValidationError:
-                  $ref: '#/components/examples/ValidationError'
+                  $ref: "#/components/examples/ValidationError"
                 WeekNotSkipped:
                   description: Week not skipped
                   value:
                     message: The user has not skipped the week
-        401:
-          $ref: '#/components/responses/Unauthorized'
-        403:
-          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
 
 components:
   examples:
@@ -912,7 +913,7 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/ChoreTypeID'
+        $ref: "#/components/schemas/ChoreTypeID"
 
     EndWeekID:
       name: end_week_id
@@ -920,14 +921,14 @@ components:
       description: End week ID to filter, including it
       required: false
       schema:
-        $ref: '#/components/schemas/WeekID'
+        $ref: "#/components/schemas/WeekID"
 
     FlatName:
       name: flat_id
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/FlatName'
+        $ref: "#/components/schemas/FlatName"
 
     Offset:
       in: query
@@ -955,7 +956,7 @@ components:
       description: Start week ID to filter, including it
       required: false
       schema:
-        $ref: '#/components/schemas/WeekID'
+        $ref: "#/components/schemas/WeekID"
 
     UserIDPath:
       name: user_id
@@ -984,40 +985,40 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           examples:
             ConflictError:
-              $ref: '#/components/examples/ConflictError'
+              $ref: "#/components/examples/ConflictError"
 
     Flat:
       description: OK
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Flat'
+            $ref: "#/components/schemas/Flat"
           examples:
             Flat:
-              $ref: '#/components/examples/Flat'
+              $ref: "#/components/examples/Flat"
 
     FlatList:
       description: OK
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FlatList'
+            $ref: "#/components/schemas/FlatList"
           examples:
             FlatList:
-              $ref: '#/components/examples/FlatList'
+              $ref: "#/components/examples/FlatList"
 
     FlatSettings:
       description: OK
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FlatSettingsRequired'
+            $ref: "#/components/schemas/FlatSettingsRequired"
           examples:
             FlatSettings:
-              $ref: '#/components/examples/FlatSettings'
+              $ref: "#/components/examples/FlatSettings"
 
     ForbiddenErrorAdminRequired:
       description: Forbidden
@@ -1027,7 +1028,7 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             AdminAccessRequired:
-              $ref: '#/components/examples/AdminAccessRequired'
+              $ref: "#/components/examples/AdminAccessRequired"
 
     ForbiddenErrorFlatRequired:
       description: Forbidden
@@ -1037,9 +1038,9 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             FlatAccessRequired:
-              $ref: '#/components/examples/FlatAccessRequired'
+              $ref: "#/components/examples/FlatAccessRequired"
             InvalidFlatHeaderUse:
-              $ref: '#/components/examples/InvalidFlatHeaderUse'
+              $ref: "#/components/examples/InvalidFlatHeaderUse"
 
     ForbiddenErrorInvalidFlatRequested:
       description: Forbidden
@@ -1049,11 +1050,11 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             FlatAccessRequired:
-              $ref: '#/components/examples/FlatAccessRequired'
+              $ref: "#/components/examples/FlatAccessRequired"
             InvalidFlatHeaderUse:
-              $ref: '#/components/examples/InvalidFlatHeaderUse'
+              $ref: "#/components/examples/InvalidFlatHeaderUse"
             InvalidFlatRequested:
-              $ref: '#/components/examples/InvalidFlatRequested'
+              $ref: "#/components/examples/InvalidFlatRequested"
 
     ForbiddenErrorUserRequired:
       description: User access required
@@ -1063,9 +1064,9 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             UserAccessRequired:
-              $ref: '#/components/examples/UserAccessRequired'
+              $ref: "#/components/examples/UserAccessRequired"
             InvalidFlatHeaderUse:
-              $ref: '#/components/examples/InvalidFlatHeaderUse'
+              $ref: "#/components/examples/InvalidFlatHeaderUse"
 
     InvalidFlatRequested:
       description: Forbidden
@@ -1075,7 +1076,7 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             InvalidFlatRequested:
-              $ref: '#/components/examples/InvalidFlatRequested'
+              $ref: "#/components/examples/InvalidFlatRequested"
 
     InvalidJson:
       description: Bad request
@@ -1085,16 +1086,16 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             MissingBody:
-              $ref: '#/components/examples/MissingBody'
+              $ref: "#/components/examples/MissingBody"
             InvalidJson:
-              $ref: '#/components/examples/InvalidJson'
+              $ref: "#/components/examples/InvalidJson"
 
     NotFound:
       description: Resource not found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             message: Resource not found
 
@@ -1121,19 +1122,19 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/SimpleChoreList'
+            $ref: "#/components/schemas/SimpleChoreList"
           examples:
             SimpleChoreList:
-              $ref: '#/components/examples/SimpleChoreList'
+              $ref: "#/components/examples/SimpleChoreList"
     TicketList:
       description: OK
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/TicketList'
+            $ref: "#/components/schemas/TicketList"
           examples:
             TicketList:
-              $ref: '#/components/examples/TicketList'
+              $ref: "#/components/examples/TicketList"
 
     Unauthorized:
       description: Missing API Key
@@ -1143,17 +1144,17 @@ components:
             $ref: "#/components/schemas/Error"
           examples:
             UnuthorizedError:
-              $ref: '#/components/examples/UnuthorizedError'
+              $ref: "#/components/examples/UnuthorizedError"
 
     User:
       description: OK
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
           examples:
             User:
-              $ref: '#/components/examples/User'
+              $ref: "#/components/examples/User"
 
     UserList:
       description: OK
@@ -1162,21 +1163,21 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/User'
+              $ref: "#/components/schemas/User"
           examples:
             UserList:
-              $ref: '#/components/examples/UserList'
+              $ref: "#/components/examples/UserList"
 
     ValidationError:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: "#/components/schemas/ValidationError"
 
           examples:
             ValidationError:
-              $ref: '#/components/examples/ValidationError'
+              $ref: "#/components/examples/ValidationError"
 
     WeekID:
       description: OK
@@ -1188,7 +1189,7 @@ components:
             additionalProperties: false
             properties:
               week_id:
-                $ref: '#/components/schemas/WeekID'
+                $ref: "#/components/schemas/WeekID"
             required:
               - week_id
           example:
@@ -1201,11 +1202,11 @@ components:
       additionalProperties: false
       properties:
         id:
-          $ref: '#/components/schemas/ChoreTypeID'
+          $ref: "#/components/schemas/ChoreTypeID"
         name:
-          $ref: '#/components/schemas/ChoreTypeName'
+          $ref: "#/components/schemas/ChoreTypeName"
         description:
-          $ref: '#/components/schemas/ChoreTypeDescription'
+          $ref: "#/components/schemas/ChoreTypeDescription"
       required:
         - id
         - name
@@ -1220,7 +1221,7 @@ components:
     ChoreTypeID:
       description: ID of the chore type
       type: string
-      pattern: '^[a-z-]+$'
+      pattern: "^[a-z-]+$"
       minLength: 1
       maxLength: 25
 
@@ -1247,13 +1248,13 @@ components:
       additionalProperties: false
       properties:
         name:
-          $ref: '#/components/schemas/FlatNameString'
+          $ref: "#/components/schemas/FlatNameString"
         api_key:
           type: string
           description: Admin flat API key
           format: uuid
         settings:
-          $ref: '#/components/schemas/FlatSettingsRequired'
+          $ref: "#/components/schemas/FlatSettingsRequired"
       required:
         - name
         - api_key
@@ -1269,7 +1270,7 @@ components:
           format: jwt
           description: Temporal code to create the flat
         name:
-          $ref: '#/components/schemas/FlatNameString'
+          $ref: "#/components/schemas/FlatNameString"
       required:
         - create_code
         - name
@@ -1296,18 +1297,18 @@ components:
       description: List of registered flats
       type: array
       items:
-        $ref: '#/components/schemas/Flat'
+        $ref: "#/components/schemas/Flat"
 
     FlatName:
       type: string
       description: Name of the flat. This value should be set to the special keyword `me` when using a Flat API key.
       oneOf:
-        - $ref: '#/components/schemas/FlatNameString'
-        - $ref: '#/components/schemas/FlatNameMe'
+        - $ref: "#/components/schemas/FlatNameString"
+        - $ref: "#/components/schemas/FlatNameMe"
 
     FlatNameString:
       type: string
-      pattern: '^[a-z-]+$'
+      pattern: "^[a-z-]+$"
 
     FlatNameMe:
       type: string
@@ -1328,14 +1329,14 @@ components:
           type: array
           description: Order in which users are assigned chores
           items:
-            $ref: '#/components/schemas/UserID'
+            $ref: "#/components/schemas/UserID"
 
     FlatSettingsRequired:
       allOf:
-        - $ref: '#/components/schemas/FlatSettings'
+        - $ref: "#/components/schemas/FlatSettings"
         - required:
-          - rotation_sign
-          - assignment_order
+            - rotation_sign
+            - assignment_order
 
     SingleValidationError:
       description: Validation error
@@ -1361,11 +1362,11 @@ components:
       additionalProperties: false
       properties:
         user_id:
-          $ref: '#/components/schemas/UserID'
+          $ref: "#/components/schemas/UserID"
         type_id:
-          $ref: '#/components/schemas/ChoreTypeID'
+          $ref: "#/components/schemas/ChoreTypeID"
         week_id:
-          $ref: '#/components/schemas/WeekID'
+          $ref: "#/components/schemas/WeekID"
         done:
           type: boolean
           description: Whether the chore is done or not
@@ -1379,7 +1380,7 @@ components:
       description: List of simple chores
       type: array
       items:
-        $ref: '#/components/schemas/SimpleChore'
+        $ref: "#/components/schemas/SimpleChore"
 
     Ticket:
       description: Chore ticket
@@ -1387,9 +1388,9 @@ components:
       additionalProperties: false
       properties:
         id:
-          $ref: '#/components/schemas/ChoreTypeID'
+          $ref: "#/components/schemas/ChoreTypeID"
         description:
-          $ref: '#/components/schemas/ChoreTypeDescription'
+          $ref: "#/components/schemas/ChoreTypeDescription"
         tickets_by_tenant:
           type: object
           description: Tickets grouped by tenant. The key is the userID.
@@ -1403,17 +1404,17 @@ components:
         - tickets_by_tenant
 
     TicketList:
-        description: List of chore tickets
-        type: array
-        items:
-          $ref: '#/components/schemas/Ticket'
+      description: List of chore tickets
+      type: array
+      items:
+        $ref: "#/components/schemas/Ticket"
 
     User:
       description: Registered user
       type: object
       additionalProperties: false
       allOf:
-        - $ref: '#/components/schemas/UserCreate'
+        - $ref: "#/components/schemas/UserCreate"
         - properties:
             api_key:
               type: string
@@ -1457,7 +1458,7 @@ components:
         errors:
           type: array
           items:
-            $ref: '#/components/schemas/SingleValidationError'
+            $ref: "#/components/schemas/SingleValidationError"
 
     XFlatHeader:
       type: string
