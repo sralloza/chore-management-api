@@ -22,7 +22,7 @@ jobs:
           poetry-version: 1.2.2
 
       - name: Install
-        run: poetry install
+        run: poetry install -v
 
       - name: Run tests e2e
         run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t=-old
