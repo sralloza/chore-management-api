@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface DBSkippedWeekRepository extends JpaRepository<DBSkippedWeek, Long> {
-    Optional<DBSkippedWeek> findByWeekIdAndTenantId(String weekId, Long tenantId);
+    Optional<DBSkippedWeek> findByWeekIdAndUserId(String weekId, Long userId);
 }

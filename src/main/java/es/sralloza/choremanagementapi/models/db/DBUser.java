@@ -11,18 +11,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Tenants")
+@Table(name = "Users")
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class DBTenant {
+public class DBUser {
     @Id
-    private Long tenantId;
+    private Long userId;
 
     @Column(length = 50, nullable = false)
     private String username;
 
     @Column(length = 36, nullable = false)
     private String apiToken;
+
+    @Column(nullable = false)
+    private String flatName;
 }

@@ -1,9 +1,9 @@
 package es.sralloza.choremanagementapi.builders;
 
 import es.sralloza.choremanagementapi.models.custom.Chore;
-import es.sralloza.choremanagementapi.models.custom.Tenant;
+import es.sralloza.choremanagementapi.models.custom.User;
 import es.sralloza.choremanagementapi.models.db.DBChore;
-import es.sralloza.choremanagementapi.services.TenantsService;
+import es.sralloza.choremanagementapi.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class ChoreMapper {
     @Autowired
-    private TenantsService tenantsService;
+    private UsersService usersService;
 
     public List<Chore> buildChore(List<DBChore> dbChore) {
         Map<String, List<DBChore>> choresGroupedByWeekId = dbChore.stream()
@@ -50,12 +50,12 @@ public class ChoreMapper {
                 .map(entry -> new Chore()
                         .setType(entry.getKey())
                         .setAssignedIds(entry.getValue().stream()
-                                .map(DBChore::getTenantId)
+                                .map(DBChore::getUserId)
                                 .collect(Collectors.toList()))
                         .setAssignedUsernames(entry.getValue().stream()
-                                .map(DBChore::getTenantId)
-                                .map(tenantsService::getTenantById)
-                                .map(Tenant::getUsername)
+                                .map(DBChore::getUserId)
+                                .map(usersService::getUserById)
+                                .map(User::getUsername)
                                 .collect(Collectors.toList()))
                         .setWeekId(weekId)
                         .setDone(entry.getValue().stream().allMatch(DBChore::getDone)))

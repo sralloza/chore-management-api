@@ -1,3 +1,4 @@
+@old
 @api.weekly-chores
 @listWeeklyChores
 @sanity
@@ -22,7 +23,7 @@ Feature: Weekly Chores API - listWeeklyChores
 
     @authorization
     Scenario: Validate response for admin user
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -50,7 +51,7 @@ Feature: Weekly Chores API - listWeeklyChores
             | 2022.01 |
             | 2022.02 |
             | 2022.03 |
-        And I use the admin token
+        And I use the admin API key
         And the fields
             | field     | value   |
             | choreType | A       |

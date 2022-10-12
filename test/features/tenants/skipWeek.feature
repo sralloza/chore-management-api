@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @skipWeek
 @sanity
@@ -37,7 +38,7 @@ Feature: Tenants API - skipWeek
             | field    | value   | as_string |
             | tenantId | 2       | false     |
             | weekId   | 2025.01 | false     |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 
@@ -71,7 +72,7 @@ Feature: Tenants API - skipWeek
             | field    | value     | as_string |
             | tenantId | 2         | false     |
             | weekId   | <week_id> | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
         And the Api response is empty
@@ -109,7 +110,7 @@ Feature: Tenants API - skipWeek
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         And the fields
             | field    | value   | as_string |
             | tenantId | me      | false     |
@@ -137,7 +138,7 @@ Feature: Tenants API - skipWeek
             | field    | value             | as_string |
             | tenantId | 1                 | false     |
             | weekId   | <invalid_week_id> | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Invalid week ID: <invalid_week_id>"
@@ -159,7 +160,7 @@ Feature: Tenants API - skipWeek
             | field    | value   | as_string |
             | tenantId | 1       | false     |
             | weekId   | 2022.01 | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -171,7 +172,7 @@ Feature: Tenants API - skipWeek
             | field    | value                 | as_string |
             | tenantId | 1                     | false     |
             | weekId   | [NOW(%Y.%W) - 7 DAYS] | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip a week in the past"
@@ -183,7 +184,7 @@ Feature: Tenants API - skipWeek
             | field    | value        | as_string |
             | tenantId | 1            | false     |
             | weekId   | [NOW(%Y.%W)] | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Cannot skip the current week"

@@ -1,3 +1,4 @@
+@old
 @api.week-id
 @getNextWeekId
 Feature: Week ID API - getNextWeekId
@@ -21,7 +22,7 @@ Feature: Week ID API - getNextWeekId
 
     @authorization
     Scenario: Validate response for admin user
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 

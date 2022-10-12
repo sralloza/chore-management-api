@@ -24,5 +24,5 @@ public class DBRotation {
     private Integer rotation;
 
     @Column(nullable = false)
-    private String tenantIdsHash;
+    private String usersIdHash;
 }

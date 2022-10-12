@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @createTenant
 Feature: Tenants API - createTenant
@@ -31,7 +32,7 @@ Feature: Tenants API - createTenant
     @authorization
     Scenario: Validate response for admin user
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |
@@ -40,7 +41,7 @@ Feature: Tenants API - createTenant
 
 
     Scenario: Create a new tenant
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |
@@ -53,7 +54,7 @@ Feature: Tenants API - createTenant
 
 
     Scenario: Validate error response creating a duplicate tenant
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name | param_value |
             | username   | John        |

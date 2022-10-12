@@ -1,0 +1,1484 @@
+openapi: "3.0.1"
+
+servers:
+  - url: https://chore-management-api.sralloza.es/v1
+    description: Production server
+
+info:
+  version: '0.1.0'
+  title: Chore Management
+  contact:
+    email: sralloza@gmail.com
+    url: https://github.com/sralloza
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+
+  description: |
+    API to manage the chores with the flatmates in a shared flat.
+
+    # Concepts
+
+    - **User**: Each person living in the same flat, a flatmate.
+    - **Flat**: A flat. Each user and chore is assigned to a different flat. This API is multi-flat, it can manage the chores of multiple flats. The flat is selected by the `x-flat` header. For more info about the `x-flat` header, please read the [multiflat](#section/Concepts/Multiflat) section.
+    - **Chore Type**: A defined chore that needs to be executed weekly in the flat. Each chore type will be assigned weekly to a different flatmate.
+    - **Weekly chores**: Chores grouped by week.
+    - **Week ID**: Weeks are identified by the year and the week number, like `2022.03` (the third week of 2022).
+    - **Ticket**: Number of chores of a specific type that the user is owed. For more info, read the [tickets system](#section/Concepts/Tickets-system) section.
+
+    # Multiflat
+
+    ## Creating a flat
+
+    To create a flat, ask the API manager (who has the admin token) to create a flat. You will be given the flat token, which you can use to register users, schedule weekly chores and more.
+
+    ## Selecting a flat
+
+    By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `x-flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the x-flat header without the admin key`.
+
+    # Tickets system
+
+    This API supports chore transfers. When a user transfers a chore to other user, a ticket also is transferred. A ticket is like a currency, +1 tickets means that the user is owed a chore (in the future another user will complete his chore), and -1 tickets means that the user owns a chore (in the future he will complete another user's chore).
+
+    Diferent chore types are considered non equivalent, so a ticket of (the chore type) X can not be compensated with a ticket of type Y.
+
+    # Chore Assignements
+
+    You can assign weekly chores using the [createWeeklyChores](#) endpoint.
+
+    ## Examples
+
+    ### Normal chore assignments, same number of users and chores
+    Here is an example of the normal chore creation, with 3 users and 3 chore types.
+
+    | Week | Chore A | Chore B | Chore C
+    | ---- | ------- | ------- | ------- |
+    | 1    | User 1  | User 2  | User 3  |
+    | 2    | User 2  | User 3  | User 1  |
+    | 3    | User 3  | User 1  | User 2  |
+
+    ### More chores than users
+
+    **What happens if there are more chores than users?** Some tenants will have to complete more than one task in the same week.
+
+    | Week | Chore A | Chore B | Chore C | Chore D |
+    | ---- | ------- | ------- | ------- | ------- |
+    | 1    | User 1  | User 2  | User 3  | User 1  |
+    | 2    | User 2  | User 3  | User 1  | User 2  |
+    | 3    | User 3  | User 1  | User 2  | User 3  |
+    | 4    | User 1  | User 2  | User 3  | User 1  |
+
+    ### More users than chores
+
+    **What happens if there are more users than chores?** Some users will have no chores some weeks.
+
+    | Week | Chore A | Chore B |
+    | ---- | ------- | ------- |
+    | 1    | User 1  | User 2  |
+    | 2    | User 3  | User 1  |
+    | 3    | User 2  | User 3  |
+    | 4    | User 1  | User 2  |
+
+    ## How are chores assigned the first time
+
+    The best explanation is an example.
+
+    - Users: 501, 293, 381
+    - Chore types: garden, kitchen and dishes
+
+    Sorting the users and chore types:
+
+    - Users: 293, 381, 501
+    - Chore types: dishes, garden, kitchen
+
+    So, these will be the default chore assignments:
+
+    | Week | dishes | garden | kitchen |
+    | ---- | ------ | ------ | ------- |
+    | 1    | 293    | 381    | 501     |
+    | 2    | 381    | 501    | 293     |
+    | 3    | 501    | 293    | 381     |
+
+    If you want to assign the first time dishes to the user 501, garden to the user 293 and kitchen to the user 281, you will have to use the [editFlatSettings](#tag/Flats/operation/editFlatSettings) operation and send the `assignment_order` parameter set to `[501, 293, 381]` (the assignments of the first week sorted alphabetically by the chore ID).
+
+    The next weeks the chores will rotate. To ensure the chores will be assigned with the order you want, you can use the `dry_run` parameter in the [createWeeklyChores](#) operation. This will return the chore assignments without actually creating them. If you detect the rotation is not correct, you can use the [editFlatSettings](#tag/Flats/operation/editFlatSettings) operation to set the rotation.
+
+    ## Skip week
+
+    There are occasions when user would want to skip a week. For example, when a user is on vacation. In this case, the user must tell the API to remove himself from the pool when the chores are assigned. This can be done by using the [skipWeek](#tag/Skip-Chores/operation/skipWeek) operation.
+
+    If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek](#tag/Skip-Chores/operation/undoSkipWeek) operation.
+
+    # Internationalization
+
+    This API supports error message internationalization only in user-scoped endpoints (those that need a user API key). The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
+
+    **Warning**: If the language is not supported or is invalid, the API will return an error in the default language.
+
+    # Authorization
+
+    Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
+
+    1. **Admin API key** (_AdminApiKey_): there is only one. It has permission to do anything, from creating a new flat to mark a chore as completed.
+    2. **Flat API key** (_FlatAdminApiKey_): there is one for each flat. It has permission to manage the flat assigned and the users assigned to the flat.
+    3. **User API key** (_UserApiKey_): there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
+
+externalDocs:
+ description: Github Repo
+ url: 'https://github.com/sralloza/chore-management-api'
+
+tags:
+  - name: Flats
+    description: Operations with flats.
+  - name: Chore Types
+    description: Operations with chore types
+  - name: Users
+    description: Operations with users
+  - name: Chores
+    description: Operations with chores in simple format
+  - name: Tickets
+    description: Operations with tickets
+  - name: Skip Chores
+    description: Operations to skip weekly chores assignments
+  - name: Week IDs
+    description: Operations with week identifiers
+
+paths:
+  /flats:
+    post:
+      tags:
+        - Flats
+      summary: Create flat
+      description: Create new flat.
+      operationId: createFlat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlatCreate'
+            examples:
+              FlatCreate:
+                $ref: '#/components/examples/FlatCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/Flat'
+        400:
+          $ref: '#/components/responses/InvalidJson'
+        403:
+          description: Invalid create code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidCode:
+                  description: Invalid create code
+                  value:
+                    message: Invalid create code
+        409:
+          $ref: '#/components/responses/Conflict'
+        422:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  description: Validation error
+                  value:
+                    errors:
+                      - field: body.name
+                        message: The name field is required
+
+    get:
+      tags:
+        - Flats
+      summary: List flats
+      description: List existing flats.
+      operationId: listFlats
+      security:
+        - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        200:
+          $ref: '#/components/responses/FlatList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        422:
+          $ref: '#/components/responses/PaginationQueryParamsValidationError'
+
+  /flats/{flat_id}:
+    get:
+      tags:
+        - Flats
+      summary: Get flat
+      description: Get flat details by id
+      operationId: getFlat
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/FlatName'
+      responses:
+        200:
+          $ref: '#/components/responses/Flat'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                FlatAccessRequired:
+                  $ref: '#/components/examples/FlatAccessRequired'
+                InvalidFlatHeaderUse:
+                  $ref: '#/components/examples/InvalidFlatHeaderUse'
+                InvalidFlatRequested:
+                  $ref: '#/components/examples/InvalidFlatRequested'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Flats
+      summary: Delete flat
+      description: Delete flat by id
+      operationId: deleteFlat
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/FlatName'
+      responses:
+        204:
+          description: OK
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /flats/{flat_id}/settings:
+    put:
+      tags:
+        - Flats
+      summary: Edit flat settings
+      description: Edit flat settings
+      operationId: editFlatSettings
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/FlatName'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FlatSettings'
+            examples:
+              FlatSettings:
+                $ref: '#/components/examples/FlatSettings'
+      responses:
+        200:
+          $ref: '#/components/responses/FlatSettings'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                InvalidJson:
+                  $ref: '#/components/examples/InvalidJson'
+                InvalidInitialAssignments:
+                  description: All users are not defined in initial_assignments
+                  value:
+                    message: All users are not defined in initial_assignments
+                InvalidInitialAssignmentsUserNotFound:
+                  description: A user was mentioned in initial_assignments but it does not exist
+                  value:
+                    message: User with id=1001 was mentioned in initial_assignments but it does not exist
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
+        404:
+          $ref: '#/components/responses/NotFound'
+        422:
+          $ref: '#/components/responses/ValidationError'
+
+  /flats/create-code:
+    post:
+      tags:
+        - Flats
+      summary: Request a flat-create code
+      description: Request a flat-create code, which can be used later to create a flat. The code can only be used to create one flat, after that it will be considered invalid.
+      operationId: requestFlatCreateCode
+      security:
+        - AdminApiKey: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlatCreateCode'
+              examples:
+                FlatCreateCode:
+                  $ref: '#/components/examples/FlatCreateCode'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          # TODO: 401 - Invalid create code
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+
+  /chore-types:
+    get:
+      tags:
+        - Chore Types
+      summary: List defined chore types
+      description: List the defined chore types.
+      operationId: listChoreTypes
+      security:
+        - UserApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChoreType'
+              examples:
+                chore type list:
+                  $ref: "#/components/examples/ChoreTypeList"
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: "#/components/responses/ForbiddenErrorUserRequired"
+
+    post:
+      tags:
+        - Chore Types
+      summary: Create chore type
+      description: Define a new chore type.
+      operationId: createChoreType
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XFlatHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChoreType'
+            examples:
+              ChoreType:
+                $ref: '#/components/examples/ChoreType'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoreType'
+              examples:
+                ChoreType:
+                  $ref: '#/components/examples/ChoreType'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorAdminRequired'
+        409:
+          $ref: '#/components/responses/Conflict'
+        422:
+          $ref: '#/components/responses/ValidationError'
+
+  /chore-types/{chore_type_id}:
+    get:
+      tags:
+        - Chore Types
+      summary: Get chore type
+      description: Get the details of a defined chore type using its id.
+      operationId: getChoreType
+      security:
+        - UserApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/ChoreTypeID'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChoreType'
+              examples:
+                ChoreType:
+                  $ref: '#/components/examples/ChoreType'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorUserRequired'
+
+    delete:
+      tags:
+        - Chore Types
+      summary: Delete chore type
+      description: Delete a chore type by id
+      operationId: deleteChoreType
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/ChoreTypeID'
+        - $ref: '#/components/parameters/XFlatHeader'
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        204:
+          description: OK
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        404:
+          $ref: '#/components/responses/NotFound'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorInvalidFlatRequested'
+
+  /week-id/last:
+    get:
+      tags:
+        - Week IDs
+      summary: Get last week ID
+      description: Get last week's identifier
+      operationId: getLastWeekId
+      responses:
+        200:
+          $ref: '#/components/responses/WeekID'
+
+  /week-id/current:
+    get:
+      tags:
+        - Week IDs
+      summary: Get current week ID
+      description: Get the current week identifier
+      operationId: getCurrentWeekId
+      responses:
+        200:
+          $ref: '#/components/responses/WeekID'
+
+  /week-id/next:
+    get:
+      tags:
+        - Week IDs
+      summary: Get next week ID
+      description: Get next week's identifier
+      operationId: getNextWeekId
+      responses:
+        200:
+          $ref: '#/components/responses/WeekID'
+
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Register new user
+      description: Register a new user
+      operationId: createUser
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XFlatHeader'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+            examples:
+              UserCreate:
+                $ref: '#/components/examples/UserCreate'
+      responses:
+        200:
+          $ref: '#/components/responses/User'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        409:
+          $ref: '#/components/responses/Conflict'
+
+    get:
+      tags:
+        - Users
+      summary: List users
+      description: List all flat users
+      operationId: listUsers
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        200:
+          $ref: '#/components/responses/UserList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+  /users/{user_id}:
+    get:
+      tags:
+        - Users
+      summary: Get user
+      description: Get user by id
+      operationId: getUser
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        200:
+          $ref: '#/components/responses/User'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Delete user by id
+      operationId: deleteUser
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                UnbalancedTickets:
+                  description: Cannot delete user with unbalanced tickets
+                  value:
+                    message: User has unbalanced tickets
+                PendingChores:
+                  description: Cannot delete user with pending chores
+                  value:
+                    message: User has pending chores
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+        404:
+          $ref: '#/components/responses/NotFound'
+
+  /chores:
+    get:
+      tags:
+        - Chores
+      summary: List Chores
+      description: List all chores without grouping them
+      operationId: listChores
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XFlatHeader'
+        - name: type_id
+          description: Chore type to filter the chores
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          required: false
+          description: User to filter the chores. This value should be set to the special keyword `me` when using a user API key.
+          schema:
+            $ref: '#/components/schemas/UserIDMe'
+        - name: week_id
+          in: query
+          required: false
+          description: Week ID to filter the chores
+          schema:
+            $ref: '#/components/schemas/WeekID'
+        - name: done
+          in: query
+          required: false
+          description: Filter by done status
+          schema:
+            type: boolean
+        - $ref: '#/components/parameters/Offset'
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/StartWeekID'
+        - $ref: '#/components/parameters/EndWeekID'
+      responses:
+        200:
+          $ref: '#/components/responses/SimpleChoreList'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+  /tickets:
+    get:
+      tags:
+        - Tickets
+      summary: List tickets
+      description: List all tickets
+      operationId: listTickets
+      security:
+        - FlatAdminApiKey: []
+      responses:
+        200:
+          $ref: '#/components/responses/TicketList'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+  /users/{user_id}/skip/{week_id}:
+    post:
+      tags:
+        - Skip Chores
+      summary: Skip weekly chores
+      description: Skip weekly chores for a user
+      operationId: skipWeek
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: '#/components/parameters/WeekIDPath'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  $ref: '#/components/examples/ValidationError'
+                WeekAlreadySkipped:
+                  description: Week already skipped
+                  value:
+                    message: The user has already skipped the week
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+    delete:
+      tags:
+        - Skip Chores
+      summary: Undo skip weekly chores
+      description: Undo skip weekly chores for a user
+      operationId: undoSkipWeek
+      security:
+        - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/UserIDPath'
+        - $ref: '#/components/parameters/WeekIDPath'
+        - $ref: '#/components/parameters/XFlatHeader'
+      responses:
+        204:
+          description: OK
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              examples:
+                ValidationError:
+                  $ref: '#/components/examples/ValidationError'
+                WeekNotSkipped:
+                  description: Week not skipped
+                  value:
+                    message: The user has not skipped the week
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        403:
+          $ref: '#/components/responses/ForbiddenErrorFlatRequired'
+
+components:
+  examples:
+    AdminAccessRequired:
+      description: The admin token is required
+      value:
+        mmesage: Admin access required
+
+    ConflictError:
+      description: The resource already exists
+      value:
+        message: The resource already exists
+
+    ChoreType:
+      value:
+        id: livingRoom
+        name: Living Room
+        description: Clean the living room and the hallway
+
+    ChoreTypeList:
+      value:
+        - id: livingRoom
+          name: Living Room
+          description: Clean the living room and the hallway
+
+    Flat:
+      value:
+        - name: flat-example
+          api_key: ea427902-2db8-11ed-a261-0242ac120002
+          settings:
+            assignment_order:
+              - 10001
+              - 20002
+              - 30003
+            rotation_sign: positive
+
+    FlatAccessRequired:
+      description: An administration flat token is required
+      value:
+        message: Flat administration access required
+
+    FlatCreate:
+      value:
+        create_code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MjE2MjA1Mi02ZTg2LTQzNmMtYjg4OS0xMjk1NDM4M2ZiYmIiLCJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTMxNzI3NCwiaWF0IjoxNjY1MzE2OTc0fQ.hbQSg6Asvm7TpAlQDUxnhUlUEqGn2K-DsecFLHDsF3I
+        name: flat-example
+
+    FlatCreateCode:
+      value:
+        code: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI2MjE2MjA1Mi02ZTg2LTQzNmMtYjg4OS0xMjk1NDM4M2ZiYmIiLCJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTMxNzI3NCwiaWF0IjoxNjY1MzE2OTc0fQ.hbQSg6Asvm7TpAlQDUxnhUlUEqGn2K-DsecFLHDsF3I
+        expires_at: 2022-10-09T14:07:54.602+02:00
+
+    FlatList:
+      value:
+        - name: flat-example
+          token: ea427902-2db8-11ed-a261-0242ac120002
+          settings:
+            assignment_order:
+              - 10001
+              - 20002
+              - 30003
+            rotation_sign: positive
+
+    FlatSettings:
+      value:
+        assignment_order:
+          - 10001
+          - 20002
+          - 30003
+        rotation_sign: positive
+
+    InvalidFlatHeaderUse:
+      description: The `x-flat` header was sent without an admin key
+      value:
+        message: Can't use the x-flat header without the admin key
+
+    InvalidFlatRequested:
+      description: The token provided does not grant access to the flat requested
+      value:
+        message: You don't have permission to access this flat's information
+
+    InvalidJson:
+      description: The JSON sent is invalid
+      value:
+        message: Invalid request body
+
+    MissingBody:
+      description: The request is missing body
+      value:
+        message: Missing request body
+
+    SimpleChoreList:
+      description: List of simple chores
+      value:
+        - type_id: livingRoom
+          user_id: 1
+          week_id: "2022.01"
+          done: true
+        - type_id: Kitchen
+          user_id: 2
+          week_id: "2022.01"
+          done: false
+
+    TicketList:
+      description: List of chore tickets
+      value:
+        - id: A
+          description: description-A
+          tickets_by_tenant:
+            1: -1
+            2: -1
+            3: 2
+        - id: B
+          description: description-B
+          tickets_by_tenant:
+            1: -1
+            2: 0
+            3: 1
+
+    UnuthorizedError:
+      description: Missing API key
+      value:
+        message: Missing API key
+
+    UserAccessRequired:
+      description: A user token is required
+      value:
+        message: User access required
+
+    User:
+      description: A User
+      value:
+        username: user-example
+        id: 123456789
+        api_key: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+
+    UserCreate:
+      description: Register new user
+      value:
+        username: user-example
+        id: 123456789
+
+    UserList:
+      description: A list of users
+      value:
+        - username: user-example-1
+          id: 123456789
+          api_key: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+        - username: user-example-2
+          id: 987654321
+          api_key: c26c9865-6d47-4f66-b586-7b489c72624e
+
+    ValidationError:
+      description: Validation error
+      value:
+        message: ValidationError
+        errors:
+          - message: Username must be a string
+            value: 123
+            location: body.username
+
+  parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      description: Language to use for error messages
+      required: false
+      schema:
+        type: string
+        enum:
+          - en
+          - es
+        default: "en"
+      example: es
+
+    ChoreTypeID:
+      name: chore_type_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ChoreTypeID'
+
+    EndWeekID:
+      name: end_week_id
+      in: query
+      description: End week ID to filter, including it
+      required: false
+      schema:
+        $ref: '#/components/schemas/WeekID'
+
+    FlatName:
+      name: flat_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/FlatName'
+
+    Offset:
+      in: query
+      name: offset
+      description: Pagination offset
+      required: false
+      schema:
+        type: integer
+        default: 0
+      example: 10
+
+    Limit:
+      in: query
+      name: limit
+      description: Pagination query size
+      required: false
+      schema:
+        type: integer
+        default: 100
+      example: 20
+
+    StartWeekID:
+      name: start_week_id
+      in: query
+      description: Start week ID to filter, including it
+      required: false
+      schema:
+        $ref: '#/components/schemas/WeekID'
+
+    UserIDPath:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/UserIDMe"
+
+    WeekIDPath:
+      name: week_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/WeekID"
+
+    XFlatHeader:
+      name: x-flat
+      in: header
+      required: false
+      schema:
+        $ref: "#/components/schemas/XFlatHeader"
+
+  responses:
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          examples:
+            ConflictError:
+              $ref: '#/components/examples/ConflictError'
+
+    Flat:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Flat'
+          examples:
+            Flat:
+              $ref: '#/components/examples/Flat'
+
+    FlatList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FlatList'
+          examples:
+            FlatList:
+              $ref: '#/components/examples/FlatList'
+
+    FlatSettings:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/FlatSettingsRequired'
+          examples:
+            FlatSettings:
+              $ref: '#/components/examples/FlatSettings'
+
+    ForbiddenErrorAdminRequired:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            AdminAccessRequired:
+              $ref: '#/components/examples/AdminAccessRequired'
+
+    ForbiddenErrorFlatRequired:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            FlatAccessRequired:
+              $ref: '#/components/examples/FlatAccessRequired'
+            InvalidFlatHeaderUse:
+              $ref: '#/components/examples/InvalidFlatHeaderUse'
+
+    ForbiddenErrorInvalidFlatRequested:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            FlatAccessRequired:
+              $ref: '#/components/examples/FlatAccessRequired'
+            InvalidFlatHeaderUse:
+              $ref: '#/components/examples/InvalidFlatHeaderUse'
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
+
+    ForbiddenErrorUserRequired:
+      description: User access required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            UserAccessRequired:
+              $ref: '#/components/examples/UserAccessRequired'
+            InvalidFlatHeaderUse:
+              $ref: '#/components/examples/InvalidFlatHeaderUse'
+
+    InvalidFlatRequested:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidFlatRequested:
+              $ref: '#/components/examples/InvalidFlatRequested'
+
+    InvalidJson:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            MissingBody:
+              $ref: '#/components/examples/MissingBody'
+            InvalidJson:
+              $ref: '#/components/examples/InvalidJson'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            message: Resource not found
+
+    PaginationQueryParamsValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationError"
+          examples:
+            ValidationError:
+              description: The query params are not valid
+              value:
+                errors:
+                  - field: query.limit
+                    message: must be an integer
+                    value: "not an integer"
+                  - field: query.offset
+                    message: must be greater than or equal to 0
+                    value: -5
+
+    SimpleChoreList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SimpleChoreList'
+          examples:
+            SimpleChoreList:
+              $ref: '#/components/examples/SimpleChoreList'
+    TicketList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/TicketList'
+          examples:
+            TicketList:
+              $ref: '#/components/examples/TicketList'
+
+    Unauthorized:
+      description: Missing API Key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            UnuthorizedError:
+              $ref: '#/components/examples/UnuthorizedError'
+
+    User:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+          examples:
+            User:
+              $ref: '#/components/examples/User'
+
+    UserList:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+          examples:
+            UserList:
+              $ref: '#/components/examples/UserList'
+
+    ValidationError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+
+          examples:
+            ValidationError:
+              $ref: '#/components/examples/ValidationError'
+
+    WeekID:
+      description: OK
+      content:
+        application/json:
+          schema:
+            description: The week identifier
+            type: object
+            additionalProperties: false
+            properties:
+              week_id:
+                $ref: '#/components/schemas/WeekID'
+            required:
+              - week_id
+          example:
+            week_id: "2022.03"
+
+  schemas:
+    ChoreType:
+      description: Defined type of chore
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/ChoreTypeID'
+        name:
+          $ref: '#/components/schemas/ChoreTypeName'
+        description:
+          $ref: '#/components/schemas/ChoreTypeDescription'
+      required:
+        - id
+        - name
+        - description
+
+    ChoreTypeDescription:
+      description: Styled description of the chore type with markdown
+      type: string
+      minLength: 1
+      maxLength: 255
+
+    ChoreTypeID:
+      description: ID of the chore type
+      type: string
+      pattern: '^[a-z-]+$'
+      minLength: 1
+      maxLength: 25
+
+    ChoreTypeName:
+      description: Friendly name of the chore type
+      type: string
+      minLength: 1
+      maxLength: 50
+
+    Error:
+      description: generic API error
+      type: object
+      additionalProperties: false
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the event represent
+      required:
+        - message
+
+    Flat:
+      description: Registered flat
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          $ref: '#/components/schemas/FlatNameString'
+        api_key:
+          type: string
+          description: Admin flat API key
+          format: uuid
+        settings:
+          $ref: '#/components/schemas/FlatSettingsRequired'
+      required:
+        - name
+        - api_key
+        - settings
+
+    FlatCreate:
+      description: Register new flat
+      type: object
+      additionalProperties: false
+      properties:
+        create_code:
+          type: string
+          format: jwt
+          description: Temporal code to create the flat
+        name:
+          $ref: '#/components/schemas/FlatNameString'
+      required:
+        - create_code
+        - name
+
+    FlatCreateCode:
+      description: Code to create a new flat
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: string
+          format: jwt
+          description: Code to create a new flat
+        expires_at:
+          type: string
+          format: datetime
+          description: Expiration date of the code
+
+      required:
+        - code
+        - expires_at
+
+    FlatList:
+      description: List of registered flats
+      type: array
+      items:
+        $ref: '#/components/schemas/Flat'
+
+    FlatName:
+      type: string
+      description: Name of the flat. This value should be set to the special keyword `me` when using a Flat API key.
+      oneOf:
+        - $ref: '#/components/schemas/FlatNameString'
+        - $ref: '#/components/schemas/FlatNameMe'
+
+    FlatNameString:
+      type: string
+      pattern: '^[a-z-]+$'
+
+    FlatNameMe:
+      type: string
+      enum:
+        - me
+
+    FlatSettings:
+      type: object
+      description: Flat settings
+      additionalProperties: false
+      properties:
+        rotation_sign:
+          type: string
+          enum: [positive, negative]
+          default: positive
+          description: When assigning weekly chores, should the rotation be positive or negative
+        assignment_order:
+          type: array
+          description: Order in which users are assigned chores
+          items:
+            $ref: '#/components/schemas/UserID'
+
+    FlatSettingsRequired:
+      allOf:
+        - $ref: '#/components/schemas/FlatSettings'
+        - required:
+          - rotation_sign
+          - assignment_order
+
+    SingleValidationError:
+      description: Validation error
+      type: object
+      additionalProperties: false
+      properties:
+        message:
+          type: string
+          description: A human readable description of what the validation error
+        value:
+          type: string
+          description: The value that caused the validation error
+        location:
+          type: string
+          description: Path to the attribute that caused the validation error
+      required:
+        - message
+        - location
+
+    SimpleChore:
+      description: Simple chore
+      type: object
+      additionalProperties: false
+      properties:
+        user_id:
+          $ref: '#/components/schemas/UserID'
+        type_id:
+          $ref: '#/components/schemas/ChoreTypeID'
+        week_id:
+          $ref: '#/components/schemas/WeekID'
+        done:
+          type: boolean
+          description: Whether the chore is done or not
+      required:
+        - user_id
+        - type_id
+        - week_id
+        - done
+
+    SimpleChoreList:
+      description: List of simple chores
+      type: array
+      items:
+        $ref: '#/components/schemas/SimpleChore'
+
+    Ticket:
+      description: Chore ticket
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: '#/components/schemas/ChoreTypeID'
+        description:
+          $ref: '#/components/schemas/ChoreTypeDescription'
+        tickets_by_tenant:
+          type: object
+          description: Tickets grouped by tenant. The key is the userID.
+          additionalProperties:
+            description: Number of tickets of this type the user has.
+            type: integer
+            format: int32
+      required:
+        - id
+        - description
+        - tickets_by_tenant
+
+    TicketList:
+        description: List of chore tickets
+        type: array
+        items:
+          $ref: '#/components/schemas/Ticket'
+
+    User:
+      description: Registered user
+      type: object
+      additionalProperties: false
+      allOf:
+        - $ref: '#/components/schemas/UserCreate'
+        - properties:
+            api_key:
+              type: string
+              format: uuid
+              description: User's API token
+          required:
+            - api_key
+
+    UserCreate:
+      description: Register new user
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          $ref: "#/components/schemas/UserID"
+        username:
+          type: string
+          description: User's nickname
+          maxLength: 25
+          minLength: 2
+      required:
+        - id
+        - username
+
+    UserIDMe:
+      description: User ID. This value should be set to the special keyword `me` when using a user API key.
+      anyOf:
+        - type: string
+          enum: [me]
+        - $ref: "#/components/schemas/UserID"
+
+    UserID:
+      description: User identifier
+      type: integer
+      format: int64
+
+    ValidationError:
+      description: Validation error
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleValidationError'
+
+    XFlatHeader:
+      type: string
+      description: Name of the flat. For more info please refer to the [multiflat](#section/Concepts/Multiflat) section
+
+    WeekID:
+      description: Week identifier
+      type: string
+      pattern: '^\d{4}\.\d{2}$'
+      example: "2022.03"
+
+  securitySchemes:
+    AdminApiKey:
+      type: apiKey
+      in: header
+      name: x-token
+    FlatAdminApiKey:
+      type: apiKey
+      in: header
+      name: x-token
+    UserApiKey:
+      type: apiKey
+      in: header
+      name: x-token

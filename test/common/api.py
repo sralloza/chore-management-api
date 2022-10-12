@@ -1,8 +1,9 @@
+import re
 from uuid import uuid4
 
 from requests import Response
-from toolium.utils.dataset import map_param
 
+from common.openapi import get_current_operation, get_operation
 from common.utils import VERSIONED_URL_TEMPLATE
 
 
@@ -10,27 +11,21 @@ def send_request(context, endpoint=None, payload=None):
     if endpoint is None:
         endpoint = context.feature.name.split(" - ")[-1]
 
-    try:
-        api = map_param(f"[CONF:apis.{endpoint}]")
-    except KeyError:
-        raise ValueError(f"Invalid endpoint in feature name: {endpoint}") from None
+    if endpoint is None:
+        operation = get_current_operation(context)
+    else:
+        operation = get_operation(endpoint)
 
-    if not isinstance(api, dict):
-        raise ValueError(f"Invalid endpoint in feature name: {endpoint}")
+    path = operation["path"]
+    method = operation["method"].upper()
 
-    path = api["path"]
-    method = api["method"]
-
-    url_params = get_url_params(context, endpoint)
+    url_params = get_url_params(context, path)
     path = path.format(**url_params)
     context.res = _send_request(context, method, path, payload)
 
 
-def get_url_params(context, endpoint):
-    try:
-        param_names = map_param(f"[CONF:apis.{endpoint}.pathParams]")
-    except KeyError:
-        return {}
+def get_url_params(context, path):
+    param_names = re.findall(r"\{\w+\}", path)
     return {k: getattr(context, k) for k in param_names}
 
 

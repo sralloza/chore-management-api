@@ -23,7 +23,7 @@ public class TicketsService {
     @Autowired
     private ChoreTypeTicketsMapper mapper;
     @Autowired
-    private TenantsService tenantsService;
+    private UsersService usersService;
 
     public List<ChoreTypeTickets> listChoreTypeTickets() {
         var tickets = dbTicketsRepository.findAll();
@@ -38,32 +38,32 @@ public class TicketsService {
                 .findAny();
     }
 
-    public void createTicketsForTenant(Long tenantId) {
+    public void createTicketsForUser(Long userId) {
         dbTicketsRepository.saveAll(dbChoreTypesRepository.findAll().stream()
-                .map(choreType -> new DBTicket(null, choreType.getId(), tenantId, 0L))
+                .map(choreType -> new DBTicket(null, choreType.getId(), userId, 0L))
                 .collect(Collectors.toList()));
     }
 
     public void createTicketsForChoreType(String choreTypeId) {
-        dbTicketsRepository.saveAll(tenantsService.listTenants().stream()
-                .map(tenant -> new DBTicket(null, choreTypeId, tenant.getTenantId(), 0L))
+        dbTicketsRepository.saveAll(usersService.listUsers().stream()
+                .map(user -> new DBTicket(null, choreTypeId, user.getUserId(), 0L))
                 .collect(Collectors.toList()));
     }
 
-    public void addTicketsToTenant(Long tenantId, String choreType, int nTickets) {
+    public void addTicketsToUser(Long userId, String choreType, int nTickets) {
         DBTicket tickets = dbTicketsRepository.findAll().stream()
                 .filter(dbTicket -> dbTicket.getChoreType().equals(choreType))
-                .filter(dbTicket -> dbTicket.getTenantId().equals(tenantId))
+                .filter(dbTicket -> dbTicket.getUserId().equals(userId))
                 .findAny()
-                .orElseThrow(() -> new RuntimeException("No tickets found for tenant with id " + tenantId +
+                .orElseThrow(() -> new RuntimeException("No tickets found for user with id " + userId +
                         " and chore type " + choreType));
         tickets.setTickets(tickets.getTickets() + nTickets);
         dbTicketsRepository.save(tickets);
     }
 
-    public void deleteTicketsByTenant(Long tenantId) {
+    public void deleteTicketsByUser(Long userId) {
         var tickets = dbTicketsRepository.findAll().stream()
-                .filter(ticket -> ticket.getTenantId().equals(tenantId))
+                .filter(ticket -> ticket.getUserId().equals(userId))
                 .collect(Collectors.toList());
         dbTicketsRepository.deleteAll(tickets);
     }

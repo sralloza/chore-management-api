@@ -1,3 +1,4 @@
+@old
 @api.transfers
 @startTransfer
 @sanity
@@ -47,7 +48,7 @@ Feature: Transfers API - startTransfer
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value |
             | tenant_id_from | me          |
@@ -182,7 +183,7 @@ Feature: Transfers API - startTransfer
 
     Scenario: Admin makes a chore transfer
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value |
             | tenant_id_from | 1           |
@@ -238,7 +239,7 @@ Feature: Transfers API - startTransfer
 
     Scenario Outline: Validate error response automatic validations
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value      | as_string |
             | tenant_id_from | <tenant_id_from> | false     |
@@ -263,7 +264,7 @@ Feature: Transfers API - startTransfer
 
 
     Scenario Outline: Validate error response manual validations
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value      | as_string |
             | tenant_id_from | <tenant_id_from> | false     |
@@ -287,7 +288,7 @@ Feature: Transfers API - startTransfer
 
     Scenario Outline: Validate error response when the tenant_id does not belong to any tenant
         Given there are 3 tenants
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value      | as_string |
             | tenant_id_from | <tenant_id_from> | false     |
@@ -304,7 +305,7 @@ Feature: Transfers API - startTransfer
 
 
     Scenario: Validate error response when the tenant_id_from is the same as the tenant_id_to
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value | as_string |
             | tenant_id_from | 1           | false     |
@@ -335,7 +336,7 @@ Feature: Transfers API - startTransfer
 
     Scenario: Validate error response when a tenant tries to transfer a chore which type does not exist
         Given there are 3 tenants
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name     | param_value | as_string |
             | tenant_id_from | 1           | false     |

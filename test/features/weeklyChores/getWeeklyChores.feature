@@ -1,3 +1,4 @@
+@old
 @api.weekly-chores
 @getWeeklyChores
 Feature: Weekly Chores API - getWeeklyChores
@@ -27,7 +28,7 @@ Feature: Weekly Chores API - getWeeklyChores
     Scenario: Validate response for admin user
         Given there are 1 tenant, 1 chore type and weekly chores for the week "2022.01"
         And the field "weekId" with string value "2022.01"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -51,7 +52,7 @@ Feature: Weekly Chores API - getWeeklyChores
 
 
     Scenario: Validate error response when weekly chores not found
-        Given I use the admin token
+        Given I use the admin API key
         And the field "weekId" with value "2022.01"
         When I send a request to the Api
         Then the response status code is "404"

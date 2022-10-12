@@ -4,7 +4,7 @@ from typing import List, Optional
 from toolium.utils.dataset import replace_param
 
 URL = "http://localhost:8080"
-VERSIONED_URL_TEMPLATE = URL + "/v{version}"
+VERSIONED_URL_TEMPLATE = URL + "/api/v{version}"
 
 
 def assert_not_errors(errors):

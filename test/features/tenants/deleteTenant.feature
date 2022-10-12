@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @deleteTenant
 Feature: Tenants API - deleteTenant
@@ -27,13 +28,13 @@ Feature: Tenants API - deleteTenant
     Scenario: Validate response for admin user
         Given there is 1 tenant
         And the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 
 
     Scenario: Delete tenant
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api resource "createTenant" with body params
             | param_name | param_value |
             | username   | John        |
@@ -41,7 +42,7 @@ Feature: Tenants API - deleteTenant
         And I clear the token
         Then the response status code is "200"
         Given the field "tenantId" with value "111"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
         And the Api response is empty
@@ -55,7 +56,7 @@ Feature: Tenants API - deleteTenant
 
     Scenario: Validate error response deleting a non-existing tenant
         Given the field "tenantId" with value "111"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No tenant found with id 111"
@@ -65,7 +66,7 @@ Feature: Tenants API - deleteTenant
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
         Given the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Tenant has 2 pending chores"
@@ -77,7 +78,7 @@ Feature: Tenants API - deleteTenant
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
             | 1              | 2            | A          | 2022.01 | True     |
         Given the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Tenant has unbalanced tickets"
@@ -89,7 +90,7 @@ Feature: Tenants API - deleteTenant
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
             | 1              | 2            | A          | 2022.01 | True     |
         Given the field "tenantId" with value "2"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Tenant has unbalanced tickets"

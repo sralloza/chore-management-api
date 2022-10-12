@@ -58,7 +58,7 @@ public class ChoreTypesService {
 
         Optional<ChoreTypeTickets> tickets = ticketsService.getChoreTypeTicketsById(id);
         if (tickets.isPresent()) {
-            var ticketsMap = tickets.get().getTicketsByTenant();
+            var ticketsMap = tickets.get().getTicketsByUser();
             for (var entry : ticketsMap.entrySet()) {
                 if (entry.getValue() != 0) {
                     throw new BadRequestException("Chore type has unbalanced tickets");

@@ -1,3 +1,4 @@
+@old
 @api.weekly-chores
 @deleteWeeklyChores
 Feature: Weekly Chores API - deleteWeeklyChores
@@ -28,14 +29,14 @@ Feature: Weekly Chores API - deleteWeeklyChores
     Scenario: Validate response for admin user
         Given there are 1 tenants, 1 chore types and weekly chores for the week "2022.01"
         And the field "weekId" with value "2022.01"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 
 
     Scenario Outline: Delete a weekly chore
         Given there are 1 tenants, 1 chore types and weekly chores for the week "<real_week_id>"
-        And I use the admin token
+        And I use the admin API key
         And the field "weekId" with string value "<week_id>"
         When I send a request to the Api
         Then the response status code is "204"
@@ -50,7 +51,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
 
 
     Scenario: Validate error response when deleting an unknown weekly chore
-        Given I use the admin token
+        Given I use the admin API key
         And the field "weekId" with string value "2022.01"
         When I send a request to the Api
         Then the response status code is "404"
@@ -58,7 +59,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
 
 
     Scenario Outline: Validate error response when deleting weekly chores for invalid week
-        Given I use the admin token
+        Given I use the admin API key
         And the field "weekId" with string value "<invalid_week_id>"
         When I send a request to the Api
         Then the response status code is "400"

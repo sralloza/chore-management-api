@@ -11,13 +11,13 @@ import javax.validation.constraints.Positive;
 @Data
 @NoArgsConstructor
 public class TransferCreate {
-    @JsonProperty("tenant_id_from")
-    @NotNull(message = "tenant_id_from is required")
-    private String tenantIdFrom;
-    @JsonProperty("tenant_id_to")
-    @NotNull(message = "tenant_id_to is required")
-    @Positive(message = "tenant_id_to must be positive")
-    private Long tenantIdTo;
+    @JsonProperty("user_id_from")
+    @NotNull(message = "user_id_from is required")
+    private String userIdFrom;
+    @JsonProperty("user_id_to")
+    @NotNull(message = "user_id_to is required")
+    @Positive(message = "user_id_to must be positive")
+    private Long userIdTo;
     @JsonProperty("chore_type")
     @NotNull(message = "chore_type is required")
     @NotBlank(message = "chore_type can't be blank")

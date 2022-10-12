@@ -1,3 +1,4 @@
+@old
 @api.transfers
 @listTransfers
 Feature: Transfers API - listTransfers
@@ -23,7 +24,7 @@ Feature: Transfers API - listTransfers
     @authorization
     Scenario: Validate response for admin user
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 

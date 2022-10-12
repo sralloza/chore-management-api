@@ -24,27 +24,27 @@ public class SkipWeeksService {
     @Autowired
     private DateProvider dateProvider;
 
-    public void skipWeek(String weekId, Long tenantId) {
+    public void skipWeek(String weekId, Long userId) {
         weekIdValidator.validateSyntax(weekId);
         validatePastWeekId(weekId, "skip");
 
-        if (repository.findByWeekIdAndTenantId(weekId, tenantId).isPresent()) {
-            throw new BadRequestException("Tenant with id " + tenantId + " has already skipped the week " + weekId);
+        if (repository.findByWeekIdAndUserId(weekId, userId).isPresent()) {
+            throw new BadRequestException("User with id " + userId + " has already skipped the week " + weekId);
         }
 
         var ignoredWeek = new DBSkippedWeek()
             .setWeekId(weekId)
-            .setTenantId(tenantId);
+            .setUserId(userId);
         repository.save(ignoredWeek);
     }
 
-    public void unSkipWeek(String weekId, Long tenantId) {
+    public void unSkipWeek(String weekId, Long userId) {
         weekIdValidator.validateSyntax(weekId);
-        var skippedWeek = repository.findByWeekIdAndTenantId(weekId, tenantId);
+        var skippedWeek = repository.findByWeekIdAndUserId(weekId, userId);
         validatePastWeekId(weekId, "unskip");
 
         if (skippedWeek.isEmpty()) {
-            throw new BadRequestException("Tenant with id " + tenantId + " has not skipped the week " + weekId);
+            throw new BadRequestException("User with id " + userId + " has not skipped the week " + weekId);
         }
 
         repository.delete(skippedWeek.get());
@@ -64,9 +64,9 @@ public class SkipWeeksService {
         }
     }
 
-    public void deleteSkipWeeksByTenantId(Long tenantId) {
+    public void deleteSkipWeeksByUserId(Long userId) {
         var skippedWeeks = repository.findAll().stream()
-            .filter(week -> week.getTenantId().equals(tenantId))
+            .filter(week -> week.getUserId().equals(userId))
             .collect(Collectors.toList());
         repository.deleteAll(skippedWeeks);
     }

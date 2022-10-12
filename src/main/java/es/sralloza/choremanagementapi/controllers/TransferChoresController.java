@@ -1,11 +1,11 @@
 package es.sralloza.choremanagementapi.controllers;
 
-import es.sralloza.choremanagementapi.models.custom.Tenant;
+import es.sralloza.choremanagementapi.models.custom.User;
 import es.sralloza.choremanagementapi.models.custom.Transfer;
 import es.sralloza.choremanagementapi.models.io.TransferCreate;
 import es.sralloza.choremanagementapi.security.SimpleSecurity;
 import es.sralloza.choremanagementapi.services.TransferChoresService;
-import es.sralloza.choremanagementapi.utils.TenantIdHelper;
+import es.sralloza.choremanagementapi.utils.UserIdHelper;
 import es.sralloza.choremanagementapi.validator.WeekIdValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,50 +32,49 @@ public class TransferChoresController {
     @Autowired
     private SimpleSecurity security;
     @Autowired
-    private TenantIdHelper tenantIdHelper;
+    private UserIdHelper userIdHelper;
 
     @GetMapping()
     public List<Transfer> listTransfers() {
-        security.requireTenant();
+        security.requireUser();
         return service.listTransfers();
     }
 
     @GetMapping("/{id}")
     public Transfer getTransfer(@PathVariable Long id) {
-        security.requireTenant();
+        security.requireUser();
         return service.getTransferById(id);
     }
 
     @PostMapping("/start")
     public Transfer startTransfer(@RequestBody @Valid TransferCreate transferCreate) {
         weekIdValidator.validateSyntax(transferCreate.getWeekId());
-        security.requireTenant();
-        security.requireTenantFromPath(transferCreate.getTenantIdFrom());
-        var tenantFrom = security.getTenant();
-        var tenantIdFrom = Optional.ofNullable(tenantFrom)
-            .map(Tenant::getTenantId)
-            .orElse(tenantIdHelper.parseTenantId(transferCreate.getTenantIdFrom(), "tenant_id_from"));
+        security.requireUser();
+        security.requireUserFromPath(transferCreate.getUserIdFrom());
+        var userIdFrom = Optional.ofNullable(security.getUser())
+            .map(User::getUserId)
+            .orElse(userIdHelper.parseUserId(transferCreate.getUserIdFrom(), "user_id_from"));
 
         return service.startTransfer(
-            tenantIdFrom,
-            transferCreate.getTenantIdTo(),
+            userIdFrom,
+            transferCreate.getUserIdTo(),
             transferCreate.getChoreType(),
             transferCreate.getWeekId());
     }
 
     @PostMapping("/{id}/accept")
     public Transfer acceptTransfer(@PathVariable Long id) {
-        security.requireTenant();
+        security.requireUser();
         var transfer = service.getTransferById(id);
-        security.requireTenantFromPath(transfer.getTenantIdTo().toString());
+        security.requireUserFromPath(transfer.getUserIdTo().toString());
         return service.acceptTransfer(id);
     }
 
     @PostMapping("/{id}/reject")
     public Transfer rejectTransfer(@PathVariable Long id) {
-        security.requireTenant();
+        security.requireUser();
         var transfer = service.getTransferById(id);
-        security.requireTenantFromPath(transfer.getTenantIdTo().toString());
+        security.requireUserFromPath(transfer.getUserIdTo().toString());
         return service.rejectTransfer(id);
     }
 

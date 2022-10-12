@@ -1,3 +1,4 @@
+@old
 @api.tenants
 @getTenant
 Feature: Tenants API - getTenant
@@ -26,7 +27,7 @@ Feature: Tenants API - getTenant
     Scenario: Validate response for admin user
         Given there is 1 tenant
         And the field "tenantId" with value "1"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -49,7 +50,7 @@ Feature: Tenants API - getTenant
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         And the field "tenantId" with value "me"
         When I send a request to the Api
         Then the response status code is "400"
@@ -67,7 +68,7 @@ Feature: Tenants API - getTenant
 
     Scenario: Validate error response when requesting non existing tenant
         Given the field "tenantId" with value "2"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No tenant found with id 2"

@@ -9,7 +9,7 @@ public class SimpleChoreMapper {
     public SimpleChore build(DBChore dbChore) {
         return new SimpleChore()
             .setChoreType(dbChore.getChoreType())
-            .setTenantId(dbChore.getTenantId())
+            .setUserId(dbChore.getUserId())
             .setWeekId(dbChore.getWeekId())
             .setDone(dbChore.getDone());
     }

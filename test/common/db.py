@@ -8,11 +8,12 @@ logger = getLogger(__name__)
 DATABASES = (
     "chore_types",
     "chores",
+    "flats",
     "rotations",
     "skipped_weeks",
-    "tenants",
     "tickets",
     "transfers",
+    "users",
 )
 
 

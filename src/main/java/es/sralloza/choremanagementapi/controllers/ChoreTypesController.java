@@ -29,13 +29,13 @@ public class ChoreTypesController {
 
     @GetMapping()
     public List<ChoreType> listChoreTypes() {
-        security.requireTenant();
+        security.requireUser();
         return service.listChoreTypes();
     }
 
     @GetMapping("/{id}")
     public ChoreType getChoreType(@PathVariable String id) {
-        security.requireTenant();
+        security.requireUser();
         return service.getChoreTypeById(id);
     }
 

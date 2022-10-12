@@ -20,7 +20,7 @@ public class TicketsController {
 
     @GetMapping()
     public List<ChoreTypeTickets> listTickets() {
-        security.requireTenant();
+        security.requireUser();
         return service.listChoreTypeTickets();
     }
 }
