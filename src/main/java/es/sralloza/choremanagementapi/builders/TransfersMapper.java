@@ -15,8 +15,8 @@ public class TransfersMapper {
                 .setId(transfer.getId())
                 .setTimestamp(LocalDateTime.ofInstant(Instant.ofEpochMilli(transfer.getTimestamp()),
                         ZoneId.systemDefault()))
-                .setTenantIdFrom(transfer.getTenantIdFrom())
-                .setTenantIdTo(transfer.getTenantIdTo())
+                .setUserIdFrom(transfer.getUserIdFrom())
+                .setUserIdTo(transfer.getUserIdTo())
                 .setChoreType(transfer.getChoreType())
                 .setWeekId(transfer.getWeekId())
                 .setAccepted(transfer.getAccepted())

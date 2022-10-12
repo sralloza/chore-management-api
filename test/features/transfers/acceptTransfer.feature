@@ -35,7 +35,7 @@ Feature: Transfers API - acceptTransfer
             | 1              | 2            | A          | 2022.01 | None     |
         Then the response status code is "200"
         And I save the "id" attribute of the response as "transferId"
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -134,7 +134,7 @@ Feature: Transfers API - acceptTransfer
 
 
     Scenario: Validate error response when accepting a chore transfer with invalid transfer_id
-        Given I use the admin token
+        Given I use the admin API key
         And the field "transferId" with value "999"
         When I send a request to the Api
         Then the response status code is "404"

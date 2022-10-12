@@ -28,7 +28,7 @@ def step_impl(context, week_id=None, force=None):
         context.execute_steps(
             f"""
             Given the field "weekId" with string value "{week_id}"
-            And I use the admin token
+            And I use the admin API key
             When I send a request to the Api resource "createWeeklyChores"
             Then the response status code is "200"
             And I clear the token
@@ -51,7 +51,7 @@ def step_impl(context):
 def step_impl(context):
     context.execute_steps(
         f"""
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api resource "listWeeklyChores"
         Then the response status code is "200"
         And the response contains the following weekly chores

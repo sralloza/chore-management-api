@@ -9,8 +9,8 @@ import lombok.experimental.Accessors;
 public class SimpleChore {
     @JsonProperty("chore_type")
     private String choreType;
-    @JsonProperty("tenant_id")
-    private Long tenantId;
+    @JsonProperty("user_id")
+    private Long userId;
     @JsonProperty("week_id")
     private String weekId;
     private Boolean done;

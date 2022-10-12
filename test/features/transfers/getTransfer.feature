@@ -40,7 +40,7 @@ Feature: Transfers API - getTransfer
         Then the response status code is "200"
         And I save the "id" attribute of the response as "transferId"
         Given I use the token of the tenant with id "2"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -60,7 +60,7 @@ Feature: Transfers API - getTransfer
 
 
     Scenario: Get transfer not found
-        Given I use the admin token
+        Given I use the admin API key
         And the field "transferId" with value "999"
         When I send a request to the Api
         Then the response status code is "404"

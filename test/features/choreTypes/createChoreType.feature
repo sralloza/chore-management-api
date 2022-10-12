@@ -29,7 +29,7 @@ Feature: Chore Types API - createChoreType
 
     @authorization
     Scenario: Validate response for admin user
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -38,7 +38,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Create a chore type without tenants
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |
@@ -61,7 +61,7 @@ Feature: Chore Types API - createChoreType
 
     Scenario: Validate that tickets are created after the chore type
         Given there are 3 tenants
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value           |
             | id          | new-chore             |
@@ -148,7 +148,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Create a chore type with the largest id possible
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | [STRING_WITH_LENGTH_25]  |
@@ -169,7 +169,7 @@ Feature: Chore Types API - createChoreType
 
 
     Scenario: Create a choreType with the largest description possible
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value              |
             | id          | chore-type-1             |

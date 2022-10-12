@@ -83,7 +83,9 @@ def step_impl(context, res_attr, saved_attr):
 
 @step('I save the "{attr}" attribute of the response as "{dest}"')
 def step_impl(context, attr, dest):
-    setattr(context, dest, context.res.json()[attr])
+    res_json = context.res.json()
+    assert_that(res_json, has_key(attr))
+    setattr(context, dest, res_json[attr])
 
 
 @step('I save the "{attr}" attribute of the response with "{key}={value}" as "{dest}"')

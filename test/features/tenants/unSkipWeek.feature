@@ -38,7 +38,7 @@ Feature: Tenants API - unSkipWeek
             | field    | value   |
             | tenantId | 1       |
             | weekId   | 2025.01 |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 
@@ -71,7 +71,7 @@ Feature: Tenants API - unSkipWeek
             | field    | value     | as_string |
             | tenantId | 2         | false     |
             | weekId   | <week_id> | true      |
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
         And the Api response is empty
@@ -88,7 +88,7 @@ Feature: Tenants API - unSkipWeek
     Scenario: Validate error response when unskipping an old week
         Given there is 1 tenant
         And I make the tenant "1" skip the week "2022.01" editing the database
-        And I use the admin token
+        And I use the admin API key
         And the fields
             | field    | value   |
             | tenantId | 1       |
@@ -100,7 +100,7 @@ Feature: Tenants API - unSkipWeek
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         And the fields
             | field    | value   |
             | tenantId | me      |

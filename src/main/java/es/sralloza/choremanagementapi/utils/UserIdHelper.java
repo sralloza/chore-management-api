@@ -8,29 +8,29 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nullable;
 
 @Service
-public class TenantIdHelper {
+public class UserIdHelper {
     @Autowired
     private SimpleSecurity security;
 
-    public Long parseTenantId(String pathVariable) {
-        return parseTenantId(pathVariable, null);
+    public Long parseUserId(String pathVariable) {
+        return parseUserId(pathVariable, null);
     }
 
-    public Long parseTenantId(String pathVariable, @Nullable String pathName) {
+    public Long parseUserId(String pathVariable, @Nullable String pathName) {
         if (pathVariable.equals("me")) {
             if (security.isAdmin()) {
                 throw new BadRequestException("Cannot use keyword me with an admin token");
             }
-            return security.getTenant().getTenantId();
+            return security.getUser().getUserId();
         }
         try {
-            long tenantId = Long.parseLong(pathVariable);
-            if (tenantId <= 0 && pathName != null) {
+            long userId = Long.parseLong(pathVariable);
+            if (userId <= 0 && pathName != null) {
                 throw new BadRequestException(pathName + " must be positive");
             }
-            return tenantId;
+            return userId;
         } catch (NumberFormatException e) {
-            throw new BadRequestException("Invalid tenant id");
+            throw new BadRequestException("Invalid user id");
         }
     }
 }

@@ -3,8 +3,10 @@ version: "3.8"
 services:
   app:
     build: .
+    container_name: app
     environment:
       - ADMIN_TOKEN=bc6acdd7-9de0-495f-86ea-20beda48d626
+      - APPLICATION_SECRET=whatever
       - MYSQL_USER=root
       - MYSQL_PASSWORD=root
       - MYSQL_HOST=database
@@ -16,8 +18,15 @@ services:
 
   database:
     image: mysql:oracle
+    container_name: database
     environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=chore-management
     ports:
       - "3306:3306"
+
+  redis:
+    image: redis:6.2.6
+    container_name: redis
+    ports:
+      - "6379:6379"

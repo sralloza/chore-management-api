@@ -5,7 +5,7 @@ import es.sralloza.choremanagementapi.exceptions.BadRequestException;
 import es.sralloza.choremanagementapi.exceptions.ForbiddenException;
 import es.sralloza.choremanagementapi.exceptions.NotFoundException;
 import es.sralloza.choremanagementapi.models.custom.ChoreType;
-import es.sralloza.choremanagementapi.models.custom.Tenant;
+import es.sralloza.choremanagementapi.models.custom.User;
 import es.sralloza.choremanagementapi.models.custom.Transfer;
 import es.sralloza.choremanagementapi.models.db.DBChore;
 import es.sralloza.choremanagementapi.models.db.DBTransfer;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TransferChoresService {
     @Autowired
-    private TenantsService tenantsService;
+    private UsersService usersService;
     @Autowired
     private TicketsService ticketsService;
     @Autowired
@@ -53,8 +53,8 @@ public class TransferChoresService {
 
     public Transfer registerTransfer(Long from, Long to, String choreType, String weekId) {
         DBTransfer transfer = new DBTransfer()
-                .setTenantIdFrom(from)
-                .setTenantIdTo(to)
+                .setUserIdFrom(from)
+                .setUserIdTo(to)
                 .setChoreType(choreType)
                 .setWeekId(weekId)
                 .setTimestamp(dateProvider.getCurrentMillis())
@@ -66,31 +66,31 @@ public class TransferChoresService {
 
     public Transfer startTransfer(Long from, Long to, String choreTypeId, String weekId) {
         if (from.equals(to)) {
-            throw new BadRequestException("Cannot transfer chore to the same tenant");
+            throw new BadRequestException("Cannot transfer chore to the same user");
         }
 
         Optional<DBTransfer> existsInProgress = repository.findAll().stream()
-                .filter(transfer -> transfer.getTenantIdFrom().equals(from))
+                .filter(transfer -> transfer.getUserIdFrom().equals(from))
                 .filter(transfer -> transfer.getChoreType().equals(choreTypeId))
                 .filter(transfer -> transfer.getWeekId().equals(weekId))
                 .filter(transfer -> !transfer.getCompleted())
                 .findAny();
 
         if (existsInProgress.isPresent()) {
-            throw new BadRequestException("Cannot transfer chore to multiple tenants");
+            throw new BadRequestException("Cannot transfer chore to multiple users");
         }
 
-        Tenant tenantOrigin = tenantsService.getTenantById(from, getTenantNotFoundException(from));
-        tenantsService.getTenantById(to, getTenantNotFoundException(to));
+        User userOrigin = usersService.getUserById(from, getUserNotFoundException(from));
+        usersService.getUserById(to, getUserNotFoundException(to));
         ChoreType choreType = choreTypesService.getChoreTypeById(choreTypeId,
                 () -> new BadRequestException("Chore type with id " + choreTypeId + " does not exist"));
 
         DBChore originalChore = findChoreByTypeAndWeek(choreType.getId(), weekId);
 
-        if (!originalChore.getTenantId().equals(tenantOrigin.getTenantId())) {
-            var originalTenantName = tenantsService.getTenantById(originalChore.getTenantId()).getUsername();
-            var msg = "You cannot transfer chores from other tenants. The chore you " +
-                    "are trying to transfer is assigned to " + originalTenantName + ".";
+        if (!originalChore.getUserId().equals(userOrigin.getUserId())) {
+            var originalUsername = usersService.getUserById(originalChore.getUserId()).getUsername();
+            var msg = "You cannot transfer chores from other users. The chore you " +
+                    "are trying to transfer is assigned to " + originalUsername + ".";
             throw new ForbiddenException(msg);
         }
         return registerTransfer(from, to, choreTypeId, weekId);
@@ -107,9 +107,9 @@ public class TransferChoresService {
         if (accepted) {
             DBChore originalChore = findChoreByTypeAndWeek(transfer.getChoreType(), transfer.getWeekId());
 
-            ticketsService.addTicketsToTenant(transfer.getTenantIdFrom(), transfer.getChoreType(), -1);
-            ticketsService.addTicketsToTenant(transfer.getTenantIdTo(), transfer.getChoreType(), 1);
-            originalChore.setTenantId(transfer.getTenantIdTo());
+            ticketsService.addTicketsToUser(transfer.getUserIdFrom(), transfer.getChoreType(), -1);
+            ticketsService.addTicketsToUser(transfer.getUserIdTo(), transfer.getChoreType(), 1);
+            originalChore.setUserId(transfer.getUserIdTo());
         }
 
         transfer.setTimestamp(dateProvider.getCurrentMillis());
@@ -139,7 +139,7 @@ public class TransferChoresService {
 
     }
 
-    private Supplier<BadRequestException> getTenantNotFoundException(Long tenantId) {
-        return () -> new BadRequestException("Tenant with id " + tenantId + " does not exist");
+    private Supplier<BadRequestException> getUserNotFoundException(Long userId) {
+        return () -> new BadRequestException("User with id " + userId + " does not exist");
     }
 }

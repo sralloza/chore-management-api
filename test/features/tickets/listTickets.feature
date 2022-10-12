@@ -23,7 +23,7 @@ Feature: Tickets API - listTickets
 
     @authorization
     Scenario: Validate response for admin user
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
@@ -38,7 +38,7 @@ Feature: Tickets API - listTickets
 
 
     Scenario: List tickets no tenants
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "ticket-list"

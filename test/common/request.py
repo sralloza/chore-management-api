@@ -1,4 +1,4 @@
-from toolium.utils.dataset import replace_param
+from toolium.utils.dataset import map_param, replace_param
 
 
 def table_to_dict(table):
@@ -11,8 +11,8 @@ def table_to_dict(table):
         to_str = row.get("as_string", "fals").lower() == "true"
         value = row["param_value"]
         if value != "[NONE]":
-            result[row["param_name"]] = replace_param(
-                value, infer_param_type=not to_str
-            )
+            value = replace_param(value, infer_param_type=not to_str)
+            value = map_param(value)
+            result[row["param_name"]] = value
 
     return result

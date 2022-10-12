@@ -24,12 +24,12 @@ Feature: Chore Types API - listChoreTypes
     @authorization
     Scenario: Validate response for admin user
         Given there is 1 chore type
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
     Scenario: List chore types when empty
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type-list"
@@ -41,7 +41,7 @@ Feature: Chore Types API - listChoreTypes
 
     Scenario: List chore types when non empty
         Given there are 4 chore types
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema "chore-type-list"

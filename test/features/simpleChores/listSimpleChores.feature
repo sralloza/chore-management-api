@@ -25,13 +25,13 @@ Feature: Simple Chores API - listSimpleChores
     @authorization
     Scenario: Validate response for admin user
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
 
 
     Scenario: List simple chores when no chores
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the Api response contains the expected data
@@ -103,7 +103,7 @@ Feature: Simple Chores API - listSimpleChores
 
     Scenario: Validate error response when using keyword me with the admin token
         Given there is 1 tenant
-        And I use the admin token
+        And I use the admin API key
         Given the parameters to filter the request
             | param_name | param_value |
             | tenantId   | me          |

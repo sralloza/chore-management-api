@@ -28,14 +28,14 @@ Feature: Chore Types API - deleteChoreType
     Scenario: Validate response for admin user
         Given there is 1 chore type
         And the field "choreTypeId" with value "A"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "204"
 
 
     Scenario: Delete chore type
         Given there is 1 chore type
-        And I use the admin token
+        And I use the admin API key
         And the field "choreTypeId" with value "A"
         When I send a request to the Api
         Then the response status code is "204"
@@ -50,7 +50,7 @@ Feature: Chore Types API - deleteChoreType
 
     Scenario: Validate error response when deleting a non existing chore type
         Given the field "choreTypeId" with value "invalid"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "404"
         And the error message is "No chore type found with id invalid"
@@ -60,7 +60,7 @@ Feature: Chore Types API - deleteChoreType
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
         And the field "choreTypeId" with value "A"
-        Given I use the admin token
+        Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Chore type A has 2 pending chores"
@@ -72,7 +72,7 @@ Feature: Chore Types API - deleteChoreType
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
             | 1              | 2            | A          | 2022.01 | True     |
         And the field "choreTypeId" with value "A"
-        And I use the admin token
+        And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Chore type has unbalanced tickets"

@@ -11,10 +11,10 @@ import java.time.LocalDateTime;
 public class Transfer {
     private Long id;
     private LocalDateTime timestamp;
-    @JsonProperty("tenant_id_from")
-    private Long tenantIdFrom;
-    @JsonProperty("tenant_id_to")
-    private Long tenantIdTo;
+    @JsonProperty("user_id_from")
+    private Long userIdFrom;
+    @JsonProperty("user_id_to")
+    private Long userIdTo;
     @JsonProperty("chore_type")
     private String choreType;
     @JsonProperty("week_id")

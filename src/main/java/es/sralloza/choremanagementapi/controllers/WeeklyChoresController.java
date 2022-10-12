@@ -1,6 +1,6 @@
 package es.sralloza.choremanagementapi.controllers;
 
-import es.sralloza.choremanagementapi.models.custom.Tenant;
+import es.sralloza.choremanagementapi.models.custom.User;
 import es.sralloza.choremanagementapi.models.custom.WeeklyChores;
 import es.sralloza.choremanagementapi.security.SimpleSecurity;
 import es.sralloza.choremanagementapi.services.WeeklyChoresService;
@@ -34,7 +34,7 @@ public class WeeklyChoresController {
 
     @GetMapping()
     public List<WeeklyChores> listWeeklyChores(@QueryParam("missingOnly") Boolean missingOnly) {
-        security.requireTenant();
+        security.requireUser();
         return service.findAll(missingOnly);
     }
 
@@ -42,7 +42,7 @@ public class WeeklyChoresController {
     public WeeklyChores getWeeklyChores(@PathVariable("weekId") String weekId) {
         weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
-        security.requireTenant();
+        security.requireUser();
         return service.getByWeekIdOr404(weekId);
     }
 
@@ -71,10 +71,10 @@ public class WeeklyChoresController {
                                      @PathVariable("choreType") String choreType) {
         weekId = weekIdHelper.parseWeekId(weekId);
         validator.validateSyntax(weekId);
-        security.requireTenant();
-        var tenantId = Optional.ofNullable(security.getTenant())
-            .map(Tenant::getTenantId)
+        security.requireUser();
+        var userId = Optional.ofNullable(security.getUser())
+            .map(User::getUserId)
             .orElse(null);
-        service.completeWeeklyChores(weekId, choreType, tenantId);
+        service.completeWeeklyChores(weekId, choreType, userId);
     }
 }
