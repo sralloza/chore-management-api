@@ -15,7 +15,7 @@ from common.openapi import (
 
 @then("the response status code is defined")
 def step_impl(context):
-    code = context.res.status_code
+    code = str(context.res.status_code)
     operation = get_current_operation(context)
 
     valid_codes = list(operation["responses"].keys())
@@ -33,7 +33,7 @@ def step_impl(context):
     data = get_openapi()
     operation = get_current_operation(context)
 
-    valid_codes = (200, 201, 202, 204)
+    valid_codes = ("200", "201", "202", "204")
     schema = None
     for code in valid_codes:
         if code in operation["responses"]:
@@ -45,11 +45,11 @@ def step_impl(context):
     else:
         assert False, f"No schema found for operation {context.resource}"
 
-    if "$ref" not in schema:
-        raise ValueError(f"Schema for operation {context.resource} is not a reference")
-
-    schema_name = schema["$ref"].split("/")[-1].strip("#")
-    real_schema = dict(data["components"]["schemas"][schema_name])
+    if "$ref" in schema:
+        schema_name = schema["$ref"].split("/")[-1].strip("#")
+        real_schema = dict(data["components"]["schemas"][schema_name])
+    else:
+        real_schema = dict(schema)
 
     schemas_folder = Path(__file__).parent.parent / f"resources/schemas.json"
 

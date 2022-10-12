@@ -2,7 +2,7 @@
 @createFlat
 Feature: Flats API - createFlat
 
-    As an guest user
+    As a user
     After the admin sends me the create code
     I want to create a flat
 

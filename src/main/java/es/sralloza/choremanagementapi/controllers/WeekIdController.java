@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/v1/week-id")
+@RequestMapping("/api/v1/week-id")
 public class WeekIdController {
     @Autowired
     private DateUtils dateUtils;
