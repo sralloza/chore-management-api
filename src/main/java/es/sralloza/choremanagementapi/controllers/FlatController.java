@@ -6,12 +6,14 @@ import es.sralloza.choremanagementapi.models.io.FlatCreate;
 import es.sralloza.choremanagementapi.security.SimpleSecurity;
 import es.sralloza.choremanagementapi.services.FlatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/flats")
@@ -25,6 +27,12 @@ public class FlatController {
     public FlatCreateCode requestFlatCreateCode() {
         security.requireAdmin();
         return flatsService.requestFlatCreateCode();
+    }
+
+    @GetMapping("")
+    public List<Flat> listFlats() {
+        security.requireAdmin();
+        return flatsService.listFlats();
     }
 
     @PostMapping("")

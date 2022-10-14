@@ -48,7 +48,7 @@ Feature: Flats API - createFlat
     Scenario: Validate response for admin
         Given I create a flat
         And I request a flat create code
-        And I use the flat API key
+        And I use the admin API key
         When I send a request to the Api with body params
             | param_name  | param_value           |
             | create_code | [CONTEXT:create_code] |
@@ -57,7 +57,7 @@ Feature: Flats API - createFlat
         And the response status code is defined
 
 
-    Scenario: Request flat create code
+    Scenario: Create flat
         Given I request a flat create code
         When I send a request to the Api with body params
             | param_name  | param_value           |
@@ -65,6 +65,10 @@ Feature: Flats API - createFlat
             | name        | test-flat             |
         Then the response status code is "200"
         And the response body is validated against the json-schema
+        And the Api response contains the expected data
+            | skip_param |
+            | name       |
+            | api_key    |
 
 
     Scenario: Validate error response when using an invalid create code
