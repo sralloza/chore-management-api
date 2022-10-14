@@ -1,7 +1,7 @@
 openapi: "3.0.1"
 
 servers:
-  - url: https://chore-management-api.sralloza.es/v1
+  - url: https://chore-management.sralloza.es/api/v1
     description: Production server
 
 info:
