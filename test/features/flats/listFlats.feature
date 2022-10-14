@@ -1,9 +1,9 @@
 @api.flats
-@requestFlatCreateCode
-Feature: Flats API - requestFlatCreateCode
+@listFlats
+Feature: Flats API - listFlats
 
     As an admin
-    I want to get a code for creating a flat
+    I want to get a list of flats
 
 
     @authorization
@@ -24,7 +24,7 @@ Feature: Flats API - requestFlatCreateCode
 
 
     @authorization
-    Scenario: Validate response for flat admin
+    Scenario: Validate response for flat owner
         Given I create a flat and I use the flat API key
         When I send a request to the Api
         Then the response status code is "403"
@@ -37,10 +37,27 @@ Feature: Flats API - requestFlatCreateCode
         Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
+        And the response status code is defined
 
 
-    Scenario: Request flat create code
+    Scenario: List flats when there are none
         Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
         And the response body is validated against the json-schema
+        And the Api response contains the expected data
+            """
+            []
+            """
+
+
+    Scenario: List flats when there are some
+        Given I create a flat
+        Given I use the admin API key
+        When I send a request to the Api
+        Then the response status code is "200"
+        And the response body is validated against the json-schema
+        And the Api response contains the expected data
+            | skip_param |
+            | name       |
+            | api_key    |
