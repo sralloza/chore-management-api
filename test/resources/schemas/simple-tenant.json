@@ -15,10 +15,7 @@
           "type": "string"
         }
       },
-      "required": [
-        "tenant_id",
-        "username"
-      ]
+      "required": ["tenant_id", "username"]
     }
   }
 }

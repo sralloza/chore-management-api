@@ -1,18 +1,18 @@
 [
-    {
-        "id": "A",
-        "description": "description1"
-    },
-    {
-        "id": "B",
-        "description": "description2"
-    },
-    {
-        "id": "C",
-        "description": "description3"
-    },
-    {
-        "id": "D",
-        "description": "description4"
-    }
+  {
+    "id": "A",
+    "description": "description1"
+  },
+  {
+    "id": "B",
+    "description": "description2"
+  },
+  {
+    "id": "C",
+    "description": "description3"
+  },
+  {
+    "id": "D",
+    "description": "description4"
+  }
 ]

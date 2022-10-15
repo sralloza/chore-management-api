@@ -51,11 +51,7 @@
           "type": "integer"
         }
       },
-      "required": [
-        "week_id",
-        "chores",
-        "rotation"
-      ]
+      "required": ["week_id", "chores", "rotation"]
     }
   }
 }

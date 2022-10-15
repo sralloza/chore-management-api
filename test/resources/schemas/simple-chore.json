@@ -19,12 +19,7 @@
           "$ref": "week-id.json#/definitions/WeekID"
         }
       },
-      "required": [
-        "done",
-        "chore_type",
-        "tenant_id",
-        "week_id"
-      ]
+      "required": ["done", "chore_type", "tenant_id", "week_id"]
     }
   }
 }
