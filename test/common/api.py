@@ -25,7 +25,7 @@ def send_request(context, endpoint=None, payload=None):
 
 
 def get_url_params(context, path):
-    param_names = re.findall(r"\{\w+\}", path)
+    param_names = [x.group(1) for x in re.finditer(r"\{(\w+)\}", path) if x]
     return {k: getattr(context, k) for k in param_names}
 
 
