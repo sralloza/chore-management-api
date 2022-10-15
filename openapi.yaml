@@ -250,7 +250,7 @@ paths:
       description: Delete flat by id
       operationId: deleteFlat
       security:
-        - FlatAdminApiKey: []
+        - AdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/AcceptLanguage"
         - $ref: "#/components/parameters/FlatName"
