@@ -15,6 +15,7 @@ DATABASES = (
     "transfers",
     "users",
 )
+DATABASES = ("Flat", "User")
 
 
 @contextmanager

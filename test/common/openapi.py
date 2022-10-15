@@ -6,7 +6,7 @@ from ruamel.yaml import YAML
 
 def get_openapi():
     root = Path(__file__).parent.parent.parent
-    openapi = root / "src/main/resources/openapi.yaml"
+    openapi = root / "openapi.yaml"
     content = openapi.read_text()
     return YAML(typ="safe").load(content)
 
