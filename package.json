@@ -1,0 +1,41 @@
+{
+  "name": "chore-management-api",
+  "version": "0.1.0",
+  "description": "Chore Management API",
+  "main": "dist/index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "prestart": "npm run build",
+    "start": "node .",
+    "format": "prettier --write '{src,test,.}/**/*.{js,md,json,ts}'",
+    "watch": "nodemon --watch src -e ts,ejs --exec npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sralloza/chore-management-api.git"
+  },
+  "author": "Diego Alloza González",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sralloza/chore-management-api/issues"
+  },
+  "homepage": "https://github.com/sralloza/chore-management-api#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "luxon": "^3.0.4",
+    "nodemon": "^2.0.20"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/luxon": "^3.0.1",
+    "@types/node": "^16.11.65",
+    "tslint": "^6.1.3"
+  }
+}
