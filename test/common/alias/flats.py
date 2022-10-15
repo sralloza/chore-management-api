@@ -17,6 +17,7 @@ def create_flat(context, user=False):
             | name        | {flat_name}           |
         Then the response status code is "200"
         And I save the "api_key" attribute of the response as "flat_api_key"
+        And I save the "name" attribute of the response as "flat_name"
         And I clear the "create_code" attribute of the context
         And I clear the token
         """

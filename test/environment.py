@@ -3,6 +3,7 @@ from pathlib import Path
 
 import allure
 import requests
+from hamcrest import assert_that, equal_to
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
 from toolium.behave.environment import after_scenario as tlm_after_scenario
@@ -22,7 +23,13 @@ def before_all(context):
 def before_feature(context, feature):
     tlm_before_feature(context, feature)
     context.api = Path(feature.filename).parent.name
-    context.resource = feature.name.split(" - ")[-1]
+    context.resource = Path(feature.filename).stem
+    resource_from_feature_name = feature.name.split(" - ")[-1]
+    assert_that(
+        resource_from_feature_name,
+        equal_to(context.resource),
+        "Feature name should be the same as the filename",
+    )
     context.operation_id = context.resource
     context.storage = {}
 

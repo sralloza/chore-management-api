@@ -209,7 +209,7 @@ paths:
         "403":
           $ref: "#/components/responses/ForbiddenErrorAdminRequired"
 
-  /flats/{flat_id}:
+  /flats/{flat_name}:
     get:
       tags:
         - Flats
@@ -262,8 +262,10 @@ paths:
           $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
         "404":
           $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
 
-  /flats/{flat_id}/settings:
+  /flats/{flat_name}/settings:
     put:
       tags:
         - Flats
@@ -918,7 +920,7 @@ components:
         $ref: "#/components/schemas/WeekID"
 
     FlatName:
-      name: flat_id
+      name: flat_name
       in: path
       required: true
       schema:
@@ -1163,7 +1165,7 @@ components:
               $ref: "#/components/examples/UserList"
 
     ValidationError:
-      description: Bad Request
+      description: Validation Error
       content:
         application/json:
           schema:
