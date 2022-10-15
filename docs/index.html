@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chore Management API</title>
+    <!-- needed for adaptive design -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700"
+      rel="stylesheet"
+    />
+
+    <link rel="shortcut icon"href="https://assets.materialup.com/uploads/0156cdd7-841b-493e-aa15-6ff2692273f7/preview"/>
+
+    <!-- ReDoc doesn't change outer page styles -->
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      .kudwlS {
+        color: rgb(50, 50, 159) !important;
+      }
+
+      .kfOTos {
+        color: black !important;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <redoc
+      spec-url="./openapi.yaml"
+      expand-responses="200,201,202"
+      show-webhook-verb="true"
+      json-sample-expand-level="3">
+    </redoc>
+
+    <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+
+    <script>
+      function tryToRemove() {
+        var docs = document.getElementsByClassName("sc-kYPZxB hEydLL");
+        if (docs.length > 0) {
+            docs[0].remove()
+            console.log("Removed");
+            return true;
+        }
+        console.debug("Not removed");
+        return false;
+      }
+
+      function doRemove() {
+        if (!tryToRemove()) {
+            setTimeout(doRemove, 500);
+        }
+      }
+
+      window.onload = doRemove;
+    </script>
+
+  </body>
+</html>
