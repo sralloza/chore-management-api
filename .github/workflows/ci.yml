@@ -13,13 +13,27 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
       - name: Launch docker-compose
         run: docker-compose up --build -d
+
+      - name: Install prisma
+        run: npm install -g prisma
+
+      - name: Run prisma migrations
+        run: prisma
+        env:
+          DATABASE_URL: mysql://root:root@localhost:3306/chore-management
+          ADMIN_API_KEY: bc6acdd7-9de0-495f-86ea-20beda48d626
 
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
-          # poetry-version: 1.2.2f
+          # poetry-version: 1.2.2
           # poetry 1.2.2 fails installing dependencies: "Invalid PEP 440 version: '0.23ubuntu1'"
           # See https://github.com/python-poetry/poetry/issues/2167
           poetry-version: 1.1.15

@@ -165,7 +165,7 @@ paths:
         "200":
           $ref: "#/components/responses/Flat"
         "400":
-          $ref: "#/components/responses/InvalidJson"
+          $ref: "#/components/responses/InvalidRequestBody"
         "403":
           description: Invalid create code
           content:
@@ -190,8 +190,9 @@ paths:
                   description: Validation error
                   value:
                     errors:
-                      - location: body.name
-                        message: The name field is required
+                      - location: body
+                        param: name
+                        msg: The name field is required
 
     get:
       tags:
@@ -295,8 +296,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
               examples:
-                InvalidJson:
-                  $ref: "#/components/examples/InvalidJson"
+                InvalidRequestBody:
+                  $ref: "#/components/examples/InvalidRequestBody"
                 InvalidInitialAssignments:
                   description: All users are not defined in initial_assignments
                   value:
@@ -810,15 +811,10 @@ components:
       value:
         message: You don't have permission to access this flat's information
 
-    InvalidJson:
+    InvalidRequestBody:
       description: The JSON sent is invalid
       value:
-        message: Invalid request body
-
-    MissingBody:
-      description: The request is missing body
-      value:
-        message: Missing request body
+        message: Request body is not a valid JSON
 
     SimpleChoreList:
       description: List of simple chores
@@ -886,9 +882,10 @@ components:
       value:
         message: ValidationError
         errors:
-          - message: Username must be a string
+          - msg: Username must be a string
             value: 123
-            location: body.username
+            location: body
+            param: username
 
   parameters:
     AcceptLanguage:
@@ -1074,17 +1071,15 @@ components:
             InvalidFlatRequested:
               $ref: "#/components/examples/InvalidFlatRequested"
 
-    InvalidJson:
+    InvalidRequestBody:
       description: Bad request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
           examples:
-            MissingBody:
-              $ref: "#/components/examples/MissingBody"
-            InvalidJson:
-              $ref: "#/components/examples/InvalidJson"
+            InvalidRequestBody:
+              $ref: "#/components/examples/InvalidRequestBody"
 
     NotFound:
       description: Resource not found
@@ -1106,11 +1101,13 @@ components:
               description: The query params are not valid
               value:
                 errors:
-                  - location: query.limit
-                    message: must be an integer
+                  - location: query
+                    param: limit
+                    msg: must be an integer
                     value: "not an integer"
-                  - location: query.offset
-                    message: must be greater than or equal to 0
+                  - location: query
+                    param: offset
+                    msg: must be greater than or equal to 0
                     value: -5
 
     SimpleChoreList:
@@ -1339,17 +1336,21 @@ components:
       type: object
       additionalProperties: false
       properties:
-        message:
+        msg:
           type: string
           description: A human readable description of what the validation error
         value:
           description: The value that caused the validation error
+        param:
+          description: Name of the param that caused the validation error
         location:
           type: string
+          enum: [body, cookies, headers, params, query]
           description: Path to the attribute that caused the validation error
       required:
-        - message
+        - msg
         - location
+        - param
 
     SimpleChore:
       description: Simple chore

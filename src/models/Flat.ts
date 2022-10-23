@@ -1,8 +1,5 @@
 class Flat {
   name: string;
-  assignment_order: number[];
-  rotation_sign: RotationSign;
+  settings: FlatSettings;
   api_key: string;
 }
-
-type RotationSign = "positive" | "negative";

@@ -8,7 +8,7 @@ export const adminAuth = (req: Request, res: Response, next: NextFunction) => {
   }
 
   if (!isAdmin(token)) {
-    return res.status(401).json({ message: "Admin access required" });
+    return res.status(403).json({ message: "Admin access required" });
   }
   next();
 };
@@ -22,7 +22,7 @@ export const flatAuth = (req: Request, res: Response, next: NextFunction) => {
     return next();
   }
   if (!isFlatAdmin(token)) {
-    return res.status(401).json({ message: "Flat admin access required" });
+    return res.status(403).json({ message: "Flat admin access required" });
   }
   next();
 };
@@ -41,7 +41,7 @@ export const userAuth = (req: Request, res: Response, next: NextFunction) => {
   if (!isUser(token)) {
     // TODO: I don't think this is a possible state
     // Maybe if an invalid API key is provided?
-    return res.status(401).json({ message: "User access required" });
+    return res.status(403).json({ message: "User access required" });
   }
 
   next();

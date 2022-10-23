@@ -3,13 +3,13 @@ import weekIdUtils from "../core/weekId";
 const router = express();
 
 router.get("/current", (req, res) => {
-  res.status(200).json({ "week-id": weekIdUtils.getCurrentWeekId() });
+  res.status(200).json({ "week_id": weekIdUtils.getCurrentWeekId() });
 });
 router.get("/next", (req, res) => {
-  res.status(200).json({ "week-id": weekIdUtils.getNextWeekId() });
+  res.status(200).json({ "week_id": weekIdUtils.getNextWeekId() });
 });
 router.get("/last", (req, res) => {
-  res.status(200).json({ "week-id": weekIdUtils.getLastWeekId() });
+  res.status(200).json({ "week_id": weekIdUtils.getLastWeekId() });
 });
 
 export default router;

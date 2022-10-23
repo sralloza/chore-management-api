@@ -1,34 +1,37 @@
-FROM sralloza/openjdk:11-jre as build
+FROM node:16.18.0 as base
 
-WORKDIR /home/gradle
+RUN npm install -g prisma
 
-COPY gradle/ /home/gradle/gradle/
-COPY build.gradle settings.gradle gradlew /home/gradle/
-COPY src/ /home/gradle/src/
+# Add package file
+COPY package.json ./
+COPY package-lock.json ./
 
-RUN ./gradlew build
-RUN rm /home/gradle/build/libs/*-plain.jar
-RUN ls -l /home/gradle/build/libs
+# Install deps
+RUN npm install
 
-FROM sralloza/openjdk:11-jre
+# Copy source
+COPY src ./src
+COPY prisma ./prisma
+COPY tsconfig.json tslint.json /
+# COPY openapi.json ./openapi.json
 
-RUN apt update && \
-    apt upgrade -y && \
-    apt install locales -y
+# Build dist
+RUN prisma generate && \
+    npm run build
 
-RUN sed -i '/es_ES.UTF-8/s/^# //g' /etc/locale.gen && \
-    locale-gen
-ENV LANG es_ES.UTF-8
-ENV LC_ALL es_ES.UTF-8
-ENV TZ Europe/Madrid
+# Start production image build
+FROM node:16.18.0-slim
 
-COPY utils/wait-for-it.sh /app/wait-for-it.sh
-COPY utils/entrypoint.sh /app/entrypoint.sh
+# Copy node modules and build directory
+COPY --from=base ./node_modules ./node_modules
+COPY --from=base /dist /dist
 
-RUN chmod +x /app/*.sh
+# Copy static files
+# COPY src/public dist/src/public
 
+# Expose port 3000
 EXPOSE 8080
 
-COPY --from=build /home/gradle/build/libs/*.jar /app/chore-management-api.jar
-
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+#  TODO: run prisma migrations
+# CMD [ "npm", "run", "start" ]
+CMD ["dist/index.js"]

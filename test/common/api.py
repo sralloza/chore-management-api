@@ -1,5 +1,4 @@
 import re
-from uuid import uuid4
 
 from requests import Response
 
@@ -30,11 +29,10 @@ def get_url_params(context, path):
 
 
 def _send_request(context, method, path, payload=None):
-    correlator = str(uuid4())
     url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
     headers = getattr(context, "headers", {})
-    headers["X-Correlator"] = correlator
+    headers["X-Correlator"] = context.correlator
 
     token = getattr(context, "token", None)
     if token:
@@ -58,8 +56,6 @@ def print_res(res: Response, length=80):
 
     print(" RESPONSE ".center(length, "="))
     print(f">>>> {res.status_code} {res.text}")
-    if "x-correlator" in res.headers:
-        print(f">>>> X-CORRELATOR: {res.headers['x-correlator']}")
     print(f">>>> {res.headers}")
 
     print("=" * length)

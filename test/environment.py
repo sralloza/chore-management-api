@@ -1,5 +1,6 @@
 from json import loads
 from pathlib import Path
+from uuid import uuid4
 
 import allure
 import requests
@@ -32,6 +33,7 @@ def before_feature(context, feature):
     )
     context.operation_id = context.resource
     context.storage = {}
+    context.correlator = str(uuid4())
 
 
 def get_dataset():
@@ -75,6 +77,9 @@ def register_allure_stdout_stderr(context):
 
 
 def after_scenario(context, scenario):
+    if scenario.status == "failed":
+        text = f"X-CORRELATOR FOR DEBUGGING: {context.correlator}"
+        allure.attach(text, name="x-correlator", attachment_type=allure.attachment_type.TEXT)
     register_allure_stdout_stderr(context)
     tlm_after_scenario(context, scenario)
 

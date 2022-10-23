@@ -10,3 +10,12 @@ export const genJWT = (expiresIn: number | string) => {
 
   return token;
 };
+
+export const verifyJWT = (token: string) => {
+  try {
+    jwt.verify(token, SECRET_KEY);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
