@@ -25,7 +25,7 @@ jobs:
         run: npm install -g prisma
 
       - name: Run prisma migrations
-        run: prisma migrate deploy
+        run: utils/wait-for-it.sh 127.0.0.1:3306 -t 0 -- prisma migrate deploy
         env:
           DATABASE_URL: mysql://root:root@localhost:3306/chore-management
           ADMIN_API_KEY: bc6acdd7-9de0-495f-86ea-20beda48d626
