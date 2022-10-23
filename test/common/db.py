@@ -5,16 +5,6 @@ from os import getenv
 import mysql.connector
 
 logger = getLogger(__name__)
-DATABASES = (
-    "chore_types",
-    "chores",
-    "flats",
-    "rotations",
-    "skipped_weeks",
-    "tickets",
-    "transfers",
-    "users",
-)
 DATABASES = ("Flat", "User")
 
 

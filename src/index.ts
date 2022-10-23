@@ -14,6 +14,7 @@ import redisClient from "./services/redis";
 dotenv.config();
 const app = express();
 
+// XXX: I think this can be removed
 const validateEmptyBody = (req: Request, res: Response, buf: Buffer, encoding: string) => {
   const body = buf.toString();
   console.log({body, encoding});
@@ -37,6 +38,7 @@ app.all("*", (req, res) => {
 });
 
 app.use((err: any, req: any, res: any, next: any) => {
+  // Workaround for returning 404 instead of 500 when the client sends an invalid json in the request body
   if (
     err?.statusCode === 400 &&
     err?.status === 400 &&

@@ -127,7 +127,6 @@ Feature: Flats API - createFlat
         And the error message is "Flat already exists"
 
 
-
     Scenario: Validate that the token only expires if a flat is created
         Given I request a flat create code
         When I send a request to the Api with body params
@@ -161,7 +160,6 @@ Feature: Flats API - createFlat
         And the error message is "Request body is not a valid JSON"
 
 
-    @run
     Scenario Outline: Validate error response when params are not valid
         Given I request a flat create code
         When I send a request to the Api with body params
