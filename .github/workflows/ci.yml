@@ -49,3 +49,13 @@ jobs:
         with:
           name: "Test Reports"
           path: test/reports
+
+      - name: Save docker-compose logs
+        if: always()
+        run: docker-compose logs --no-color > docker-compose.log
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: "docker-compose logs"
+          path: docker-compose.log
