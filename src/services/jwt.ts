@@ -1,10 +1,9 @@
 import { randomUUID } from "crypto";
 import jwt, { Secret } from "jsonwebtoken";
-
-const SECRET_KEY: Secret = process.env.APPLICATION_SECRET || "secret";
+import config from "../core/config";
 
 export const genJWT = (expiresIn: number | string) => {
-  const token = jwt.sign({ sub: randomUUID() }, SECRET_KEY, {
+  const token = jwt.sign({ sub: randomUUID() }, config.applicationSecret, {
     expiresIn,
   });
 
@@ -13,9 +12,9 @@ export const genJWT = (expiresIn: number | string) => {
 
 export const verifyJWT = (token: string) => {
   try {
-    jwt.verify(token, SECRET_KEY);
+    jwt.verify(token, config.applicationSecret);
     return true;
   } catch (e) {
     return false;
   }
-}
+};

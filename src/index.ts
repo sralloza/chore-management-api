@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import morgan from "morgan";
 import api from "./controllers";
+import config from "./core/config";
 import { INTERNAL } from "./core/constants";
 import correlatorMiddleware from "./middlewares/ correlator";
 import redisClient from "./services/redis";
@@ -29,7 +30,7 @@ app.use(correlatorMiddleware);
 
 app.use("/api/v1", api);
 
-const port = process.env.PORT || 8080;
+const port = config.serverPort;
 
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Not Found" });
