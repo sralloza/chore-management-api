@@ -9,11 +9,6 @@ const flatValidator = [
     .isEmpty({ ignore_whitespace: true })
     .withMessage("body.name can't be empty")
     .custom((value) => {
-      console.log({
-        value,
-        flatNamePattern,
-        result: flatNamePattern.test(value),
-      });
       if (!flatNamePattern.test(value)) {
         return Promise.reject();
       }

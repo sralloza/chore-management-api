@@ -17,7 +17,6 @@ const app = express();
 // XXX: I think this can be removed
 const validateEmptyBody = (req: Request, res: Response, buf: Buffer, encoding: string) => {
   const body = buf.toString();
-  console.log({body, encoding});
 
   if (body.length === 0) {
     return res.status(400).json({ message: "Missing request body" });

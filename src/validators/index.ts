@@ -5,7 +5,6 @@ import { ValidationChain, validationResult } from "express-validator";
 // parallel processing
 const validate = (validations: ValidationChain[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    console.log({ typeof: typeof req.body, body: req.body });
     // await validations.run(req);
     await Promise.all(validations.map((validation) => validation.run(req)));
 

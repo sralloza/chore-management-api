@@ -1,37 +1,29 @@
-FROM node:16.18.0 as base
+# base image
+FROM node:18.12.0-slim as base
 
-RUN npm install -g prisma
+WORKDIR /data
 
-# Add package file
-COPY package.json ./
-COPY package-lock.json ./
+RUN apt-get -qy update && apt-get -qy install openssl
 
-# Install deps
-RUN npm install
+FROM base as builder
 
-# Copy source
-COPY src ./src
+COPY package.json package-lock.json tslint.json tsconfig.json /data/
+
 COPY prisma ./prisma
-COPY tsconfig.json tslint.json /
-# COPY openapi.json ./openapi.json
 
-# Build dist
-RUN prisma generate && \
-    npm run build
+RUN npm install && \
+    npm install @prisma/client
 
-# Start production image build
-FROM node:16.18.0-slim
+COPY src ./src
 
-# Copy node modules and build directory
-COPY --from=base ./node_modules ./node_modules
-COPY --from=base /dist /dist
+RUN npx prisma generate --schema ./prisma/schema.prisma
+RUN npx tsc
 
-# Copy static files
-# COPY src/public dist/src/public
+FROM base
 
-# Expose port 3000
-EXPOSE 8080
+COPY --from=builder /data/package*.json /data/
+COPY --from=builder /data/node_modules ./node_modules
+COPY --from=builder /data/dist /data/dist
 
-#  TODO: run prisma migrations
-# CMD [ "npm", "run", "start" ]
-CMD ["dist/index.js"]
+EXPOSE 3000
+CMD npm run start

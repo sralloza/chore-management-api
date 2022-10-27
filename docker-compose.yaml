@@ -15,6 +15,7 @@ services:
       - MYSQL_PORT=3306
       - MYSQL_DATABASE=chore-management
       - WAIT_FOR_IT_ADDRESS=database:3306
+      - DATABASE_URL=mysql://root:root@database:3306/chore-management
     ports:
       - "8080:8080"
 
