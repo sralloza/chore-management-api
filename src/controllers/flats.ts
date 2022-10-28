@@ -56,7 +56,7 @@ router.get("", adminAuth, async (req, res) => {
   res.status(200).json(flats);
 });
 
-router.get("/:name", flatAuth, async (req, res) => {
+router.get("/:name", adminAuth, async (req, res) => {
   const flat = await getFlatByName(req.params.name);
   if (!flat) {
     return res

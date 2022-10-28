@@ -3,9 +3,10 @@ from behave import *
 from common.alias.flats import create_flat
 
 
+@given('I create a flat with name "{flat_name}"')
 @given("I create a flat")
-def step_impl(context):
-    create_flat(context)
+def step_impl(context, flat_name=None):
+    create_flat(context, flat_name)
 
 
 @given("I create a flat with a user and I use the user API key")

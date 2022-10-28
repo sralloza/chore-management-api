@@ -3,8 +3,9 @@ from faker import Faker
 fake = Faker()
 
 
-def create_flat(context, user=False):
-    flat_name = "flat-" + fake.word().lower()
+def create_flat(context, flat_name=None, user=False):
+    if flat_name is None:
+        flat_name = "flat-" + fake.word().lower()
 
     flat_create_instructions = f"""
         Given I use the admin API key
