@@ -5,23 +5,15 @@
         "type": "A",
         "done": true,
         "week_id": "2022.02",
-        "assigned_ids": [
-          2
-        ],
-        "assigned_usernames": [
-          "tenant2"
-        ]
+        "assigned_ids": [2],
+        "assigned_usernames": ["tenant2"]
       },
       {
         "type": "B",
         "done": false,
         "week_id": "2022.02",
-        "assigned_ids": [
-          1
-        ],
-        "assigned_usernames": [
-          "tenant1"
-        ]
+        "assigned_ids": [1],
+        "assigned_usernames": ["tenant1"]
       }
     ],
     "rotation": 1,
@@ -33,23 +25,15 @@
         "type": "A",
         "done": false,
         "week_id": "2022.03",
-        "assigned_ids": [
-          1
-        ],
-        "assigned_usernames": [
-          "tenant1"
-        ]
+        "assigned_ids": [1],
+        "assigned_usernames": ["tenant1"]
       },
       {
         "type": "B",
         "done": false,
         "week_id": "2022.03",
-        "assigned_ids": [
-          2
-        ],
-        "assigned_usernames": [
-          "tenant2"
-        ]
+        "assigned_ids": [2],
+        "assigned_usernames": ["tenant2"]
       }
     ],
     "rotation": 0,

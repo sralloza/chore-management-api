@@ -1,26 +1,26 @@
 [
-    {
-        "accepted": true,
-        "completed": true,
-        "tenant_id_from": 1,
-        "tenant_id_to": 2,
-        "chore_type": "A",
-        "week_id": "2022.01"
-    },
-    {
-        "accepted": false,
-        "completed": true,
-        "tenant_id_from": 3,
-        "tenant_id_to": 2,
-        "chore_type": "C",
-        "week_id": "2022.01"
-    },
-    {
-        "accepted": null,
-        "completed": false,
-        "tenant_id_from": 4,
-        "tenant_id_to": 2,
-        "chore_type": "D",
-        "week_id": "2022.01"
-    }
+  {
+    "accepted": true,
+    "completed": true,
+    "tenant_id_from": 1,
+    "tenant_id_to": 2,
+    "chore_type": "A",
+    "week_id": "2022.01"
+  },
+  {
+    "accepted": false,
+    "completed": true,
+    "tenant_id_from": 3,
+    "tenant_id_to": 2,
+    "chore_type": "C",
+    "week_id": "2022.01"
+  },
+  {
+    "accepted": null,
+    "completed": false,
+    "tenant_id_from": 4,
+    "tenant_id_to": 2,
+    "chore_type": "D",
+    "week_id": "2022.01"
+  }
 ]

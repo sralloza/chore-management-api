@@ -1,16 +1,24 @@
 from behave import *
 from toolium.utils.dataset import map_param, replace_param
+from deepdiff import DeepDiff
 
 
 @then("the response contains the following validation errors")
 def step_impl(context):
-    context.table.require_columns(["location", "message"])
+    context.table.require_columns(["location", "param", "msg"])
     errors = context.res.json()["errors"]
     for row in context.table:
         error = {
             "location": map_param(replace_param(row["location"])),
-            "message": map_param(replace_param(row["message"])),
-            "value": map_param(replace_param(row["value"])),
+            "param": map_param(replace_param(row["param"])),
+            "msg": map_param(replace_param(row["msg"])),
         }
+        value = map_param(replace_param(row["value"]))
+        if value != "[NONE]":
+            error["value"] = value
 
-        assert error in errors, f"Validation error {error} not found in {errors}"
+        if len(errors) == 1:
+            diff = DeepDiff(error, errors[0])
+            assert not diff, f"Unexpected validation error: {diff}"
+        else:
+            assert error in errors, f"Validation error {error} not found in {errors}"

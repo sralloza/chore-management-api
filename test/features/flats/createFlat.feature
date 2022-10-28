@@ -76,9 +76,12 @@ Feature: Flats API - createFlat
             | param_name  | param_value         |
             | create_code | invalid_create_code |
             | name        | test-flat           |
-        Then the response status code is "403"
+        Then the response status code is "422"
         And the response status code is defined
-        And the error message is "Invalid create code"
+        And the response contains the following validation errors
+            | value               | msg                                 | param         | location |
+            | invalid_create_code | body.create_code is not a valid JWT | "create_code" | "body"   |
+
 
 
     Scenario: Validate error response when using the same create code twice
@@ -124,7 +127,6 @@ Feature: Flats API - createFlat
         And the error message is "Flat already exists"
 
 
-
     Scenario: Validate that the token only expires if a flat is created
         Given I request a flat create code
         When I send a request to the Api with body params
@@ -147,14 +149,6 @@ Feature: Flats API - createFlat
         And the response body is validated against the json-schema
 
 
-    Scenario: Validate error response when the body is empty
-        Given I request a flat create code
-        When I send a request to the Api
-        Then the response status code is "400"
-        And the response status code is defined
-        And the error message is "Missing request body"
-
-
     Scenario: Validate error response when the body is not a valid json
         Given I request a flat create code
         When I send a request to the Api with body
@@ -163,7 +157,7 @@ Feature: Flats API - createFlat
             """
         Then the response status code is "400"
         And the response status code is defined
-        And the error message is "Invalid request body"
+        And the error message is "Request body is not a valid JSON"
 
 
     Scenario Outline: Validate error response when params are not valid
@@ -176,14 +170,15 @@ Feature: Flats API - createFlat
         And the response status code is defined
         And the response body is a valid json
         And the response contains the following validation errors
-            | location   | message   | value   |
-            | <location> | <message> | <value> |
+            | value   | msg   | param   | location   |
+            | <value> | <msg> | <param> | <location> |
 
-        Examples: create_code = <create_code>, name = <name>, location = <location>, message = <message>
-            | create_code           | name      | location         | message                                                     | value   |
-            | [NONE]                | flat-test | body.create_code | body.create_code is required                                | [NULL]  |
-            | [NULL]                | flat-test | body.create_code | body.create_code is required                                | [NULL]  |
-            | [EMPTY]               | flat-test | body.create_code | body.create_code can't be empty                             | [EMPTY] |
-            | [CONTEXT:create_code] | [NONE]    | body.name        | body.name is required                                       | [NULL]  |
-            | [CONTEXT:create_code] | [NULL]    | body.name        | body.name is required                                       | [NULL]  |
-            | [CONTEXT:create_code] | Invalid   | body.name        | body.name must match the pattern '[CONF:pattern.flat_name]' | Invalid |
+        Examples: create_code=<create_code>, name=<name>, location=<location>, param=<param>, msg=<msg>, value=<value>
+            | create_code           | name      | location | param       | msg                                                             | value   |
+            | [NONE]                | flat-test | body     | create_code | body.create_code is required                                    | [NONE]  |
+            | [NULL]                | flat-test | body     | create_code | body.create_code is required                                    | [NULL]  |
+            | [EMPTY]               | flat-test | body     | create_code | body.create_code is not a valid JWT                             | [EMPTY] |
+            | XXXXXXX               | flat-test | body     | create_code | body.create_code is not a valid JWT                             | XXXXXXX |
+            | [CONTEXT:create_code] | [NONE]    | body     | name        | body.name is required                                           | [NONE]  |
+            | [CONTEXT:create_code] | [NULL]    | body     | name        | body.name is required                                           | [NULL]  |
+            | [CONTEXT:create_code] | Invalid   | body     | name        | body.name does not match the pattern '[CONF:pattern.flat_name]' | Invalid |

@@ -2,26 +2,37 @@ version: "3.8"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: delivery/Dockerfile
     container_name: app
     environment:
-      - ADMIN_TOKEN=bc6acdd7-9de0-495f-86ea-20beda48d626
+      - ADMIN_API_KEY=bc6acdd7-9de0-495f-86ea-20beda48d626
       - APPLICATION_SECRET=whatever
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_HOST=database
-      - MYSQL_PORT=3306
-      - MYSQL_DATABASE=chore-management
+      - CREATE_DATABASE=true
+      - DATABASE_HOST=database
+      - DATABASE_NAME=chore-management
+      - DATABASE_PASSWORD=root
+      - DATABASE_PORT=3306
+      - DATABASE_URL=mysql://root:root@database:3306/chore-management
+      - DATABASE_USER=root
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - WAIT_FOR_IT_ADDRESS=database:3306
     ports:
       - "8080:8080"
+    healthcheck:
+      interval: 3s
+      timeout: 1s
+      start_period: 5s
+      retries: 0
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
 
   database:
     image: mysql:oracle
     container_name: database
     environment:
       - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=chore-management
     ports:
       - "3306:3306"
 

@@ -1,22 +1,22 @@
 [
-    {
-        "tenant_id": 1,
-        "username": "tenant1"
-    },
-    {
-        "tenant_id": 2,
-        "username": "tenant2"
-    },
-    {
-        "tenant_id": 3,
-        "username": "tenant3"
-    },
-    {
-        "tenant_id": 4,
-        "username": "tenant4"
-    },
-    {
-        "tenant_id": 5,
-        "username": "tenant5"
-    }
+  {
+    "tenant_id": 1,
+    "username": "tenant1"
+  },
+  {
+    "tenant_id": 2,
+    "username": "tenant2"
+  },
+  {
+    "tenant_id": 3,
+    "username": "tenant3"
+  },
+  {
+    "tenant_id": 4,
+    "username": "tenant4"
+  },
+  {
+    "tenant_id": 5,
+    "username": "tenant5"
+  }
 ]

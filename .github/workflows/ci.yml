@@ -6,32 +6,40 @@ on:
       - master
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     env:
       POETRY_VIRTUALENVS_CREATE: "false"
       TERM: xterm-color
+    concurrency:
+      group: ${{ github.head_ref }}
+      cancel-in-progress: true
+
     steps:
       - uses: actions/checkout@v3
-
-      - name: Launch docker-compose
-        run: docker-compose up --build -d
 
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
-          # poetry-version: 1.2.2f
+          # poetry-version: 1.2.2
           # poetry 1.2.2 fails installing dependencies: "Invalid PEP 440 version: '0.23ubuntu1'"
           # See https://github.com/python-poetry/poetry/issues/2167
           poetry-version: 1.1.15
 
-      - name: Install
+      - name: Run poetry install
         run: poetry install
 
       - name: Run tests e2e
-        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t=-old
+        run: ./run-tests.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: "Test Reports"
           path: test/reports
+
+      # TODO: run only if tests fail
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: "docker-compose logs"
+          path: docker-compose.log

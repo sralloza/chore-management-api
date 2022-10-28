@@ -19,11 +19,7 @@
           "format": "uuid"
         }
       },
-      "required": [
-        "tenant_id",
-        "username",
-        "api_token"
-      ]
+      "required": ["tenant_id", "username", "api_token"]
     }
   }
 }
