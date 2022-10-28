@@ -218,28 +218,14 @@ paths:
       description: Get flat details by id
       operationId: getFlat
       security:
-        - FlatAdminApiKey: []
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguage"
-        - $ref: "#/components/parameters/FlatName"
+        - AdminApiKey: []
       responses:
         "200":
           $ref: "#/components/responses/Flat"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          description: Forbidden
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              examples:
-                FlatAccessRequired:
-                  $ref: "#/components/examples/FlatAccessRequired"
-                InvalidFlatHeaderUse:
-                  $ref: "#/components/examples/InvalidFlatHeaderUse"
-                InvalidFlatRequested:
-                  $ref: "#/components/examples/InvalidFlatRequested"
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
         "404":
           $ref: "#/components/responses/NotFound"
 
