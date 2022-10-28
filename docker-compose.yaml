@@ -7,18 +7,18 @@ services:
       dockerfile: delivery/Dockerfile
     container_name: app
     environment:
-      - CREATE_DATABASE=true
       - ADMIN_API_KEY=bc6acdd7-9de0-495f-86ea-20beda48d626
       - APPLICATION_SECRET=whatever
+      - CREATE_DATABASE=true
+      - DATABASE_HOST=database
+      - DATABASE_NAME=chore-management
+      - DATABASE_PASSWORD=root
+      - DATABASE_PORT=3306
+      - DATABASE_URL=mysql://root:root@database:3306/chore-management
+      - DATABASE_USER=root
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=root
-      - DATABASE_HOST=database
-      - DATABASE_PORT=3306
-      - DATABASE_NAME=chore-management
       - WAIT_FOR_IT_ADDRESS=database:3306
-      - DATABASE_URL=mysql://root:root@database:3306/chore-management
     ports:
       - "8080:8080"
     healthcheck:

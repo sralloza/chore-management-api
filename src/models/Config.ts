@@ -32,7 +32,7 @@ class Config {
     disableMigrations: process.env.DISABLE_MIGRATIONS?.toLowerCase() === "true",
   };
 
-  adminApiKey: string = process.env.ADMIN_API_KEY || "admin";
+  adminApiKey: string = process.env.ADMIN_API_KEY;
   applicationSecret: Secret = process.env.APPLICATION_SECRET;
 }
 

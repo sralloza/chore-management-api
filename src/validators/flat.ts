@@ -16,7 +16,7 @@ const flatValidator = [
     })
     .withMessage("body.name does not match the pattern '^[a-z-]+$'"),
   body("create_code")
-    .exists({checkNull: true})
+    .exists({ checkNull: true })
     .withMessage("body.create_code is required")
     .bail()
     .isJWT()

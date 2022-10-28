@@ -1,1 +1,1 @@
-export const INTERNAL = {message: "Internal server error"};
+export const INTERNAL = { message: "Internal server error" };
