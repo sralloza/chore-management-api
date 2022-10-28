@@ -1,46 +1,44 @@
 import { randomUUID } from "crypto";
+import dataSource from "../core/datasource";
+import UserDB from "../models/UserDB";
 
-import prisma from "./client";
+const repo = dataSource.getRepository(UserDB);
 
-export const getUsers = async () => {
-  const users = await prisma.user.findMany();
-  return users;
+const mapper = (user: UserDB): User => {
+  if (user === null) return null;
+  return {
+    id: user.id,
+    username: user.username,
+    api_key: user.apiKey,
+    flat_name: user.flatName,
+  };
 };
 
-export const getUserById = async (id: bigint) => {
-  const user = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-  });
-  return user;
+export const getUsers = async (): Promise<User[]> => {
+  const users = await repo.find();
+  return users.map(mapper);
 };
 
-export const getUserByApiKey = async (apiKey: string) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      apiKey,
-    },
-  });
-  return user;
+export const getUserById = async (id: bigint): Promise<User | null> => {
+  const user = await repo.findOne({ where: { id } });
+  return mapper(user);
+};
+
+export const getUserByApiKey = async (apiKey: string): Promise<User | null> => {
+  const user = await repo.findOne({ where: { apiKey } });
+  return mapper(user);
 };
 
 export const addUser = async (
   user: UserCreate,
   flatName: string
 ): Promise<User> => {
-  const newUser = await prisma.user.create({
-    data: {
-      id: user.id,
-      username: user.username,
-      apiKey: randomUUID(),
-      flatName,
-    },
+  const newUser = repo.create({
+    id: user.id,
+    username: user.username,
+    apiKey: randomUUID(),
+    flatName,
   });
-  return {
-    id: newUser.id,
-    username: newUser.username,
-    api_key: newUser.apiKey,
-    flat_name: newUser.flatName,
-  };
+  await repo.save(newUser);
+  return mapper(newUser);
 };

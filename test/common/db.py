@@ -4,8 +4,9 @@ from os import getenv
 
 import mysql.connector
 
+DATABASES = ("flats", "users")
+
 logger = getLogger(__name__)
-DATABASES = ("Flat", "User")
 
 
 @contextmanager

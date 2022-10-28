@@ -17,14 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up node
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-
-      - name: Launch docker-compose
-        run: docker-compose up --build -d
-
       - name: Setup poetry
         uses: abatilo/actions-poetry@v2.0.0
         with:
@@ -36,14 +28,8 @@ jobs:
       - name: Run poetry install
         run: poetry install
 
-      - name: Run prisma migrations
-        run: utils/wait-for-it.sh 127.0.0.1:3306 -t 0 -- npx prisma migrate deploy
-        env:
-          DATABASE_URL: mysql://root:root@localhost:3306/chore-management
-          ADMIN_API_KEY: bc6acdd7-9de0-495f-86ea-20beda48d626
-
       - name: Run tests e2e
-        run: utils/wait-for-it.sh 127.0.0.1:8080 -t 0 -- behave -t=-old
+        run: ./run-tests.sh
 
       - uses: actions/upload-artifact@v2
         if: always()
@@ -51,10 +37,7 @@ jobs:
           name: "Test Reports"
           path: test/reports
 
-      - name: Save docker-compose logs
-        if: always()
-        run: docker-compose logs --no-color > docker-compose.log
-
+      # TODO: run only if tests fail
       - uses: actions/upload-artifact@v2
         if: always()
         with:

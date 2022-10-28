@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import config from "../core/config";
 
-const url = `redis://${config.redisHost}:${config.redisPort}`;
+const url = `redis://${config.redis.host}:${config.redis.port}`;
 const client = createClient({ url });
 
 class RedisClient {

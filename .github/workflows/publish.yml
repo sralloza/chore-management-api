@@ -11,11 +11,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
@@ -28,14 +23,18 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Install jq
+        run: sudo apt-get install jq
+
       - name: Get project version
         id: project_version
-        run: echo "::set-output name=version::$(cat build.gradle | egrep "^version" | awk '{print $2}' | tr -d '"' | tr -d "'")"
+        run: echo "::set-output name=version::$(jq -r .version package.json)"
 
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
+          file: delivery/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: "sralloza/chore-management-api:${{ steps.project_version.outputs.version }}"

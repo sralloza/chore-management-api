@@ -1,8 +1,9 @@
-import { Flat as PFlat } from "@prisma/client";
 import { randomUUID } from "crypto";
-import prisma from "./client";
+import dataSource from "../core/datasource";
+import FlatDB from "../models/FlatDB";
 
-const buildFlat = (flat: PFlat): Flat => {
+const repo = dataSource.getRepository(FlatDB);
+const buildFlat = (flat: FlatDB): Flat => {
   if (flat === null) return null;
   return {
     name: flat.name,
@@ -15,33 +16,32 @@ const buildFlat = (flat: PFlat): Flat => {
 };
 
 export const getFlats = async () => {
-  const flats = await prisma.flat.findMany();
+  const flats = await repo.find();
   return flats.map(buildFlat);
 };
 
 export const getFlatByName = async (name: string): Promise<Flat> => {
-  const flat = await prisma.flat.findUnique({ where: { name } });
+  const flat = await repo.findOne({ where: { name } });
   return buildFlat(flat);
 };
 
 export const getFlatByApiKey = async (apiKey: string): Promise<Flat> => {
-  const flat = await prisma.flat.findFirst({ where: { apiKey } });
+  const flat = await repo.findOne({ where: { apiKey } });
   return buildFlat(flat);
 };
 
 export const addFlat = async (flat: FlatCreate): Promise<Flat> => {
-  const newFlat = await prisma.flat.create({
-    data: {
-      name: flat.name,
-      assignmentOrder: "",
-      rotationSign: "positive",
-      apiKey: randomUUID(),
-    },
+  const newFlat = repo.create({
+    name: flat.name,
+    assignmentOrder: "",
+    rotationSign: "positive",
+    apiKey: randomUUID(),
   });
+  await repo.save(newFlat);
   return buildFlat(newFlat);
 };
 
 export const deleteFlat = async (name: string): Promise<void> => {
-  await prisma.flat.delete({ where: { name } });
+  await repo.delete({ name });
   return;
 };
