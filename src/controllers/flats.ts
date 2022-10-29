@@ -19,7 +19,7 @@ import {
   flatSettingsUpdateValidator,
 } from "../validators/flat";
 
-const router = express();
+const router = express.Router();
 
 router.post("/create-code", adminAuth, (req, res) => {
   const expiresAt = DateTime.now().plus({ minutes: 5 });

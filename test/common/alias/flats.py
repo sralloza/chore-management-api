@@ -4,10 +4,7 @@ fake = Faker()
 
 
 def create_flat(context, user=False):
-    flat_name = getattr(context, "flat_name", None)
-
-    if flat_name is None:
-        flat_name = "flat-" + fake.word().lower()
+    flat_name = "flat-" + fake.word().lower()
 
     flat_create_instructions = f"""
         Given I use the admin API key
@@ -20,13 +17,12 @@ def create_flat(context, user=False):
             | name        | {flat_name}           |
         Then the response status code is "200"
         And I save the "api_key" attribute of the response as "flat_api_key"
-        And I save the "name" attribute of the response as "flat_name"
         And I clear the "create_code" attribute of the context
         And I clear the token
         """
 
     context.execute_steps(flat_create_instructions)
-    context.flat_name_created = flat_name
+    context.created_flat_name = flat_name
     if not user:
         return
 
@@ -43,4 +39,4 @@ def create_flat(context, user=False):
         And I save the "api_key" attribute of the response as "user_api_key"
     """
     )
-    context.user_id_created = user_id
+    context.created_user_id = user_id

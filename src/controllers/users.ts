@@ -2,7 +2,7 @@ import express from "express";
 import { INTERNAL } from "../core/constants";
 import { addUser, getUserByApiKey } from "../repositories/users";
 
-const router = express();
+const router = express.Router();
 
 router.post("", async (req, res) => {
   const existingFlat = await getUserByApiKey(req.body.username);

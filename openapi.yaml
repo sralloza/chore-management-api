@@ -276,7 +276,16 @@ paths:
         "200":
           $ref: "#/components/responses/FlatSettings"
         "400":
-          $ref: "#/components/responses/InvalidRequestBody"
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              examples:
+                InvalidKeywordMeWithAdminApiKey:
+                  $ref: "#/components/examples/InvalidKeywordMeWithAdminApiKey"
+                InvalidRequestBody:
+                  $ref: "#/components/examples/InvalidRequestBody"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -782,6 +791,11 @@ components:
       value:
         message: You don't have permission to access this flat's information
 
+    InvalidKeywordMeWithAdminApiKey:
+      description: Can't use the me keyword with the admin API key
+      value:
+        message: Can't use the me keyword with the admin API key
+
     InvalidRequestBody:
       description: The JSON sent is invalid
       value:
@@ -1058,8 +1072,10 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            message: Resource not found
+          examples:
+            ResourceNotFound:
+              value:
+                message: Resource not found
 
     PaginationQueryParamsValidationError:
       description: Validation error

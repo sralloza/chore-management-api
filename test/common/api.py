@@ -2,6 +2,7 @@ import re
 
 from requests import Response
 
+from common.constants import COMMON_SCENARIOS
 from common.openapi import get_current_operation, get_operation
 from common.utils import VERSIONED_URL_TEMPLATE
 
@@ -25,6 +26,9 @@ def send_request(context, endpoint=None, payload=None):
 
 def get_url_params(context, path):
     param_names = [x.group(1) for x in re.finditer(r"\{(\w+)\}", path) if x]
+    scenario_name = context.scenario.name.split(" -- ")[0]
+    if scenario_name in COMMON_SCENARIOS:
+        return {k: "xxx" for k in param_names}
     return {k: getattr(context, k) for k in param_names}
 
 

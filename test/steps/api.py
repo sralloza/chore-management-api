@@ -1,5 +1,6 @@
 import json
 import re
+import uuid
 from datetime import datetime
 
 import jq
@@ -135,12 +136,35 @@ def step_impl(context):
 
 @step("the request headers")
 def step_impl(context):
-    context.table.require_columns(["header", "value"])
+    context.table.require_columns(["header_name", "header_value"])
     context.headers = {}
     for row in context.table:
-        header = row["header"]
-        value = row["value"]
+        header = row["header_name"]
+        value = row["header_value"]
         context.headers[header] = value
+
+
+@step("the {correlator} as X-Correlator header")
+def headers_4p(context, correlator):
+    if correlator == "[RANDOMSTR]":
+        generated_correlator = uuid.uuid4().hex.upper()[0:6]
+    elif correlator == "[UUIDv1]":
+        generated_correlator = str(uuid.uuid1())
+    elif correlator == "[UUIDv4]":
+        generated_correlator = str(uuid.uuid4())
+    else:
+        generated_correlator = correlator
+
+    context.execute_steps(
+        f"""
+        Given the request headers
+            | header_name  | header_value |
+            | X-Correlator | {correlator} |
+    """
+    )
+
+    # Save it
+    context.correlator = generated_correlator
 
 
 @step('I clear the "{attr}" attribute of the context')
@@ -167,4 +191,22 @@ def assert_response_attr(context, attr, value, to_str=False):
         real_value,
         equal_to(expected_value),
         f"Expected attribute {attr} to be {value}",
+    )
+
+
+@step("the X-Correlator sent is the same as the X-Correlator in the response")
+def step_impl(context):
+    assert_that(
+        context.res.headers["X-Correlator"],
+        equal_to(context.correlator),
+        "X-Correlator sent is not the same as the X-Correlator in the response",
+    )
+
+
+@step('the header "{header}" is not present in the response')
+def step_impl(context, header):
+    assert_that(
+        header,
+        is_not(is_in(context.res.headers)),
+        f"The header {header} is present in the response",
     )

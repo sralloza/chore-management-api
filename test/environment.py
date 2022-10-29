@@ -4,7 +4,7 @@ from uuid import uuid4
 
 import allure
 import requests
-from hamcrest import assert_that, equal_to
+from hamcrest import *
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
 from toolium.behave.environment import after_scenario as tlm_after_scenario
@@ -13,6 +13,7 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
+from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP
 from common.db import reset_databases
 
 
@@ -25,15 +26,11 @@ def before_feature(context, feature):
     tlm_before_feature(context, feature)
     context.api = Path(feature.filename).parent.name
     context.resource = Path(feature.filename).stem
-    resource_from_feature_name = feature.name.split(" - ")[-1]
-    assert_that(
-        resource_from_feature_name,
-        equal_to(context.resource),
-        "Feature name should be the same as the filename",
-    )
     context.operation_id = context.resource
     context.storage = {}
     context.correlator = str(uuid4())
+
+    validate_feature_tests(context, feature)
 
 
 def get_dataset():
@@ -102,3 +99,21 @@ def check_naming(scenario):
         raise AssertionError(msg)
     if "validate error" in scenario_name.lower():
         assert "validate error response" in scenario_name.lower()
+        step_names = [step.name for step in scenario.steps]
+        assert_that(DEFINED_ERROR_STEP, is_in(step_names))
+
+
+def validate_feature_tests(context, feature):
+    resource_from_feature_name = feature.name.split(" - ")[-1]
+    assert_that(
+        resource_from_feature_name,
+        equal_to(context.resource),
+        "Feature name should be the same as the filename",
+    )
+    scenario_names = [scenario.name for scenario in feature.scenarios]
+    for scenario_name in COMMON_SCENARIOS:
+        assert_that(
+            scenario_name,
+            is_in(scenario_names),
+            f"Feature should have the common scenario {scenario_name!r}",
+        )

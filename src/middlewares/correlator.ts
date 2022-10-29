@@ -7,7 +7,7 @@ const correlatorMiddleware = (
   next: NextFunction
 ) => {
   const correlationId = req.headers["x-correlator"] || randomUUID();
-  res.set("x-correlator", correlationId);
+  res.set("X-Correlator", correlationId);
   next();
 };
 export default correlatorMiddleware;
