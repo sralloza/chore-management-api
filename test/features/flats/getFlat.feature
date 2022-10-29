@@ -3,12 +3,12 @@
 Feature: Flats API - getFlat
 
     As an admin
-    I want to get a list of flats
+    I want to get the details of a specific flat
 
 
     @authorization
     Scenario: Validate response for guest
-        Given the field "flat_name" with value "test_flat"
+        Given the field "flat_name" with value "test-flat"
         When I send a request to the Api
         Then the response status code is "401"
         And the response status code is defined
@@ -18,7 +18,7 @@ Feature: Flats API - getFlat
     @authorization
     Scenario: Validate response for user
         Given I create a flat with a user and I use the user API key
-        And the field "flat_name" with value "test_flat"
+        And the field "flat_name" with value "test-flat"
         When I send a request to the Api
         Then the response status code is "403"
         And the response status code is defined
@@ -28,7 +28,7 @@ Feature: Flats API - getFlat
     @authorization
     Scenario: Validate response for flat owner
         Given I create a flat and I use the flat API key
-        And the field "flat_name" with value "test_flat"
+        And the field "flat_name" with value "test-flat"
         When I send a request to the Api
         Then the response status code is "403"
         And the response status code is defined
@@ -37,7 +37,7 @@ Feature: Flats API - getFlat
 
     @authorization
     Scenario: Validate response for admin
-        Given I create a flat and I use the flat API key
+        Given I create a flat
         And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
@@ -45,8 +45,8 @@ Feature: Flats API - getFlat
 
 
     Scenario: Get flat when it exists
-        Given I create a flat with name "test-flat"
-        And the field "flat_name" with value "test-flat"
+        Given the field "flat_name" with value "test-flat"
+        And I create a flat
         And I use the admin API key
         When I send a request to the Api
         Then the response status code is "200"
@@ -56,7 +56,7 @@ Feature: Flats API - getFlat
             | api_key    |
 
 
-    Scenario: Get flat when it doesn't exist
+    Scenario: Validate error response when the flat doesn't exist
         Given the field "flat_name" with value "invalid_flat"
         And I use the admin API key
         When I send a request to the Api

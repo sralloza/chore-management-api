@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 import dataSource from "../core/datasource";
-import UserDB from "../models/UserDB";
+import UserDB from "../models/db/UserDB";
 
 const repo = dataSource.getRepository(UserDB);
 

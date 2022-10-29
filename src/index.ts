@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
 import morgan from "morgan";
 import api from "./controllers";
-import config from "./core/config";
 import { INTERNAL } from "./core/constants";
 import dataSource from "./core/datasource";
-import correlatorMiddleware from "./middlewares/ correlator";
+import correlatorMiddleware from "./middlewares/correlator";
 import redisClient from "./services/redis";
 
 (BigInt.prototype as any).toJSON = function () {
@@ -12,23 +11,9 @@ import redisClient from "./services/redis";
 };
 
 const app = express();
-
-// XXX: I think this can be removed
-const validateEmptyBody = (
-  req: Request,
-  res: Response,
-  buf: Buffer,
-  encoding: string
-) => {
-  const body = buf.toString();
-
-  if (body.length === 0) {
-    return res.status(400).json({ message: "Missing request body" });
-  }
-};
-
-app.use(express.json({ verify: validateEmptyBody }));
+// // XXX: I think this can be removed
 app.disable("x-powered-by");
+app.use(express.json());
 app.use(morgan("dev"));
 app.use(correlatorMiddleware);
 

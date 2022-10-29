@@ -1,6 +1,6 @@
 from behave import *
-from toolium.utils.dataset import map_param, replace_param
 from deepdiff import DeepDiff
+from toolium.utils.dataset import map_param, replace_param
 
 
 @then("the response contains the following validation errors")
@@ -17,6 +17,7 @@ def step_impl(context):
         if value != "[NONE]":
             error["value"] = value
 
+        print(f"Expected error: {error}")
         if len(errors) == 1:
             diff = DeepDiff(error, errors[0])
             assert not diff, f"Unexpected validation error: {diff}"

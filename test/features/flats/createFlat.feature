@@ -170,15 +170,16 @@ Feature: Flats API - createFlat
         And the response status code is defined
         And the response body is a valid json
         And the response contains the following validation errors
-            | value   | msg   | param   | location   |
-            | <value> | <msg> | <param> | <location> |
+            | value   | msg   | param   | location |
+            | <value> | <msg> | <param> | body     |
 
-        Examples: create_code=<create_code>, name=<name>, location=<location>, param=<param>, msg=<msg>, value=<value>
-            | create_code           | name      | location | param       | msg                                                             | value   |
-            | [NONE]                | flat-test | body     | create_code | body.create_code is required                                    | [NONE]  |
-            | [NULL]                | flat-test | body     | create_code | body.create_code is required                                    | [NULL]  |
-            | [EMPTY]               | flat-test | body     | create_code | body.create_code is not a valid JWT                             | [EMPTY] |
-            | XXXXXXX               | flat-test | body     | create_code | body.create_code is not a valid JWT                             | XXXXXXX |
-            | [CONTEXT:create_code] | [NONE]    | body     | name        | body.name is required                                           | [NONE]  |
-            | [CONTEXT:create_code] | [NULL]    | body     | name        | body.name is required                                           | [NULL]  |
-            | [CONTEXT:create_code] | Invalid   | body     | name        | body.name does not match the pattern '[CONF:pattern.flat_name]' | Invalid |
+        Examples: create_code=<create_code>, name=<name>, param=<param>, msg=<msg>, value=<value>
+            | create_code           | name      | param       | msg                                                             | value   |
+            | [NONE]                | flat-test | create_code | body.create_code is required                                    | [NONE]  |
+            | [NULL]                | flat-test | create_code | body.create_code is required                                    | [NULL]  |
+            | [EMPTY]               | flat-test | create_code | body.create_code is not a valid JWT                             | [EMPTY] |
+            | XXXXXXX               | flat-test | create_code | body.create_code is not a valid JWT                             | XXXXXXX |
+            | [CONTEXT:create_code] | [NONE]    | name        | body.name is required                                           | [NONE]  |
+            | [CONTEXT:create_code] | [NULL]    | name        | body.name is required                                           | [NULL]  |
+            | [CONTEXT:create_code] | Invalid   | name        | body.name does not match the pattern '[CONF:pattern.flat_name]' | Invalid |
+            | [CONTEXT:create_code] | me        | name        | Forbidden flat name: me                                         | me      |

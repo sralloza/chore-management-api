@@ -79,7 +79,9 @@ def register_allure_stdout_stderr(context):
 def after_scenario(context, scenario):
     if scenario.status == "failed":
         text = f"X-CORRELATOR FOR DEBUGGING: {context.correlator}"
-        allure.attach(text, name="x-correlator", attachment_type=allure.attachment_type.TEXT)
+        allure.attach(
+            text, name="x-correlator", attachment_type=allure.attachment_type.TEXT
+        )
     register_allure_stdout_stderr(context)
     tlm_after_scenario(context, scenario)
 

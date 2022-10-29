@@ -133,6 +133,16 @@ def step_impl(context):
         set_field_to_context(context, field, value, to_str=to_str)
 
 
+@step("the request headers")
+def step_impl(context):
+    context.table.require_columns(["header", "value"])
+    context.headers = {}
+    for row in context.table:
+        header = row["header"]
+        value = row["value"]
+        context.headers[header] = value
+
+
 @step('I clear the "{attr}" attribute of the context')
 def step_impl(context, attr):
     if hasattr(context, attr):

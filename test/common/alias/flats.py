@@ -3,7 +3,9 @@ from faker import Faker
 fake = Faker()
 
 
-def create_flat(context, flat_name=None, user=False):
+def create_flat(context, user=False):
+    flat_name = getattr(context, "flat_name", None)
+
     if flat_name is None:
         flat_name = "flat-" + fake.word().lower()
 
@@ -24,6 +26,7 @@ def create_flat(context, flat_name=None, user=False):
         """
 
     context.execute_steps(flat_create_instructions)
+    context.flat_name_created = flat_name
     if not user:
         return
 
@@ -40,3 +43,4 @@ def create_flat(context, flat_name=None, user=False):
         And I save the "api_key" attribute of the response as "user_api_key"
     """
     )
+    context.user_id_created = user_id

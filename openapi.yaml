@@ -253,7 +253,7 @@ paths:
           $ref: "#/components/responses/ValidationError"
 
   /flats/{flat_name}/settings:
-    put:
+    patch:
       tags:
         - Flats
       summary: Edit flat settings
@@ -276,22 +276,7 @@ paths:
         "200":
           $ref: "#/components/responses/FlatSettings"
         "400":
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-              examples:
-                InvalidRequestBody:
-                  $ref: "#/components/examples/InvalidRequestBody"
-                InvalidInitialAssignments:
-                  description: All users are not defined in initial_assignments
-                  value:
-                    message: All users are not defined in initial_assignments
-                InvalidInitialAssignmentsUserNotFound:
-                  description: A user was mentioned in initial_assignments but it does not exist
-                  value:
-                    message: User with id=1001 was mentioned in initial_assignments but it does not exist
+          $ref: "#/components/responses/InvalidRequestBody"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
