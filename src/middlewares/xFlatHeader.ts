@@ -3,7 +3,6 @@ import { isAdmin } from "../core/auth";
 
 const parseXFlatHeader = (req: Request, res: Response, next: NextFunction) => {
   const xFlatHeader = req.get("x-flat") as string;
-  console.log({ xFlatHeader });
   const headerDefined = xFlatHeader !== undefined;
   const isAdminResult = isAdmin(req.get("x-token"));
   if (headerDefined && !isAdminResult) {

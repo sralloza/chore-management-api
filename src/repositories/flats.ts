@@ -35,7 +35,6 @@ export const getFlatByName = async (name: string): Promise<Flat> => {
 
 export const getFlatByApiKey = async (apiKey: string): Promise<Flat> => {
   const flat = await repo.findOne({ where: { apiKey } });
-  console.log({ flat });
   return buildFlat(flat);
 };
 
