@@ -33,6 +33,9 @@ jobs:
       - name: Run poetry install
         run: poetry install
 
+      - name: Lint
+        run: .github/scripts/lint.sh
+
       - name: Run tests e2e
         run: ./run-tests.sh
 
