@@ -1,10 +1,13 @@
-import express, { Request, Response } from "express";
+import bunyan from "bunyan";
+import express from "express";
 import morgan from "morgan";
 import api from "./controllers";
 import { INTERNAL } from "./core/constants";
 import dataSource from "./core/datasource";
 import correlatorMiddleware from "./middlewares/correlator";
 import redisClient from "./services/redis";
+
+const logger = bunyan.createLogger({ name: "main" });
 
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
@@ -40,6 +43,14 @@ app.use((err: any, req: any, res: any, next: any) => {
       .status(400)
       .json({ message: "Request body is not a valid JSON" });
   }
+  const info = {
+    err,
+    path: req.path,
+    params: req.params,
+    query: req.query,
+    body: req.body,
+  };
+  logger.error({ info }, "Unhandled error");
   res.status(500).json(INTERNAL);
 });
 
@@ -48,12 +59,12 @@ app.listen(port, async () => {
   dataSource
     .initialize()
     .then(() => {
-      console.log("Data Source has been initialized!");
+      logger.info("Data Source has been initialized!");
     })
     .catch((err) => {
-      console.error("Error during Data Source initialization:", err);
+      logger.error({ err }, "Error during Data Source initialization:");
       process.exit(1);
     });
 
-  console.log("Server running on port " + port);
+  logger.info({ port }, "Server running on port " + port);
 });
