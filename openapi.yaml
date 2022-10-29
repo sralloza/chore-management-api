@@ -249,8 +249,6 @@ paths:
           $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
         "404":
           $ref: "#/components/responses/NotFound"
-        "422":
-          $ref: "#/components/responses/ValidationError"
 
   /flats/{flat_name}/settings:
     patch:

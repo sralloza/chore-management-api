@@ -15,6 +15,7 @@ from toolium.utils import dataset
 
 from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP
 from common.db import reset_databases
+from common.openapi import get_current_operation
 
 
 def before_all(context):
@@ -28,6 +29,7 @@ def before_feature(context, feature):
     context.resource = Path(feature.filename).stem
     context.operation_id = context.resource
     context.storage = {}
+    context.status_codes = set()
     context.correlator = str(uuid4())
 
     validate_feature_tests(context, feature)
@@ -85,6 +87,7 @@ def after_scenario(context, scenario):
 
 def after_feature(context, feature):
     tlm_after_feature(context, feature)
+    validate_feature_status_codes(context, feature)
 
 
 def after_all(context):
@@ -117,3 +120,18 @@ def validate_feature_tests(context, feature):
             is_in(scenario_names),
             f"Feature should have the common scenario {scenario_name!r}",
         )
+
+
+def validate_feature_status_codes(context, feature):
+    operation = get_current_operation(context)
+    expected = list({int(x) for x in operation["responses"].keys()})
+    expected.sort()
+
+    actual = list(context.status_codes)
+    actual.sort()
+
+    assert_that(
+        actual,
+        equal_to(expected),
+        f"{feature.name}: Status codes should be the same as defined in the OpenAPI spec",
+    )
