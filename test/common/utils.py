@@ -2,7 +2,7 @@ from itertools import zip_longest
 from typing import List, Optional
 
 from dotty_dict import dotty
-from toolium.utils.dataset import replace_param, map_param
+from toolium.utils.dataset import map_param, replace_param
 
 URL = "http://localhost:8080"
 VERSIONED_URL_TEMPLATE = URL + "/api/v{version}"

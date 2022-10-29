@@ -4,9 +4,10 @@ import warnings
 from pathlib import Path
 
 from behave import *
-from common.openapi import *
 from hamcrest import *
 from jsonschema import RefResolver
+
+from common.openapi import *
 
 
 @then("the response status code is defined")
