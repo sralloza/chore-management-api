@@ -9,7 +9,10 @@ poetry run black .
 cd ..
 npm run format
 
-if [[ "$(git status --porcelain)" != "" ]]; then
+dirtyFiles="$(git status -s)"
+if [[ "dirtyFiles" != "" ]]; then
   echo "Linting failed"
+  echo "Changed files:"
+  echo "$dirtyFiles"
   exit 1
 fi
