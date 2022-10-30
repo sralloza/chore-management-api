@@ -152,6 +152,10 @@ paths:
       summary: Create flat
       description: Create new flat.
       operationId: createFlat
+      security:
+        - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       requestBody:
         required: true
         content:
@@ -202,6 +206,8 @@ paths:
       operationId: listFlats
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/FlatList"
@@ -219,6 +225,8 @@ paths:
       operationId: getFlat
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/Flat"
@@ -237,6 +245,8 @@ paths:
       operationId: deleteFlat
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "204":
           description: OK
@@ -258,6 +268,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/FlatName"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       requestBody:
         required: true
         content:
@@ -299,6 +310,8 @@ paths:
       operationId: requestFlatCreateCode
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           description: OK
@@ -312,7 +325,6 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          # TODO: 401 - Invalid create code
           $ref: "#/components/responses/ForbiddenErrorAdminRequired"
 
   /chore-types:
@@ -325,6 +337,7 @@ paths:
       security:
         - UserApiKey: []
       parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -352,6 +365,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
@@ -394,6 +408,7 @@ paths:
         - UserApiKey: []
       parameters:
         - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -424,8 +439,8 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
-        - $ref: "#/components/parameters/AcceptLanguage"
       responses:
         "204":
           description: OK
@@ -443,6 +458,8 @@ paths:
       summary: Get last week ID
       description: Get last week's identifier
       operationId: getLastWeekId
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -454,6 +471,8 @@ paths:
       summary: Get current week ID
       description: Get the current week identifier
       operationId: getCurrentWeekId
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -465,6 +484,8 @@ paths:
       summary: Get next week ID
       description: Get next week's identifier
       operationId: getNextWeekId
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -479,6 +500,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
@@ -510,6 +532,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -530,6 +553,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -553,6 +577,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "204":
           description: OK
@@ -588,6 +613,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
         - name: type_id
           description: Chore type to filter the chores
@@ -636,6 +662,8 @@ paths:
       operationId: listTickets
       security:
         - FlatAdminApiKey: []
+      parameters:
+        - $ref: '#/components/parameters/XCorrelatorHeader'
       responses:
         "200":
           $ref: "#/components/responses/TicketList"
@@ -656,6 +684,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
         - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "204":
@@ -689,6 +718,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
         - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: '#/components/parameters/XCorrelatorHeader'
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "204":
@@ -953,6 +983,16 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/WeekID"
+
+    XCorrelatorHeader:
+      name: X-Correlator
+      in: header
+      description: Correlator ID
+      required: false
+      schema:
+        type: string
+        format: uuid
+      example: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
 
     XFlatHeader:
       name: x-flat

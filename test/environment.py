@@ -14,14 +14,9 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.constants import (
-    COMMON_SCENARIOS,
-    DEFINED_ERROR_STEP,
-    DEFINED_OK_STATUS_CODE_STEP_PATTERN,
-    SPECIAL_STATUS_CODES,
-)
+from common.constants import *
 from common.db import reset_databases
-from common.openapi import get_current_operation, get_examples
+from common.openapi import *
 
 
 def before_all(context):
@@ -141,6 +136,20 @@ def validate_feature_tests(context, feature):
             is_in(scenario_names),
             f"Feature {context.operation_id} should have the common scenario {scenario_name!r}",
         )
+    headers = get_request_headers(context)
+    if "x-flat" in headers:
+        for scenario_name in X_FLAT_HEADER_STEPS:
+            assert_that(
+                scenario_name,
+                is_in(scenario_names),
+                f"Feature {context.operation_id} should have the flat scenario {scenario_name!r}",
+            )
+
+    assert_that(
+        "X-Correlator",
+        is_in(headers),
+        f"[{context.operation_id}] X-Correlator header is mandatory",
+    )
 
 
 def validate_feature_status_codes(context, feature):
