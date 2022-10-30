@@ -137,7 +137,8 @@ def validate_feature_tests(context, feature):
             f"Feature {context.operation_id} should have the common scenario {scenario_name!r}",
         )
     headers = get_request_headers(context)
-    if "x-flat" in headers:
+    # TODO: assert that the headers are title cased
+    if "X-Flat" in headers:
         for scenario_name in X_FLAT_HEADER_STEPS:
             assert_that(
                 scenario_name,
