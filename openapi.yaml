@@ -373,7 +373,7 @@ paths:
                 ChoreType:
                   $ref: "#/components/examples/ChoreType"
         "400":
-          $ref: "#/components/responses/InvalidRequestBody"
+          $ref: "#/components/responses/InvalidRequestBodyAndInvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -405,6 +405,8 @@ paths:
               examples:
                 ChoreType:
                   $ref: "#/components/examples/ChoreType"
+        "400":
+          $ref: "#/components/responses/InvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -778,10 +780,10 @@ components:
           - 30003
         rotation_sign: positive
 
-    InvalidFlatHeaderUse:
-      description: The `x-flat` header was sent without an admin key
+    InvalidFlatHeaderUseWithAdminApiKey:
+      description: The `x-flat` header was sent without an admin API key
       value:
-        message: Can't use the x-flat header without the admin key
+        message: Can't use the x-flat header without the admin API key
 
     InvalidFlatRequested:
       description: The token provided does not grant access to the flat requested
@@ -797,6 +799,11 @@ components:
       description: The JSON sent is invalid
       value:
         message: Request body is not a valid JSON
+
+    MissingFlatHeaderWithAdminApiKey:
+      description: Must use the x-flat header with the admin API key
+      value:
+        message: Must use the x-flat header with the admin API key
 
     SimpleChoreList:
       description: List of simple chores
@@ -1036,8 +1043,6 @@ components:
           examples:
             UserAccessRequired:
               $ref: "#/components/examples/UserAccessRequired"
-            InvalidFlatHeaderUse:
-              $ref: "#/components/examples/InvalidFlatHeaderUse"
 
     InvalidFlatRequested:
       description: Forbidden
@@ -1058,6 +1063,32 @@ components:
           examples:
             InvalidRequestBody:
               $ref: "#/components/examples/InvalidRequestBody"
+
+    InvalidRequestBodyAndInvalidUseFlatHeader:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidFlatHeaderUseWithAdminApiKey:
+              $ref: "#/components/examples/InvalidFlatHeaderUseWithAdminApiKey"
+            MissingFlatHeaderWithAdminApiKey:
+              $ref: "#/components/examples/MissingFlatHeaderWithAdminApiKey"
+            InvalidRequestBody:
+              $ref: "#/components/examples/InvalidRequestBody"
+
+    InvalidUseFlatHeader:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidFlatHeaderUseWithAdminApiKey:
+              $ref: "#/components/examples/InvalidFlatHeaderUseWithAdminApiKey"
+            MissingFlatHeaderWithAdminApiKey:
+              $ref: "#/components/examples/MissingFlatHeaderWithAdminApiKey"
 
     NotFound:
       description: Resource not found

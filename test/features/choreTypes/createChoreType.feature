@@ -2,8 +2,18 @@
 @createChoreType
 Feature: Chore Types API - createChoreType
 
-  As a flat admin admin
+  As an admin or flat admin
   I want to register chore types
+
+
+  @authorization
+  Scenario: Validate response for unauthorized user
+    Given I use a random API key
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "Flat administration access required"
+    And the response error message is defined
 
 
   @authorization
@@ -82,6 +92,34 @@ Feature: Chore Types API - createChoreType
       """
   # TODO: enable when creating listTickets operation
   # And the database contains the following tickets
+
+
+  Scenario: Validate error response when using the admin API key without the x-flat header
+    Given I create a flat
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name  | param_value              |
+      | id          | chore-type-a             |
+      | name        | chore-type-a             |
+      | description | description-chore-type-a |
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "Must use the x-flat header with the admin API key"
+    And the response error message is defined
+
+
+  Scenario: Validate error response when using the x-flat header without the admin API key
+    Given I create a flat with a user and I use the flat API key
+    And the "xxx" as X-Flat header
+    When I send a request to the Api with body params
+      | param_name  | param_value              |
+      | id          | chore-type-a             |
+      | name        | chore-type-a             |
+      | description | description-chore-type-a |
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "Can't use the x-flat header without the admin API key"
+    And the response error message is defined
 
 
   Scenario: Validate that tickets are created after the chore type

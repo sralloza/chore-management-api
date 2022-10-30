@@ -1,7 +1,7 @@
 import bunyan from "bunyan";
 import express from "express";
 import { INTERNAL } from "../core/constants";
-import { flatAuth } from "../middlewares/auth";
+import { flatAuth, userAuth } from "../middlewares/auth";
 import { choreType404, choreType409 } from "../middlewares/choreTypes";
 import parseXFlatHeader from "../middlewares/xFlatHeader";
 import choreTypesRepo from "../repositories/choreTypes";
@@ -38,7 +38,7 @@ router.get("", flatAuth, parseXFlatHeader, async (req, res) => {
 
 router.get(
   "/:choreTypeId",
-  flatAuth,
+  userAuth,
   parseXFlatHeader,
   choreType404,
   async (req, res) => {

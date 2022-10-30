@@ -8,6 +8,18 @@ Feature: Flats API - createFlat
 
 
   @authorization
+  Scenario: Validate response for unauthorized user
+    Given I request a flat create code
+    And I use a random API key
+    When I send a request to the Api with body params
+      | param_name  | param_value           |
+      | create_code | [CONTEXT:create_code] |
+      | name        | test-flat             |
+    Then the response status code is "200"
+    And the response status code is defined
+
+
+  @authorization
   Scenario: Validate response for guest
     Given I request a flat create code
     When I send a request to the Api with body params

@@ -7,6 +7,16 @@ Feature: Flats API - editFlatSettings
 
 
   @authorization
+  Scenario: Validate response for unauthorized user
+    Given I use a random API key
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "Flat administration access required"
+    And the response error message is defined
+
+
+  @authorization
   Scenario: Validate response for guest
     Given the field "flat_name" with value "xxx"
     When I send a request to the Api

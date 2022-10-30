@@ -3,6 +3,7 @@ import re
 COMMON_SCENARIOS = (
     "Validate X-Correlator injection",
     "Validate X-Powered-By disabled",
+    "Validate response for unauthorized user",
     "Validate response for guest",
     "Validate response for user",
     "Validate response for flat admin",
