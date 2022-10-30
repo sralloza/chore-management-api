@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 cd test
 poetry run isort .
 poetry run black .

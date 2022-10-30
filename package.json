@@ -17,7 +17,7 @@
     "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prebuild": "tslint -c tslint.json -p tsconfig.json",
-    "format": "prettier --write '{src,test,.}/**/*.{js,md,json,ts}'",
+    "format": "npx prettier --write '{src,test,.}/**/*.{js,md,json,ts}'",
     "migration:generate": "tsc && npx typeorm -d dist/core/datasource.js migration:generate -o",
     "migration:run": "npx typeorm -d dist/core/datasource.js migration:run",
     "migration:revert": "npx typeorm -d dist/core/datasource.js migration:revert",
