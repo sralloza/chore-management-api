@@ -10,7 +10,7 @@ cd ..
 npm run format
 
 dirtyFiles="$(git status -s)"
-if [[ "dirtyFiles" != "" ]]; then
+if [[ "$dirtyFiles" != "" ]]; then
   echo "Linting failed"
   echo "Changed files:"
   echo "$dirtyFiles"
