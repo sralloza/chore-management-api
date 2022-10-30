@@ -1,6 +1,6 @@
 import bunyan from "bunyan";
 import flatsRepo from "../repositories/flats";
-import { getUserByApiKey } from "../repositories/users";
+import usersRepo from "../repositories/users";
 import config from "./config";
 
 const logger = bunyan.createLogger({ name: "authMiddleware" });
@@ -12,7 +12,7 @@ export const authPresent = (apiKey: string) => {
 };
 
 export const isUser = async (apiKey: string) => {
-  const result = (await getUserByApiKey(apiKey)) !== null;
+  const result = (await usersRepo.getUserByApiKey(apiKey)) !== null;
   logger.debug({ result, apiKey }, "isUser");
   return result;
 };

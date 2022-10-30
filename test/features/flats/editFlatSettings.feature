@@ -28,7 +28,7 @@ Feature: Flats API - editFlatSettings
 
 
   @authorization
-  Scenario: Validate response for flat owner
+  Scenario: Validate response for flat admin
     Given I create a flat and I use the flat API key
     And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api

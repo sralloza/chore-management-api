@@ -21,7 +21,7 @@ Feature: Week ID API - getCurrentWeekId
 
 
     @authorization
-    Scenario: Validate response for flat owner
+    Scenario: Validate response for flat admin
         Given I create a flat
         And I use the flat API key
         When I send a request to the Api

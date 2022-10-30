@@ -14,31 +14,32 @@ const mapper = (user: UserDB): User => {
   };
 };
 
-export const getUsers = async (): Promise<User[]> => {
-  const users = await repo.find();
-  return users.map(mapper);
+const userRepo = {
+  listUsers: async (): Promise<User[]> => {
+    const users = await repo.find();
+    return users.map(mapper);
+  },
+
+  getUserById: async (id: bigint): Promise<User | null> => {
+    const user = await repo.findOne({ where: { id } });
+    return mapper(user);
+  },
+
+  getUserByApiKey: async (apiKey: string): Promise<User | null> => {
+    const user = await repo.findOne({ where: { apiKey } });
+    return mapper(user);
+  },
+
+  createUser: async (user: UserCreate, flatName: string): Promise<User> => {
+    const newUser = repo.create({
+      id: user.id,
+      username: user.username,
+      apiKey: randomUUID(),
+      flatName,
+    });
+    await repo.save(newUser);
+    return mapper(newUser);
+  },
 };
 
-export const getUserById = async (id: bigint): Promise<User | null> => {
-  const user = await repo.findOne({ where: { id } });
-  return mapper(user);
-};
-
-export const getUserByApiKey = async (apiKey: string): Promise<User | null> => {
-  const user = await repo.findOne({ where: { apiKey } });
-  return mapper(user);
-};
-
-export const addUser = async (
-  user: UserCreate,
-  flatName: string
-): Promise<User> => {
-  const newUser = repo.create({
-    id: user.id,
-    username: user.username,
-    apiKey: randomUUID(),
-    flatName,
-  });
-  await repo.save(newUser);
-  return mapper(newUser);
-};
+export default userRepo;

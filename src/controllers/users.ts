@@ -1,17 +1,18 @@
 import express from "express";
-import { addUser, getUserByApiKey } from "../repositories/users";
+import parseXFlatHeader from "../middlewares/xFlatHeader";
+import usersRepo from "../repositories/users";
 
 const router = express.Router();
 
-router.post("", async (req, res) => {
-  const existingFlat = await getUserByApiKey(req.body.username);
+router.post("", parseXFlatHeader, async (req, res) => {
+  const existingFlat = await usersRepo.getUserByApiKey(req.body.username);
   if (existingFlat) {
     return res
       .status(409)
       .json({ message: "User already exists: " + req.body.username });
   }
 
-  const flat = await addUser(req.body, "flat-name");
+  const flat = await usersRepo.createUser(req.body, req.params.flatName);
   res.status(200).json(flat);
 });
 

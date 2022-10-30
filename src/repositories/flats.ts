@@ -24,7 +24,7 @@ const buildFlat = (flat: FlatDB): Flat => {
 };
 
 const flatsRepo = {
-  getFlats: async () => {
+  listFlats: async () => {
     const flats = await repo.find();
     return flats.map(buildFlat);
   },
@@ -39,7 +39,7 @@ const flatsRepo = {
     return buildFlat(flat);
   },
 
-  addFlat: async (flat: FlatCreate): Promise<Flat> => {
+  createFlat: async (flat: FlatCreate): Promise<Flat> => {
     const newFlat = repo.create({
       name: flat.name,
       assignmentOrder: "",

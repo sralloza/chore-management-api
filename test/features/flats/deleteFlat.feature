@@ -14,6 +14,7 @@ Feature: Flats API - deleteFlat
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
+    And the response error message is defined
 
 
   @authorization
@@ -24,16 +25,18 @@ Feature: Flats API - deleteFlat
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
+    And the response error message is defined
 
 
   @authorization
-  Scenario: Validate response for flat owner
+  Scenario: Validate response for flat admin
     Given I create a flat and I use the flat API key
     And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
+    And the response error message is defined
 
 
   @authorization

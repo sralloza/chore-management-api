@@ -14,7 +14,12 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP, SPECIAL_STATUS_CODES
+from common.constants import (
+    COMMON_SCENARIOS,
+    DEFINED_ERROR_STEP,
+    DEFINED_OK_STATUS_CODE_STEP_PATTERN,
+    SPECIAL_STATUS_CODES,
+)
 from common.db import reset_databases
 from common.openapi import get_current_operation, get_examples
 
@@ -51,7 +56,7 @@ def get_settings():
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
-    check_naming(scenario)
+    check_naming(context, scenario)
 
     dataset.project_config = get_settings()
     context.session = requests.Session()
@@ -96,16 +101,30 @@ def after_all(context):
     tlm_after_all(context)
 
 
-def check_naming(scenario):
+def check_naming(context, scenario):
     scenario_name = scenario.name
+    step_names = [step.name for step in scenario.steps]
+
     if not scenario_name[0].isupper():
         name = scenario_name[0].upper() + scenario_name[1:]
         msg = f"Scenario name should be titled ({name})"
         raise AssertionError(msg)
     if "validate error" in scenario_name.lower():
         assert "validate error response" in scenario_name.lower()
-        step_names = [step.name for step in scenario.steps]
-        assert_that(DEFINED_ERROR_STEP, is_in(step_names))
+        check_stattus_code_is_registered(context, scenario)
+
+    step_cheks = [DEFINED_OK_STATUS_CODE_STEP_PATTERN.search(x) for x in step_names]
+    if any(step_cheks):
+        match = next(x for x in step_cheks if x)
+        if match.group(1)[0] != "2":
+            check_stattus_code_is_registered(context, scenario)
+
+
+def check_stattus_code_is_registered(context, scenario):
+    step_names = [step.name for step in scenario.steps]
+    info = f"{context.operation_id} - {scenario.name}"
+    msg = f"[{info}] Must check error status code is registered"
+    assert_that(DEFINED_ERROR_STEP, is_in(step_names), msg)
 
 
 def validate_feature_tests(context, feature):
@@ -120,7 +139,7 @@ def validate_feature_tests(context, feature):
         assert_that(
             scenario_name,
             is_in(scenario_names),
-            f"Feature should have the common scenario {scenario_name!r}",
+            f"Feature {feature.name} should have the common scenario {scenario_name!r}",
         )
 
 

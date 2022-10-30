@@ -7,11 +7,11 @@ from common.utils import *
 @given("there are {tenants:d} tenants")
 def step_impl(context, tenants):
     for i in range(1, tenants + 1):
-        raw_data = {"tenant_id": i, "username": f"tenant{i}"}
+        raw_data = {"id": i, "username": f"tenant{i}"}
         context.execute_steps(
             f"""
-            Given I use the admin API key
-            When I send a request to the Api resource "createTenant" with body params
+            Given I use the flat API key
+            When I send a request to the Api resource "createUser" with body params
             {payload_to_table_format(raw_data)}
             Then the response status code is "200"
             And I clear the token

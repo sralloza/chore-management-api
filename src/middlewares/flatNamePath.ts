@@ -25,8 +25,6 @@ const flatNamePathResolver = async (
   } else if (!isAdminResult) {
     // Check if the flat admin is trying to access a flat that is not his
     const flat = await flatsRepo.getFlatByApiKey(apiKey);
-    const result = { flat, flatNamePath };
-    logger.info({ result }, "info");
     if (flat?.name !== flatNamePath) {
       return res.status(403).json({
         message: "You don't have permission to access this flat's information",
