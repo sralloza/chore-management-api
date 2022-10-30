@@ -33,13 +33,13 @@ def step_impl(context):
     # Special treatment for 404 responses
     if code == "404":
         pattern = r"\w+ not found: \w"
-        assert_that(context.res.text, matches_regexp(pattern))
+        assert_that(context.res.text, matches_regexp(pattern), "Must match 404 pattern")
         return
 
     # Special treatment for 409 responses
     if code == "409":
         pattern = r"\w+ already exists"
-        assert_that(context.res.text, matches_regexp(pattern))
+        assert_that(context.res.text, matches_regexp(pattern), "Must match 409 pattern")
         return
 
     # Special treatment for 422 responses
@@ -50,7 +50,7 @@ def step_impl(context):
         return
 
     examples = get_examples(context)
-    assert_that(context.res.json(), is_in(examples))
+    assert_that(context.res.json(), is_in(examples), "Error response must be in examples")
 
 
 @then("the response body is validated against the json-schema")
@@ -67,22 +67,3 @@ def step_impl(context):
     schema["components"] = {"schemas": extra_schemas}
 
     validate_response(api_response, schema, resolver)
-
-
-@then('the response body is validated against the json-schema "{schema}"')
-def step_impl(context, schema):
-    warnings.warn(
-        "Deprecated step, use the step 'the response body is validated against the json-schema'",
-        DeprecationWarning,
-    )
-    schema = Path(__file__).parent.parent / f"resources/schemas/{schema}.json"
-    with open(schema) as f:
-        json_schema = json.load(f)
-
-    json_schema_dir = os.path.dirname(os.path.realpath(schema))
-    resolver = RefResolver(
-        referrer=json_schema, base_uri="file://" + json_schema_dir + "/"
-    )
-
-    api_response = context.res.json()
-    validate_response(api_response, json_schema, resolver)

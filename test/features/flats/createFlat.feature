@@ -32,7 +32,7 @@ Feature: Flats API - createFlat
 
 
   @authorization
-  Scenario: Validate response for flat owner
+  Scenario: Validate response for flat admin
     Given I create a flat
     And I request a flat create code
     And I use the flat API key

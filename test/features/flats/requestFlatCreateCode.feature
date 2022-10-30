@@ -12,6 +12,7 @@ Feature: Flats API - requestFlatCreateCode
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
+    And the response error message is defined
 
 
   @authorization
@@ -21,6 +22,7 @@ Feature: Flats API - requestFlatCreateCode
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
+    And the response error message is defined
 
 
   @authorization
@@ -30,6 +32,7 @@ Feature: Flats API - requestFlatCreateCode
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
+    And the response error message is defined
 
 
   @authorization

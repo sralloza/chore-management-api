@@ -372,10 +372,12 @@ paths:
               examples:
                 ChoreType:
                   $ref: "#/components/examples/ChoreType"
+        "400":
+          $ref: "#/components/responses/InvalidRequestBody"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
+          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
         "409":
           $ref: "#/components/responses/Conflict"
         "422":

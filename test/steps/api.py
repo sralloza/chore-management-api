@@ -7,7 +7,7 @@ import jq
 from behave import *
 from dateutil.parser import parse
 from hamcrest import *
-from toolium.utils.dataset import replace_param
+from toolium.utils.dataset import map_param, replace_param
 
 from common.api import send_request
 from common.request import table_to_dict
@@ -144,6 +144,18 @@ def step_impl(context):
         context.headers[header] = value
 
 
+@step('the "{flat}" as X-Flat header')
+def step_impl(context, flat):
+    flat = map_param(flat)
+    context.execute_steps(
+        f"""
+        Given the request headers
+            | header_name | header_value |
+            | X-Flat      | {flat}       |
+        """
+    )
+
+
 @step("the {correlator} as X-Correlator header")
 def headers_4p(context, correlator):
     if correlator == "[RANDOMSTR]":
@@ -160,7 +172,7 @@ def headers_4p(context, correlator):
         Given the request headers
             | header_name  | header_value |
             | X-Correlator | {correlator} |
-    """
+        """
     )
 
     # Save it
