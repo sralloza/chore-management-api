@@ -139,7 +139,7 @@ def validate_feature_tests(context, feature):
         assert_that(
             scenario_name,
             is_in(scenario_names),
-            f"Feature {feature.name} should have the common scenario {scenario_name!r}",
+            f"Feature {context.operation_id} should have the common scenario {scenario_name!r}",
         )
 
 
@@ -154,7 +154,7 @@ def validate_feature_status_codes(context, feature):
     assert_that(
         actual,
         equal_to(expected),
-        f"{feature.name}: Status codes should be the same as defined in the OpenAPI spec",
+        f"{context.operation_id}: Status codes should be the same as defined in the OpenAPI spec",
     )
 
     for status_code, messages in context.error_messages.items():
@@ -170,6 +170,6 @@ def validate_feature_status_codes(context, feature):
         assert_that(
             messages,
             equal_to(examples),
-            f"{feature.name} - {status_code}: Error messages should"
+            f"{context.operation_id} - {status_code}: Error messages should"
             " be the same as defined in the OpenAPI spec",
         )

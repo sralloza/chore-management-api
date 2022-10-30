@@ -2,14 +2,23 @@
 @getLastWeekId
 Feature: Week ID API - getLastWeekId
 
-    As a user
+    As a non authenticated user
     I want to get the last week id
+
+
+    @authorization
+    Scenario: Validate response for unauthorized user
+        Given I use a random API key
+        When I send a request to the Api
+        Then the response status code is "200"
+        And the response status code is defined
 
 
     @authorization
     Scenario: Validate response for guest
         When I send a request to the Api
         Then the response status code is "200"
+        And the response status code is defined
 
 
     @authorization
@@ -18,6 +27,7 @@ Feature: Week ID API - getLastWeekId
         And I use the user API key
         When I send a request to the Api
         Then the response status code is "200"
+        And the response status code is defined
 
 
     @authorization
@@ -26,6 +36,7 @@ Feature: Week ID API - getLastWeekId
         And I use the flat API key
         When I send a request to the Api
         Then the response status code is "200"
+        And the response status code is defined
 
 
     @authorization
@@ -38,6 +49,7 @@ Feature: Week ID API - getLastWeekId
     Scenario: Get current week ID
         When I send a request to the Api
         Then the response status code is "200"
+        And the response status code is defined
         And the response body is validated against the json-schema
         And the response attribute "week_id" as string is "[NOW(%Y.%W) - 7 DAYS]"
 
