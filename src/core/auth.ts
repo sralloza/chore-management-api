@@ -1,9 +1,9 @@
 import bunyan from "bunyan";
-import { getFlatByApiKey } from "../repositories/flats";
+import flatsRepo from "../repositories/flats";
 import { getUserByApiKey } from "../repositories/users";
 import config from "./config";
 
-const logger = bunyan.createLogger({ name: "episodes" });
+const logger = bunyan.createLogger({ name: "authMiddleware" });
 
 export const authPresent = (apiKey: string) => {
   const result = apiKey !== undefined;
@@ -24,7 +24,7 @@ export const isAdmin = (apiKey: string) => {
 };
 
 export const isFlatAdmin = async (apiKey: string) => {
-  const result = (await getFlatByApiKey(apiKey)) !== null;
+  const result = (await flatsRepo.getFlatByApiKey(apiKey)) !== null;
   logger.debug({ result, apiKey }, "isFlatAdmin");
   return result;
 };

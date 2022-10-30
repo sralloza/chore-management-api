@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getFlatByApiKey } from "../repositories/flats";
+import flatsRepo from "../repositories/flats";
 import { isAdmin } from "../core/auth";
 
 const flatNamePathResolver = async (
@@ -17,7 +17,7 @@ const flatNamePathResolver = async (
         .status(400)
         .json({ message: "Can't use the me keyword with the admin API key" });
     }
-    req.params.flatName = (await getFlatByApiKey(apiKey)).name;
+    req.params.flatName = (await flatsRepo.getFlatByApiKey(apiKey)).name;
   }
 
   next();
