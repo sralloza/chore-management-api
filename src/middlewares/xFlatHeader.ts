@@ -29,7 +29,6 @@ const parseXFlatHeader = async (
 
   // If the header is defined, we need to check if the flat exists
   // Otherwise, we can just skip the check
-  logger.info({ info: { xFlatHeader, headerDefined, isAdminResult } });
   if (headerDefined) {
     req.params.flatName = xFlatHeader;
     return flat404(req, res, next);
@@ -40,7 +39,6 @@ const parseXFlatHeader = async (
       )?.name;
     }
   }
-  logger.info({ info: { flatName: req.params.flatName } });
 
   next();
 };
