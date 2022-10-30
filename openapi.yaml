@@ -237,23 +237,18 @@ paths:
       operationId: deleteFlat
       security:
         - AdminApiKey: []
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguage"
-        - $ref: "#/components/parameters/FlatName"
       responses:
         "204":
           description: OK
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
         "404":
           $ref: "#/components/responses/NotFound"
-        "422":
-          $ref: "#/components/responses/ValidationError"
 
   /flats/{flat_name}/settings:
-    put:
+    patch:
       tags:
         - Flats
       summary: Edit flat settings
@@ -276,22 +271,16 @@ paths:
         "200":
           $ref: "#/components/responses/FlatSettings"
         "400":
-          description: Bad Request
+          description: Bad request
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
               examples:
+                InvalidKeywordMeWithAdminApiKey:
+                  $ref: "#/components/examples/InvalidKeywordMeWithAdminApiKey"
                 InvalidRequestBody:
                   $ref: "#/components/examples/InvalidRequestBody"
-                InvalidInitialAssignments:
-                  description: All users are not defined in initial_assignments
-                  value:
-                    message: All users are not defined in initial_assignments
-                InvalidInitialAssignmentsUserNotFound:
-                  description: A user was mentioned in initial_assignments but it does not exist
-                  value:
-                    message: User with id=1001 was mentioned in initial_assignments but it does not exist
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -797,6 +786,11 @@ components:
       value:
         message: You don't have permission to access this flat's information
 
+    InvalidKeywordMeWithAdminApiKey:
+      description: Can't use the me keyword with the admin API key
+      value:
+        message: Can't use the me keyword with the admin API key
+
     InvalidRequestBody:
       description: The JSON sent is invalid
       value:
@@ -1018,8 +1012,6 @@ components:
           examples:
             FlatAccessRequired:
               $ref: "#/components/examples/FlatAccessRequired"
-            InvalidFlatHeaderUse:
-              $ref: "#/components/examples/InvalidFlatHeaderUse"
 
     ForbiddenErrorInvalidFlatRequested:
       description: Forbidden
@@ -1030,8 +1022,6 @@ components:
           examples:
             FlatAccessRequired:
               $ref: "#/components/examples/FlatAccessRequired"
-            InvalidFlatHeaderUse:
-              $ref: "#/components/examples/InvalidFlatHeaderUse"
             InvalidFlatRequested:
               $ref: "#/components/examples/InvalidFlatRequested"
 
@@ -1058,7 +1048,7 @@ components:
               $ref: "#/components/examples/InvalidFlatRequested"
 
     InvalidRequestBody:
-      description: Bad request
+      description: Bad Request
       content:
         application/json:
           schema:
@@ -1073,8 +1063,10 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
-          example:
-            message: Resource not found
+          examples:
+            ResourceNotFound:
+              value:
+                message: Resource not found
 
     PaginationQueryParamsValidationError:
       description: Validation error

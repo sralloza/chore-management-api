@@ -1,6 +1,6 @@
-# Meal Planner Bot
+# Chore Management API
 
-Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
+API to manage chores in a shared flat.
 
 ## Testing
 
@@ -9,7 +9,7 @@ Successor of the [Meal Planner API](https://github.com/sralloza/meal-planner).
 behave
 
 # Launch tests of a specific API
-behave -t api.tenants
+behave -t api.flats
 
 # Launch tests of a specific endpoint
 behave -t getTenant
@@ -23,11 +23,6 @@ behave -t authorization
 
 ## Pending features
 
-- [ ] Add pagination in all `list` endpoints
-- [ ] Add prometheus metrics
-- [ ] Add redoc documentation
-- [ ] Fix timing tests in CI
-
 ## Deploy
 
 Docker images are provided in [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
@@ -38,9 +33,13 @@ Configuration is done by setting environment variables.
 
 ### Required
 
+<!-- TODO: update -->
+
 - **_ADMIN_TOKEN_**: only token with admin access.
 
 ### Optional
+
+<!-- TODO: update -->
 
 - **_MYSQL_HOST_**: host where the database is. Defaults to `localhost`.
 - **_MYSQL_PORT_**: port where the database listens to. Defaults to `3306`.

@@ -7,7 +7,8 @@ from deepdiff import DeepDiff
 from hamcrest import *
 from toolium.utils.dataset import replace_param
 
-from common.response import get_step_body_json, remove_attributes
+from common.response import get_step_body_json
+from common.utils import map_param_nested_obj, remove_attributes
 
 RESPONSES_PATH = Path(__file__).parent.parent / "resources/responses"
 
@@ -31,7 +32,7 @@ def step_impl(context):
         try:
             body_params = get_step_body_json(context)
             res_json = context.res.json()
-            remove_attributes(res_json, skip_params)
+            res_json = remove_attributes(res_json, skip_params)
 
             msg = f"Expected response: {body_params}, Adapter response: {res_json}"
             assert body_params == res_json, msg
@@ -45,10 +46,12 @@ def step_impl(context):
     if not json_file.is_file():
         raise FileNotFoundError(f'Not found file "{json_file}"')
 
+    expected_json = map_param_nested_obj(loads(json_file.read_text("utf8")))
+
     context.logger.debug(f'JSON response file: "{json_file}"')
-    expected_json = loads(json_file.read_text("utf8"))
+
     actual_json = context.res.json()
-    remove_attributes(actual_json, skip_params)
+    actual_json = remove_attributes(actual_json, skip_params)
 
     diff = DeepDiff(expected_json, actual_json)
     assert not diff, f"JSON response differs: {diff}"

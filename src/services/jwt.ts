@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import config from "../core/config";
 
 export const genJWT = (expiresIn: number | string) => {

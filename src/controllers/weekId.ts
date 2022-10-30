@@ -1,6 +1,7 @@
 import express from "express";
 import weekIdUtils from "../core/weekId";
-const router = express();
+
+const router = express.Router();
 
 router.get("/current", (req, res) => {
   res.status(200).json({ week_id: weekIdUtils.getCurrentWeekId() });

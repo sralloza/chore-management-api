@@ -1,7 +1,8 @@
 {
-	"name": "test-flat",
-	"settings": {
-		"assignment_order": [],
-		"rotation_sign": "positive"
-	}
+  "name": "[CONTEXT:created_flat_name]",
+  "settings": {
+    "assignment_order": [],
+    "rotation_sign": "positive"
+  },
+  "api_key": "[CONTEXT:flat_api_key]"
 }

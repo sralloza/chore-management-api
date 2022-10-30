@@ -8,7 +8,7 @@ const dataSource = new DataSource({
   username: config.database.username,
   password: config.database.password,
   database: config.database.database,
-  entities: ["dist/models/*DB.js"],
+  entities: ["dist/models/db/*.js"],
   synchronize: true,
   logging: false,
   migrationsRun: !config.database.disableMigrations,

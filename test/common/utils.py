@@ -1,7 +1,8 @@
 from itertools import zip_longest
 from typing import List, Optional
 
-from toolium.utils.dataset import replace_param
+from dotty_dict import dotty
+from toolium.utils.dataset import map_param, replace_param
 
 URL = "http://localhost:8080"
 VERSIONED_URL_TEMPLATE = URL + "/api/v{version}"
@@ -123,3 +124,27 @@ def payload_to_table_format(params):
         row["param_value"] = value
         table.append(row)
     return list_of_dicts_to_table_str(table)
+
+
+def map_param_nested_obj(obj):
+    if isinstance(obj, list):
+        return [map_param_nested_obj(item) for item in obj]
+
+    dotty_obj = dotty(obj)
+    for key, value in dotty_obj.items():
+        dotty_obj[key] = map_param(value)
+
+    return dotty_obj.to_dict()
+
+
+def remove_attributes(obj, attrs):
+    if isinstance(obj, list):
+        return [remove_attributes(item, attrs) for item in obj]
+
+    obj_dotty = dotty(obj)
+    for attr in attrs:
+        if attr in obj_dotty:
+            del obj_dotty[attr]
+
+    obj = obj_dotty.to_dict()
+    return obj

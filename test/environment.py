@@ -1,10 +1,11 @@
-from json import loads
+from collections import defaultdict
+from json import dumps, loads
 from pathlib import Path
 from uuid import uuid4
 
 import allure
 import requests
-from hamcrest import assert_that, equal_to
+from hamcrest import *
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
 from toolium.behave.environment import after_scenario as tlm_after_scenario
@@ -13,7 +14,9 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
+from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP, SPECIAL_STATUS_CODES
 from common.db import reset_databases
+from common.openapi import get_current_operation, get_examples
 
 
 def before_all(context):
@@ -25,15 +28,13 @@ def before_feature(context, feature):
     tlm_before_feature(context, feature)
     context.api = Path(feature.filename).parent.name
     context.resource = Path(feature.filename).stem
-    resource_from_feature_name = feature.name.split(" - ")[-1]
-    assert_that(
-        resource_from_feature_name,
-        equal_to(context.resource),
-        "Feature name should be the same as the filename",
-    )
     context.operation_id = context.resource
     context.storage = {}
+    context.status_codes = set()
+    context.error_messages = defaultdict(set)
     context.correlator = str(uuid4())
+
+    validate_feature_tests(context, feature)
 
 
 def get_dataset():
@@ -79,13 +80,16 @@ def register_allure_stdout_stderr(context):
 def after_scenario(context, scenario):
     if scenario.status == "failed":
         text = f"X-CORRELATOR FOR DEBUGGING: {context.correlator}"
-        allure.attach(text, name="x-correlator", attachment_type=allure.attachment_type.TEXT)
+        allure.attach(
+            text, name="x-correlator", attachment_type=allure.attachment_type.TEXT
+        )
     register_allure_stdout_stderr(context)
     tlm_after_scenario(context, scenario)
 
 
 def after_feature(context, feature):
     tlm_after_feature(context, feature)
+    validate_feature_status_codes(context, feature)
 
 
 def after_all(context):
@@ -100,3 +104,53 @@ def check_naming(scenario):
         raise AssertionError(msg)
     if "validate error" in scenario_name.lower():
         assert "validate error response" in scenario_name.lower()
+        step_names = [step.name for step in scenario.steps]
+        assert_that(DEFINED_ERROR_STEP, is_in(step_names))
+
+
+def validate_feature_tests(context, feature):
+    resource_from_feature_name = feature.name.split(" - ")[-1]
+    assert_that(
+        resource_from_feature_name,
+        equal_to(context.resource),
+        "Feature name should be the same as the filename",
+    )
+    scenario_names = [scenario.name for scenario in feature.scenarios]
+    for scenario_name in COMMON_SCENARIOS:
+        assert_that(
+            scenario_name,
+            is_in(scenario_names),
+            f"Feature should have the common scenario {scenario_name!r}",
+        )
+
+
+def validate_feature_status_codes(context, feature):
+    operation = get_current_operation(context)
+    expected = list({int(x) for x in operation["responses"].keys()})
+    expected.sort()
+
+    actual = list(context.status_codes)
+    actual.sort()
+
+    assert_that(
+        actual,
+        equal_to(expected),
+        f"{feature.name}: Status codes should be the same as defined in the OpenAPI spec",
+    )
+
+    for status_code, messages in context.error_messages.items():
+        if status_code in SPECIAL_STATUS_CODES:
+            continue
+
+        examples = get_examples(context, status_code)
+        examples = [dumps(x) for x in examples]
+
+        messages = list(messages)
+        messages.sort()
+        examples.sort()
+        assert_that(
+            messages,
+            equal_to(examples),
+            f"{feature.name} - {status_code}: Error messages should"
+            " be the same as defined in the OpenAPI spec",
+        )

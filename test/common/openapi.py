@@ -1,9 +1,11 @@
+from functools import lru_cache
 from pathlib import Path
 
 from jsonschema import FormatChecker, ValidationError, validate
 from ruamel.yaml import YAML
 
 
+@lru_cache()
 def get_openapi():
     root = Path(__file__).parent.parent.parent
     openapi = root / "openapi.yaml"
@@ -60,3 +62,52 @@ def validate_response(api_response, json_schema, resolver):
     except ValidationError as exc:
         msg = f"- Json Schema ValidationError: {exc.message}"
         assert False, msg
+
+
+def resolve_ref(ref: str):
+    data = get_openapi()
+    parts = ref.strip("#/").split("/")
+
+    path = data
+    for part in parts:
+        path = path[part]
+    return path
+
+
+def get_examples(context, code: str | int | None = None):
+    operation = get_current_operation(context)
+    code = str(code or context.res.status_code)
+
+    response = operation["responses"][code]
+    if "$ref" in response:
+        response = resolve_ref(response["$ref"])
+
+    examples = []
+    for example in response["content"]["application/json"]["examples"].values():
+        for key, value in example.items():
+            if key == "$ref":
+                examples.append(resolve_ref(value)["value"])
+            elif key == "value":
+                examples.append(value)
+            elif key == "description":
+                continue
+            else:
+                raise ValueError(f"Unknown example key {key}")
+    return examples
+
+
+def get_operation_schema(context):
+    operation = get_current_operation(context)
+    code = str(context.res.status_code)
+    if code in operation["responses"]:
+        schema = operation["responses"][code]
+        if "$ref" in schema:
+            schema = resolve_ref(schema["$ref"])
+        schema = schema["content"]["application/json"]["schema"]
+    else:
+        raise ValueError(f"No schema found for operation {context.resource}")
+
+    if "$ref" in schema:
+        schema = resolve_ref(schema["$ref"])
+
+    return dict(schema)
