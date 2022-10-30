@@ -81,24 +81,24 @@ Feature: Chore Types API - getChoreType
     And the response error message is defined
 
 
-  Scenario: Validate error response when using the x-flat header without the admin key
+  Scenario: Validate error response when using the X-Flat header without the admin API key
     Given I create a flat and I use the flat API key
     And the field "chore_type_id" with value "xxx"
     And the "xxx" as X-Flat header
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Can't use the x-flat header without the admin API key"
+    And the error message is "Can't use the X-Flat header without the admin API key"
     And the response error message is defined
 
 
-  Scenario: Validate error response when using the admin key without the x-flat header
+  Scenario: Validate error response when using the admin API key without the X-Flat header
     Given I use the admin API key
     And the field "chore_type_id" with value "xxx"
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Must use the x-flat header with the admin API key"
+    And the error message is "Must use the X-Flat header with the admin API key"
     And the response error message is defined
 
 

@@ -13,6 +13,6 @@ DEFINED_ERROR_STEP = "the response error message is defined"
 SPECIAL_STATUS_CODES = (404, 409, 422)
 DEFINED_OK_STATUS_CODE_STEP_PATTERN = re.compile(r'the response status code is "(\d+)"')
 X_FLAT_HEADER_STEPS = (
-    "Validate error response when using the x-flat header without the admin key",
-    "Scenario: Validate error response when using the admin key without the x-flat header",
+    "Validate error response when using the X-Flat header without the admin API key",
+    "Validate error response when using the admin API key without the X-Flat header",
 )

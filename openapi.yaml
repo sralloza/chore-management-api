@@ -35,7 +35,7 @@ info:
 
     ## Selecting a flat
 
-    By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `X-Flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the X-Flat header without the admin key`.
+    By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `X-Flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the X-Flat header without the admin API key`. If the header is not used in these endpoints with the Admin API key, the endpoint will return `400 - Must use the X-Flat header with the admin API key`.
 
     # Tickets system
 
@@ -351,6 +351,8 @@ paths:
               examples:
                 chore type list:
                   $ref: "#/components/examples/ChoreTypeList"
+        "400":
+          $ref: "#/components/responses/InvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -1521,12 +1523,12 @@ components:
     AdminApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token
     FlatAdminApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token
     UserApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token

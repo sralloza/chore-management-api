@@ -1,18 +1,22 @@
 [
   {
-    "id": "A",
+    "id": "ct-a",
+    "name": "ct-a",
     "description": "description1"
   },
   {
-    "id": "B",
+    "id": "ct-b",
+    "name": "ct-b",
     "description": "description2"
   },
   {
-    "id": "C",
+    "id": "ct-c",
+    "name": "ct-c",
     "description": "description3"
   },
   {
-    "id": "D",
+    "id": "ct-d",
+    "name": "ct-d",
     "description": "description4"
   }
 ]
