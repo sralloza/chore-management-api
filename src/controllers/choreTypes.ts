@@ -31,7 +31,7 @@ router.post(
   }
 );
 
-router.get("", flatAuth, parseXFlatHeader, async (req, res) => {
+router.get("", userAuth, parseXFlatHeader, async (req, res) => {
   const choreTypes = await choreTypesRepo.listChoreTypes(req.params.flatName);
   res.status(200).json(choreTypes);
 });

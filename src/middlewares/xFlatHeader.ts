@@ -12,19 +12,19 @@ const parseXFlatHeader = async (
   res: Response,
   next: NextFunction
 ) => {
-  const xFlatHeader = req.get("x-flat") as string;
+  const xFlatHeader = req.get("X-Flat") as string;
   const headerDefined = xFlatHeader !== undefined;
-  const isAdminResult = isAdmin(req.get("x-token"));
+  const isAdminResult = isAdmin(req.get("X-Token"));
 
   if (headerDefined && !isAdminResult) {
     return res.status(400).json({
-      message: "Can't use the x-flat header without the admin API key",
+      message: "Can't use the X-Flat header without the admin API key",
     });
   }
   if (!headerDefined && isAdminResult) {
     return res
       .status(400)
-      .json({ message: "Must use the x-flat header with the admin API key" });
+      .json({ message: "Must use the X-Flat header with the admin API key" });
   }
 
   // If the header is defined, we need to check if the flat exists

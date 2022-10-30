@@ -21,7 +21,7 @@ info:
     # Concepts
 
     - **User**: Each person living in the same flat, a flatmate.
-    - **Flat**: A flat. Each user and chore is assigned to a different flat. This API is multi-flat, it can manage the chores of multiple flats. The flat is selected by the `x-flat` header. For more info about the `x-flat` header, please read the [multiflat](#section/Concepts/Multiflat) section.
+    - **Flat**: A flat. Each user and chore is assigned to a different flat. This API is multi-flat, it can manage the chores of multiple flats. The flat is selected by the `X-Flat` header. For more info about the `X-Flat` header, please read the [multiflat](#section/Concepts/Multiflat) section.
     - **Chore Type**: A defined chore that needs to be executed weekly in the flat. Each chore type will be assigned weekly to a different flatmate.
     - **Weekly chores**: Chores grouped by week.
     - **Week ID**: Weeks are identified by the year and the week number, like `2022.03` (the third week of 2022).
@@ -35,7 +35,7 @@ info:
 
     ## Selecting a flat
 
-    By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `x-flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the x-flat header without the admin key`.
+    By default the flat is selected by the scope of the API key. Flat and User API keys are associated with a specific flat, but the Admin API key isn't. When using the Admin API key in operations where the floor must be selected, the `X-Flat` header must be used to select it. If this header is used with a Flat or User API key the endpoint will return `400 - Can't use the X-Flat header without the admin API key`. If the header is not used in these endpoints with the Admin API key, the endpoint will return `400 - Must use the X-Flat header with the admin API key`.
 
     # Tickets system
 
@@ -152,6 +152,10 @@ paths:
       summary: Create flat
       description: Create new flat.
       operationId: createFlat
+      security:
+        - AdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       requestBody:
         required: true
         content:
@@ -202,6 +206,8 @@ paths:
       operationId: listFlats
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/FlatList"
@@ -219,6 +225,8 @@ paths:
       operationId: getFlat
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/Flat"
@@ -237,6 +245,8 @@ paths:
       operationId: deleteFlat
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "204":
           description: OK
@@ -258,6 +268,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/FlatName"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       requestBody:
         required: true
         content:
@@ -299,6 +310,8 @@ paths:
       operationId: requestFlatCreateCode
       security:
         - AdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           description: OK
@@ -312,7 +325,6 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          # TODO: 401 - Invalid create code
           $ref: "#/components/responses/ForbiddenErrorAdminRequired"
 
   /chore-types:
@@ -325,6 +337,7 @@ paths:
       security:
         - UserApiKey: []
       parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -338,6 +351,8 @@ paths:
               examples:
                 chore type list:
                   $ref: "#/components/examples/ChoreTypeList"
+        "400":
+          $ref: "#/components/responses/InvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -352,6 +367,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
@@ -394,6 +410,7 @@ paths:
         - UserApiKey: []
       parameters:
         - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -424,8 +441,8 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/ChoreTypeID"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
-        - $ref: "#/components/parameters/AcceptLanguage"
       responses:
         "204":
           description: OK
@@ -443,6 +460,8 @@ paths:
       summary: Get last week ID
       description: Get last week's identifier
       operationId: getLastWeekId
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -454,6 +473,8 @@ paths:
       summary: Get current week ID
       description: Get the current week identifier
       operationId: getCurrentWeekId
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -465,6 +486,8 @@ paths:
       summary: Get next week ID
       description: Get next week's identifier
       operationId: getNextWeekId
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/WeekID"
@@ -479,6 +502,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       requestBody:
         required: true
@@ -510,6 +534,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -530,6 +555,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
@@ -553,6 +579,7 @@ paths:
         - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "204":
           description: OK
@@ -588,6 +615,7 @@ paths:
       security:
         - FlatAdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
         - name: type_id
           description: Chore type to filter the chores
@@ -636,6 +664,8 @@ paths:
       operationId: listTickets
       security:
         - FlatAdminApiKey: []
+      parameters:
+        - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
           $ref: "#/components/responses/TicketList"
@@ -656,6 +686,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
         - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "204":
@@ -689,6 +720,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
         - $ref: "#/components/parameters/WeekIDPath"
+        - $ref: "#/components/parameters/XCorrelatorHeader"
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "204":
@@ -781,9 +813,9 @@ components:
         rotation_sign: positive
 
     InvalidFlatHeaderUseWithAdminApiKey:
-      description: The `x-flat` header was sent without an admin API key
+      description: The `X-Flat` header was sent without an admin API key
       value:
-        message: Can't use the x-flat header without the admin API key
+        message: Can't use the X-Flat header without the admin API key
 
     InvalidFlatRequested:
       description: The token provided does not grant access to the flat requested
@@ -801,9 +833,9 @@ components:
         message: Request body is not a valid JSON
 
     MissingFlatHeaderWithAdminApiKey:
-      description: Must use the x-flat header with the admin API key
+      description: Must use the X-Flat header with the admin API key
       value:
-        message: Must use the x-flat header with the admin API key
+        message: Must use the X-Flat header with the admin API key
 
     SimpleChoreList:
       description: List of simple chores
@@ -954,8 +986,18 @@ components:
       schema:
         $ref: "#/components/schemas/WeekID"
 
+    XCorrelatorHeader:
+      name: X-Correlator
+      in: header
+      description: Correlator ID. The server will send the X-Correlator header with the same value as the one in the response, or with a new one if not provided.
+      required: false
+      schema:
+        type: string
+        format: uuid
+      example: 9ce30976-bb33-4cd7-acb5-b39a7cedb729
+
     XFlatHeader:
-      name: x-flat
+      name: X-Flat
       in: header
       required: false
       schema:
@@ -1481,12 +1523,12 @@ components:
     AdminApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token
     FlatAdminApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token
     UserApiKey:
       type: apiKey
       in: header
-      name: x-token
+      name: X-Token

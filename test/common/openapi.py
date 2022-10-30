@@ -111,3 +111,21 @@ def get_operation_schema(context):
         schema = resolve_ref(schema["$ref"])
 
     return dict(schema)
+
+
+def get_parameters(context):
+    operation = get_current_operation(context)
+    parameters = []
+    for parameter in operation["parameters"]:
+        if "$ref" in parameter:
+            parameter = resolve_ref(parameter["$ref"])
+            parameters.append(parameter)
+        else:
+            raise ValueError(f"Unknown parameter {parameter!r}")
+
+    return parameters
+
+
+def get_request_headers(context):
+    parameters = get_parameters(context)
+    return [x["name"] for x in parameters if x["in"] == "header"]
