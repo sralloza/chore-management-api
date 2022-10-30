@@ -83,6 +83,31 @@ Feature: Flats API - editFlatSettings
     And the response error message is defined
 
 
+  Scenario: Validate error response when the payload is not a valid json
+    Given the field "flat_name" with value "xxx"
+    When I send a request to the Api with body
+      """
+      xxx
+      """
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "Request body is not a valid JSON"
+    And the response error message is defined
+
+
+  Scenario: Validate error response when a flat admin tries to edit other flat settings
+    Given I create a flat
+    And I save the "api_key" attribute of the response as "first_flat_api_key"
+    And I create a flat
+    And the field "flat_name" saved as "created_flat_name"
+    And the field "token" saved as "first_flat_api_key"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "You don't have permission to access this flat's information"
+    And the response error message is defined
+
+
   Scenario: Validate error response when the flat doesn't exist
     Given the field "flat_name" with value "invalid_flat"
     And I use the admin API key
@@ -94,8 +119,8 @@ Feature: Flats API - editFlatSettings
 
 
   Scenario Outline: Validate error response when sending invalid data
-    Given the field "flat_name" with value "test-flat"
-    And I create a flat with a user and I use the flat API key
+    Given I create a flat with a user and I use the flat API key
+    And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api with body params
       | param_name         | param_value     |
       | assignment_order   | [LIST:[]]       |

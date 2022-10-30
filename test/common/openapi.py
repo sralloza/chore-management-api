@@ -74,9 +74,9 @@ def resolve_ref(ref: str):
     return path
 
 
-def get_examples(context):
+def get_examples(context, code: str | int | None = None):
     operation = get_current_operation(context)
-    code = str(context.res.status_code)
+    code = str(code or context.res.status_code)
 
     response = operation["responses"][code]
     if "$ref" in response:

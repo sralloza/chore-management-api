@@ -1,4 +1,5 @@
-from json import loads
+from collections import defaultdict
+from json import dumps, loads
 from pathlib import Path
 from uuid import uuid4
 
@@ -13,9 +14,9 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP
+from common.constants import COMMON_SCENARIOS, DEFINED_ERROR_STEP, SPECIAL_STATUS_CODES
 from common.db import reset_databases
-from common.openapi import get_current_operation
+from common.openapi import get_current_operation, get_examples
 
 
 def before_all(context):
@@ -30,6 +31,7 @@ def before_feature(context, feature):
     context.operation_id = context.resource
     context.storage = {}
     context.status_codes = set()
+    context.error_messages = defaultdict(set)
     context.correlator = str(uuid4())
 
     validate_feature_tests(context, feature)
@@ -135,3 +137,20 @@ def validate_feature_status_codes(context, feature):
         equal_to(expected),
         f"{feature.name}: Status codes should be the same as defined in the OpenAPI spec",
     )
+
+    for status_code, messages in context.error_messages.items():
+        if status_code in SPECIAL_STATUS_CODES:
+            continue
+
+        examples = get_examples(context, status_code)
+        examples = [dumps(x) for x in examples]
+
+        messages = list(messages)
+        messages.sort()
+        examples.sort()
+        assert_that(
+            messages,
+            equal_to(examples),
+            f"{feature.name} - {status_code}: Error messages should"
+            " be the same as defined in the OpenAPI spec",
+        )

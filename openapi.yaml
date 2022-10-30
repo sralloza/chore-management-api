@@ -237,16 +237,13 @@ paths:
       operationId: deleteFlat
       security:
         - AdminApiKey: []
-      parameters:
-        - $ref: "#/components/parameters/AcceptLanguage"
-        - $ref: "#/components/parameters/FlatName"
       responses:
         "204":
           description: OK
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
+          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -1015,8 +1012,6 @@ components:
           examples:
             FlatAccessRequired:
               $ref: "#/components/examples/FlatAccessRequired"
-            InvalidFlatHeaderUse:
-              $ref: "#/components/examples/InvalidFlatHeaderUse"
 
     ForbiddenErrorInvalidFlatRequested:
       description: Forbidden
@@ -1027,8 +1022,6 @@ components:
           examples:
             FlatAccessRequired:
               $ref: "#/components/examples/FlatAccessRequired"
-            InvalidFlatHeaderUse:
-              $ref: "#/components/examples/InvalidFlatHeaderUse"
             InvalidFlatRequested:
               $ref: "#/components/examples/InvalidFlatRequested"
 
@@ -1055,7 +1048,7 @@ components:
               $ref: "#/components/examples/InvalidFlatRequested"
 
     InvalidRequestBody:
-      description: Bad request
+      description: Bad Request
       content:
         application/json:
           schema:

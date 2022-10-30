@@ -1,4 +1,5 @@
 import re
+from json import dumps
 
 from requests import Response
 
@@ -50,6 +51,9 @@ def _send_request(context, method, path, operation_id, payload=None):
     )
     if context.operation_id == operation_id:
         context.status_codes.add(res.status_code)
+        if not res.ok:
+            context.error_messages[res.status_code].add(dumps(res.json()))
+
     print_res(res)
     return res
 
