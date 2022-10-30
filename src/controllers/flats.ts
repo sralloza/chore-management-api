@@ -11,7 +11,7 @@ import redisClient from "../services/redis";
 import validate from "../validators";
 import {
   flatCreateValidator,
-  flatSettingsUpdateValidator
+  flatSettingsUpdateValidator,
 } from "../validators/flat";
 
 const logger = bunyan.createLogger({ name: "choreTypesController" });
@@ -61,10 +61,7 @@ router.patch(
   validate(flatSettingsUpdateValidator),
   flat404,
   async (req, res) => {
-    const flat = await flatsRepo.updateFlatSettings(
-      req.body,
-      req.flat.name
-    );
+    const flat = await flatsRepo.updateFlatSettings(req.body, req.flat.name);
     res.status(200).json(flat.settings);
   }
 );

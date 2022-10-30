@@ -7,7 +7,11 @@ import { flat404 } from "./flats";
 const logger = bunyan.createLogger({ name: "authMiddleware" });
 
 // Note: must be used with admin or flat admin access only
-const parseXFlatHeader = async (req: Request, res: Response, next: NextFunction) => {
+const parseXFlatHeader = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const xFlatHeader = req.get("x-flat") as string;
   const headerDefined = xFlatHeader !== undefined;
   const isAdminResult = isAdmin(req.get("x-token"));
@@ -31,7 +35,9 @@ const parseXFlatHeader = async (req: Request, res: Response, next: NextFunction)
     return flat404(req, res, next);
   } else {
     if (req.params.flatName === undefined) {
-      req.params.flatName = (await flatsRepo.getFlatByApiKey(req.get("x-token")))?.name;
+      req.params.flatName = (
+        await flatsRepo.getFlatByApiKey(req.get("x-token"))
+      )?.name;
     }
   }
   logger.info({ info: { flatName: req.params.flatName } });

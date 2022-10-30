@@ -124,11 +124,7 @@ def check_stattus_code_is_registered(context, scenario):
     step_names = [step.name for step in scenario.steps]
     info = f"{context.operation_id} - {scenario.name}"
     msg = f"[{info}] Must check error status code is registered"
-    assert_that(
-        DEFINED_ERROR_STEP,
-        is_in(step_names),
-        msg
-    )
+    assert_that(DEFINED_ERROR_STEP, is_in(step_names), msg)
 
 
 def validate_feature_tests(context, feature):

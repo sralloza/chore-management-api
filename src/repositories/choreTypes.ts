@@ -13,7 +13,7 @@ const mapper = (choreType: ChoreTypeDB): ChoreType => {
 
 const choreTypesRepo = {
   listChoreTypes: async (flatName: string): Promise<ChoreType[]> => {
-    const choreTypes = await repo.find({where: {flatName}});
+    const choreTypes = await repo.find({ where: { flatName } });
     return choreTypes.map(mapper);
   },
 
@@ -22,7 +22,10 @@ const choreTypesRepo = {
     return mapper(choreType);
   },
 
-  getChoreTypeById: async (id: string, flatName: string): Promise<ChoreType> => {
+  getChoreTypeById: async (
+    id: string,
+    flatName: string
+  ): Promise<ChoreType> => {
     const choreType = await repo.findOne({ where: { id, flatName } });
     return mapper(choreType);
   },

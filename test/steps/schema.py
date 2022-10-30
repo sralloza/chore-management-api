@@ -50,7 +50,9 @@ def step_impl(context):
         return
 
     examples = get_examples(context)
-    assert_that(context.res.json(), is_in(examples), "Error response must be in examples")
+    assert_that(
+        context.res.json(), is_in(examples), "Error response must be in examples"
+    )
 
 
 @then("the response body is validated against the json-schema")
