@@ -12,10 +12,7 @@ behave
 behave -t api.flats
 
 # Launch tests of a specific endpoint
-behave -t getTenant
-
-# Launch sanity tests (most important features)
-behave -t sanity
+behave -t getChoreTypes
 
 # Launch authorization tests
 behave -t authorization
@@ -27,25 +24,25 @@ behave -t authorization
 
 Docker images are provided in [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
 
+**Note: the database must be mariadb or mysql.**
+
 ## Configuration
 
 Configuration is done by setting environment variables.
 
 ### Required
 
-<!-- TODO: update -->
-
 - **_ADMIN_TOKEN_**: only token with admin access.
+- **_ADMIN_API_KEY_**: master administration API key.
+- **_APPLICATION_SECRET_**: secret key for the application. Used to sign JWT tokens.
 
 ### Optional
 
-<!-- TODO: update -->
-
-- **_MYSQL_HOST_**: host where the database is. Defaults to `localhost`.
-- **_MYSQL_PORT_**: port where the database listens to. Defaults to `3306`.
-- **_MYSQL_DATABASE_**: database name to use. Defaults to `chore-management`.
-- **_MYSQL_USER_**: user to access the database. Defaults to `root`.
-- **_MYSQL_PASSWORD_**: password to access the database. Defaults to `root`.
-- **_LOG_LEVEL_**: general level of logs. Defaults to `INFO`.
-- **_SPRING_WEB_LOG_LEVEL_**: spring logger level. Defaults to `DEBUG`.
-- **_HIBERNATE_LOG_LEVEL_**: hibernate logger level. Defaults to `INFO`.
+- **_REDIS_HOST_**: redis host. Defaults to `localhost`.
+- **_REDIS_PORT_**: redis port. Defaults to `6379`.
+- **_DATABASE_HOST_**: database host. Defaults to `localhost`.
+- **_DATABASE_PORT_**: database port. Defaults to `3306`.
+- **_DATABASE_NAME_**: database name. Defaults to `chore-management`.
+- **_DATABASE_USERNAME_**: database username. Defaults to `root`.
+- **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
+- **_DISABLE_MIGRATIONS_**: disable migrations on start. Defaults to `false`, meaning by default migrations are executed on start.
