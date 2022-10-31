@@ -40,6 +40,7 @@ jobs:
         run: ./run-tests.sh
 
       - name: Compress test results
+        if: always()
         run: tar cvfz test/reports.zip test/reports
 
       - uses: actions/upload-artifact@v2
