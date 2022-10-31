@@ -10,18 +10,21 @@ const mapper = (user: UserDB): User => {
     id: user.id,
     username: user.username,
     api_key: user.apiKey,
-    flat_name: user.flatName,
   };
 };
 
 const userRepo = {
-  listUsers: async (): Promise<User[]> => {
-    const users = await repo.find();
-    return users.map(mapper);
+  listUsers: async (flatName: string): Promise<User[]> => {
+    const users = await repo.find({ where: { flatName } });
+    return users
+      .map(mapper)
+      .sort((a, b) =>
+        a.username.toLowerCase().localeCompare(b.username.toLowerCase())
+      );
   },
 
-  getUserById: async (id: bigint): Promise<User | null> => {
-    const user = await repo.findOne({ where: { id } });
+  getUserById: async (id: string, flatName: string): Promise<User | null> => {
+    const user = await repo.findOne({ where: { id, flatName } });
     return mapper(user);
   },
 

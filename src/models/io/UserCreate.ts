@@ -1,4 +1,4 @@
 class UserCreate {
-  id: bigint;
+  id: string;
   username: string;
 }

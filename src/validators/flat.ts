@@ -38,27 +38,23 @@ export const flatCreateValidator = [
     .withMessage("body.create_code is not a valid JWT"),
 ];
 
-const eqSet = (xs: Set<bigint>, ys: Set<bigint>) =>
+const eqSet = <T>(xs: Set<T>, ys: Set<T>) =>
   xs.size === ys.size && [...xs].every((x) => ys.has(x));
 
 export const flatSettingsUpdateValidator = [
   body("rotation_sign")
     .optional({ checkFalsy: true })
-    // .bail()
     .isIn(["positive", "negative"])
     .withMessage("body.rotation_sign must be either 'positive' or 'negative'"),
   body("assignment_order")
     .optional({ checkFalsy: true })
-    // .bail()
     .isArray()
     .withMessage("body.assignment_order must be an array")
     .custom(async (value) => {
       const dbUserIds = new Set(
-        (await usersRepo.find()).map((user) => BigInt(user.id))
+        (await usersRepo.find()).map((user) => user.id)
       );
-      const requestUserIds: Set<bigint> = new Set(
-        value.map((id: string) => BigInt(id))
-      );
+      const requestUserIds: Set<string> = new Set(value);
 
       if (!eqSet(dbUserIds, requestUserIds)) {
         return Promise.reject();

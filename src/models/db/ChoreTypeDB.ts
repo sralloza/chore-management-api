@@ -2,8 +2,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "choreTypes" })
 class UserDB {
-  @PrimaryGeneratedColumn("increment")
-  realId: bigint;
+  @PrimaryGeneratedColumn("uuid")
+  realId: string;
   @Column("varchar", { length: 25 })
   id: string;
   @Column("varchar", { length: 50 })

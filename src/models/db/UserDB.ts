@@ -1,12 +1,14 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "users" })
 class UserDB {
-  @PrimaryColumn("bigint")
-  id: bigint;
+  @PrimaryGeneratedColumn("uuid")
+  realId: string;
+  @Column("varchar", { length: 40 })
+  id: string;
   @Column("varchar", { length: 50 })
   username: string;
-  @Column("varchar", { length: 36 })
+  @Column("varchar", { length: 36, unique: true })
   apiKey: string;
   @Column("varchar", { length: 20 })
   flatName: string;

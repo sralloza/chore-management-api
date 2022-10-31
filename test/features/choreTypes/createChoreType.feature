@@ -123,7 +123,7 @@ Feature: Chore Types API - createChoreType
 
   Scenario: Validate that tickets are created after the chore type
     Given I create a flat
-    And there are 3 tenants
+    And there are 3 users
     And I use the flat API key
     When I send a request to the Api with body params
       | param_name  | param_value           |

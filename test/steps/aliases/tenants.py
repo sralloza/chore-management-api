@@ -3,11 +3,10 @@ from behave import *
 from common.utils import *
 
 
-@given("there is {tenants:d} tenant")
-@given("there are {tenants:d} tenants")
-def step_impl(context, tenants):
-    for i in range(1, tenants + 1):
-        raw_data = {"id": i, "username": f"tenant{i}"}
+@given("there are {users:d} users")
+def step_impl(context, users):
+    for i in range(1, users + 1):
+        raw_data = {"id": f"user-{i}", "username": f"user-{i}"}
         context.execute_steps(
             f"""
             Given I use the flat API key
