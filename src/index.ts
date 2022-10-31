@@ -8,9 +8,8 @@ import correlatorMiddleware from "./middlewares/correlator";
 import redisClient from "./services/redis";
 
 const logger = bunyan.createLogger({ name: "main" });
-
 const app = express();
-// // XXX: I think this can be removed
+
 app.disable("x-powered-by");
 app.use(express.json());
 app.use(morgan("dev"));
