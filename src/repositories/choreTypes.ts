@@ -14,7 +14,9 @@ const mapper = (choreType: ChoreTypeDB): ChoreType => {
 const choreTypesRepo = {
   listChoreTypes: async (flatName: string): Promise<ChoreType[]> => {
     const choreTypes = await repo.find({ where: { flatName } });
-    return choreTypes.map(mapper);
+    return choreTypes
+      .map(mapper)
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   },
 
   getChoreTypeByName: async (name: string): Promise<ChoreType> => {

@@ -60,12 +60,12 @@ def step_impl(context):
     context.execute_steps("Then the response status code is defined")
 
     schema = get_operation_schema(context)
-    schemas_folder = Path(__file__).parent.parent / f"resources/schemas.json"
-
-    resolver = RefResolver(referrer=schema, base_uri=schemas_folder.as_uri())
+    resolver = RefResolver(referrer=schema, base_uri="file:///")
 
     api_response = context.res.json()
     extra_schemas = get_defined_schemas()
+
+    schema["$schema"] = "https://json-schema.org/draft-07/schema"
     schema["components"] = {"schemas": extra_schemas}
 
     validate_response(api_response, schema, resolver)

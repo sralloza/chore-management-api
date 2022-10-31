@@ -1,5 +1,5 @@
 class FlatSettings {
-  assignment_order: number[];
+  assignment_order: string[];
   rotation_sign: RotationSign;
 }
 

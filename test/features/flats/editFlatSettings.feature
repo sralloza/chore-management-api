@@ -69,7 +69,7 @@ Feature: Flats API - editFlatSettings
       """
       {
         "assignment_order": [
-          <user_id>
+          "<user_id>"
         ],
         "rotation_sign": "<rotation_sign>"
       }
@@ -81,6 +81,38 @@ Feature: Flats API - editFlatSettings
       | [CONTEXT:created_flat_name] | test-flat      | [CONTEXT:created_user_id] | negative      |
       | me                          | test-flat      | [CONTEXT:created_user_id] | positive      |
       | me                          | test-flat      | [CONTEXT:created_user_id] | negative      |
+
+
+  Scenario: Edit flat settings when it exists with 2 users
+    Given I create a flat and I use the flat API key
+    When I send a request to the Api resource "createUser" with body params
+      | param_name | param_value |
+      | username   | user-1      |
+      | id         | user-1      |
+    Then the response status code is "200"
+    When I send a request to the Api resource "createUser" with body params
+      | param_name | param_value |
+      | username   | user-2      |
+      | id         | user-2      |
+    Then the response status code is "200"
+    And the field "flat_name" saved as "created_flat_name"
+    When I send a request to the Api with body params
+      | param_name         | param_value |
+      | assignment_order.0 | user-2      |
+      | assignment_order.1 | user-1      |
+      | rotation_sign      | negative    |
+    Then the response status code is "200"
+    And the response body is validated against the json-schema
+    And the Api response contains the expected data
+      """
+      {
+        "assignment_order": [
+          "user-2",
+          "user-1"
+        ],
+        "rotation_sign": "negative"
+      }
+      """
 
 
   Scenario: Validate error response when using the me keyword with the admin API key

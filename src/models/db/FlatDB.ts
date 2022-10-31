@@ -8,7 +8,7 @@ class FlatDB {
   assignmentOrder: string;
   @Column("varchar", { length: 15 })
   rotationSign: string;
-  @Column("varchar", { length: 36 })
+  @Column("varchar", { length: 36, unique: true })
   apiKey: string;
 }
 

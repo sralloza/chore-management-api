@@ -1,6 +1,5 @@
 class User {
-  id: bigint;
+  id: string;
   username: string;
   api_key: string;
-  flat_name: string;
 }

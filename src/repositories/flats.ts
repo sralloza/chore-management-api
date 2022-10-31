@@ -8,8 +8,7 @@ const splitString = (str: string) =>
   str
     .split(",")
     .map((s) => s.trim())
-    .filter((s) => s.length > 0)
-    .map((s) => Number.parseInt(s, 10));
+    .filter((s) => s.length > 0);
 
 const buildFlat = (flat: FlatDB): Flat => {
   if (flat === null) return null;
@@ -26,7 +25,9 @@ const buildFlat = (flat: FlatDB): Flat => {
 const flatsRepo = {
   listFlats: async () => {
     const flats = await repo.find();
-    return flats.map(buildFlat);
+    return flats
+      .map(buildFlat)
+      .sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
   },
 
   getFlatByName: async (name: string): Promise<Flat> => {

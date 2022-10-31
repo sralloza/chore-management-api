@@ -9,10 +9,6 @@ import redisClient from "./services/redis";
 
 const logger = bunyan.createLogger({ name: "main" });
 
-(BigInt.prototype as any).toJSON = function () {
-  return this.toString();
-};
-
 const app = express();
 // // XXX: I think this can be removed
 app.disable("x-powered-by");
