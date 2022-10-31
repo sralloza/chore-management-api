@@ -40,6 +40,7 @@ fi
 
 testsOk=true
 rm -rf test/reports
+rm -rf test/reports.zip
 behave -t=-old
 
 if [[ $? -ne 0 ]]; then

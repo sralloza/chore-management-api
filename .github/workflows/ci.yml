@@ -39,15 +39,11 @@ jobs:
       - name: Run tests e2e
         run: ./run-tests.sh
 
+      - name: Compress test results
+        run: tar cvfz test/reports.zip test/reports
+
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: "Test Reports"
-          path: test/reports
-
-      # TODO: run only if tests fail
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: "docker-compose logs"
-          path: docker-compose.log
+          path: test/reports.zip
