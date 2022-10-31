@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 mustExit=false
+maxRetries=30
+retriesLeft="$maxRetries"
 
 function cleanup {
   docker-compose down -v
@@ -11,17 +13,30 @@ trap cleanup INT
 
 docker-compose up --build -d
 
-# TODO: use for loop to fail after 5 minutes
-until [[ $(docker inspect -f "{{ .State.Health.Status }}" app) = "healthy" ]]; do
+for (( i=1; i<=$maxRetries; i++ )); do
   if [[ "$mustExit" = "true" ]]; then
     exit 1
   fi
 
-  echo "Waiting for app to start..."
-  sleep 1;
-done;
+  appStatus="$(docker inspect -f "{{ .State.Health.Status }}" app)"
+  if [ "$appStatus" = "healthy" ]; then
+    echo "App is healthy"
+    break
+  else
+    echo "Waiting for app to start ($retriesLeft retries left)..."
+    sleep 1;
+  fi
 
-echo "App is running"
+  retriesLeft=$((maxRetries - i))
+done
+
+if [[ "$retriesLeft" -eq "0" ]]; then
+  echo "App failed to start"
+  echo "Showing docker-compose logs"
+  docker-compose logs
+  cleanup
+  exit 1
+fi
 
 testsOk=true
 rm -rf test/reports
