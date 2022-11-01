@@ -107,6 +107,7 @@ Feature: Chore Types API - createChoreType
     And the error message is "Must use the X-Flat header with the admin API key"
     And the response error message is defined
 
+
   Scenario: Validate error response when using the X-Flat header without the admin API key
     Given I create a flat with a user and I use the flat API key
     And the "xxx" as X-Flat header

@@ -106,16 +106,16 @@ def check_naming(context, scenario):
         raise AssertionError(msg)
     if "validate error" in scenario_name.lower():
         assert "validate error response" in scenario_name.lower()
-        check_stattus_code_is_registered(context, scenario)
+        check_status_code_is_registered(context, scenario)
 
     step_cheks = [DEFINED_OK_STATUS_CODE_STEP_PATTERN.search(x) for x in step_names]
     if any(step_cheks):
         match = next(x for x in step_cheks if x)
         if match.group(1)[0] != "2":
-            check_stattus_code_is_registered(context, scenario)
+            check_status_code_is_registered(context, scenario)
 
 
-def check_stattus_code_is_registered(context, scenario):
+def check_status_code_is_registered(context, scenario):
     step_names = [step.name for step in scenario.steps]
     info = f"{context.operation_id} - {scenario.name}"
     msg = f"[{info}] Must check error status code is registered"
