@@ -517,13 +517,15 @@ paths:
         "200":
           $ref: "#/components/responses/User"
         "400":
-          $ref: "#/components/responses/ValidationError"
+          $ref: "#/components/responses/InvalidRequestBodyAndInvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/ForbiddenErrorFlatRequired"
         "409":
           $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/ValidationError"
 
     get:
       tags:

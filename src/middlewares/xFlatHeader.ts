@@ -1,10 +1,7 @@
-import bunyan from "bunyan";
 import { NextFunction, Request, Response } from "express";
 import { isAdmin } from "../core/auth";
 import flatsRepo from "../repositories/flats";
 import { flat404 } from "./flats";
-
-const logger = bunyan.createLogger({ name: "authMiddleware" });
 
 // Note: must be used with admin or flat admin access only
 const parseXFlatHeader = async (

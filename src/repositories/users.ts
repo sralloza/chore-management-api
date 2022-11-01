@@ -7,7 +7,8 @@ const repo = dataSource.getRepository(UserDB);
 const mapper = (user: UserDB): User => {
   if (user === null) return null;
   return {
-    id: user.id,
+    // If the user.id is a number TypeORM will return it as a number (but storing it as a string)
+    id: String(user.id),
     username: user.username,
     api_key: user.apiKey,
   };

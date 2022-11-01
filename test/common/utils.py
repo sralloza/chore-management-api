@@ -148,3 +148,7 @@ def remove_attributes(obj, attrs):
 
     obj = obj_dotty.to_dict()
     return obj
+
+
+def toolium_replace(x, **kwargs):
+    return map_param(replace_param(x, **kwargs))

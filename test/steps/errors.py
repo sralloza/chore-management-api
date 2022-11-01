@@ -1,6 +1,7 @@
 from behave import *
 from deepdiff import DeepDiff
-from toolium.utils.dataset import map_param, replace_param
+
+from common.utils import toolium_replace
 
 
 @then("the response contains the following validation errors")
@@ -9,11 +10,11 @@ def step_impl(context):
     errors = context.res.json()["errors"]
     for row in context.table:
         error = {
-            "location": map_param(replace_param(row["location"])),
-            "param": map_param(replace_param(row["param"])),
-            "msg": map_param(replace_param(row["msg"])),
+            "location": toolium_replace(row["location"]),
+            "param": toolium_replace(row["param"]),
+            "msg": toolium_replace(row["msg"]),
         }
-        value = map_param(replace_param(row["value"]))
+        value = toolium_replace(row["value"]) if "value" in row.headings else "[NONE]"
         if value != "[NONE]":
             error["value"] = value
 
