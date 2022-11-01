@@ -13,7 +13,7 @@ export const user404 = async (
   if (!user) {
     return res
       .status(404)
-      .json({ message: "User not found: " + req.params.flatName });
+      .json({ message: "User not found: " + req.params.userId });
   }
   req.user = user;
   next();
