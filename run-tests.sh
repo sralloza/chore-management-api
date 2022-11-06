@@ -9,9 +9,24 @@ function cleanup {
   mustExit=true
 }
 
-function testReponses() {
+function runTests() {
+  exitCode=0
+  behave -t=-old
+  echo "+++ behave tests exit code: $?"
+  if [ $? -ne 0 ]; then
+    exitCode=$?
+  fi
+
+  cd test
   echo "++ Running responses tests"
   poetry run pytest -m 'responses'
+  if [ $? -ne 0 ]; then
+    exitCode=$?
+  fi
+  echo "+++ responses tests exit code: $?"
+  cd ..
+  echo "all tests exit code: $exitCode"
+  return $exitCode
 }
 
 trap cleanup INT
@@ -47,7 +62,7 @@ testsOk=true
 rm -rf test/reports
 rm -rf test/output
 rm -rf test/reports.zip
-behave -t=-old
+runTests
 
 if [[ $? -ne 0 ]]; then
   testsOk=false
@@ -56,17 +71,14 @@ fi
 if [[ "$testsOk" = "true" ]]; then
   echo "Tests passed"
   cleanup
-  testReponses
 else
   echo "Tests failed"
   if tty -s; then
     echo "tty detected, launching allure"
-    testReponses
     allure serve test/reports
   else
     echo "tty not detected, showing docker-compose logs"
     docker-compose logs
-    testReponses
     cleanup
   fi
   exit 1
