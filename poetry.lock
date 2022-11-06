@@ -597,7 +597,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.11"
-content-hash = "f0384d144895377ad44a0356eaf2f85e2475cfd6f28d422f976314c9c1ca8aac"
+content-hash = "8c7361a650c716ec11e30ac16e6ce75f04cebff943a3b9e9a1217adf800a118c"
 
 [metadata.files]
 allure-behave = [
