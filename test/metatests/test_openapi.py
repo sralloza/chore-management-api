@@ -75,9 +75,12 @@ def test_post_operations_should_define_422_response(feature: Feature):
 def test_validate_security_schema(feature: Feature):
     operation_id = get_operation_id_by_feature(feature)
     security_schemas = get_security_schemas(operation_id)
+    defined_status_codes = get_response_codes(operation_id)
     if len(security_schemas) == 0:
+        assert 401 not in defined_status_codes
         return
 
+    assert 401 in defined_status_codes
     assert len(security_schemas) == 1, f"Only one security schema is allowed"
     schema = security_schemas[0]
 
