@@ -5,6 +5,13 @@ from common.openapi import *
 from constants import *
 from metatests.core import *
 
+SECURITY_SCHEMAS = ["AdminApiKey", "FlatAdminApiKey", "UserApiKey"]
+SECURITY_EXAMPLES = {
+    "AdminApiKey": "Admin access required",
+    "FlatAdminApiKey": "Flat administration access required",
+    "UserApiKey": "User access required",
+}
+
 
 def test_validate_xcorrelator_in_headers(feature: Feature):
     operation_id = get_operation_id_by_feature(feature)
@@ -63,6 +70,26 @@ def test_post_operations_should_define_422_response(feature: Feature):
     else:
         msg = f"[{operation_id}] 422 response is not declared"
         assert 422 in get_response_codes(operation_id=operation_id), msg
+
+
+def test_validate_security_schema(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    security_schemas = get_security_schemas(operation_id)
+    defined_status_codes = get_response_codes(operation_id)
+    if len(security_schemas) == 0:
+        assert 401 not in defined_status_codes
+        return
+
+    assert 401 in defined_status_codes
+    assert len(security_schemas) == 1, f"Only one security schema is allowed"
+    schema = security_schemas[0]
+
+    assert schema in SECURITY_SCHEMAS, f"Unknown security schema {schema!r}"
+
+    examples = get_examples(operation_id=operation_id, code=403)
+    expected = {"message": SECURITY_EXAMPLES[schema]}
+    msg = f"Example {expected!r} is not defined for 403 response and {schema!r} security schema"
+    assert expected in examples, msg
 
 
 def test_204_delete_operations(feature: Feature):

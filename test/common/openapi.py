@@ -152,3 +152,10 @@ def get_request_body(operation_id: str):
     if "requestBody" in operation:
         return operation["requestBody"]
     return None
+
+
+def get_security_schemas(operation_id: str):
+    operation = get_operation(operation_id)
+    if "security" in operation:
+        return [list(x.keys())[0] for x in operation["security"]]
+    return []
