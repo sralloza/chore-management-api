@@ -113,8 +113,10 @@ def get_operation_schema(context):
     return dict(schema)
 
 
-def get_parameters(context):
-    operation = get_current_operation(context)
+def get_parameters(context=None, operation_id=None):
+    operation = (
+        get_current_operation(context) if context else get_operation(operation_id)
+    )
     parameters = []
     for parameter in operation["parameters"]:
         if "$ref" in parameter:
@@ -126,6 +128,6 @@ def get_parameters(context):
     return parameters
 
 
-def get_request_headers(context):
-    parameters = get_parameters(context)
+def get_request_headers(context=None, operation_id=None):
+    parameters = get_parameters(context, operation_id)
     return [x["name"] for x in parameters if x["in"] == "header"]

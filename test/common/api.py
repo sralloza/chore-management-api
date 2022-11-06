@@ -3,9 +3,9 @@ from json import dumps
 
 from requests import Response
 
-from common.constants import COMMON_SCENARIOS
 from common.openapi import get_current_operation, get_operation
 from common.utils import VERSIONED_URL_TEMPLATE
+from metatests.constants import COMMON_SCENARIOS
 
 
 def send_request(context, endpoint=None, payload=None):

@@ -14,9 +14,9 @@ from toolium.behave.environment import before_feature as tlm_before_feature
 from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
-from common.constants import *
 from common.db import reset_databases
 from common.openapi import *
+from metatests.constants import *
 
 
 def before_all(context):
@@ -34,8 +34,6 @@ def before_feature(context, feature):
     context.error_messages = defaultdict(set)
     context.correlator = str(uuid4())
 
-    validate_feature_tests(context, feature)
-
 
 def get_dataset():
     return {}
@@ -51,7 +49,6 @@ def get_settings():
 
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
-    check_naming(context, scenario)
 
     dataset.project_config = get_settings()
     context.session = requests.Session()
@@ -89,71 +86,16 @@ def after_scenario(context, scenario):
 
 def after_feature(context, feature):
     tlm_after_feature(context, feature)
-    validate_feature_status_codes(context, feature)
+    validate_feature_status_codes(context)
 
 
 def after_all(context):
     tlm_after_all(context)
 
 
-def check_naming(context, scenario):
-    scenario_name = scenario.name
-    step_names = [step.name for step in scenario.steps]
-
-    if not scenario_name[0].isupper():
-        name = scenario_name[0].upper() + scenario_name[1:]
-        msg = f"Scenario name should be titled ({name})"
-        raise AssertionError(msg)
-    if "validate error" in scenario_name.lower():
-        assert "validate error response" in scenario_name.lower()
-        check_status_code_is_registered(context, scenario)
-
-    step_cheks = [DEFINED_OK_STATUS_CODE_STEP_PATTERN.search(x) for x in step_names]
-    if any(step_cheks):
-        match = next(x for x in step_cheks if x)
-        if match.group(1)[0] != "2":
-            check_status_code_is_registered(context, scenario)
-
-
-def check_status_code_is_registered(context, scenario):
-    step_names = [step.name for step in scenario.steps]
-    info = f"{context.operation_id} - {scenario.name}"
-    msg = f"[{info}] Must check error status code is registered"
-    assert_that(DEFINED_ERROR_STEP, is_in(step_names), msg)
-
-
-def validate_feature_tests(context, feature):
-    resource_from_feature_name = feature.name.split(" - ")[-1]
-    assert_that(
-        resource_from_feature_name,
-        equal_to(context.resource),
-        "Feature name should be the same as the filename",
-    )
-    scenario_names = [scenario.name for scenario in feature.scenarios]
-    for scenario_name in COMMON_SCENARIOS:
-        assert_that(
-            scenario_name,
-            is_in(scenario_names),
-            f"Feature {context.operation_id} should have the common scenario {scenario_name!r}",
-        )
-    headers = get_request_headers(context)
-    # TODO: assert that the headers are title cased
-    if "X-Flat" in headers:
-        for scenario_name in X_FLAT_HEADER_STEPS:
-            assert_that(
-                scenario_name,
-                is_in(scenario_names),
-                f"Feature {context.operation_id} should have the flat scenario {scenario_name!r}",
-            )
-
-    assert_that(
-        "X-Correlator",
-        is_in(headers),
-        f"[{context.operation_id}] X-Correlator header is mandatory",
-    )
-
-
-def validate_feature_status_codes(context, feature):
+# TODO: Move this test from behave to pytest
+# It should be run after the behave tests
+def validate_feature_status_codes(context):
     operation = get_current_operation(context)
     expected = list({int(x) for x in operation["responses"].keys()})
     expected.sort()
