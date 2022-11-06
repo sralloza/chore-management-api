@@ -8,7 +8,7 @@ from ruamel.yaml import YAML
 @lru_cache()
 def get_openapi():
     root = Path(__file__).parent.parent.parent
-    openapi = root / "openapi.yaml"
+    openapi = root / "openapi.yml"
     content = openapi.read_text()
     return YAML(typ="safe").load(content)
 
@@ -38,7 +38,7 @@ def get_operations():
 def get_operation(operation_id):
     operations = [k for k in get_operations() if k["operationId"] == operation_id]
     if len(operations) != 1:
-        raise ValueError(f"Operation {operation_id} not found in openapi.yaml")
+        raise ValueError(f"Operation {operation_id} not found in openapi.yml")
     return operations[0]
 
 
@@ -47,7 +47,7 @@ def get_current_operation(context):
         k for k in get_operations() if k["operationId"] == context.operation_id
     ]
     if len(operations) != 1:
-        raise ValueError(f"Operation {context.operation_id} not found in openapi.yaml")
+        raise ValueError(f"Operation {context.operation_id} not found in openapi.yml")
     return operations[0]
 
 

@@ -27,7 +27,7 @@ const flatNamePathResolver = async (
     const flat = await flatsRepo.getFlatByApiKey(apiKey);
     if (flat?.name !== flatNamePath) {
       return res.status(403).json({
-        message: "You don't have permission to access this flat's information",
+        message: "You don't have permission to access this flat's data",
       });
     }
   }

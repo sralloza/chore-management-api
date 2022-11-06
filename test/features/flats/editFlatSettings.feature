@@ -146,7 +146,7 @@ Feature: Flats API - editFlatSettings
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "You don't have permission to access this flat's information"
+    And the error message is "You don't have permission to access this flat's data"
     And the response error message is defined
 
 
