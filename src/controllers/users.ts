@@ -4,6 +4,7 @@ import { INTERNAL } from "../core/constants";
 import { flatAuth } from "../middlewares/auth";
 import { user409 } from "../middlewares/users";
 import parseXFlatHeader from "../middlewares/xFlatHeader";
+import flatsRepo from "../repositories/flats";
 import usersRepo from "../repositories/users";
 import validate from "../validators";
 import { userCreateValidator } from "../validators/user";
@@ -20,6 +21,7 @@ router.post(
   async (req, res) => {
     try {
       const user = await usersRepo.createUser(req.body, req.params.flatName);
+      await flatsRepo.resetAssignmentOrder(req.params.flatName);
       res.status(200).json(user);
     } catch (err) {
       logger.error(err);
