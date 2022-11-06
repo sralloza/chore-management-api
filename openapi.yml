@@ -226,6 +226,7 @@ paths:
       security:
         - AdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/FlatName"
         - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "200":
@@ -246,6 +247,7 @@ paths:
       security:
         - AdminApiKey: []
       parameters:
+        - $ref: "#/components/parameters/FlatName"
         - $ref: "#/components/parameters/XCorrelatorHeader"
       responses:
         "204":

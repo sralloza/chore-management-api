@@ -131,3 +131,13 @@ def get_parameters(context=None, operation_id=None):
 def get_request_headers(context=None, operation_id=None):
     parameters = get_parameters(context, operation_id)
     return [x["name"] for x in parameters if x["in"] == "header"]
+
+
+def get_method(operation_id: str):
+    operation = get_operation(operation_id)
+    return operation["method"]
+
+
+def get_response_codes(operation_id: str):
+    operation = get_operation(operation_id)
+    return tuple([int(x) for x in operation["responses"]])
