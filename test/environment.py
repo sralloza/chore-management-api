@@ -1,5 +1,4 @@
-from collections import defaultdict
-from json import dumps, loads
+from json import loads
 from pathlib import Path
 from shutil import rmtree
 from uuid import uuid4
