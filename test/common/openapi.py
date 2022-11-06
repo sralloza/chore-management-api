@@ -161,3 +161,10 @@ def get_request_body(operation_id: str):
 
 def get_operation_path(operation_id: str):
     return get_operation(operation_id)["path"]
+
+
+def get_security_schemas(operation_id: str):
+    operation = get_operation(operation_id)
+    if "security" in operation:
+        return [list(x.keys())[0] for x in operation["security"]]
+    return []

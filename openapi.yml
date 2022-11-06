@@ -224,7 +224,7 @@ paths:
       description: Get flat details by id
       operationId: getFlat
       security:
-        - AdminApiKey: []
+        - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/FlatName"
         - $ref: "#/components/parameters/XCorrelatorHeader"
@@ -245,7 +245,7 @@ paths:
       description: Delete flat by id
       operationId: deleteFlat
       security:
-        - AdminApiKey: []
+        - FlatAdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/FlatName"
         - $ref: "#/components/parameters/XCorrelatorHeader"
@@ -774,6 +774,7 @@ components:
           description: Clean the living room and the hallway
 
     Flat:
+      description: A flat
       value:
         name: flat-example
         api_key: ea427902-2db8-11ed-a261-0242ac120002
