@@ -55,10 +55,16 @@ router.get(
   }
 );
 
-router.delete("/:flatName", adminAuth, flat404, async (req, res) => {
-  await flatsRepo.deleteFlat(req.flat.name);
-  res.status(204).send();
-});
+router.delete(
+  "/:flatName",
+  flatAuth,
+  flatNamePathResolver,
+  flat404,
+  async (req, res) => {
+    await flatsRepo.deleteFlat(req.flat.name);
+    res.status(204).send();
+  }
+);
 
 router.patch(
   "/:flatName/settings",

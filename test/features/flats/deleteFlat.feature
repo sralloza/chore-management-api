@@ -12,14 +12,13 @@ Feature: Flats API - deleteFlat
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "Flat administration access required"
     And the response error message is defined
 
 
   @authorization
   Scenario: Validate response for guest
     Given I create a flat
-    And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
@@ -30,11 +29,10 @@ Feature: Flats API - deleteFlat
   @authorization
   Scenario: Validate response for user
     Given I create a flat with a user and I use the user API key
-    And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "Flat administration access required"
     And the response error message is defined
 
 
@@ -43,10 +41,8 @@ Feature: Flats API - deleteFlat
     Given I create a flat and I use the flat API key
     And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api
-    Then the response status code is "403"
+    Then the response status code is "204"
     And the response status code is defined
-    And the error message is "Admin access required"
-    And the response error message is defined
 
 
   @authorization
@@ -60,12 +56,12 @@ Feature: Flats API - deleteFlat
 
 
   Scenario: Delete flat
-    Given I create a flat
+    Given I create a flat and I use the flat API key
     And the field "flat_name" saved as "created_flat_name"
-    And I use the admin API key
     When I send a request to the Api
     Then the response status code is "204"
     And the Api response is empty
+    Given I use the admin API key
     When I send a request to the Api resource "listFlats"
     And the Api response contains the expected data
       """
@@ -73,7 +69,17 @@ Feature: Flats API - deleteFlat
       """
 
 
-  Scenario: Validate error response when flat does not exist
+  Scenario: Validate error response when the flat admin tries to delete other flat's data
+    Given I create a flat and I use the flat API key
+    And the field "flat_name" with value "whatever"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "You don't have permission to access this flat's data"
+    And the response error message is defined
+
+
+  Scenario: Validate error response when the flat does not exist
     Given I use the admin API key
     And the field "flat_name" with value "whatever"
     When I send a request to the Api
