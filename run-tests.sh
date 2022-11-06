@@ -9,6 +9,11 @@ function cleanup {
   mustExit=true
 }
 
+function testReponses() {
+  echo "++ Running responses tests"
+  poetry run pytest -m 'responses'
+}
+
 trap cleanup INT
 
 docker-compose up --build -d
@@ -40,6 +45,7 @@ fi
 
 testsOk=true
 rm -rf test/reports
+rm -rf test/output
 rm -rf test/reports.zip
 behave -t=-old
 
@@ -50,14 +56,17 @@ fi
 if [[ "$testsOk" = "true" ]]; then
   echo "Tests passed"
   cleanup
+  testReponses
 else
   echo "Tests failed"
   if tty -s; then
     echo "tty detected, launching allure"
+    testReponses
     allure serve test/reports
   else
     echo "tty not detected, showing docker-compose logs"
     docker-compose logs
+    testReponses
     cleanup
   fi
   exit 1

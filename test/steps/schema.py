@@ -19,7 +19,7 @@ def step_impl(context):
 
     if code not in valid_codes:
         raise ValueError(
-            f"Response code {code} not defined in operation {context.resource}"
+            f"Response code {code} not defined in operation {context.operation_id}"
             f" (defined: {valid_codes})"
         )
 

@@ -1,13 +1,7 @@
-from pathlib import Path
-
 from behave.model import Scenario
 
-from common.openapi import get_operation
-from metatests.constants import *
+from constants import *
 from metatests.core import *
-
-# operation_id = Path(scenario.location.filename).stem
-# operation = get_operation(operation_id)
 
 
 def test_scenario_name_is_upper(scenario: Scenario):

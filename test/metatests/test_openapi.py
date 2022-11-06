@@ -1,7 +1,8 @@
+import pytest
 from behave.model import Feature
 
 from common.openapi import *
-from metatests.constants import *
+from constants import *
 from metatests.core import *
 
 
@@ -62,3 +63,39 @@ def test_post_operations_should_define_422_response(feature: Feature):
     else:
         msg = f"[{operation_id}] 422 response is not declared"
         assert 422 in get_response_codes(operation_id=operation_id), msg
+
+
+@pytest.mark.responses
+def test_all_status_codes_covered(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    operation = get_operation(operation_id=operation_id)
+    expected = list({int(x) for x in operation["responses"].keys()})
+    expected.sort()
+
+    actual_status_codes = get_reached_status_codes_by_operation_id(operation_id)
+    msg = f"{operation_id}: Status codes should be the same as defined in the OpenAPI spec"
+    assert actual_status_codes == expected, msg
+
+
+@pytest.mark.responses
+def test_responses_in_examples(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    operation = get_operation(operation_id=operation_id)
+    expected = list({int(x) for x in operation["responses"].keys()})
+    expected.sort()
+
+    error_messages = get_reached_error_messages_by_operation_id(operation_id)
+
+    for status_code, messages in error_messages.items():
+        if status_code in SPECIAL_STATUS_CODES:
+            continue
+
+        examples = get_examples(operation_id=operation_id, code=status_code)
+        examples = [dumps(x) for x in examples]
+
+        messages = list(messages)
+        messages.sort()
+        examples.sort()
+
+        msg = f"{operation_id} - {status_code}: Error messages should be the same as defined in the OpenAPI spec"
+        assert messages == examples, msg
