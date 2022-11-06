@@ -34,3 +34,31 @@ def test_get_operations_with_parameter_404(feature: Feature):
     else:
         msg = f"[{operation_id}] 404 response is declared, but has no path parameters"
         assert 404 not in get_response_codes(operation_id=operation_id), msg
+
+
+def test_post_operations_should_define_400_response(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    method = get_method(operation_id)
+    if method != "POST":
+        return
+
+    if get_request_body(operation_id=operation_id) is None:
+        msg = f"[{operation_id}] 400 response is declared"
+        assert 400 not in get_response_codes(operation_id=operation_id), msg
+    else:
+        msg = f"[{operation_id}] 400 response is not declared"
+        assert 400 in get_response_codes(operation_id=operation_id), msg
+
+
+def test_post_operations_should_define_422_response(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    method = get_method(operation_id)
+    if method != "POST":
+        return
+
+    if get_request_body(operation_id=operation_id) is None:
+        msg = f"[{operation_id}] 422 response is declared"
+        assert 422 not in get_response_codes(operation_id=operation_id), msg
+    else:
+        msg = f"[{operation_id}] 422 response is not declared"
+        assert 422 in get_response_codes(operation_id=operation_id), msg

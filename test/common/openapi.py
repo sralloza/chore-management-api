@@ -135,9 +135,16 @@ def get_request_headers(context=None, operation_id=None):
 
 def get_method(operation_id: str):
     operation = get_operation(operation_id)
-    return operation["method"]
+    return operation["method"].upper()
 
 
 def get_response_codes(operation_id: str):
     operation = get_operation(operation_id)
     return tuple([int(x) for x in operation["responses"]])
+
+
+def get_request_body(operation_id: str):
+    operation = get_operation(operation_id)
+    if "requestBody" in operation:
+        return operation["requestBody"]
+    return None
