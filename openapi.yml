@@ -499,7 +499,7 @@ paths:
       tags:
         - Users
       summary: Register new user
-      description: Register a new user
+      description: Register a new user. Note that the flat's setting `assignment_order` will be reset after this operation.
       operationId: createUser
       security:
         - FlatAdminApiKey: []

@@ -1,6 +1,7 @@
 import { randomUUID } from "crypto";
 import dataSource from "../core/datasource";
 import FlatDB from "../models/db/FlatDB";
+import userRepo from "./users";
 
 const repo = dataSource.getRepository(FlatDB);
 
@@ -38,6 +39,14 @@ const flatsRepo = {
   getFlatByApiKey: async (apiKey: string): Promise<Flat> => {
     const flat = await repo.findOne({ where: { apiKey } });
     return buildFlat(flat);
+  },
+
+  resetAssignmentOrder: async (name: string) => {
+    const users = await userRepo.listUsers(name);
+    if (users.length === 0) return;
+    const flat = await repo.findOne({ where: { name } });
+    flat.assignmentOrder = users.map((u) => u.id).join(", ");
+    await repo.save(flat);
   },
 
   createFlat: async (flat: FlatCreate): Promise<Flat> => {
