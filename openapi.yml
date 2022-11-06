@@ -114,6 +114,8 @@ info:
 
     This API supports error message internationalization only in user-scoped endpoints (those that need a user API key). The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
 
+    **Note:** the internationalization of error messages is in progress. Only those endpoints which explicitly accept the `Accept-Language` header support this feature.
+
     **Warning**: If the language is not supported or is invalid, the API will return an error in the default language.
 
     # Authorization
@@ -152,8 +154,6 @@ paths:
       summary: Create flat
       description: Create new flat.
       operationId: createFlat
-      security:
-        - AdminApiKey: []
       parameters:
         - $ref: "#/components/parameters/XCorrelatorHeader"
       requestBody:
@@ -233,7 +233,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorAdminRequired"
+          $ref: "#/components/responses/ForbiddenErrorInvalidFlatRequested"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -553,10 +553,10 @@ paths:
       tags:
         - Users
       summary: Get user
-      description: Get user by id
+      description: Get user by id. Any user can acces their data using the me keyword. Flat admins or the general admin must specify the user ID.
       operationId: getUser
       security:
-        - FlatAdminApiKey: []
+        - UserApiKey: []
       parameters:
         - $ref: "#/components/parameters/UserIDPath"
         - $ref: "#/components/parameters/XCorrelatorHeader"
@@ -569,7 +569,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
+          $ref: "#/components/responses/ForbiddenErrorUserRequired"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -824,7 +824,7 @@ components:
     InvalidFlatRequested:
       description: The token provided does not grant access to the flat requested
       value:
-        message: You don't have permission to access this flat's information
+        message: You don't have permission to access this flat's data
 
     InvalidKeywordMeWithAdminApiKey:
       description: Can't use the me keyword with the admin API key

@@ -2,15 +2,15 @@ from functools import lru_cache
 from pathlib import Path
 
 from jsonschema import FormatChecker, ValidationError, validate
-from ruamel.yaml import YAML
+from yaml import safe_load
 
 
 @lru_cache()
 def get_openapi():
     root = Path(__file__).parent.parent.parent
-    openapi = root / "openapi.yaml"
+    openapi = root / "openapi.yml"
     content = openapi.read_text()
-    return YAML(typ="safe").load(content)
+    return safe_load(content)
 
 
 def get_defined_schemas():
@@ -38,7 +38,7 @@ def get_operations():
 def get_operation(operation_id):
     operations = [k for k in get_operations() if k["operationId"] == operation_id]
     if len(operations) != 1:
-        raise ValueError(f"Operation {operation_id} not found in openapi.yaml")
+        raise ValueError(f"Operation {operation_id} not found in openapi.yml")
     return operations[0]
 
 
@@ -47,7 +47,7 @@ def get_current_operation(context):
         k for k in get_operations() if k["operationId"] == context.operation_id
     ]
     if len(operations) != 1:
-        raise ValueError(f"Operation {context.operation_id} not found in openapi.yaml")
+        raise ValueError(f"Operation {context.operation_id} not found in openapi.yml")
     return operations[0]
 
 
@@ -113,8 +113,10 @@ def get_operation_schema(context):
     return dict(schema)
 
 
-def get_parameters(context):
-    operation = get_current_operation(context)
+def get_parameters(context=None, operation_id=None):
+    operation = (
+        get_current_operation(context) if context else get_operation(operation_id)
+    )
     parameters = []
     for parameter in operation["parameters"]:
         if "$ref" in parameter:
@@ -126,6 +128,6 @@ def get_parameters(context):
     return parameters
 
 
-def get_request_headers(context):
-    parameters = get_parameters(context)
+def get_request_headers(context=None, operation_id=None):
+    parameters = get_parameters(context, operation_id)
     return [x["name"] for x in parameters if x["in"] == "header"]

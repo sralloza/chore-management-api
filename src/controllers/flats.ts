@@ -45,9 +45,15 @@ router.get("", adminAuth, async (req, res) => {
   res.status(200).json(flats);
 });
 
-router.get("/:flatName", adminAuth, flat404, async (req, res) => {
-  res.status(200).json(req.flat);
-});
+router.get(
+  "/:flatName",
+  flatAuth,
+  flatNamePathResolver,
+  flat404,
+  async (req, res) => {
+    res.status(200).json(req.flat);
+  }
+);
 
 router.delete("/:flatName", adminAuth, flat404, async (req, res) => {
   await flatsRepo.deleteFlat(req.flat.name);

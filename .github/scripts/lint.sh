@@ -5,6 +5,7 @@ set -e
 cd test
 poetry run isort .
 poetry run black .
+poetry run pytest
 
 cd ..
 npm run format

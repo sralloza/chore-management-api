@@ -2,7 +2,7 @@
 @getFlat
 Feature: Flats API - getFlat
 
-  As an admin
+  As an admin or a flat owner
   I want to get the details of a specific flat
 
 
@@ -12,13 +12,12 @@ Feature: Flats API - getFlat
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "Flat administration access required"
     And the response error message is defined
 
 
   @authorization
   Scenario: Validate response for guest
-    Given the field "flat_name" with value "test-flat"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
@@ -29,23 +28,20 @@ Feature: Flats API - getFlat
   @authorization
   Scenario: Validate response for user
     Given I create a flat with a user and I use the user API key
-    And the field "flat_name" with value "test-flat"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "Flat administration access required"
     And the response error message is defined
 
 
   @authorization
   Scenario: Validate response for flat admin
     Given I create a flat and I use the flat API key
-    And the field "flat_name" with value "test-flat"
+    And the field "flat_name" saved as "created_flat_name"
     When I send a request to the Api
-    Then the response status code is "403"
+    Then the response status code is "200"
     And the response status code is defined
-    And the error message is "Admin access required"
-    And the response error message is defined
 
 
   @authorization
@@ -59,9 +55,8 @@ Feature: Flats API - getFlat
 
 
   Scenario: Get flat when it exists
-    Given I create a flat
+    Given I create a flat and I use the flat API key
     And the field "flat_name" saved as "created_flat_name"
-    And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response body is validated against the json-schema
@@ -75,6 +70,20 @@ Feature: Flats API - getFlat
     Then the response status code is "404"
     And the response status code is defined
     And the error message is "Flat not found: invalid_flat"
+    And the response error message is defined
+
+
+  Scenario: Validate error response when flat owner tries to access other flat's data
+    Given I create a flat and I use the flat API key
+    And the field "first_created_flat_api_key" saved as "flat_api_key"
+    And the field "first_created_flat_name" saved as "created_flat_name"
+    And I create a flat
+    And the field "flat_name" with value "first_created_flat_name"
+    And the field "token" saved as "first_created_flat_api_key"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "You don't have permission to access this flat's data"
     And the response error message is defined
 
 

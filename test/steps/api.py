@@ -11,6 +11,7 @@ from toolium.utils.dataset import map_param, replace_param
 
 from common.api import send_request
 from common.request import table_to_dict
+from common.utils import toolium_replace
 
 
 @then('the response status code is "{code:d}"')
@@ -114,7 +115,7 @@ def step_impl(context, field, value):
 
 @step('the field "{field}" with value "{value}"')
 def set_field_to_context(context, field, value, to_str=False):
-    value = replace_param(value, infer_param_type=not to_str)
+    value = toolium_replace(value, infer_param_type=not to_str)
     setattr(context, field, value)
 
 
