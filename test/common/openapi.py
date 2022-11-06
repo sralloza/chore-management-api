@@ -137,6 +137,11 @@ def get_request_headers(context=None, operation_id=None):
     return [x["name"] for x in parameters if x["in"] == "header"]
 
 
+def get_request_path_parameters(operation_id):
+    parameters = get_parameters(operation_id=operation_id)
+    return [x["name"] for x in parameters if x["in"] == "path"]
+
+
 def get_method(operation_id: str):
     operation = get_operation(operation_id)
     return operation["method"].upper()
@@ -152,6 +157,10 @@ def get_request_body(operation_id: str):
     if "requestBody" in operation:
         return operation["requestBody"]
     return None
+
+
+def get_operation_path(operation_id: str):
+    return get_operation(operation_id)["path"]
 
 
 def get_security_schemas(operation_id: str):
