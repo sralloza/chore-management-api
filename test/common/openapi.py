@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from jsonschema import FormatChecker, ValidationError, validate
-from ruamel.yaml import YAML
+from yaml import safe_load
 
 
 @lru_cache()
@@ -10,7 +10,7 @@ def get_openapi():
     root = Path(__file__).parent.parent.parent
     openapi = root / "openapi.yml"
     content = openapi.read_text()
-    return YAML(typ="safe").load(content)
+    return safe_load(content)
 
 
 def get_defined_schemas():

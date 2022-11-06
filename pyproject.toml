@@ -18,9 +18,8 @@ PyHamcrest = "^2.0.4"
 pytest = "^7.2.0"
 python-dateutil = "^2.8.2"
 requests = "^2.28.0"
-ruamel-yaml = "^0.17.21"
-ruamel-yaml-clib = "^0.2.7"
 toolium = "^2.6.0"
+pyyaml = "^6.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
