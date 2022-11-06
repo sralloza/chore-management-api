@@ -86,6 +86,45 @@ Feature: Users API - createUser
       | John                    | [STRING_WITH_LENGTH_4]  |
       | 1111                    | 1111                    |
 
+
+  Scenario: Validate that the assignment_order setting of the flat is reset after creating a user
+    Given I create a flat and I use the flat API key
+    And there are 3 users
+    And I use the flat API key
+    And the field "flat_name" saved as "created_flat_name"
+    When I send a request to the Api resource "editFlatSettings" with body params
+      | param_name         | param_value |
+      | assignment_order.0 | user-2      |
+      | assignment_order.1 | user-3      |
+      | assignment_order.2 | user-1      |
+      | rotation_sign      | negative    |
+    Then the response status code is "200"
+    When I send a request to the Api with body params
+      | param_name | param_value |
+      | username   | user-0      |
+      | id         | user-0      |
+    Then the response status code is "200"
+    When I send a request to the Api resource "getFlat"
+    Then the response status code is "200"
+    And the Api response contains the expected data
+      | skip_param |
+      | api_key    |
+      """
+      {
+        "name": "[CONTEXT:created_flat_name]",
+        "settings": {
+          "assignment_order": [
+            "user-0",
+            "user-1",
+            "user-2",
+            "user-3"
+          ],
+          "rotation_sign": "negative"
+        }
+      }
+      """
+
+
   Scenario: Validate error response creating a duplicate user
     Given I create a flat and I use the flat API key
     When I send a request to the Api with body params
