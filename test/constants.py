@@ -1,6 +1,5 @@
 import re
 
-# XXX: Used by test/common/api.py, should not be here
 COMMON_SCENARIOS = (
     "Validate X-Correlator injection",
     "Validate X-Powered-By disabled",
