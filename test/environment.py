@@ -1,11 +1,10 @@
-from collections import defaultdict
-from json import dumps, loads
+from json import loads
 from pathlib import Path
+from shutil import rmtree
 from uuid import uuid4
 
 import allure
 import requests
-from hamcrest import *
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
 from toolium.behave.environment import after_scenario as tlm_after_scenario
@@ -16,23 +15,28 @@ from toolium.utils import dataset
 
 from common.db import reset_databases
 from common.openapi import *
-from metatests.constants import *
+
+RESPONSES_FOLDER = Path(__file__).parent / "output" / "responses"
 
 
 def before_all(context):
     tlm_before_all(context)
     context.admin_api_key = "bc6acdd7-9de0-495f-86ea-20beda48d626"
+    responses_folder = RESPONSES_FOLDER
+    if responses_folder.exists():
+        rmtree(responses_folder)
 
 
 def before_feature(context, feature):
     tlm_before_feature(context, feature)
     context.api = Path(feature.filename).parent.name
-    context.resource = Path(feature.filename).stem
-    context.operation_id = context.resource
+    context.operation_id = Path(feature.filename).stem
     context.storage = {}
-    context.status_codes = set()
-    context.error_messages = defaultdict(set)
-    context.correlator = str(uuid4())
+    dataset.project_config = get_settings()
+
+    responses_folder = RESPONSES_FOLDER / context.operation_id
+    if responses_folder.exists():
+        rmtree(responses_folder)
 
 
 def get_dataset():
@@ -50,8 +54,8 @@ def get_settings():
 def before_scenario(context, scenario):
     tlm_before_scenario(context, scenario)
 
-    dataset.project_config = get_settings()
     context.session = requests.Session()
+    context.correlator = str(uuid4())
 
     reset_databases()
     context.res = None
@@ -76,52 +80,22 @@ def register_allure_stdout_stderr(context):
 
 def after_scenario(context, scenario):
     if scenario.status == "failed":
-        text = f"X-CORRELATOR FOR DEBUGGING: {context.correlator}"
         allure.attach(
-            text, name="x-correlator", attachment_type=allure.attachment_type.TEXT
+            {"correlator": context.correlator},
+            name="x-correlator",
+            attachment_type=allure.attachment_type.JSON,
         )
+        response_file = RESPONSES_FOLDER / f"{context.correlator}.json"
+        if response_file.exists():
+            response_file.unlink()
+
     register_allure_stdout_stderr(context)
     tlm_after_scenario(context, scenario)
 
 
 def after_feature(context, feature):
     tlm_after_feature(context, feature)
-    validate_feature_status_codes(context)
 
 
 def after_all(context):
     tlm_after_all(context)
-
-
-# TODO: Move this test from behave to pytest
-# It should be run after the behave tests
-def validate_feature_status_codes(context):
-    operation = get_current_operation(context)
-    expected = list({int(x) for x in operation["responses"].keys()})
-    expected.sort()
-
-    actual = list(context.status_codes)
-    actual.sort()
-
-    assert_that(
-        actual,
-        equal_to(expected),
-        f"{context.operation_id}: Status codes should be the same as defined in the OpenAPI spec",
-    )
-
-    for status_code, messages in context.error_messages.items():
-        if status_code in SPECIAL_STATUS_CODES:
-            continue
-
-        examples = get_examples(context, status_code)
-        examples = [dumps(x) for x in examples]
-
-        messages = list(messages)
-        messages.sort()
-        examples.sort()
-        assert_that(
-            messages,
-            equal_to(examples),
-            f"{context.operation_id} - {status_code}: Error messages should"
-            " be the same as defined in the OpenAPI spec",
-        )

@@ -41,7 +41,7 @@ def step_impl(context):
             json_file = RESPONSES_PATH / context.api / f"{context.text.strip()}.json"
 
     if not json_file:
-        json_file = RESPONSES_PATH / f"{context.api}/{context.resource}.json"
+        json_file = RESPONSES_PATH / f"{context.api}/{context.operation_id}.json"
 
     if not json_file.is_file():
         raise FileNotFoundError(f'Not found file "{json_file}"')

@@ -89,7 +89,7 @@ def table_to_str(table, replace=False, infer=True):
         for cell in row.cells:
             if replace:
                 cell = replace_param(cell, infer_param_type=infer)
-            result += cell + "|"
+            result += str(cell) + "|"
         result += "\n"
     return result
 

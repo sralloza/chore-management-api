@@ -4,8 +4,9 @@ from json import dumps
 from requests import Response
 
 from common.openapi import get_current_operation, get_operation
+from common.response import register_response
 from common.utils import VERSIONED_URL_TEMPLATE
-from metatests.constants import COMMON_SCENARIOS
+from constants import COMMON_SCENARIOS
 
 
 def send_request(context, endpoint=None, payload=None):
@@ -50,9 +51,10 @@ def _send_request(context, method, path, operation_id, payload=None):
         method, url, params=params, json=payload, timeout=5, headers=headers
     )
     if context.operation_id == operation_id:
-        context.status_codes.add(res.status_code)
-        if not res.ok:
-            context.error_messages[res.status_code].add(dumps(res.json()))
+        # Note: when calling the testing operation multiple times (like in createFlat), each request will
+        # overwrite the previous one. This is not a problem, as we only care about the last one. If the test
+        # fails, the last request will be removed so.
+        register_response(context, res)
 
     print_res(res)
     return res

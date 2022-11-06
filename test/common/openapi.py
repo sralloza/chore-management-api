@@ -74,8 +74,12 @@ def resolve_ref(ref: str):
     return path
 
 
-def get_examples(context, code: str | int | None = None):
-    operation = get_current_operation(context)
+def get_examples(context=None, operation_id=None, code: str | int | None = None):
+    if context is None:
+        operation = get_operation(operation_id)
+    else:
+        operation = get_current_operation(context)
+
     code = str(code or context.res.status_code)
 
     response = operation["responses"][code]
@@ -105,7 +109,7 @@ def get_operation_schema(context):
             schema = resolve_ref(schema["$ref"])
         schema = schema["content"]["application/json"]["schema"]
     else:
-        raise ValueError(f"No schema found for operation {context.resource}")
+        raise ValueError(f"No schema found for operation {context.operation_id}")
 
     if "$ref" in schema:
         schema = resolve_ref(schema["$ref"])

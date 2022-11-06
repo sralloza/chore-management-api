@@ -3,7 +3,7 @@ from pathlib import Path
 from behave.model import Feature
 
 from common.openapi import get_request_headers
-from metatests.constants import *
+from constants import *
 from metatests.core import *
 
 

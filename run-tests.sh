@@ -9,6 +9,26 @@ function cleanup {
   mustExit=true
 }
 
+function runTests() {
+  exitCode=0
+  behave -t=-old
+  echo "+++ behave tests exit code: $?"
+  if [ $? -ne 0 ]; then
+    exitCode=$?
+  fi
+
+  cd test
+  echo "++ Running responses tests"
+  poetry run pytest -m 'responses'
+  if [ $? -ne 0 ]; then
+    exitCode=$?
+  fi
+  echo "+++ responses tests exit code: $?"
+  cd ..
+  echo "all tests exit code: $exitCode"
+  return $exitCode
+}
+
 trap cleanup INT
 
 docker-compose up --build -d
@@ -40,8 +60,9 @@ fi
 
 testsOk=true
 rm -rf test/reports
+rm -rf test/output
 rm -rf test/reports.zip
-behave -t=-old
+runTests
 
 if [[ $? -ne 0 ]]; then
   testsOk=false
