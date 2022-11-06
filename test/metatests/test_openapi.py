@@ -65,6 +65,17 @@ def test_post_operations_should_define_422_response(feature: Feature):
         assert 422 in get_response_codes(operation_id=operation_id), msg
 
 
+def test_204_delete_operations(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    method = get_method(operation_id)
+    if method != "DELETE":
+        return
+
+    response_codes = get_response_codes(operation_id=operation_id)
+    assert 204 in response_codes
+    assert 200 not in response_codes
+
+
 @pytest.mark.responses
 def test_all_status_codes_covered(feature: Feature):
     operation_id = get_operation_id_by_feature(feature)
