@@ -12,18 +12,20 @@ function cleanup {
 function runTests() {
   exitCode=0
   behave -t=-old
-  echo "+++ behave tests exit code: $?"
-  if [ $? -ne 0 ]; then
-    exitCode=$?
+  behaveExitCode=$?
+  if [ $behaveExitCode -ne 0 ]; then
+    exitCode=$behaveExitCode
   fi
+  echo "+++ behave tests exit code: $behaveExitCode"
 
   cd test
   echo "++ Running responses tests"
   poetry run pytest -m 'responses'
-  if [ $? -ne 0 ]; then
-    exitCode=$?
+  pytestExitCode=$?
+  if [ $pytestExitCode -ne 0 ]; then
+    exitCode=$pytestExitCode
   fi
-  echo "+++ responses tests exit code: $?"
+  echo "+++ responses tests exit code: $pytestExitCode"
   cd ..
   echo "all tests exit code: $exitCode"
   return $exitCode
