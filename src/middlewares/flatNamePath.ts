@@ -1,6 +1,7 @@
 import bunyan from "bunyan";
 import { NextFunction, Request, Response } from "express";
 import { isAdmin } from "../core/auth";
+import { ADMIN_KEY_ME, FORBIDDEN_FLAT_DATA } from "../core/constants";
 import flatsRepo from "../repositories/flats";
 
 const logger = bunyan.createLogger({ name: "flatNamePathMiddleware" });
@@ -17,18 +18,14 @@ const flatNamePathResolver = async (
   if (flatNamePath === "me") {
     // "me" keyword can't be used by the admin
     if (isAdminResult) {
-      return res
-        .status(400)
-        .json({ message: "Can't use the me keyword with the admin API key" });
+      return res.status(400).json(ADMIN_KEY_ME);
     }
     req.params.flatName = (await flatsRepo.getFlatByApiKey(apiKey)).name;
   } else if (!isAdminResult) {
     // Check if the flat admin is trying to access a flat that is not his
     const flat = await flatsRepo.getFlatByApiKey(apiKey);
     if (flat?.name !== flatNamePath) {
-      return res.status(403).json({
-        message: "You don't have permission to access this flat's data",
-      });
+      return res.status(403).json(FORBIDDEN_FLAT_DATA);
     }
   }
 
