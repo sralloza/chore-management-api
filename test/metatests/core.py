@@ -48,3 +48,13 @@ def get_reached_error_messages_by_operation_id(operation_id: str):
         if res["res"]["is_error"]:
             messages[status_code].add(dumps(res["res"]["body"]))
     return messages
+
+
+def get_request_headers_by_operation_id(operation_id: str):
+    folder = Path(__file__).parent.parent / f"output/responses/{operation_id}"
+    headers = set()
+    for file in folder.glob("*.json"):
+        res = loads(file.read_text())
+        _headers = res["req"]["headers"]
+        headers |= set(_headers.keys())
+    return headers

@@ -565,13 +565,13 @@ paths:
         - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
-          $ref: "#/components/responses/User"
+          $ref: "#/components/responses/UserWithoutApiKey"
         "400":
-          $ref: "#/components/responses/ValidationError"
+          $ref: "#/components/responses/InvalidKeywordMeAndFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorUserRequired"
+          $ref: "#/components/responses/ForbiddenErrorInvalidUserRequested"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -830,14 +830,24 @@ components:
         message: You don't have permission to access this flat's data
 
     InvalidKeywordMeWithAdminApiKey:
-      description: Can't use the me keyword with the admin API key
+      description: Can't use the special keyword me with the admin API key
       value:
-        message: Can't use the me keyword with the admin API key
+        message: Can't use the special keyword me with the admin API key
+
+    InvalidKeywordMeWithFlatAdministrationApiKey:
+      description: Can't use the special keyword me with the flat administration API key
+      value:
+        message: Can't use the special keyword me with a flat administration API key
 
     InvalidRequestBody:
       description: The JSON sent is invalid
       value:
         message: Request body is not a valid JSON
+
+    InvalidUserRequested:
+      description: The token provided does not grant access to the user requested
+      value:
+        message: You don't have permission to access this user's data
 
     MissingFlatHeaderWithAdminApiKey:
       description: Must use the X-Flat header with the admin API key
@@ -904,6 +914,12 @@ components:
         - username: user-example-2
           id: 987654321
           api_key: c26c9865-6d47-4f66-b586-7b489c72624e
+
+    UserShort:
+      description: User without its API key
+      value:
+        username: user-example
+        id: 123456789
 
     ValidationError:
       description: Validation error
@@ -1093,6 +1109,19 @@ components:
             UserAccessRequired:
               $ref: "#/components/examples/UserAccessRequired"
 
+
+    ForbiddenErrorInvalidUserRequested:
+      description: User access required
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            UserAccessRequired:
+              $ref: "#/components/examples/UserAccessRequired"
+            InvalidUserRequested:
+              $ref: "#/components/examples/InvalidUserRequested"
+
     InvalidFlatRequested:
       description: Forbidden
       content:
@@ -1102,6 +1131,34 @@ components:
           examples:
             InvalidFlatRequested:
               $ref: "#/components/examples/InvalidFlatRequested"
+
+    InvalidKeywordMe:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidKeywordMeWithAdminApiKey:
+              $ref: "#/components/examples/InvalidKeywordMeWithAdminApiKey"
+            InvalidKeywordMeWithFlatAdministrationApiKey:
+              $ref: "#/components/examples/InvalidKeywordMeWithFlatAdministrationApiKey"
+
+    InvalidKeywordMeAndFlatHeader:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            InvalidKeywordMeWithAdminApiKey:
+              $ref: "#/components/examples/InvalidKeywordMeWithAdminApiKey"
+            InvalidKeywordMeWithFlatAdministrationApiKey:
+              $ref: "#/components/examples/InvalidKeywordMeWithFlatAdministrationApiKey"
+            InvalidFlatHeaderUseWithAdminApiKey:
+              $ref: "#/components/examples/InvalidFlatHeaderUseWithAdminApiKey"
+            MissingFlatHeaderWithAdminApiKey:
+              $ref: "#/components/examples/MissingFlatHeaderWithAdminApiKey"
 
     InvalidRequestBody:
       description: Bad Request
@@ -1220,6 +1277,16 @@ components:
           examples:
             UserList:
               $ref: "#/components/examples/UserList"
+
+    UserWithoutApiKey:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserCreate"
+          examples:
+            User:
+              $ref: "#/components/examples/UserShort"
 
     ValidationError:
       description: Validation Error

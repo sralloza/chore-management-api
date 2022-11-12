@@ -3,7 +3,7 @@ import express from "express";
 import { DateTime } from "luxon";
 import { INTERNAL } from "../core/constants";
 import { adminAuth, flatAuth } from "../middlewares/auth";
-import flatNamePathResolver from "../middlewares/flatNamePath";
+import { flatNamePathResolver } from "../middlewares/pathParamsResolver";
 import { flat404, flat409, verifyCreateCode403 } from "../middlewares/flats";
 import flatsRepo from "../repositories/flats";
 import { genJWT } from "../services/jwt";

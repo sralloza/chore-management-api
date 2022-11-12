@@ -1,8 +1,9 @@
 import bunyan from "bunyan";
 import express from "express";
 import { INTERNAL } from "../core/constants";
-import { flatAuth } from "../middlewares/auth";
-import { user409 } from "../middlewares/users";
+import { flatAuth, userAuth } from "../middlewares/auth";
+import { userIdPathResolver } from "../middlewares/pathParamsResolver";
+import { user404, user409 } from "../middlewares/users";
 import parseXFlatHeader from "../middlewares/xFlatHeader";
 import flatsRepo from "../repositories/flats";
 import usersRepo from "../repositories/users";
@@ -34,5 +35,21 @@ router.get("", flatAuth, parseXFlatHeader, async (req, res) => {
   const user = await usersRepo.listUsers(req.params.flatName);
   res.status(200).json(user);
 });
+
+router.get(
+  "/:userId",
+  userAuth,
+  parseXFlatHeader,
+  userIdPathResolver,
+  user404,
+  async (req, res) => {
+    const user = await usersRepo.getUserById(
+      req.params.userId,
+      req.params.flatName
+    );
+    delete user.api_key;
+    res.status(200).json(user);
+  }
+);
 
 export default router;

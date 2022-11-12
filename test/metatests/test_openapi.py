@@ -167,3 +167,15 @@ def test_responses_in_examples(feature: Feature):
 
         msg = f"{operation_id} - {status_code}: Error messages should be the same as defined in the OpenAPI spec"
         assert messages == examples, msg
+
+
+@pytest.mark.responses
+def test_xflat_header_registered(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    registered_headers = get_request_headers(operation_id=operation_id)
+
+    headers = get_request_headers_by_operation_id(operation_id)
+    if "X-Flat" in headers:
+        assert "X-Flat" in registered_headers
+    else:
+        assert "X-Flat" not in registered_headers

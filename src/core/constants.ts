@@ -9,7 +9,11 @@ export const FLAT_ADMIN_ACCESS_REQUIRED = {
 };
 export const USER_ACCESS_REQUIRED = { message: "User access required" };
 export const ADMIN_KEY_ME = {
-  message: "Can't use the me keyword with the admin API key",
+  message: "Can't use the special keyword me with the admin API key",
+};
+export const FLAT_ADMIN_KEY_ME = {
+  message:
+    "Can't use the special keyword me with a flat administration API key",
 };
 
 // GENERICS
@@ -40,6 +44,9 @@ export const CHORE_TYPE_NOT_FOUND = (id: string) => {
 export const USER_ALREADY_EXISTS = alreadyExists("User");
 export const USER_NOT_FOUND = (id: string) => {
   return notFound("User", id);
+};
+export const FORBIDDEN_USER_DATA = {
+  message: "You don't have permission to access this user's data",
 };
 
 // X-FLAT HEADER

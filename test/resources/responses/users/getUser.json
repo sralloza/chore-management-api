@@ -1,0 +1,4 @@
+{
+  "id": "[CONTEXT:created_user_id]",
+  "username": "[CONTEXT:created_user_username]"
+}
