@@ -3,6 +3,7 @@ from behave import *
 from common.utils import *
 
 
+@given("there is {users:d} user")
 @given("there are {users:d} users")
 def step_impl(context, users):
     for i in range(1, users + 1):
@@ -18,13 +19,13 @@ def step_impl(context, users):
         )
 
 
-@given('the tenant "{tenant_id}" skips the week "{week_id}"')
-def step_impl(context, tenant_id, week_id):
+@given('the user "{user_id}" skips the week "{week_id}"')
+def step_impl(context, user_id, week_id):
     context.execute_steps(
         f"""
-        Given the field "tenantId" with value "{tenant_id}"
-        And I use the token of the tenant with id "{tenant_id}"
-        And the field "weekId" with string value "{week_id}"
+        Given the field "user_id" with value "{user_id}"
+        And I use the token of the user with id "{user_id}"
+        And the field "week_id" with string value "{week_id}"
         When I send a request to the Api resource "skipWeek"
         Then the response status code is "204"
         And I clear the token

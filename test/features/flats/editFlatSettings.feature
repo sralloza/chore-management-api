@@ -121,7 +121,7 @@ Feature: Flats API - editFlatSettings
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Can't use the me keyword with the admin API key"
+    And the error message is "Can't use the special keyword me with the admin API key"
     And the response error message is defined
 
 

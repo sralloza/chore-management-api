@@ -40,3 +40,4 @@ def create_flat(context, user=False):
     """
     )
     context.created_user_id = user_id
+    context.created_user_username = username
