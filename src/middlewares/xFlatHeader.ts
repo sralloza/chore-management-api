@@ -1,4 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import {
+  XFLAT_HEADER_REQUIRED,
+  XFLAT_HEADER_WITHOUT_ADMIN_KEY,
+} from "../core/constants";
 import { isAdmin } from "../core/auth";
 import flatsRepo from "../repositories/flats";
 import { flat404 } from "./flats";
@@ -14,14 +18,10 @@ const parseXFlatHeader = async (
   const isAdminResult = isAdmin(req.get("X-Token"));
 
   if (headerDefined && !isAdminResult) {
-    return res.status(400).json({
-      message: "Can't use the X-Flat header without the admin API key",
-    });
+    return res.status(400).json(XFLAT_HEADER_WITHOUT_ADMIN_KEY);
   }
   if (!headerDefined && isAdminResult) {
-    return res
-      .status(400)
-      .json({ message: "Must use the X-Flat header with the admin API key" });
+    return res.status(400).json(XFLAT_HEADER_REQUIRED);
   }
 
   // If the header is defined, we need to check if the flat exists
