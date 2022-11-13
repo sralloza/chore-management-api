@@ -29,3 +29,10 @@ def test_validate_xflat_header_scenarios(feature: Feature):
         for scenario in X_FLAT_HEADER_SCENARIOS:
             msg = f"Feature {operation_id} should have the flat scenario {scenario!r}"
             assert scenario in scenario_names, msg
+
+
+def test_2_spaces_instead_of_4(feature: Feature):
+    file = feature.location.filename
+    file_content = Path(file).read_text()
+    assert "    Scenario" not in file_content
+    assert "  Scenario" in file_content

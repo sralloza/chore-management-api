@@ -5,6 +5,7 @@ from metatests.core import *
 
 
 def test_scenario_name_is_upper(scenario: Scenario):
+    breakpoint()
     if not scenario.name[0].isupper():
         name = scenario.name[0].upper() + scenario.name[1:]
         msg = f"Scenario name should be titled ({name})"
