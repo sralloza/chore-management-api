@@ -1,7 +1,6 @@
 @old
 @api.tenants
 @unSkipWeek
-@sanity
 Feature: Tenants API - unSkipWeek
 
     As an admin or tenant
