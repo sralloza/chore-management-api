@@ -175,7 +175,6 @@ Feature: Flats API - editFlatSettings
       | body     | <param> | <msg> | <value> |
     And the response error message is defined
 
-
     Examples: user_id = <user_id>, rotation_sign = <rotation_sign>, param = <param>, msg = <msg>, value = <value>
       | user_id   | rotation_sign | param            | value           | msg                                                                |
       | [NONE]    | whatever      | rotation_sign    | whatever        | body.rotation_sign must be either 'positive' or 'negative'         |

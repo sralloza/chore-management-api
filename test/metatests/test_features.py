@@ -29,3 +29,16 @@ def test_validate_xflat_header_scenarios(feature: Feature):
         for scenario in X_FLAT_HEADER_SCENARIOS:
             msg = f"Feature {operation_id} should have the flat scenario {scenario!r}"
             assert scenario in scenario_names, msg
+
+
+def test_scenarios_should_leave_two_break_lines(feature: Feature):
+    # The only cases where two break lines are accepted are the feature description and examples
+    pattern = re.compile(r".\n\n( +\w+)", re.MULTILINE)
+    text = Path(feature.filename).read_text()
+    for match in pattern.finditer(text):
+        match_text = match.group(1)
+        assert match_text.endswith("Examples") or match_text.endswith("As"), match
+
+    # Each scenario must have two empty lines before it
+    three_line_breaks = len(re.findall(r"\n\n\n", text))
+    assert three_line_breaks == len(feature.scenarios)
