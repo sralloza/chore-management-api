@@ -1,7 +1,6 @@
 @old
 @api.simple-chores
 @listSimpleChores
-@sanity
 Feature: Simple Chores API - listSimpleChores
 
     As an admin or tenant

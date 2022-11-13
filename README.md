@@ -18,8 +18,6 @@ behave -t getChoreTypes
 behave -t authorization
 ```
 
-## Pending features
-
 ## Deploy
 
 Docker images are provided in [dockerhub](https://hub.docker.com/r/sralloza/chore-management-api).
@@ -32,7 +30,6 @@ Configuration is done by setting environment variables.
 
 ### Required
 
-- **_ADMIN_TOKEN_**: only token with admin access.
 - **_ADMIN_API_KEY_**: master administration API key.
 - **_APPLICATION_SECRET_**: secret key for the application. Used to sign JWT tokens.
 
@@ -46,3 +43,10 @@ Configuration is done by setting environment variables.
 - **_DATABASE_USERNAME_**: database username. Defaults to `root`.
 - **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
 - **_DISABLE_MIGRATIONS_**: disable migrations on start. Defaults to `false`, meaning by default migrations are executed on start.
+
+### Optional only for docker
+
+These variables are only used when running the docker image. The docker entrypoint script will manage them.
+
+- **_CREATE_DATABASE_**: if set to true, it will try to create the database each time the container starts.
+- **_WAIT_FOR_IT_ADDRESS_**: address to wait for. For example, to wait for a database to be ready, set it to `database:3306`. It currently supports only one address, but in the future it will support multiple addresses separated by commas.
