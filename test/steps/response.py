@@ -34,7 +34,7 @@ def step_impl(context):
             res_json = context.res.json()
             res_json = remove_attributes(res_json, skip_params)
 
-            msg = f"Expected response: {body_params}, Adapter response: {res_json}"
+            msg = f"Expected response: {body_params}, API response: {res_json}"
             assert body_params == res_json, msg
             return
         except JSONDecodeError:

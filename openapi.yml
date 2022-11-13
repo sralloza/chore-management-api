@@ -669,16 +669,19 @@ paths:
       description: List all tickets
       operationId: listTickets
       security:
-        - FlatAdminApiKey: []
+        - UserApiKey: []
       parameters:
         - $ref: "#/components/parameters/XCorrelatorHeader"
+        - $ref: "#/components/parameters/XFlatHeader"
       responses:
         "200":
           $ref: "#/components/responses/TicketList"
+        "400":
+          $ref: "#/components/responses/InvalidUseFlatHeader"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          $ref: "#/components/responses/ForbiddenErrorFlatRequired"
+          $ref: "#/components/responses/ForbiddenErrorUserRequired"
 
   /users/{user_id}/skip/{week_id}:
     post:
@@ -870,17 +873,27 @@ components:
       description: List of chore tickets
       value:
         - id: type-a
+          name: Type A
           description: description-a
-          tickets_by_tenant:
+          tickets_by_user_id:
             "1": -1
             "2": -1
             "3": 2
+          tickets_by_user_name:
+            "username-1": -1
+            "username-2": -1
+            "username-3": 2
         - id: type-b
+          name: Type B
           description: description-b
-          tickets_by_tenant:
+          tickets_by_user_id:
             "1": -1
             "2": 0
             "3": 1
+          tickets_by_user_name:
+            "username-1": -1
+            "username-2": 0
+            "username-3": 1
 
     UnuthorizedError:
       description: Missing API key
@@ -1512,19 +1525,30 @@ components:
       properties:
         id:
           $ref: "#/components/schemas/ChoreTypeID"
+        name:
+          $ref: "#/components/schemas/ChoreTypeName"
         description:
           $ref: "#/components/schemas/ChoreTypeDescription"
-        tickets_by_tenant:
+        tickets_by_user_id:
           type: object
-          description: Tickets grouped by tenant. The key is the userID.
+          description: Tickets grouped by user_id. The key is the userID.
+          additionalProperties:
+            description: Number of tickets of this type the user has.
+            type: integer
+            format: int32
+        tickets_by_user_name:
+          type: object
+          description: Tickets grouped by user_name. The key is the user name.
           additionalProperties:
             description: Number of tickets of this type the user has.
             type: integer
             format: int32
       required:
         - id
+        - name
         - description
-        - tickets_by_tenant
+        - tickets_by_user_id
+        - tickets_by_user_name
 
     TicketList:
       description: List of chore tickets

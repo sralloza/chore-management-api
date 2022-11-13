@@ -1,29 +1,47 @@
 [
   {
-    "id": "A",
+    "id": "ct-a",
+    "name": "ct-a",
     "description": "description1",
-    "tickets_by_tenant": {
-      "tenant1": 0,
-      "tenant2": 0,
-      "tenant3": 0
+    "tickets_by_user_id": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
+    },
+    "tickets_by_user_name": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
     }
   },
   {
-    "id": "B",
+    "id": "ct-b",
+    "name": "ct-b",
     "description": "description2",
-    "tickets_by_tenant": {
-      "tenant1": 0,
-      "tenant2": 0,
-      "tenant3": 0
+    "tickets_by_user_id": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
+    },
+    "tickets_by_user_name": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
     }
   },
   {
-    "id": "C",
+    "id": "ct-c",
+    "name": "ct-c",
     "description": "description3",
-    "tickets_by_tenant": {
-      "tenant1": 0,
-      "tenant2": 0,
-      "tenant3": 0
+    "tickets_by_user_id": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
+    },
+    "tickets_by_user_name": {
+      "user-1": 0,
+      "user-2": 0,
+      "user-3": 0
     }
   }
 ]

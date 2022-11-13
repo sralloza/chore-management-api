@@ -4,7 +4,7 @@ from os import getenv
 
 import mysql.connector
 
-DATABASES = ("flats", "users", "choreTypes")
+DATABASES = ("flats", "users", "choreTypes", "tickets")
 
 logger = getLogger(__name__)
 

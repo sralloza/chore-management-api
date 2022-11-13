@@ -1,5 +1,6 @@
 import bunyan from "bunyan";
 import express from "express";
+import ticketsRepo from "../repositories/tickets";
 import { INTERNAL } from "../core/constants";
 import { flatAuth, userAuth } from "../middlewares/auth";
 import { userIdPathResolver } from "../middlewares/pathParamsResolver";
@@ -22,6 +23,7 @@ router.post(
   async (req, res) => {
     try {
       const user = await usersRepo.createUser(req.body, req.params.flatName);
+      await ticketsRepo.createTicketsForUser(req.body.id, req.params.flatName);
       await flatsRepo.resetAssignmentOrder(req.params.flatName);
       res.status(200).json(user);
     } catch (err) {

@@ -90,8 +90,21 @@ Feature: Chore Types API - createChoreType
         }
       ]
       """
-  # TODO: enable when creating listTickets operation
-  # And the database contains the following tickets
+    When I send a request to the Api resource "listTickets"
+    Then the response status code is "200"
+    And the Api response contains the expected data
+      """
+      [
+        {
+
+          "id": "chore-type-a",
+          "name": "chore-type-a",
+          "description": "description-chore-type-a",
+          "tickets_by_user_id": {},
+          "tickets_by_user_name": {}
+        }
+      ]
+      """
 
 
   Scenario: Validate error response when using the admin API key without the X-Flat header
@@ -145,12 +158,28 @@ Feature: Chore Types API - createChoreType
         }
       ]
       """
-  # TODO: enable when creating listTickets operation
-  # And the database contains the following tickets
-  #     | tenant  | new-chore |
-  #     | tenant1 | 0         |
-  #     | tenant2 | 0         |
-  #     | tenant3 | 0         |
+    When I send a request to the Api resource "listTickets"
+    Then the response status code is "200"
+    And the Api response contains the expected data
+      """
+      [
+        {
+          "id": "new-chore",
+          "name": "new-chore",
+          "description": "new-chore-description",
+          "tickets_by_user_id": {
+            "user-1": 0,
+            "user-2": 0,
+            "user-3": 0
+          },
+          "tickets_by_user_name": {
+            "user-1": 0,
+            "user-2": 0,
+            "user-3": 0
+          }
+        }
+      ]
+      """
 
 
   Scenario: Validate error response when sending an invalid body
