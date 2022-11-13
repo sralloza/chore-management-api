@@ -168,3 +168,14 @@ def get_security_schemas(operation_id: str):
     if "security" in operation:
         return [list(x.keys())[0] for x in operation["security"]]
     return []
+
+
+def get_responses(operation_id: str):
+    operation = get_operation(operation_id)
+    responses = []
+    for code, response in operation["responses"].items():
+        if "$ref" in response:
+            response = resolve_ref(response["$ref"])
+        response["status_code"] = code
+        responses.append(response)
+    return responses

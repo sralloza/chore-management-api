@@ -12,6 +12,10 @@ SECURITY_EXAMPLES = {
     "FlatAdminApiKey": "Flat administration access required",
     "UserApiKey": "User access required",
 }
+XCORRELATOR_HEADER_RESPONSE = {
+    "description": "Correlation id for the different services",
+    "schema": {"type": "string"},
+}
 
 
 def test_validate_xcorrelator_in_headers(feature: Feature):
@@ -179,3 +183,13 @@ def test_xflat_header_registered(feature: Feature):
         assert "X-Flat" in registered_headers
     else:
         assert "X-Flat" not in registered_headers
+
+
+def test_xcorrelator_in_responses(feature: Feature):
+    operation_id = get_operation_id_by_feature(feature)
+    responses = get_responses(operation_id=operation_id)
+    for response in responses:
+        assert "headers" in response
+        assert "X-Correlator" in response["headers"]
+        correlator_header = response["headers"]["X-Correlator"]
+        assert correlator_header == XCORRELATOR_HEADER_RESPONSE

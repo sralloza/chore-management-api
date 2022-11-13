@@ -172,6 +172,11 @@ paths:
           $ref: "#/components/responses/InvalidRequestBody"
         "403":
           description: Invalid create code
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -184,19 +189,7 @@ paths:
         "409":
           $ref: "#/components/responses/Conflict"
         "422":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ValidationError"
-              examples:
-                ValidationError:
-                  description: Validation error
-                  value:
-                    errors:
-                      - location: body
-                        param: name
-                        msg: The name field is required
+          $ref: "#/components/responses/ValidationError"
 
     get:
       tags:
@@ -252,6 +245,11 @@ paths:
       responses:
         "204":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
@@ -285,6 +283,11 @@ paths:
           $ref: "#/components/responses/FlatSettings"
         "400":
           description: Bad request
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -317,6 +320,11 @@ paths:
       responses:
         "200":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -344,6 +352,11 @@ paths:
       responses:
         "200":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -383,6 +396,11 @@ paths:
       responses:
         "200":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -417,6 +435,11 @@ paths:
       responses:
         "200":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -448,6 +471,11 @@ paths:
       responses:
         "204":
           description: OK
+          headers:
+            X-Correlator:
+              description: Correlation id for the different services
+              schema:
+                type: string
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -1042,6 +1070,11 @@ components:
   responses:
     Conflict:
       description: Conflict
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1052,6 +1085,11 @@ components:
 
     Flat:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1062,6 +1100,11 @@ components:
 
     FlatList:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1072,6 +1115,11 @@ components:
 
     FlatSettings:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1082,6 +1130,11 @@ components:
 
     ForbiddenErrorAdminRequired:
       description: Forbidden
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1092,6 +1145,11 @@ components:
 
     ForbiddenErrorFlatRequired:
       description: Forbidden
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1102,6 +1160,11 @@ components:
 
     ForbiddenErrorInvalidFlatRequested:
       description: Forbidden
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1114,6 +1177,11 @@ components:
 
     ForbiddenErrorUserRequired:
       description: User access required
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1122,9 +1190,13 @@ components:
             UserAccessRequired:
               $ref: "#/components/examples/UserAccessRequired"
 
-
     ForbiddenErrorInvalidUserRequested:
       description: User access required
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1137,6 +1209,11 @@ components:
 
     InvalidFlatRequested:
       description: Forbidden
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1147,6 +1224,11 @@ components:
 
     InvalidKeywordMe:
       description: Bad Request
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1159,6 +1241,11 @@ components:
 
     InvalidKeywordMeAndFlatHeader:
       description: Bad Request
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1175,6 +1262,11 @@ components:
 
     InvalidRequestBody:
       description: Bad Request
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1185,6 +1277,11 @@ components:
 
     InvalidRequestBodyAndInvalidUseFlatHeader:
       description: Bad Request
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1199,6 +1296,11 @@ components:
 
     InvalidUseFlatHeader:
       description: Bad Request
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1211,6 +1313,11 @@ components:
 
     NotFound:
       description: Resource not found
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1222,6 +1329,11 @@ components:
 
     PaginationQueryParamsValidationError:
       description: Validation error
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1242,6 +1354,11 @@ components:
 
     SimpleChoreList:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1251,6 +1368,11 @@ components:
               $ref: "#/components/examples/SimpleChoreList"
     TicketList:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1261,6 +1383,11 @@ components:
 
     Unauthorized:
       description: Missing API Key
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1271,6 +1398,11 @@ components:
 
     User:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1281,6 +1413,11 @@ components:
 
     UserList:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1293,6 +1430,11 @@ components:
 
     UserWithoutApiKey:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
@@ -1303,17 +1445,26 @@ components:
 
     ValidationError:
       description: Validation Error
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/ValidationError"
-
           examples:
             ValidationError:
               $ref: "#/components/examples/ValidationError"
 
     WeekID:
       description: OK
+      headers:
+        X-Correlator:
+          description: Correlation id for the different services
+          schema:
+            type: string
       content:
         application/json:
           schema:
