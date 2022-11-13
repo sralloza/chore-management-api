@@ -252,7 +252,6 @@ Feature: Chore Types API - createChoreType
     And the response contains the following validation errors
       | location | param   | msg   | value   |
       | body     | <param> | <msg> | <value> |
-
     And the response error message is defined
 
     Examples: id = <id>, name = <name>, description = <description>, param = <param>, msg = <msg>, value = <value>

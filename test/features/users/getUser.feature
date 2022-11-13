@@ -5,6 +5,7 @@ Feature: Users API - getUser
   As an admin, flat admin or user
   I want to access a user's data or I want to access myself's data
 
+
   @authorization
   Scenario: Validate response for unauthorized user
     Given I use a random API key
@@ -122,6 +123,7 @@ Feature: Users API - getUser
     And the response status code is defined
     And the error message is "User not found: xxx"
     And the response error message is defined
+
 
   Scenario: Validate error response when using the X-Flat header without the admin API key
     Given I create a flat and I use the flat API key
