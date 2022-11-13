@@ -41,6 +41,7 @@ Feature: Users API - getUser
     Then the response status code is "200"
     And the response status code is defined
 
+
   @authorization
   Scenario: Validate response for admin
     Given I create a flat with a user

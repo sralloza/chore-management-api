@@ -1,4 +1,4 @@
-from json import loads
+from json import dumps, loads
 from pathlib import Path
 from shutil import rmtree
 from uuid import uuid4
@@ -81,7 +81,7 @@ def register_allure_stdout_stderr(context):
 def after_scenario(context, scenario):
     if scenario.status == "failed":
         allure.attach(
-            {"correlator": context.correlator},
+            dumps({"correlator": context.correlator}),
             name="x-correlator",
             attachment_type=allure.attachment_type.JSON,
         )

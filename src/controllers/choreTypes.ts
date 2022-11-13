@@ -5,6 +5,7 @@ import { flatAuth, userAuth } from "../middlewares/auth";
 import { choreType404, choreType409 } from "../middlewares/choreTypes";
 import parseXFlatHeader from "../middlewares/xFlatHeader";
 import choreTypesRepo from "../repositories/choreTypes";
+import ticketsRepo from "../repositories/tickets";
 import validate from "../validators";
 import { choreTypeCreateValidator } from "../validators/choreType";
 
@@ -21,6 +22,10 @@ router.post(
     try {
       const choreType = await choreTypesRepo.createChoreType(
         req.body,
+        req.params.flatName
+      );
+      await ticketsRepo.createTicketsForChoreType(
+        req.body.id,
         req.params.flatName
       );
       res.status(200).json(choreType);
