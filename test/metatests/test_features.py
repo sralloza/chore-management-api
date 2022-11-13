@@ -42,3 +42,10 @@ def test_scenarios_should_leave_two_break_lines(feature: Feature):
     # Each scenario must have two empty lines before it
     three_line_breaks = len(re.findall(r"\n\n\n", text))
     assert three_line_breaks == len(feature.scenarios)
+
+
+def test_2_spaces_instead_of_4(feature: Feature):
+    file = feature.location.filename
+    file_content = Path(file).read_text()
+    assert "    Scenario" not in file_content
+    assert "  Scenario" in file_content
