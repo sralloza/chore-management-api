@@ -1,5 +1,6 @@
 import bunyan from "bunyan";
 import express from "express";
+import promBundle from "express-prom-bundle";
 import morgan from "morgan";
 import api from "./controllers";
 import { INTERNAL } from "./core/constants";
@@ -10,10 +11,27 @@ import redisClient from "./services/redis";
 const logger = bunyan.createLogger({ name: "main" });
 const app = express();
 
+const IGNORED_ROUTES = ["/metrics", "/health"];
+
 app.disable("x-powered-by");
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(correlatorMiddleware);
+app.use(
+  promBundle({
+    includeMethod: true,
+    includePath: true,
+    includeStatusCode: true,
+    includeUp: true,
+    bypass: (req) => IGNORED_ROUTES.includes(req.path),
+    customLabels: {
+      project_name: "chore_management_api",
+    },
+    promClient: {
+      collectDefaultMetrics: {},
+    },
+  })
+);
 
 app.get("/health", (req, res) => {
   res.status(200).send({ status: "OK" });
