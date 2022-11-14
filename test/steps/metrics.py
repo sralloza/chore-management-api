@@ -15,3 +15,11 @@ def step_impl(context, metric):
     new_metric = get_metric_sum(metric)
 
     assert_that(new_metric, equal_to(old_metric))
+
+
+@then('the metric "{metric}" has been incremented by {number:d}')
+def step_impl(context, metric, number):
+    old_metric = get_metric_sum(metric, context.metrics)
+    new_metric = get_metric_sum(metric)
+
+    assert_that(new_metric, equal_to(old_metric + number))
