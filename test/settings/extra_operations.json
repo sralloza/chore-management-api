@@ -1,0 +1,14 @@
+[
+  {
+    "operationId": "health",
+    "path": "/health",
+    "method": "GET",
+    "rawPath": true
+  },
+  {
+    "operationId": "metrics",
+    "path": "/metrics",
+    "method": "GET",
+    "rawPath": true
+  }
+]

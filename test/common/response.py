@@ -33,6 +33,11 @@ def register_response(context, res: Response):
     except Exception:
         req_body = str(res.request.body)
 
+    try:
+        res_body = res.json()
+    except Exception:
+        res_body = res.text
+
     info = {
         "req": {
             "url": res.request.url,
@@ -46,7 +51,7 @@ def register_response(context, res: Response):
             "status_code": res.status_code,
             "is_error": not res.ok,
             "headers": dict(res.headers),
-            "body": res.json() if res.text else None,
+            "body": res_body if res.text else None,
             "elapsed": res.elapsed.total_seconds(),
         },
     }
