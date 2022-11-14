@@ -18,15 +18,15 @@ XCORRELATOR_HEADER_RESPONSE = {
 }
 
 
-def test_validate_xcorrelator_in_headers(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_validate_xcorrelator_in_headers(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     msg = f"[{operation_id}] X-Correlator header is mandatory"
     assert "X-Correlator" in headers, msg
 
 
-def test_openapi_headers_title_cased(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_openapi_headers_title_cased(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     for header in headers:
         expected = "-".join([x.title() for x in header.split("-")])
@@ -34,8 +34,8 @@ def test_openapi_headers_title_cased(feature: Feature):
         assert header == expected, msg
 
 
-def test_path_params_camel_cased(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_path_params_camel_cased(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     params = get_request_path_parameters(operation_id=operation_id)
     for param in params:
         assert "-" not in param
@@ -43,8 +43,8 @@ def test_path_params_camel_cased(feature: Feature):
         assert param == expected
 
 
-def test_defined_path_params(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_defined_path_params(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     defined_path_params = get_request_path_parameters(operation_id=operation_id)
     path = get_operation_path(operation_id)
     real_path_params = [x.group(1) for x in PATH_PARAM_REGEX.finditer(path)]
@@ -55,8 +55,8 @@ def test_defined_path_params(feature: Feature):
         assert param in real_path_params, "Path parameter is not used"
 
 
-def test_get_operations_with_parameter_404(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_get_operations_with_parameter_404(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "GET":
         return
@@ -70,8 +70,8 @@ def test_get_operations_with_parameter_404(feature: Feature):
         assert 404 not in get_response_codes(operation_id=operation_id), msg
 
 
-def test_post_operations_should_define_400_response(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_post_operations_should_define_400_response(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "POST":
         return
@@ -84,8 +84,8 @@ def test_post_operations_should_define_400_response(feature: Feature):
         assert 400 in get_response_codes(operation_id=operation_id), msg
 
 
-def test_post_operations_should_define_422_response(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_post_operations_should_define_422_response(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "POST":
         return
@@ -98,16 +98,16 @@ def test_post_operations_should_define_422_response(feature: Feature):
         assert 422 in get_response_codes(operation_id=operation_id), msg
 
 
-def test_flat_name_path_and_x_flat_header(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_flat_name_path_and_x_flat_header(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     path_params = get_request_path_parameters(operation_id=operation_id)
     if "flat_name" in path_params:
         assert "X-Flat" not in headers
 
 
-def test_validate_security_schema(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_validate_security_schema(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     security_schemas = get_security_schemas(operation_id)
     defined_status_codes = get_response_codes(operation_id)
     if len(security_schemas) == 0:
@@ -126,8 +126,8 @@ def test_validate_security_schema(feature: Feature):
     assert expected in examples, msg
 
 
-def test_204_delete_operations(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_204_delete_operations(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "DELETE":
         return
@@ -138,8 +138,8 @@ def test_204_delete_operations(feature: Feature):
 
 
 @pytest.mark.responses
-def test_all_status_codes_covered(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_all_status_codes_covered(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     operation = get_operation(operation_id=operation_id)
     expected = list({int(x) for x in operation["responses"].keys()})
     expected.sort()
@@ -150,8 +150,8 @@ def test_all_status_codes_covered(feature: Feature):
 
 
 @pytest.mark.responses
-def test_responses_in_examples(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_responses_in_examples(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     operation = get_operation(operation_id=operation_id)
     expected = list({int(x) for x in operation["responses"].keys()})
     expected.sort()
@@ -174,8 +174,8 @@ def test_responses_in_examples(feature: Feature):
 
 
 @pytest.mark.responses
-def test_xflat_header_registered(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_xflat_header_registered(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     registered_headers = get_request_headers(operation_id=operation_id)
 
     headers = get_request_headers_by_operation_id(operation_id)
@@ -185,8 +185,8 @@ def test_xflat_header_registered(feature: Feature):
         assert "X-Flat" not in registered_headers
 
 
-def test_xcorrelator_in_responses(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
+def test_xcorrelator_in_responses(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
     responses = get_responses(operation_id=operation_id)
     for response in responses:
         assert "headers" in response
