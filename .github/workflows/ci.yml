@@ -15,6 +15,10 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Fail if PR is in draft
+        if: github.event.pull_request.draft
+        run: exit 1
+
       - uses: actions/checkout@v3
 
       - name: Setup python
