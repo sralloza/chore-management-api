@@ -25,6 +25,7 @@ COPY migrations ./migrations
 COPY --from=builder /data/package*.json /data/
 COPY --from=builder /data/node_modules ./node_modules
 COPY --from=builder /data/dist /data/dist
+COPY openapi.yml /data
 
 EXPOSE 8080
 ENTRYPOINT [ "/data/entrypoint.sh" ]

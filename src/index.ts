@@ -2,9 +2,11 @@ import bunyan from "bunyan";
 import express from "express";
 import promBundle from "express-prom-bundle";
 import morgan from "morgan";
+import promClient from "prom-client";
 import api from "./controllers";
 import { INTERNAL } from "./core/constants";
 import dataSource from "./core/datasource";
+import { getNormalizePathsForMetrics } from "./core/openapi";
 import correlatorMiddleware from "./middlewares/correlator";
 import redisClient from "./services/redis";
 
@@ -12,32 +14,38 @@ const logger = bunyan.createLogger({ name: "main" });
 const app = express();
 
 const IGNORED_ROUTES = ["/metrics", "/health"];
+const PREFIX = "/api/v1";
 
 app.disable("x-powered-by");
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(correlatorMiddleware);
-app.use(
-  promBundle({
-    includeMethod: true,
-    includePath: true,
-    includeStatusCode: true,
-    includeUp: true,
-    bypass: (req) => IGNORED_ROUTES.includes(req.path),
-    customLabels: {
-      project_name: "chore_management_api",
-    },
-    promClient: {
-      collectDefaultMetrics: {},
-    },
-  })
-);
+
+// Metrics stuff
+const bundle = promBundle({
+  buckets: [0.1, 0.4, 0.7],
+  includeMethod: true,
+  includePath: true,
+  includeStatusCode: true,
+  includeUp: true,
+  bypass: (req) => IGNORED_ROUTES.includes(req.path),
+  customLabels: { api: "chore-management" },
+  promClient: { collectDefaultMetrics: {} },
+  normalizePath: getNormalizePathsForMetrics(PREFIX),
+});
+app.use(bundle);
+
+export const flatsCreatedMetric = new promClient.Counter({
+  name: "flats_created",
+  help: "Number of flats created",
+});
+flatsCreatedMetric.reset();
 
 app.get("/health", (req, res) => {
   res.status(200).send({ status: "OK" });
 });
 
-app.use("/api/v1", api);
+app.use(PREFIX, api);
 
 const port = 8080;
 

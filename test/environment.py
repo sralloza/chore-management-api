@@ -14,7 +14,7 @@ from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
 from common.db import reset_databases
-from common.openapi import *
+from common.metrics import METRICS_URL, get_metrics
 
 RESPONSES_FOLDER = Path(__file__).parent / "output" / "responses"
 
@@ -56,6 +56,7 @@ def before_scenario(context, scenario):
 
     context.session = requests.Session()
     context.correlator = str(uuid4())
+    context.metrics = get_metrics()
 
     reset_databases()
     context.res = None
@@ -76,6 +77,9 @@ def register_allure_stdout_stderr(context):
         )
     if logs:
         allure.attach(logs, name="logs", attachment_type=allure.attachment_type.TEXT)
+
+    metrics = dumps([x.__dict__ for x in context.metrics])
+    allure.attach(metrics, name="metrics", attachment_type=allure.attachment_type.TEXT)
 
 
 def after_scenario(context, scenario):

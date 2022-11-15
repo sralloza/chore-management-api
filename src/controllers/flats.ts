@@ -2,16 +2,17 @@ import bunyan from "bunyan";
 import express from "express";
 import { DateTime } from "luxon";
 import { INTERNAL } from "../core/constants";
+import { flatsCreatedMetric } from "../index";
 import { adminAuth, flatAuth } from "../middlewares/auth";
-import { flatNamePathResolver } from "../middlewares/pathParamsResolver";
 import { flat404, flat409, verifyCreateCode403 } from "../middlewares/flats";
+import { flatNamePathResolver } from "../middlewares/pathParamsResolver";
 import flatsRepo from "../repositories/flats";
 import { genJWT } from "../services/jwt";
 import redisClient from "../services/redis";
 import validate from "../validators";
 import {
   flatCreateValidator,
-  flatSettingsUpdateValidator,
+  flatSettingsUpdateValidator
 } from "../validators/flat";
 
 const logger = bunyan.createLogger({ name: "choreTypesController" });
@@ -32,6 +33,7 @@ router.post(
     try {
       const flat = await flatsRepo.createFlat(req.body);
       await redisClient.set(req.body.create_code, req.body.name, 5);
+      flatsCreatedMetric.inc();
       res.status(200).json(flat);
     } catch (err) {
       logger.error(err);

@@ -11,21 +11,33 @@ def get_metrics():
     # Warning: needs context
     res = requests.get(METRICS_URL)
     res.raise_for_status()
-    return text_string_to_metric_families(res.text)
+    return tuple(text_string_to_metric_families(res.text))
 
 
-def get_metric_sum(metric_name: str, metrics=None):
-    if metrics is None:
-        metrics = get_metrics()
+def apply_labels_filter(metric, labels):
+    if not labels:
+        return True
+    for key, value in labels.items():
+        if metric.labels.get(key) != value:
+            return False
+    return True
 
-    result = 0
-    found = False
+
+def get_counter(metric_name: str, metrics=None, *, labels=None):
+    metrics = metrics or get_metrics()
+
     for family in metrics:
-        for sample in family.samples:
-            if sample.name == metric_name:
-                result += sample.value
-                found = True
-
-    if found:
-        return result
+        if family.name == metric_name:
+            if len(family.samples) == 0:
+                raise ValueError(f"Metric {metric_name} has no samples")
+            if family.type == "histogram":
+                return sum(
+                    x.value
+                    for x in family.samples
+                    if x.name == metric_name + "_count"
+                    and apply_labels_filter(x, labels)
+                )
+            if family.type == "counter":
+                return sum(x.value for x in family.samples)
+            raise ValueError("What is happening here?")
     raise ValueError(f"Metric {metric_name!r} not found")
