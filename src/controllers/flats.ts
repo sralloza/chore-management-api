@@ -12,7 +12,7 @@ import redisClient from "../services/redis";
 import validate from "../validators";
 import {
   flatCreateValidator,
-  flatSettingsUpdateValidator
+  flatSettingsUpdateValidator,
 } from "../validators/flat";
 
 const logger = bunyan.createLogger({ name: "choreTypesController" });
