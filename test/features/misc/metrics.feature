@@ -55,6 +55,8 @@ Feature: Prometheus metrics
       | editFlatSettings | flat_name     | PATCH  | /api/v1/flats/{flat_name}/settings  |
       | getChoreType     | chore_type_id | GET    | /api/v1/chore-types/{chore_type_id} |
       | deleteChoreType  | chore_type_id | DELETE | /api/v1/chore-types/{chore_type_id} |
+      | getUser          | user_id       | GET    | /api/v1/users/{user_id}             |
+      | deleteUser       | user_id       | DELETE | /api/v1/users/{user_id}             |
 
 
   Scenario: Increment metric when a flat is created

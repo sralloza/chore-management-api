@@ -4,8 +4,8 @@ from requests import Response
 
 from common.openapi import get_current_operation, get_operation
 from common.response import register_response
-from common.utils import URL, VERSIONED_URL_TEMPLATE
-from constants import COMMON_SCENARIOS
+from common.utils import *
+from constants import *
 
 
 def send_request(context, endpoint=None, payload=None):
@@ -61,7 +61,8 @@ def _send_request(context, method, path, operation_id, payload=None, is_path_raw
         # fails, the last request will be removed so.
         register_response(context, res)
 
-    print_res(res)
+    if operation_id not in BLACKLISTED_STDOUT_FEATURES:
+        print_res(res)
     return res
 
 

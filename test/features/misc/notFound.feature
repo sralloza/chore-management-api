@@ -2,7 +2,7 @@
 Feature: notFound
 
   As a non authenticated user
-  I want to receive a 404 if I sent a request to a non existing route
+  I want to receive a 404 if I send a request to a non existing route
 
 
   Scenario Outline: Validate 404 generic response
