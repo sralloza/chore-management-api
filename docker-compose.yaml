@@ -42,7 +42,6 @@ services:
     ports:
       - "6379:6379"
 
-
   prometheus:
     image: prom/prometheus:v2.36.2
     container_name: prometheus
