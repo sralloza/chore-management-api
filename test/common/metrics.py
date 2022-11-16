@@ -1,17 +1,21 @@
-import requests
+from hamcrest import *
+import warnings
 from prometheus_client.parser import text_string_to_metric_families
 
+from common.api import send_request
 from common.utils import URL
 
 METRICS_URL = URL + "/metrics"
 
 
-def get_metrics():
-    # TODO: use api.send_request() instead
-    # Warning: needs context
-    res = requests.get(METRICS_URL)
-    res.raise_for_status()
-    return tuple(text_string_to_metric_families(res.text))
+class MetricNotFoundWarning(UserWarning):
+    """Metric not found"""
+
+
+def get_metrics(context):
+    send_request(context, "metrics")
+    assert_that(context.res.status_code, equal_to(200))
+    return tuple(text_string_to_metric_families(context.res.text))
 
 
 def apply_labels_filter(metric, labels):
@@ -23,13 +27,13 @@ def apply_labels_filter(metric, labels):
     return True
 
 
-def get_counter(metric_name: str, metrics=None, *, labels=None):
-    metrics = metrics or get_metrics()
+def get_counter(context, metric_name: str, metrics=None, *, labels=None):
+    metrics = metrics or get_metrics(context)
 
     for family in metrics:
         if family.name == metric_name:
             if len(family.samples) == 0:
-                raise ValueError(f"Metric {metric_name} has no samples")
+                return 0
             if family.type == "histogram":
                 return sum(
                     x.value
@@ -39,5 +43,7 @@ def get_counter(metric_name: str, metrics=None, *, labels=None):
                 )
             if family.type == "counter":
                 return sum(x.value for x in family.samples)
-            raise ValueError("What is happening here?")
-    raise ValueError(f"Metric {metric_name!r} not found")
+            raise ValueError(f"Metric not supported: {family.type}")
+
+    warnings.warn(f"Metric {metric_name} not found", MetricNotFoundWarning)
+    return 0

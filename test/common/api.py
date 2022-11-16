@@ -1,5 +1,4 @@
 import re
-from json import dumps
 
 from requests import Response
 

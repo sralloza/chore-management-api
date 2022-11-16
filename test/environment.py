@@ -56,7 +56,7 @@ def before_scenario(context, scenario):
 
     context.session = requests.Session()
     context.correlator = str(uuid4())
-    context.metrics = get_metrics()
+    context.metrics = get_metrics(context)
 
     reset_databases()
     context.res = None
