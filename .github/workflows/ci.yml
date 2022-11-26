@@ -38,7 +38,7 @@ jobs:
         run: poetry debug info && poetry env info
 
       - name: Run poetry install
-        run: poetry install
+        run: cd test && poetry install
 
       - name: Lint
         run: .github/scripts/lint.sh
