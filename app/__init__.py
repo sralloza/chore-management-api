@@ -7,3 +7,8 @@ app = FastAPI()
 app.middleware("http")(catch_exceptions_middleware)
 
 app.include_router(router_v1, prefix="/v1")
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
