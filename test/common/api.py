@@ -1,12 +1,11 @@
 import re
-from json import dumps
 
 from requests import Response
 
 from common.openapi import get_current_operation, get_operation
 from common.response import register_response
-from common.utils import VERSIONED_URL_TEMPLATE
-from constants import COMMON_SCENARIOS
+from common.utils import *
+from constants import *
 
 
 def send_request(context, endpoint=None, payload=None):
@@ -19,12 +18,15 @@ def send_request(context, endpoint=None, payload=None):
         operation = get_operation(endpoint)
 
     path = operation["path"]
+    is_path_raw = operation.get("rawPath", False)
     method = operation["method"].upper()
     operation_id = operation["operationId"]
 
     url_params = get_url_params(context, path)
     path = path.format(**url_params)
-    context.res = _send_request(context, method, path, operation_id, payload)
+    context.res = _send_request(
+        context, method, path, operation_id, payload, is_path_raw
+    )
 
 
 def get_url_params(context, path):
@@ -35,8 +37,11 @@ def get_url_params(context, path):
     return {k: getattr(context, k) for k in param_names}
 
 
-def _send_request(context, method, path, operation_id, payload=None):
-    url = VERSIONED_URL_TEMPLATE.format(version=1) + path
+def _send_request(context, method, path, operation_id, payload=None, is_path_raw=False):
+    if is_path_raw:
+        url = URL + path
+    else:
+        url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
     headers = getattr(context, "headers", {})
     headers["X-Correlator"] = context.correlator
@@ -56,7 +61,8 @@ def _send_request(context, method, path, operation_id, payload=None):
         # fails, the last request will be removed so.
         register_response(context, res)
 
-    print_res(res)
+    if operation_id not in BLACKLISTED_STDOUT_FEATURES:
+        print_res(res)
     return res
 
 

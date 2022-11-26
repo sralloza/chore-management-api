@@ -7,23 +7,23 @@ from constants import *
 from metatests.core import *
 
 
-def test_validate_feature_name(feature: Feature):
-    resource = Path(feature.filename).stem
-    resource_from_feature_name = feature.name.split(" - ")[-1]
+def test_validate_feature_name(api_feature: Feature):
+    resource = Path(api_feature.filename).stem
+    resource_from_feature_name = api_feature.name.split(" - ")[-1]
     assert resource_from_feature_name == resource
 
 
-def test_validate_common_scenarios(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
-    scenario_names = [scenario.name for scenario in feature.scenarios]
+def test_validate_common_scenarios(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
+    scenario_names = [scenario.name for scenario in api_feature.scenarios]
     msg = f"Feature {operation_id} should have the common scenario "
     for scenario_name in COMMON_SCENARIOS:
         assert scenario_name in scenario_names, msg + repr(scenario_name)
 
 
-def test_validate_xflat_header_scenarios(feature: Feature):
-    operation_id = get_operation_id_by_feature(feature)
-    scenario_names = [scenario.name for scenario in feature.scenarios]
+def test_validate_xflat_header_scenarios(api_feature: Feature):
+    operation_id = get_operation_id_by_feature(api_feature)
+    scenario_names = [scenario.name for scenario in api_feature.scenarios]
     headers = get_request_headers(operation_id=operation_id)
     if "X-Flat" in headers:
         for scenario in X_FLAT_HEADER_SCENARIOS:

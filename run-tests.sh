@@ -4,6 +4,8 @@ mustExit=false
 maxRetries=30
 retriesLeft="$maxRetries"
 
+python -c "import allure" || exit 2
+
 function cleanup {
   docker-compose down -v
   mustExit=true

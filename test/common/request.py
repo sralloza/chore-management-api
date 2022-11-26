@@ -2,16 +2,16 @@ from dotty_dict import dotty
 from toolium.utils.dataset import map_param, replace_param
 
 
-def table_to_dict(table):
+def table_to_dict(table, col_param="param_name", col_value="param_value"):
     if not table:
         return {}
 
-    table.require_columns(["param_name", "param_value"])
+    table.require_columns([col_param, col_value])
     result = dotty()
     for row in table.rows:
         to_str = row.get("as_string", "").lower() == "true"
-        value = row["param_value"]
-        key = row["param_name"]
+        value = row[col_value]
+        key = row[col_param]
         if value != "[NONE]":
             value = replace_param(value, infer_param_type=not to_str)
             value = map_param(value)

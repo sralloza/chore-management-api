@@ -1,0 +1,50 @@
+[
+  {
+    "operationId": "health",
+    "path": "/health",
+    "method": "GET",
+    "rawPath": true
+  },
+  {
+    "operationId": "metrics",
+    "path": "/metrics",
+    "method": "GET",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFound",
+    "path": "/xxx",
+    "method": "GET",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFoundGet",
+    "path": "/xxx",
+    "method": "GET",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFoundPost",
+    "path": "/xxx",
+    "method": "POST",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFoundPut",
+    "path": "/xxx",
+    "method": "PUT",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFoundDelete",
+    "path": "/xxx",
+    "method": "DELETE",
+    "rawPath": true
+  },
+  {
+    "operationId": "notFoundPatch",
+    "path": "/xxx",
+    "method": "PATCH",
+    "rawPath": true
+  }
+]

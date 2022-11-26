@@ -1,4 +1,5 @@
 from functools import lru_cache
+from json import loads
 from pathlib import Path
 
 from jsonschema import FormatChecker, ValidationError, validate
@@ -23,8 +24,13 @@ def get_defined_schemas():
     return schemas
 
 
+def get_extra_operations():
+    path = Path(__file__).parent.parent / "settings/extra_operations.json"
+    return loads(path.read_text())
+
+
 def get_operations():
-    operations = []
+    operations = get_extra_operations()
     data = get_openapi()
     for path in data["paths"]:
         for method in data["paths"][path]:
