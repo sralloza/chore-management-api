@@ -1,16 +1,9 @@
-from fastapi import Depends, FastAPI
-from sqlalchemy.orm import Session
+from fastapi import FastAPI
 
-from .core.config import settings
-from .middlewares.db import get_db
-from .models.user import User
+from .middlewares.errors import catch_exceptions_middleware
+from .routes import router as router_v1
+
 app = FastAPI()
+app.middleware("http")(catch_exceptions_middleware)
 
-
-@app.get("/")
-async def root():
-    return settings
-
-@app.get("/test")
-async def test(db: Session = Depends(get_db)):
-    return db.query(User).first()
+app.include_router(router_v1, prefix="/v1")

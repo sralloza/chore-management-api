@@ -8,7 +8,7 @@ class DatabaseConfig(BaseSettings):
     username: str = Field("root", env="DATABASE_USERNAME")
     password: str = Field("root", env="DATABASE_PASSWORD")
     create_database: bool = Field(False, env="CREATE_DATABASE")
-    disable_migrations: bool = Field(False, env="DISABLE_MIGRATIONS")
+    run_migrations: bool = Field(True, env="RUN_MIGRATIONS")
 
     class Config:
         env_file = ".env"

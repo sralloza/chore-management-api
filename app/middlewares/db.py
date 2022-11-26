@@ -1,13 +1,14 @@
 """Database dependencies."""
 
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import SessionLocal, engine
 
 
-async def get_db():
+async def get_db() -> AsyncSession:
     """Creates a local database session."""
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        engine.dispose()
+    async with SessionLocal() as db:
+        try:
+            yield db
+        finally:
+            db.close()
+            await engine.dispose()

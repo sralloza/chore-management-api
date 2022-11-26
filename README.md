@@ -42,7 +42,7 @@ Configuration is done by setting environment variables.
 - **_DATABASE_NAME_**: database name. Defaults to `chore-management`.
 - **_DATABASE_USERNAME_**: database username. Defaults to `root`.
 - **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
-- **_DISABLE_MIGRATIONS_**: disable migrations on start. Defaults to `false`, meaning by default migrations are executed on start.
+- **_RUN_MIGRATIONS_**: run migrations on start. Defaults to `true`, meaning by default migrations are executed on start.
 
 ### Optional only for docker
 

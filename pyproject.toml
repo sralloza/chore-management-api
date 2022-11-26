@@ -9,11 +9,11 @@ python = "^3.10"
 fastapi = "^0.87.0"
 SQLAlchemy = {extras = ["asyncio"], version = "^1.4.44"}
 python-dotenv = "^0.21.0"
-PyMySQL = "^1.0.2"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
 cryptography = "^38.0.3"
-SQLAlchemy-Utils = "^0.38.3"
 alembic = "^1.8.1"
+aiomysql = "^0.1.1"
+greenlet = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 
