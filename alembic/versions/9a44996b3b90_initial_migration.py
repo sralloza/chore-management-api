@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: aebed5ab986b
+Revision ID: 9a44996b3b90
 Revises: 
-Create Date: 2022-11-27 11:14:01.414516
+Create Date: 2022-11-27 18:40:04.930326
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = 'aebed5ab986b'
+revision = '9a44996b3b90'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -34,10 +34,10 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('settings',
-    sa.Column('primary_key', sqlmodel.sql.sqltypes.AutoString(length=36), nullable=False),
+    sa.Column('rotation_sign', sa.Enum('positive', 'negative', name='rotationsign'), nullable=False),
     sa.Column('assignment_order', sqlmodel.sql.sqltypes.AutoString(length=2048), nullable=False),
-    sa.Column('rotation_sign', sqlmodel.sql.sqltypes.AutoString(length=15), nullable=False),
-    sa.PrimaryKeyConstraint('primary_key')
+    sa.Column('id', sqlmodel.sql.sqltypes.AutoString(length=36), nullable=False),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('ticket',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -59,6 +59,7 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
+    sa.Column('created_at', sa.BigInteger(), nullable=True),
     sa.Column('username', sqlmodel.sql.sqltypes.AutoString(length=25), nullable=False),
     sa.Column('id', sqlmodel.sql.sqltypes.AutoString(length=40), nullable=False),
     sa.Column('api_key', sqlmodel.sql.sqltypes.AutoString(length=36), nullable=False),

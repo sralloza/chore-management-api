@@ -1,7 +1,8 @@
 from behave import *
 
-from common.alias.flats import create_flat, create_user
+from common.alias.users import create_user
 
+# TODO: move this to aliases.users
 
 @given("I create a user")
 def step_impl(context):
@@ -14,45 +15,5 @@ def step_impl(context):
         """
         Given I create a user
         And I use the user API key
-    """
-    )
-
-
-@given("I create a flat")
-def step_impl(context):
-    create_flat(context)
-
-
-@given("I create a flat with a user and I use the user API key")
-def step_impl(context):
-    context.execute_steps(
-        """
-        Given I create a flat with a user
-        And I use the user API key
-    """
-    )
-
-
-@given("I create a flat with a user and I use the flat API key")
-def step_impl(context):
-    context.execute_steps(
-        """
-        Given I create a flat with a user
-        And I use the flat API key
-    """
-    )
-
-
-@given("I create a flat with a user")
-def step_impl(context):
-    create_flat(context, user=True)
-
-
-@given("I create a flat and I use the flat API key")
-def step_impl(context):
-    context.execute_steps(
-        """
-        Given I create a flat
-        And I use the flat API key
     """
     )

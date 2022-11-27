@@ -1,19 +1,4 @@
 [[package]]
-name = "aiomysql"
-version = "0.1.1"
-description = "MySQL driver for asyncio."
-category = "main"
-optional = false
-python-versions = ">=3.7"
-
-[package.dependencies]
-PyMySQL = ">=1.0"
-
-[package.extras]
-rsa = ["PyMySQL[rsa] (>=1.0)"]
-sa = ["sqlalchemy (>=1.0,<1.4)"]
-
-[[package]]
 name = "alembic"
 version = "1.8.1"
 description = "A database migration tool for SQLAlchemy."
@@ -466,13 +451,9 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5317abedda38ec2108a0be01443782c30dd274b5d02d8c9acbc33fbc8f5ec5de"
+content-hash = "1a08771522cf05e87d56d93e78bee1c0f5bcf2ef6f391e5b8010bfcf03542a8a"
 
 [metadata.files]
-aiomysql = [
-    {file = "aiomysql-0.1.1-py3-none-any.whl", hash = "sha256:b66fa1481ca71c5ee0d933ec3abf51f6136543a3710ba80b134eb33da7ed6f13"},
-    {file = "aiomysql-0.1.1.tar.gz", hash = "sha256:0d686c4fdae6b67d1825d8be60fa3b0e644fca2c84d3c936d850fc259c8e107e"},
-]
 alembic = [
     {file = "alembic-1.8.1-py3-none-any.whl", hash = "sha256:0a024d7f2de88d738d7395ff866997314c837be6104e90c5724350313dee4da4"},
     {file = "alembic-1.8.1.tar.gz", hash = "sha256:cd0b5e45b14b706426b833f06369b9a6d5ee03f826ec3238723ce8caaf6e5ffa"},

@@ -1,5 +1,7 @@
 from pydantic import validator
-from sqlmodel import Field, SQLModel
+from sqlalchemy import BigInteger
+from sqlmodel import Field, SQLModel,Column
+import time
 
 
 class UserCreate(SQLModel):
@@ -19,3 +21,8 @@ class UserSimple(UserCreate):
 
 class User(UserCreate, table=True):
     api_key: str = Field(max_length=36, unique=True)
+    created_at: int = Field(default_factory=lambda: time.time() * 10**6, sa_column=Column(BigInteger()))
+
+
+class UserOutput(UserCreate):
+    api_key: str

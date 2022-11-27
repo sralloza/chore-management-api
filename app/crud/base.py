@@ -2,9 +2,8 @@ from typing import Any, Generic, List, Optional, Type, TypeVar
 
 from fastapi import HTTPException
 from pydantic import BaseModel
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from sqlmodel import SQLModel
+from sqlmodel import Session, SQLModel, select
 
 ModelType = TypeVar("ModelType", bound=SQLModel)
 IDType = TypeVar("IDType", bound=Any)
@@ -29,37 +28,39 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         detail = f"{self.model.__name__} with id={id} does not exist"
         raise HTTPException(404, detail)
 
-    async def get(self, db: AsyncSession, id: IDType) -> Optional[ModelType]:
-        result = await db.execute(select(self.model).where(self.get_model_id() == id))
-        return result.scalars().first()
+    def get(self, db: Session, id: IDType) -> Optional[ModelType]:
+        return (
+            db.execute(select(self.model).where(self.get_model_id() == id))
+            .scalars()
+            .first()
+        )
 
-    async def get_or_404(self, db: AsyncSession, id: IDType) -> ModelType:
-        obj = await self.get(db, id=id)
+    def get_or_404(self, db: Session, id: IDType) -> ModelType:
+        obj = self.get(db, id=id)
         if obj is not None:
             return obj
         self.throw_404_exception(id)
 
-    async def get_multi(
-        self, db: AsyncSession, *, skip: int = 0, limit: int = 100
+    def get_multi(
+        self, db: Session, *, skip: int = 0, limit: int = 100
     ) -> List[ModelType]:
-        result = await db.execute(select(self.model).offset(skip).limit(limit))
-        return result.scalars().all()
+        return db.execute(select(self.model).offset(skip).limit(limit)).scalars().all()
 
-    async def create(self, db: AsyncSession, *, obj_in: CreateSchemaType) -> ModelType:
+    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = obj_in.dict()
-        if "id" in obj_in_data and await self.get(db, id=obj_in_data["id"]):
+        if "id" in obj_in_data and self.get(db, id=obj_in_data["id"]):
             detail = f"{self.model.__name__} with id={obj_in_data['id']} already exists"
             raise HTTPException(409, detail)
 
         db_obj = self.model(**obj_in_data)
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        db.commit()
+        db.refresh(db_obj)
         return db_obj
 
     @staticmethod
-    async def update(
-        db: AsyncSession,
+    def update(
+        db: Session,
         *,
         db_obj: ModelType,
         obj_in: UpdateSchemaType,
@@ -70,11 +71,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             setattr(db_obj, field, obj_data[field])
 
         db.add(db_obj)
-        await db.commit()
-        await db.refresh(db_obj)
+        db.commit()
+        db.refresh(db_obj)
         return db_obj
 
-    async def remove(self, db: AsyncSession, *, id: IDType) -> None:
+    def remove(self, db: Session, *, id: IDType) -> None:
         obj = self.get_or_404(db, id=id)
-        await db.delete(obj)
-        await db.commit()
+        db.delete(obj)
+        db.commit()
