@@ -2,16 +2,15 @@ from functools import lru_cache
 from json import loads
 from pathlib import Path
 
+import requests
 from jsonschema import FormatChecker, ValidationError, validate
-from yaml import safe_load
 
 
 @lru_cache()
 def get_openapi():
-    root = Path(__file__).parent.parent.parent
-    openapi = root / "openapi.yml"
-    content = openapi.read_text()
-    return safe_load(content)
+    res = requests.get("http://localhost:8080/openapi.json")
+    res.raise_for_status()
+    return res.json()
 
 
 def get_defined_schemas():
