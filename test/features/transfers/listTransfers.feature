@@ -1,6 +1,7 @@
 @old
 @api.transfers
 @listTransfers
+@old
 Feature: Transfers API - listTransfers
 
     As a admin or tenant

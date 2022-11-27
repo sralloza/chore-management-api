@@ -1,12 +1,8 @@
-from sqlalchemy import Column, String, Integer
-
-from ..db.base import Base
+from sqlmodel import Field, SQLModel
 
 
-class Ticket(Base):
-    __tablename__ = "tickets"
-
-    id = Column(Integer, primary_key=True)
-    chore_type_id = Column(String(25), nullable=False)
-    user_id = Column(String(40), nullable=False)
-    tickets = Column(Integer, nullable=False)
+class Ticket(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    chore_type_id: str = Field(max_length=25)
+    user_id: str = Field(max_length=40)
+    tickets: int

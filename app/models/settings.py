@@ -1,11 +1,8 @@
-from sqlalchemy import Column, String
-
-from ..db.base import Base
+from sqlmodel import Field, SQLModel
 
 
-class Settings(Base):
-    __tablename__ = "settings"
-
-    primary_key = Column(String(36), primary_key=True)
-    assignment_order = Column(String(2048), nullable=False)
-    rotation_sign = Column(String(15), nullable=False)
+class Settings(SQLModel, table=True):
+    # TODO: settings should have only one item
+    primary_key: str = Field(primary_key=True, max_length=36)
+    assignment_order: str = Field(max_length=2048)
+    rotation_sign: str = Field(max_length=15)

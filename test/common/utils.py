@@ -5,7 +5,8 @@ from dotty_dict import dotty
 from toolium.utils.dataset import map_param, replace_param
 
 URL = "http://localhost:8080"
-VERSIONED_URL_TEMPLATE = URL + "/api/v{version}"
+VERSIONED_PATH = "/api/v{version}"
+VERSIONED_URL_TEMPLATE = URL + VERSIONED_PATH
 
 
 def assert_not_errors(errors):

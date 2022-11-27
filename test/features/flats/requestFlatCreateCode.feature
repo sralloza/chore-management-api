@@ -1,5 +1,6 @@
 @api.flats
 @requestFlatCreateCode
+@old
 Feature: Flats API - requestFlatCreateCode
 
   As an admin

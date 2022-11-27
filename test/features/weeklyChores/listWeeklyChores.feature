@@ -1,6 +1,7 @@
 @old
 @api.weekly-chores
 @listWeeklyChores
+@old
 Feature: Weekly Chores API - listWeeklyChores
 
     As a tenant or admin

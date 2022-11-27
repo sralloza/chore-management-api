@@ -1,11 +1,7 @@
-from sqlalchemy import Column, String
-
-from ..db.base import Base
+from sqlmodel import Field, SQLModel
 
 
-class ChoreType(Base):
-    __tablename__ = "chore_types"
-
-    id = Column(String(25), primary_key=True)
-    name = Column(String(50), nullable=False)
-    description = Column(String(255), nullable=False)
+class ChoreType(SQLModel, table=True):
+    id: str = Field(primary_key=True, max_length=25)
+    name: str = Field(max_length=50)
+    description: str = Field(max_length=255)

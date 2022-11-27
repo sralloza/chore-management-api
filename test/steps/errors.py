@@ -1,22 +1,30 @@
 from behave import *
 from deepdiff import DeepDiff
-
+from collections import namedtuple
 from common.utils import toolium_replace
 
+ValidationError = namedtuple("ValidationError", ["location", "param", "msg"])
+
+def parse_errors(errors):
+    parsed = []
+    for error in errors:
+        parsed.append(ValidationError(
+            error["loc"][0],
+            error["loc"][1],
+            error["msg"]
+        ))
+    return parsed
 
 @then("the response contains the following validation errors")
 def step_impl(context):
     context.table.require_columns(["location", "param", "msg"])
-    errors = context.res.json()["errors"]
+    errors = parse_errors(context.res.json()["errors"])
     for row in context.table:
-        error = {
-            "location": toolium_replace(row["location"]),
-            "param": toolium_replace(row["param"]),
-            "msg": toolium_replace(row["msg"]),
-        }
-        value = toolium_replace(row["value"]) if "value" in row.headings else "[NONE]"
-        if value != "[NONE]":
-            error["value"] = value
+        error = ValidationError(
+            toolium_replace(row["location"]),
+            toolium_replace(row["param"]),
+            toolium_replace(row["msg"])
+        )
 
         print(f"Expected error: {error}")
         if len(errors) == 1:

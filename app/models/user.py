@@ -1,10 +1,16 @@
-from sqlalchemy import Column, String
+from sqlmodel import Field, SQLModel
 
-from ..db.base import Base
+from pydantic import validator
+class UserCreate(SQLModel):
+    username: str = Field(min_length=2, max_length=25)
+    id: str = Field(primary_key=True, min_length=4, max_length=40)
+
+    @validator("id", pre=True)
+    def check_blacklist(cls, v):
+        if isinstance(v, str) and v.lower() == "me":
+            raise ValueError("Forbidden user ID: me")
+        return v
 
 
-class User(Base):
-    __tablename__ = "users"
-    id = Column(String(40), primary_key=True)
-    username = Column(String(50), nullable=False)
-    api_key = Column(String(36), nullable=False, unique=True)
+class User(UserCreate, table=True):
+    api_key: str = Field(max_length=36, unique=True)

@@ -1,5 +1,6 @@
 @api.tickets
 @listTickets
+@old
 Feature: Tickets API - listTickets
 
   As an admin, flat admin or user

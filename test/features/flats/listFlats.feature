@@ -1,5 +1,6 @@
 @api.flats
 @listFlats
+@old
 Feature: Flats API - listFlats
 
   As an admin

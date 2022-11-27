@@ -1,17 +1,16 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from datetime import datetime
+from typing import Optional
 
-from ..db.base import Base
+from sqlmodel import Field, SQLModel
 
 
-class Transfer(Base):
-    __tablename__ = "transfers"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    accepted = Column(Boolean, nullable=False)
-    chore_type_id = Column(String(25), nullable=False)
-    completed = Column(Boolean, nullable=False)
-    user_id_from = Column(String(40), nullable=False)
-    user_id_to = Column(String(40), nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    closed_at = Column(DateTime, nullable=True)
-    week_id = Column(String(7), nullable=False)
+class Transfer(SQLModel, table=True):
+    id: int = Field(primary_key=True)
+    accepted: bool = Field(default=False)
+    chore_type_id: str = Field(max_length=25)
+    completed: bool = Field(default=False)
+    user_id_from: str = Field(max_length=40)
+    user_id_to: str = Field(max_length=40)
+    created_at: datetime = Field(default_factory=datetime.now)
+    closed_at: Optional[datetime]
+    week_id: str = Field(max_length=7)

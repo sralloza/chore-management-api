@@ -1,4 +1,5 @@
 @notFound
+@old
 Feature: notFound
 
   As a non authenticated user

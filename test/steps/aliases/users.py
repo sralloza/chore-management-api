@@ -10,7 +10,7 @@ def step_impl(context, users):
         raw_data = {"id": f"user-{i}", "username": f"user-{i}"}
         context.execute_steps(
             f"""
-            Given I use the flat API key
+            Given I use the admin API key
             When I send a request to the Api resource "createUser" with body params
             {payload_to_table_format(raw_data)}
             Then the response status code is "200"

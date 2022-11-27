@@ -1,6 +1,7 @@
 @old
 @api.tenants
 @recreateTenantToken
+@old
 Feature: Tenants API - recreateTenantToken
 
     As an admin or tenant

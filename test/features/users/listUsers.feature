@@ -1,5 +1,6 @@
 @api.users
 @listUsers
+@old
 Feature: Users API - listUsers
 
   As an admin or a flat admin

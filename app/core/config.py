@@ -27,8 +27,8 @@ class RedisConfig(BaseSettings):
 class Config(BaseSettings):
     redis: RedisConfig
     database: DatabaseConfig
-    admin_api_key: str = Field(..., env="ADMIN_API_KEY")
-    application_secret: str = Field(..., env="APPLICATION_SECRET")
+    admin_api_key: str = Field(env="ADMIN_API_KEY")
+    application_secret: str = Field(env="APPLICATION_SECRET")
 
     class Config:
         env_file = ".env"

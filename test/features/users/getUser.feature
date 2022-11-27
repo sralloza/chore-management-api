@@ -1,5 +1,6 @@
 @api.users
 @getUser
+@old
 Feature: Users API - getUser
 
   As an admin, flat admin or user

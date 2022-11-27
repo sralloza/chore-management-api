@@ -1,5 +1,6 @@
 @api.flats
 @deleteFlat
+@old
 Feature: Flats API - deleteFlat
 
   As an admin

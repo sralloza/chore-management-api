@@ -1,6 +1,7 @@
 @old
 @api.transfers
 @acceptTransfer
+@old
 Feature: Transfers API - acceptTransfer
 
     As a tenant

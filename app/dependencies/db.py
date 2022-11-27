@@ -1,6 +1,7 @@
 """Database dependencies."""
 
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.db.session import SessionLocal, engine
 
 
@@ -10,5 +11,5 @@ async def get_db() -> AsyncSession:
         try:
             yield db
         finally:
-            db.close()
+            await db.close()
             await engine.dispose()

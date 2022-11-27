@@ -1,5 +1,6 @@
 @api.flats
 @createFlat
+@old
 Feature: Flats API - createFlat
 
   As a user

@@ -7,13 +7,15 @@ authors = ["Diego Alloza González <diego.allozagonzalez@telefonica.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.87.0"
-SQLAlchemy = {extras = ["asyncio"], version = "^1.4.44"}
+SQLAlchemy = {extras = ["asyncio"], version = "^1.4.41"}
 python-dotenv = "^0.21.0"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
 cryptography = "^38.0.3"
 alembic = "^1.8.1"
 aiomysql = "^0.1.1"
 greenlet = "^2.0.1"
+sqlmodel = "^0.0.8"
+prometheus-fastapi-instrumentator = "^5.9.1"
 
 [tool.poetry.dev-dependencies]
 

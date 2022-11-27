@@ -1,6 +1,21 @@
 from behave import *
 
-from common.alias.flats import create_flat
+from common.alias.flats import create_flat, create_user
+
+
+@given("I create a user")
+def step_impl(context):
+    create_user(context)
+
+
+@given("I create a user and I use the user API key")
+def step_impl(context):
+    context.execute_steps(
+        """
+        Given I create a user
+        And I use the user API key
+    """
+    )
 
 
 @given("I create a flat")
