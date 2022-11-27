@@ -21,14 +21,6 @@ def get_operation_id_by_filename(filename: str):
     return Path(filename).stem
 
 
-def check_status_code_is_registered(scenario: Scenario):
-    operation_id = get_operation_id_by_scenario(scenario)
-    step_names = [step.name for step in scenario.steps]
-    info = f"{operation_id} - {scenario.name}"
-    msg = f"[{info}] Must check error status code is registered"
-    assert DEFINED_ERROR_STEP in step_names, msg
-
-
 def get_reached_status_codes_by_operation_id(operation_id: str):
     folder = Path(__file__).parent.parent / f"output/responses/{operation_id}"
     status_codes = set()

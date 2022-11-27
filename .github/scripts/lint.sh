@@ -5,7 +5,7 @@ set -e
 cd test
 poetry run isort .
 poetry run black .
-poetry run pytest -m 'not responses'
+# poetry run pytest -m 'not responses'
 
 cd ..
 npm run format
