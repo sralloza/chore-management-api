@@ -25,6 +25,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     def get_model_id(self) -> IDType:
         return self.model.id
 
+    def throw_404_exception(self, id: IDType):
+        detail = f"{self.model.__name__} with id={id} does not exist"
+        raise HTTPException(404, detail)
+
     async def get(self, db: AsyncSession, id: IDType) -> Optional[ModelType]:
         result = await db.execute(select(self.model).where(self.get_model_id() == id))
         return result.scalars().first()
@@ -33,8 +37,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         obj = await self.get(db, id=id)
         if obj is not None:
             return obj
-        detail = f"{self.model.__name__} with id={id} does not exist"
-        raise HTTPException(404, detail)
+        self.throw_404_exception(id)
 
     async def get_multi(
         self, db: AsyncSession, *, skip: int = 0, limit: int = 100

@@ -18,6 +18,8 @@ sqlmodel = "^0.0.8"
 prometheus-fastapi-instrumentator = "^5.9.1"
 
 [tool.poetry.dev-dependencies]
+isort = "^5.10.1"
+black = "^22.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

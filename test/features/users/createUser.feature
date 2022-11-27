@@ -135,7 +135,6 @@ Feature: Users API - createUser
     And the error message contains "Request body is not a valid JSON"
 
 
-  @run
   Scenario Outline: Validate error response when sending invalid data
     Given I use the admin API key
     When I send a request to the Api with body params

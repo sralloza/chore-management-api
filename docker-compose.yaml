@@ -37,13 +37,6 @@ services:
     ports:
       - "3306:3306"
 
-  # TODO: redis not used
-  redis:
-    image: redis:6.2.6
-    container_name: redis
-    ports:
-      - "6379:6379"
-
   prometheus:
     image: prom/prometheus:v2.36.2
     container_name: prometheus

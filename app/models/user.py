@@ -13,5 +13,9 @@ class UserCreate(SQLModel):
         return v
 
 
+class UserSimple(UserCreate):
+    pass
+
+
 class User(UserCreate, table=True):
     api_key: str = Field(max_length=36, unique=True)
