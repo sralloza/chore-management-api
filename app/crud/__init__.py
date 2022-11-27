@@ -1,2 +1,2 @@
-from .system import system
+from .settings import settings
 from .user import user

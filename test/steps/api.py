@@ -145,18 +145,6 @@ def step_impl(context):
         context.headers[header] = value
 
 
-@step('the "{flat}" as X-Flat header')
-def step_impl(context, flat):
-    flat = map_param(flat)
-    context.execute_steps(
-        f"""
-        Given the request headers
-            | header_name | header_value |
-            | X-Flat      | {flat}       |
-        """
-    )
-
-
 @step("the {correlator} as X-Correlator header")
 def headers_4p(context, correlator):
     if correlator == "[RANDOMSTR]":

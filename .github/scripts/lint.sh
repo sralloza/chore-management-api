@@ -5,6 +5,9 @@ set -e
 cd test
 poetry run isort .
 poetry run black .
+cd ../app
+poetry run isort .
+poetry run black .
 # poetry run pytest -m 'not responses'
 
 cd ..

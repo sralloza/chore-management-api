@@ -1,17 +1,17 @@
-from fastapi import APIRouter, Body, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Body, Depends, Header
+from sqlmodel import Session
 
 from .. import crud
-from ..dependencies.auth import admin_required
+from ..dependencies.auth import admin_required, user_required_me_path
 from ..dependencies.db import get_db
-from ..models import Message, User, UserCreate
+from ..models import Message, UserCreate, UserOutput, UserSimple
 
 router = APIRouter()
 
 
 @router.post(
     "",
-    response_model=User,
+    response_model=UserOutput,
     dependencies=[Depends(admin_required)],
     operation_id="createUser",
     summary="Register new user",
@@ -25,17 +25,42 @@ router = APIRouter()
         },
     },
 )
-async def create_user(db: AsyncSession = Depends(get_db), user: UserCreate = Body()):
+async def create_user(db: Session = Depends(get_db), user: UserCreate = Body()):
     """Register a new user. Note that the system setting `assignment_order` will be
     reset after this operation."""
-    return await crud.user.create(db, obj_in=user)
+    return crud.user.create(db, obj_in=user)
 
 
-@router.get("/{user_id}", response_model=User, operation_id="getUser")
-async def get_user(user_id: str, db: AsyncSession = Depends(get_db)):
-    return await crud.user.get(db, id=user_id)
+@router.get(
+    "/{user_id}",
+    dependencies=[Depends(user_required_me_path)],
+    operation_id="getUser",
+    response_model=UserSimple,
+    responses={
+        400: {
+            "model": Message,
+            "description": "Can't use the 'me' keyword with the admin API key",
+        },
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "User not found"},
+    },
+)
+def get_user(user_id: str, db: Session = Depends(get_db), x_token: str = Header(None)):
+    """Get user by id. Any user can access their own data using the special keyword `me`."""
+    return crud.user.get_or_404_me_safe(db, id=user_id, api_key=x_token)
 
 
-@router.get("", response_model=list[User], operation_id="listUsers")
-async def list_users(db: AsyncSession = Depends(get_db)):
-    return await crud.user.get_multi(db)
+@router.get(
+    "",
+    dependencies=[Depends(admin_required)],
+    response_model=list[UserOutput],
+    operation_id="listUsers",
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin required"},
+    },
+)
+def list_users(db: Session = Depends(get_db)):
+    """List all users."""
+    return crud.user.get_multi(db)
