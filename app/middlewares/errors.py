@@ -1,9 +1,7 @@
-import sys
-
-from fastapi import FastAPI, Request, status
+from fastapi import Request, status
+from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse, Response
-from fastapi.encoders import jsonable_encoder
 
 
 def internal_exception_handler(request: Request, exc: Exception):

@@ -4,6 +4,7 @@ mustExit=false
 maxRetries=30
 retriesLeft="$maxRetries"
 
+python -c "import yaml;from app import app;print(yaml.dump(app.openapi()))" > openapi.yml
 python -c "import allure" || exit 2
 
 function cleanup {

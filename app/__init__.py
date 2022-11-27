@@ -5,8 +5,8 @@ from prometheus_fastapi_instrumentator import Instrumentator
 from .api import router as router_v1
 from .middlewares.correlator import inject_correlator
 from .middlewares.errors import (
-    internal_exception_handler,
     http_exception_handler,
+    internal_exception_handler,
     validation_exception_handler,
 )
 

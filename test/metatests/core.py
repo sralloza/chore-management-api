@@ -8,8 +8,7 @@ from behave.model import Feature, Scenario
 from constants import DEFINED_ERROR_STEP
 
 
-def get_operation_id_by_feature(@old
-Feature: Feature):
+def get_operation_id_by_feature(feature: Feature):
     return get_operation_id_by_filename(feature.location.filename)
 
 

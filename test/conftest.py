@@ -17,11 +17,11 @@ def get_features(all_features=True):
 
 # API features
 API_FEATURES = [x for x in get_features(all_features=False) if "old" not in x.tags]
-API_SCENARIOS = [x for Feature: in API_FEATURES for x in feature.scenarios]
+API_SCENARIOS = [x for feature in API_FEATURES for x in feature.scenarios]
 
 # All features (including misc)
 FEATURES = [x for x in get_features(all_features=True) if "old" not in x.tags]
-SCENARIOS = [x for Feature: in FEATURES for x in feature.scenarios]
+SCENARIOS = [x for feature in FEATURES for x in feature.scenarios]
 
 
 @pytest.fixture(params=API_FEATURES, ids=[f.name for f in API_FEATURES])

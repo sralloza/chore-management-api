@@ -37,7 +37,15 @@ def get_url_params(context, path):
     return {k: getattr(context, k) for k in param_names}
 
 
-def _send_request(context, method, path, operation_id, payload=None, is_path_raw=False, raw_payload=False):
+def _send_request(
+    context,
+    method,
+    path,
+    operation_id,
+    payload=None,
+    is_path_raw=False,
+    raw_payload=False,
+):
     if is_path_raw:
         url = URL + path
     else:
@@ -59,9 +67,7 @@ def _send_request(context, method, path, operation_id, payload=None, is_path_raw
     else:
         kwargs["json"] = payload
 
-    res = context.session.request(
-        method, url, **kwargs
-    )
+    res = context.session.request(method, url, **kwargs)
     if context.operation_id == operation_id:
         # Note: when calling the testing operation multiple times (like in createFlat), each request will
         # overwrite the previous one. This is not a problem, as we only care about the last one. If the test

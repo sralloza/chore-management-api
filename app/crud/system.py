@@ -9,7 +9,7 @@ from .base import CRUDBase
 
 
 # class CRUDSystem(CRUDBase[System, System, SystemUpdate, str]):
-    # pass
+# pass
 
 # system = CRUDSystem(System)
 system = None

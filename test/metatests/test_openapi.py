@@ -18,16 +18,14 @@ XCORRELATOR_HEADER_RESPONSE = {
 }
 
 
-def test_validate_xcorrelator_in_headers(api_@old
-Feature: Feature):
+def test_validate_xcorrelator_in_headers(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     msg = f"[{operation_id}] X-Correlator header is mandatory"
     assert "X-Correlator" in headers, msg
 
 
-def test_openapi_headers_title_cased(api_@old
-Feature: Feature):
+def test_openapi_headers_title_cased(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     for header in headers:
@@ -36,8 +34,7 @@ Feature: Feature):
         assert header == expected, msg
 
 
-def test_path_params_camel_cased(api_@old
-Feature: Feature):
+def test_path_params_camel_cased(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     params = get_request_path_parameters(operation_id=operation_id)
     for param in params:
@@ -46,8 +43,7 @@ Feature: Feature):
         assert param == expected
 
 
-def test_defined_path_params(api_@old
-Feature: Feature):
+def test_defined_path_params(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     defined_path_params = get_request_path_parameters(operation_id=operation_id)
     path = get_operation_path(operation_id)
@@ -59,8 +55,7 @@ Feature: Feature):
         assert param in real_path_params, "Path parameter is not used"
 
 
-def test_get_operations_with_parameter_404(api_@old
-Feature: Feature):
+def test_get_operations_with_parameter_404(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "GET":
@@ -75,8 +70,7 @@ Feature: Feature):
         assert 404 not in get_response_codes(operation_id=operation_id), msg
 
 
-def test_post_operations_should_define_400_response(api_@old
-Feature: Feature):
+def test_post_operations_should_define_400_response(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "POST":
@@ -90,8 +84,7 @@ Feature: Feature):
         assert 400 in get_response_codes(operation_id=operation_id), msg
 
 
-def test_post_operations_should_define_422_response(api_@old
-Feature: Feature):
+def test_post_operations_should_define_422_response(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "POST":
@@ -105,8 +98,7 @@ Feature: Feature):
         assert 422 in get_response_codes(operation_id=operation_id), msg
 
 
-def test_flat_name_path_and_x_flat_header(api_@old
-Feature: Feature):
+def test_flat_name_path_and_x_flat_header(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     headers = get_request_headers(operation_id=operation_id)
     path_params = get_request_path_parameters(operation_id=operation_id)
@@ -114,8 +106,7 @@ Feature: Feature):
         assert "X-Flat" not in headers
 
 
-def test_validate_security_schema(api_@old
-Feature: Feature):
+def test_validate_security_schema(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     security_schemas = get_security_schemas(operation_id)
     defined_status_codes = get_response_codes(operation_id)
@@ -135,8 +126,7 @@ Feature: Feature):
     assert expected in examples, msg
 
 
-def test_204_delete_operations(api_@old
-Feature: Feature):
+def test_204_delete_operations(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     method = get_method(operation_id)
     if method != "DELETE":
@@ -148,8 +138,7 @@ Feature: Feature):
 
 
 @pytest.mark.responses
-def test_all_status_codes_covered(api_@old
-Feature: Feature):
+def test_all_status_codes_covered(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     operation = get_operation(operation_id=operation_id)
     expected = list({int(x) for x in operation["responses"].keys()})
@@ -160,46 +149,7 @@ Feature: Feature):
     assert actual_status_codes == expected, msg
 
 
-@pytest.mark.responses
-def test_responses_in_examples(api_@old
-Feature: Feature):
-    operation_id = get_operation_id_by_feature(api_feature)
-    operation = get_operation(operation_id=operation_id)
-    expected = list({int(x) for x in operation["responses"].keys()})
-    expected.sort()
-
-    error_messages = get_reached_error_messages_by_operation_id(operation_id)
-
-    for status_code, messages in error_messages.items():
-        if status_code in SPECIAL_STATUS_CODES:
-            continue
-
-        examples = get_examples(operation_id=operation_id, code=status_code)
-        examples = [dumps(x) for x in examples]
-
-        messages = list(messages)
-        messages.sort()
-        examples.sort()
-
-        msg = f"{operation_id} - {status_code}: Error messages should be the same as defined in the OpenAPI spec"
-        assert messages == examples, msg
-
-
-@pytest.mark.responses
-def test_xflat_header_registered(api_@old
-Feature: Feature):
-    operation_id = get_operation_id_by_feature(api_feature)
-    registered_headers = get_request_headers(operation_id=operation_id)
-
-    headers = get_request_headers_by_operation_id(operation_id)
-    if "X-Flat" in headers:
-        assert "X-Flat" in registered_headers
-    else:
-        assert "X-Flat" not in registered_headers
-
-
-def test_xcorrelator_in_responses(api_@old
-Feature: Feature):
+def test_xcorrelator_in_responses(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     responses = get_responses(operation_id=operation_id)
     for response in responses:

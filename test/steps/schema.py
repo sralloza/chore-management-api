@@ -24,7 +24,7 @@ def step_impl(context):
         )
 
 
-@then("the response error message is defined")
+# @then("the response error message is defined")
 def step_impl(context):
     code = str(context.res.status_code)
     if code[0] not in ("4", "5"):

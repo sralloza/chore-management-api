@@ -13,7 +13,6 @@ Feature: Users API - createUser
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
-    And the response error message is defined
 
 
   @authorization
@@ -22,7 +21,6 @@ Feature: Users API - createUser
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
-    And the response error message is defined
 
 
   @authorization
@@ -32,7 +30,6 @@ Feature: Users API - createUser
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "Admin access required"
-    And the response error message is defined
 
 
   @authorization
@@ -125,7 +122,6 @@ Feature: Users API - createUser
     Then the response status code is "409"
     And the response status code is defined
     And the error message is "User with id=11111 already exists"
-    And the response error message is defined
 
 
   Scenario: Validate error response creating a user with invalid body
@@ -137,7 +133,6 @@ Feature: Users API - createUser
     Then the response status code is "400"
     And the response status code is defined
     And the error message contains "Request body is not a valid JSON"
-    And the response error message is defined
 
 
   @run
@@ -152,7 +147,6 @@ Feature: Users API - createUser
     And the response contains the following validation errors
       | location | param   | msg   |
       | body     | <param> | <msg> |
-    And the response error message is defined
 
     Examples:
       | username                | id                      | param    | msg                                         |

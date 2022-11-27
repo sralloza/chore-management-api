@@ -1,6 +1,7 @@
+from pydantic import validator
 from sqlmodel import Field, SQLModel
 
-from pydantic import validator
+
 class UserCreate(SQLModel):
     username: str = Field(min_length=2, max_length=25)
     id: str = Field(primary_key=True, min_length=4, max_length=40)
