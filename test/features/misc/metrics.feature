@@ -1,4 +1,5 @@
 @metrics
+@old
 Feature: Prometheus metrics
 
   As an admin
@@ -37,7 +38,6 @@ Feature: Prometheus metrics
       | listFlats        | 401         |
 
 
-  @run
   Scenario Outline: Calls to <operation> should be grouped in metrics ignoring the flat id
     Given the field "<parameter>" with string value "xxx"
     When I send a request to the Api resource "<operation>"

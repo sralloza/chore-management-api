@@ -1,5 +1,6 @@
 @api.week-id
 @getCurrentWeekId
+@old
 Feature: Week ID API - getCurrentWeekId
 
   As a non authenticated user

@@ -31,6 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      # - name: Get openapi.yml
+      #   python -c "import yaml;from app import app;print(yaml.dump(app.openapi()))" > openapi.yml
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact

@@ -1,5 +1,6 @@
 @api.flats
 @editFlatSettings
+@old
 Feature: Flats API - editFlatSettings
 
   As a flat admin

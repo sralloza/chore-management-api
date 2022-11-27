@@ -2,6 +2,10 @@
 
 API to manage chores in a shared flat.
 
+## Development
+
+The API is written in python using FastAPI. The first implementation was written in node.js using express. The incomplete node.js version can be found in the commit fa0e9bf7ec4d0b8fa9e7cd10117684551b2afb21.
+
 ## Testing
 
 ```shell
@@ -42,7 +46,7 @@ Configuration is done by setting environment variables.
 - **_DATABASE_NAME_**: database name. Defaults to `chore-management`.
 - **_DATABASE_USERNAME_**: database username. Defaults to `root`.
 - **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
-- **_DISABLE_MIGRATIONS_**: disable migrations on start. Defaults to `false`, meaning by default migrations are executed on start.
+- **_RUN_MIGRATIONS_**: run migrations on start. Defaults to `true`, meaning by default migrations are executed on start.
 
 ### Optional only for docker
 

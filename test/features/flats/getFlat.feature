@@ -1,5 +1,6 @@
 @api.flats
 @getFlat
+@old
 Feature: Flats API - getFlat
 
   As an admin or a flat owner

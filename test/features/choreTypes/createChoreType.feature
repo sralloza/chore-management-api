@@ -1,5 +1,6 @@
 @api.chore-types
 @createChoreType
+@old
 Feature: Chore Types API - createChoreType
 
   As an admin or flat admin

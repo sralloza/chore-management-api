@@ -1,6 +1,7 @@
 @old
 @api.simple-chores
 @listSimpleChores
+@old
 Feature: Simple Chores API - listSimpleChores
 
     As an admin or tenant

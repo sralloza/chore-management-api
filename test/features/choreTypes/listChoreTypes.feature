@@ -1,5 +1,6 @@
 @api.chore-type
 @listChoreTypes
+@old
 Feature: Chore Types API - listChoreTypes
 
   As an admin, flat admin or user

@@ -1,6 +1,7 @@
 @old
 @api.weekly-chores
 @createWeeklyChores
+@old
 Feature: Weekly Chores API - createWeeklyChores
 
     As an admin

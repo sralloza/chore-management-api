@@ -1,6 +1,7 @@
 @old
 @api.transfers
 @startTransfer
+@old
 Feature: Transfers API - startTransfer
 
     As a tenant or admin

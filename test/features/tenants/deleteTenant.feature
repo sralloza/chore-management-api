@@ -1,6 +1,7 @@
 @old
 @api.tenants
 @deleteTenant
+@old
 Feature: Tenants API - deleteTenant
 
     As an admin

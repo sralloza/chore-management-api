@@ -1,32 +1,34 @@
-# base image
-FROM node:18.12.0-slim as base
+FROM python:3.10.8-alpine3.16
 
-RUN apt update && \
-    apt install curl -y
+RUN apk add bash curl gcc jq musl-dev libffi-dev && \
+    curl -sSL https://install.python-poetry.org | python - && \
+    cd /usr/local/bin && \
+    ln -s /root/.local/bin/poetry
 
-WORKDIR /data
+ENV POETRY_VIRTUALENVS_CREATE false
 
-FROM base as builder
+WORKDIR /app
 
-COPY package.json package-lock.json tslint.json tsconfig.json /data/
+COPY pyproject.toml poetry.lock README.md ./
 
-RUN npm install
+RUN poetry install --only main --no-root
 
-COPY src ./src
-RUN npx tsc
+COPY alembic/ /app/alembic
 
-FROM base
+COPY alembic.ini /app/
 
-COPY delivery/wait-for-it.sh /data/wait-for-it.sh
-COPY delivery/entrypoint.sh /data/entrypoint.sh
-RUN chmod +x /data/*.sh
+COPY ./app /app/app
 
-COPY migrations ./migrations
-COPY --from=builder /data/package*.json /data/
-COPY --from=builder /data/node_modules ./node_modules
-COPY --from=builder /data/dist /data/dist
-COPY openapi.yml /data
+COPY ./utils /app/utils
+
+RUN poetry install --only main
+
+COPY ./delivery /utils/
+
+RUN chmod +x /utils/*.sh
 
 EXPOSE 8080
-ENTRYPOINT [ "/data/entrypoint.sh" ]
-CMD npm run start
+
+ENTRYPOINT [ "/utils/entrypoint.sh" ]
+
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]

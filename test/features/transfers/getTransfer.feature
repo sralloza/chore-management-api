@@ -1,6 +1,7 @@
 @old
 @api.transfers
 @getTransfer
+@old
 Feature: Transfers API - getTransfer
 
     As an admin or tenant

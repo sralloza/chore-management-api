@@ -149,42 +149,6 @@ def test_all_status_codes_covered(api_feature: Feature):
     assert actual_status_codes == expected, msg
 
 
-@pytest.mark.responses
-def test_responses_in_examples(api_feature: Feature):
-    operation_id = get_operation_id_by_feature(api_feature)
-    operation = get_operation(operation_id=operation_id)
-    expected = list({int(x) for x in operation["responses"].keys()})
-    expected.sort()
-
-    error_messages = get_reached_error_messages_by_operation_id(operation_id)
-
-    for status_code, messages in error_messages.items():
-        if status_code in SPECIAL_STATUS_CODES:
-            continue
-
-        examples = get_examples(operation_id=operation_id, code=status_code)
-        examples = [dumps(x) for x in examples]
-
-        messages = list(messages)
-        messages.sort()
-        examples.sort()
-
-        msg = f"{operation_id} - {status_code}: Error messages should be the same as defined in the OpenAPI spec"
-        assert messages == examples, msg
-
-
-@pytest.mark.responses
-def test_xflat_header_registered(api_feature: Feature):
-    operation_id = get_operation_id_by_feature(api_feature)
-    registered_headers = get_request_headers(operation_id=operation_id)
-
-    headers = get_request_headers_by_operation_id(operation_id)
-    if "X-Flat" in headers:
-        assert "X-Flat" in registered_headers
-    else:
-        assert "X-Flat" not in registered_headers
-
-
 def test_xcorrelator_in_responses(api_feature: Feature):
     operation_id = get_operation_id_by_feature(api_feature)
     responses = get_responses(operation_id=operation_id)

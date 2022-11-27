@@ -8,7 +8,7 @@ from common.utils import *
 from constants import *
 
 
-def send_request(context, endpoint=None, payload=None):
+def send_request(context, endpoint=None, payload=None, raw_payload=False):
     if endpoint is None:
         endpoint = context.feature.name.split(" - ")[-1]
 
@@ -25,7 +25,7 @@ def send_request(context, endpoint=None, payload=None):
     url_params = get_url_params(context, path)
     path = path.format(**url_params)
     context.res = _send_request(
-        context, method, path, operation_id, payload, is_path_raw
+        context, method, path, operation_id, payload, is_path_raw, raw_payload
     )
 
 
@@ -37,10 +37,20 @@ def get_url_params(context, path):
     return {k: getattr(context, k) for k in param_names}
 
 
-def _send_request(context, method, path, operation_id, payload=None, is_path_raw=False):
+def _send_request(
+    context,
+    method,
+    path,
+    operation_id,
+    payload=None,
+    is_path_raw=False,
+    raw_payload=False,
+):
     if is_path_raw:
         url = URL + path
     else:
+        if path.startswith(VERSIONED_PATH.format(version=1)):
+            path = path.replace(VERSIONED_PATH.format(version=1), "", 1)
         url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
     headers = getattr(context, "headers", {})
@@ -51,10 +61,13 @@ def _send_request(context, method, path, operation_id, payload=None, is_path_raw
         headers["x-token"] = token
 
     params = getattr(context, "params", None)
+    kwargs = dict(params=params, timeout=5, headers=headers)
+    if raw_payload:
+        kwargs["data"] = payload
+    else:
+        kwargs["json"] = payload
 
-    res = context.session.request(
-        method, url, params=params, json=payload, timeout=5, headers=headers
-    )
+    res = context.session.request(method, url, **kwargs)
     if context.operation_id == operation_id:
         # Note: when calling the testing operation multiple times (like in createFlat), each request will
         # overwrite the previous one. This is not a problem, as we only care about the last one. If the test
