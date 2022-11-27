@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 049435ad5cdc
+Revision ID: aebed5ab986b
 Revises: 
-Create Date: 2022-11-26 22:08:12.217180
+Create Date: 2022-11-27 11:14:01.414516
 
 """
 from alembic import op
@@ -11,7 +11,7 @@ import sqlmodel
 
 
 # revision identifiers, used by Alembic.
-revision = '049435ad5cdc'
+revision = 'aebed5ab986b'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -59,8 +59,8 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
+    sa.Column('username', sqlmodel.sql.sqltypes.AutoString(length=25), nullable=False),
     sa.Column('id', sqlmodel.sql.sqltypes.AutoString(length=40), nullable=False),
-    sa.Column('username', sqlmodel.sql.sqltypes.AutoString(length=50), nullable=False),
     sa.Column('api_key', sqlmodel.sql.sqltypes.AutoString(length=36), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('api_key')
