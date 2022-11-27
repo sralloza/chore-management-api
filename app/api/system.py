@@ -4,7 +4,7 @@ from sqlmodel import Session
 from .. import crud
 from ..dependencies.auth import admin_required
 from ..dependencies.db import get_db
-from ..models import SettingsIO, SettingsUpdateIO, SettingsUpdate
+from ..models import SettingsIO, SettingsUpdate, SettingsUpdateIO
 
 router = APIRouter()
 

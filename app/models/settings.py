@@ -1,7 +1,6 @@
-from sqlmodel import Field, SQLModel
-from pydantic import BaseModel
-from typing import Literal
 from enum import Enum
+
+from sqlmodel import Field, SQLModel
 
 
 class RotationSign(Enum):

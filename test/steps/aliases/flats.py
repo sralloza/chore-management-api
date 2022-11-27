@@ -4,6 +4,7 @@ from common.alias.users import create_user
 
 # TODO: move this to aliases.users
 
+
 @given("I create a user")
 def step_impl(context):
     create_user(context)

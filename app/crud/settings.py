@@ -1,8 +1,8 @@
 from sqlmodel import Session
 
-from ..models import Settings, SettingsCreate, SettingsUpdate, RotationSign, SettingsIO
-from .base import CRUDBase
 from .. import crud
+from ..models import RotationSign, Settings, SettingsCreate, SettingsIO, SettingsUpdate
+from .base import CRUDBase
 
 REAL_ID = "9ccce886-4fe2-42fc-872e-3afc2fa14ccf"
 

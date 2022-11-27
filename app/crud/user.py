@@ -1,11 +1,11 @@
 from uuid import uuid4
 
-from sqlmodel import Session
 from sqlalchemy.future import select
+from sqlmodel import Session
 
+from .. import crud
 from ..models import User, UserCreate
 from .base import CRUDBase
-from .. import crud
 
 UserUpdate = UserCreate
 
@@ -17,13 +17,9 @@ class CRUDUser(CRUDBase[User, User, UserUpdate, str]):
         crud.settings.reset_assignment_order(db)
         return result
 
-    def get_or_404_me_safe(
-        self, db: Session, *, api_key: str, id: str
-    ) -> User:
+    def get_or_404_me_safe(self, db: Session, *, api_key: str, id: str) -> User:
         if id == "me":
-            result = db.execute(
-                select(self.model).where(self.model.api_key == api_key)
-            )
+            result = db.execute(select(self.model).where(self.model.api_key == api_key))
             db_user = result.scalars().first()
             if not db_user:
                 self.throw_404_exception(id)

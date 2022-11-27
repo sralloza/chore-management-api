@@ -4,7 +4,7 @@ from sqlmodel import Session
 from .. import crud
 from ..dependencies.auth import admin_required, user_required_me_path
 from ..dependencies.db import get_db
-from ..models import Message, UserOutput, UserCreate, UserSimple
+from ..models import Message, UserCreate, UserOutput, UserSimple
 
 router = APIRouter()
 
@@ -46,12 +46,8 @@ async def create_user(db: Session = Depends(get_db), user: UserCreate = Body()):
         404: {"model": Message, "description": "User not found"},
     },
 )
-def get_user(
-    user_id: str, db: Session = Depends(get_db), x_token: str = Header(None)
-):
-    """Get user by id. Any user can access their own data using the special keyword `me`.
-
-    """
+def get_user(user_id: str, db: Session = Depends(get_db), x_token: str = Header(None)):
+    """Get user by id. Any user can access their own data using the special keyword `me`."""
     return crud.user.get_or_404_me_safe(db, id=user_id, api_key=x_token)
 
 

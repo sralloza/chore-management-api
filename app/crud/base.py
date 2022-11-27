@@ -2,7 +2,6 @@ from typing import Any, Generic, List, Optional, Type, TypeVar
 
 from fastapi import HTTPException
 from pydantic import BaseModel
-from sqlmodel import SQLModel
 from sqlmodel import Session, SQLModel, select
 
 ModelType = TypeVar("ModelType", bound=SQLModel)

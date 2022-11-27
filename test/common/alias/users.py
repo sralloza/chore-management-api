@@ -2,6 +2,7 @@ from faker import Faker
 
 fake = Faker()
 
+
 def create_user(context):
     username = fake.first_name().lower()
     user_id = "".join(fake.random_letters(length=10))

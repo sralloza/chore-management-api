@@ -1,7 +1,9 @@
 """Database dependencies."""
 
-from app.db.session import SessionLocal, engine
 from sqlmodel import Session
+
+from app.db.session import engine
+
 
 def get_db():
     """Creates a local database session."""
