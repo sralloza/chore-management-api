@@ -3,6 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .api import router as router_v1
+from .db.db import database
 from .middlewares.correlator import inject_correlator
 from .middlewares.errors import (
     http_exception_handler,
@@ -22,6 +23,12 @@ app.include_router(router_v1, prefix="/api/v1")
 @app.on_event("startup")
 async def startup():
     Instrumentator().instrument(app).expose(app)
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 
 @app.get("/health")

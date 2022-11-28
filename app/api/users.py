@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Body, Depends, Header
-from sqlmodel import Session
 
 from .. import crud
 from ..dependencies.auth import admin_required, user_required_me_path
-from ..dependencies.db import get_db
 from ..models import Message, UserCreate, UserOutput, UserSimple
 
 router = APIRouter()
@@ -25,10 +23,10 @@ router = APIRouter()
         },
     },
 )
-async def create_user(db: Session = Depends(get_db), user: UserCreate = Body()):
+async def create_user(user: UserCreate = Body()):
     """Register a new user. Note that the system setting `assignment_order` will be
     reset after this operation."""
-    return crud.user.create(db, obj_in=user)
+    return await crud.user.create(obj_in=user)
 
 
 @router.get(
@@ -46,9 +44,9 @@ async def create_user(db: Session = Depends(get_db), user: UserCreate = Body()):
         404: {"model": Message, "description": "User not found"},
     },
 )
-def get_user(user_id: str, db: Session = Depends(get_db), x_token: str = Header(None)):
+async def get_user(user_id: str, x_token: str = Header(None)):
     """Get user by id. Any user can access their own data using the special keyword `me`."""
-    return crud.user.get_or_404_me_safe(db, id=user_id, api_key=x_token)
+    return await crud.user.get_or_404_me_safe(id=user_id, api_key=x_token)
 
 
 @router.get(
@@ -61,6 +59,6 @@ def get_user(user_id: str, db: Session = Depends(get_db), x_token: str = Header(
         403: {"model": Message, "description": "Admin required"},
     },
 )
-def list_users(db: Session = Depends(get_db)):
+async def list_users():
     """List all users."""
-    return crud.user.get_multi(db)
+    return await crud.user.get_multi()

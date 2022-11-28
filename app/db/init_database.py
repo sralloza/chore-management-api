@@ -1,5 +1,4 @@
-import sqlalchemy as sa
-from sqlalchemy import create_engine
+import databases
 
 from ..core.config import settings
 from .session import url
@@ -9,28 +8,32 @@ GET_DB_QUERY = (
 )
 CREATE_DB_QUERY = "CREATE DATABASE `{}` CHARACTER SET = `{}`"
 
-engine = create_engine(url.rsplit("/", 1)[0], pool_pre_ping=True, connect_args={})
+url_without_database = url.rsplit("/", 1)[0]
+database = databases.Database(url_without_database)
 
 
-def database_exists() -> bool:
-    with engine.begin() as conn:
-        result = conn.execute(sa.text(GET_DB_QUERY.format(settings.database.database)))
+async def database_exists() -> bool:
+    result = await database.fetch_one(
+        query=GET_DB_QUERY.format(settings.database.database)
+    )
+    return bool(result)
 
-    databases = result.fetchone()
-    return bool(databases)
 
-
-def init_db():
+async def init_db():
+    await database.connect()
     if settings.database.create_database:
-        if database_exists():
+        if await database_exists():
             print("Database does exist")
             return
 
         print("Creating database")
-        text = CREATE_DB_QUERY.format(settings.database.database, "UTF8MB4")
-        with engine.begin() as conn:
-            conn.execute(sa.text(text))
+        await database.execute(
+            query=CREATE_DB_QUERY.format(settings.database.database, "UTF8MB4")
+        )
 
 
 def init_db_sync():
-    init_db()
+    import asyncio
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(init_db())

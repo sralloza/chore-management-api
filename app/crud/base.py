@@ -2,79 +2,70 @@ from typing import Any, Generic, List, Optional, Type, TypeVar
 
 from fastapi import HTTPException
 from pydantic import BaseModel
-from sqlmodel import Session, SQLModel, select
+from sqlalchemy import Table
 
-ModelType = TypeVar("ModelType", bound=SQLModel)
+from ..db.db import database
+
+ModelType = TypeVar("ModelType", bound=BaseModel)
 IDType = TypeVar("IDType", bound=Any)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
+SELECT_QUERY = "SELECT * FROM {table_name} WHERE {id} = :id"
+
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
-    def __init__(self, model: Type[ModelType]):
-        """
-        CRUD object with default methods to Create, Read, Update, Delete (CRUD).
-        **Parameters**
-        * `model`: A SQLAlchemy model class
-        * `schema`: A Pydantic model (schema) class
-        """
+    def __init__(self, model: Type[ModelType], table: Table, primary_key="id"):
         self.model = model
+        self.table = table
 
-    def get_model_id(self) -> IDType:
-        return self.model.id
+        self.primary_key = primary_key
+        self.select_query = SELECT_QUERY.format(
+            table_name=self.table.name, id=primary_key
+        )
 
     def throw_404_exception(self, id: IDType):
         detail = f"{self.model.__name__} with id={id} does not exist"
         raise HTTPException(404, detail)
 
-    def get(self, db: Session, id: IDType) -> Optional[ModelType]:
-        return (
-            db.execute(select(self.model).where(self.get_model_id() == id))
-            .scalars()
-            .first()
-        )
+    async def get(self, id: IDType) -> Optional[ModelType]:
+        data = await database.fetch_one(query=self.select_query, values={"id": id})
+        return self.model(**data) if data else None
 
-    def get_or_404(self, db: Session, id: IDType) -> ModelType:
-        obj = self.get(db, id=id)
+    async def get_or_404(self, id: IDType) -> ModelType:
+        obj = await self.get(id=id)
         if obj is not None:
             return obj
         self.throw_404_exception(id)
 
-    def get_multi(
-        self, db: Session, *, skip: int = 0, limit: int = 100
-    ) -> List[ModelType]:
-        return db.execute(select(self.model).offset(skip).limit(limit)).scalars().all()
+    async def get_multi(self, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
+        data = await database.fetch_all(self.table.select().offset(skip).limit(limit))
+        return [self.model(**x) for x in data]
 
-    def create(self, db: Session, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(self, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = obj_in.dict()
-        if "id" in obj_in_data and self.get(db, id=obj_in_data["id"]):
+        if "id" in obj_in_data and await self.get(id=obj_in_data["id"]):
             detail = f"{self.model.__name__} with id={obj_in_data['id']} already exists"
             raise HTTPException(409, detail)
 
-        db_obj = self.model(**obj_in_data)
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        db_id = await database.execute(self.table.insert(), obj_in_data)
+        real_id = obj_in_data["id"] if "id" in obj_in_data else db_id
+        return await self.get_or_404(id=real_id)
 
-    @staticmethod
-    def update(
-        db: Session,
+    async def update(
+        self,
         *,
-        db_obj: ModelType,
+        id: IDType,
         obj_in: UpdateSchemaType,
     ) -> ModelType:
+        await self.get_or_404(id=id)
+        values = obj_in.dict(exclude_unset=True)
 
-        obj_data = obj_in.dict(exclude_unset=True)
-        for field in obj_data:
-            setattr(db_obj, field, obj_data[field])
+        query = self.table.update().where(self.table.c.id == id).values(values)
+        await database.execute(query)
 
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
+        return await self.get_or_404(id=id)
 
-    def remove(self, db: Session, *, id: IDType) -> None:
-        obj = self.get_or_404(db, id=id)
-        db.delete(obj)
-        db.commit()
+    async def remove(self, *, id: IDType) -> None:
+        await self.get_or_404(id=id)
+        await database.execute(self.table.delete().where(self.table.c.id == id))

@@ -1,35 +1,35 @@
-from uuid import uuid4
-
-from sqlalchemy.future import select
-from sqlmodel import Session
+import sqlalchemy as sa
 
 from .. import crud
-from ..models import User, UserCreate
+from ..db import tables
+from ..db.db import database
+from ..models import User, UserCreate, UserCreateInner
 from .base import CRUDBase
 
 UserUpdate = UserCreate
 
 
-class CRUDUser(CRUDBase[User, User, UserUpdate, str]):
-    def create(self, db: Session, *, obj_in: UserCreate) -> User:
-        user = User(**obj_in.dict(), api_key=str(uuid4()))
-        result = super().create(db, obj_in=user)
-        crud.settings.reset_assignment_order(db)
+class CRUDUser(CRUDBase[User, UserCreateInner, UserUpdate, str]):
+    async def create(self, *, obj_in: UserCreate) -> User:
+        user = UserCreateInner(**obj_in.dict())
+        result = await super().create(obj_in=user)
+        await crud.settings.reset_assignment_order()
         return result
 
-    def get_or_404_me_safe(self, db: Session, *, api_key: str, id: str) -> User:
+    async def get_or_404_me_safe(self, *, api_key: str, id: str) -> User:
         if id == "me":
-            result = db.execute(select(self.model).where(self.model.api_key == api_key))
-            db_user = result.scalars().first()
+            query = self.table.select().where(self.table.c.api_key == api_key)
+            db_user = await database.fetch_one(query)
             if not db_user:
                 self.throw_404_exception(id)
-            return db_user
+            return self.model(**db_user)
         else:
-            return self.get_or_404(db, id=id)
+            return await self.get_or_404(id=id)
 
-    def get_user_ids(self, db: Session) -> list[str]:
-        result = db.execute(select(self.model.id).order_by(self.model.created_at))
-        return result.scalars().all()
+    async def get_user_ids(self) -> list[str]:
+        query = sa.select([self.table.c.id]).order_by(self.table.c.created_at)
+        result = await database.fetch_all(query)
+        return [x["id"] for x in result]
 
 
-user = CRUDUser(User)
+user = CRUDUser(User, tables.user)

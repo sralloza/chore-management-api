@@ -1,9 +1,9 @@
-from sqlmodel import Field, SQLModel
+from pydantic import BaseModel, Field
 
 
-class Chore(SQLModel, table=True):
-    id: int = Field(primary_key=True)
+class Chore(BaseModel):
+    id: int
     chore_type: str = Field(max_length=25)
-    done: bool = Field(default=False)
+    done: bool = False
     user_id: str = Field(max_length=40)
     week_id: str = Field(max_length=7)

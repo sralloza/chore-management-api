@@ -13,9 +13,9 @@ uvicorn = {extras = ["standard"], version = "^0.20.0"}
 cryptography = "^38.0.3"
 alembic = "^1.8.1"
 greenlet = "^2.0.1"
-sqlmodel = "^0.0.8"
 prometheus-fastapi-instrumentator = "^5.9.1"
 PyMySQL = "^1.0.2"
+databases = {extras = ["aiomysql"], version = "^0.6.2"}
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
