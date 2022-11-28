@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlmodel import Field, SQLModel
+from pydantic import BaseModel, Field
 
 
-class Transfer(SQLModel, table=True):
-    id: int = Field(primary_key=True)
-    accepted: bool = Field(default=False)
+class Transfer(BaseModel):
+    id: int
+    accepted: bool = False
     chore_type_id: str = Field(max_length=25)
-    completed: bool = Field(default=False)
+    completed: bool = False
     user_id_from: str = Field(max_length=40)
     user_id_to: str = Field(max_length=40)
     created_at: datetime = Field(default_factory=datetime.now)

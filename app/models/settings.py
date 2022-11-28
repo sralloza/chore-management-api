@@ -1,6 +1,6 @@
 from enum import Enum
 
-from sqlmodel import Field, SQLModel
+from pydantic import BaseModel, Field
 
 
 class RotationSign(Enum):
@@ -8,13 +8,13 @@ class RotationSign(Enum):
     negative = "negative"
 
 
-class SettingsBase(SQLModel):
+class SettingsBase(BaseModel):
     rotation_sign: RotationSign
     assignment_order: str = Field(max_length=2048)
 
 
-class Settings(SettingsBase, table=True):
-    id: str = Field(primary_key=True, max_length=36)
+class Settings(SettingsBase):
+    id: str = Field(max_length=36)
 
 
 class SettingsUpdate(SettingsBase):
@@ -31,5 +31,5 @@ class SettingsIO(SettingsBase):
 
 
 class SettingsCreate(SettingsUpdate):
-    id: str = Field(primary_key=True, max_length=36)
+    id: str = Field(max_length=36)
     rotation_sign: RotationSign = RotationSign.positive
