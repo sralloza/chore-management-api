@@ -37,6 +37,10 @@ async def get_chore_type(chore_type_id: str):
     response_model=list[ChoreType],
     dependencies=[Depends(user_required)],
     operation_id="listChoreTypes",
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+    },
 )
 async def get_chore_types():
     return await crud.chore_types.get_multi()
