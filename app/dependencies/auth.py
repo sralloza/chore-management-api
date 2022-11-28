@@ -11,6 +11,20 @@ def admin_required(x_token: str = Header(None)):
         raise HTTPException(status_code=403, detail="Admin access required")
 
 
+async def user_required(*, x_token: str = Header(None)):
+    if x_token is None:
+        raise HTTPException(status_code=401, detail="Missing API key")
+    if x_token == settings.admin_api_key:
+        return
+
+    users = await crud.user.get_multi()
+    for user in users:
+        if user.api_key == x_token:
+            return
+
+    raise HTTPException(status_code=403, detail="User access required")
+
+
 async def user_required_me_path(*, x_token: str = Header(None), user_id: str):
     if x_token is None:
         raise HTTPException(status_code=401, detail="Missing API key")
