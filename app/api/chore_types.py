@@ -12,6 +12,15 @@ router = APIRouter()
     response_model=ChoreType,
     dependencies=[Depends(admin_required)],
     operation_id="createChoreType",
+    responses={
+        400: {
+            "model": Message,
+            "description": "Can't use the 'me' keyword with the admin API key",
+        },
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+        409: {"model": Message, "description": "ChoreType already exists required"},
+    },
 )
 async def create_chore_type(chore_type: ChoreType = Body(...)):
     return await crud.chore_types.create(obj_in=chore_type)

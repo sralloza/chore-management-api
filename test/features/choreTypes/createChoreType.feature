@@ -3,7 +3,7 @@
 @old
 Feature: Chore Types API - createChoreType
 
-  As an admin or flat admin
+  As an admin
   I want to register chore types
 
 
@@ -13,8 +13,7 @@ Feature: Chore Types API - createChoreType
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Flat administration access required"
-    And the response error message is defined
+    And the error message is "Admin access required"
 
 
   @authorization
@@ -27,12 +26,11 @@ Feature: Chore Types API - createChoreType
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
-    And the response error message is defined
 
 
   @authorization
   Scenario: Validate response for user
-    Given I create a flat with a user and I use the user API key
+    Given I create a user and I use the user API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | chore-type-a             |
@@ -40,27 +38,12 @@ Feature: Chore Types API - createChoreType
       | description | description-chore-type-a |
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Flat administration access required"
-    And the response error message is defined
-
-
-  @authorization
-  Scenario: Validate response for flat admin
-    Given I create a flat and I use the flat API key
-    When I send a request to the Api with body params
-      | param_name  | param_value              |
-      | id          | chore-type-a             |
-      | name        | chore-type-a             |
-      | description | description-chore-type-a |
-    Then the response status code is "200"
-    And the response status code is defined
+    And the error message is "Admin access required"
 
 
   @authorization
   Scenario: Validate response for admin
-    Given I create a flat
-    And I use the admin API key
-    And the "[CONTEXT:created_flat_name]" as X-Flat header
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | chore-type-a             |
@@ -70,8 +53,9 @@ Feature: Chore Types API - createChoreType
     And the response status code is defined
 
 
+  @skip
   Scenario: Create a chore type without users
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | chore-type-a             |
@@ -97,7 +81,6 @@ Feature: Chore Types API - createChoreType
       """
       [
         {
-
           "id": "chore-type-a",
           "name": "chore-type-a",
           "description": "description-chore-type-a",
@@ -108,37 +91,9 @@ Feature: Chore Types API - createChoreType
       """
 
 
-  Scenario: Validate error response when using the admin API key without the X-Flat header
-    Given I create a flat
-    And I use the admin API key
-    When I send a request to the Api with body params
-      | param_name  | param_value              |
-      | id          | chore-type-a             |
-      | name        | chore-type-a             |
-      | description | description-chore-type-a |
-    Then the response status code is "400"
-    And the response status code is defined
-    And the error message is "Must use the X-Flat header with the admin API key"
-    And the response error message is defined
-
-
-  Scenario: Validate error response when using the X-Flat header without the admin API key
-    Given I create a flat with a user and I use the flat API key
-    And the "xxx" as X-Flat header
-    When I send a request to the Api with body params
-      | param_name  | param_value              |
-      | id          | chore-type-a             |
-      | name        | chore-type-a             |
-      | description | description-chore-type-a |
-    Then the response status code is "400"
-    And the response status code is defined
-    And the error message is "Can't use the X-Flat header without the admin API key"
-    And the response error message is defined
-
-
+  @skip
   Scenario: Validate that tickets are created after the chore type
-    Given I create a flat
-    And there are 3 users
+    Given there are 3 users
     And I use the flat API key
     When I send a request to the Api with body params
       | param_name  | param_value           |
@@ -191,11 +146,10 @@ Feature: Chore Types API - createChoreType
     Then the response status code is "400"
     And the response status code is defined
     And the error message is "Request body is not a valid JSON"
-    And the response error message is defined
 
 
   Scenario: Validate error response when creating a duplicated chore type
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value            |
       | id          | chore-type-id          |
@@ -209,40 +163,12 @@ Feature: Chore Types API - createChoreType
       | description | chore-type-description |
     Then the response status code is "409"
     And the response status code is defined
-    And the error message is "Chore type already exists"
-    And the response error message is defined
+    And the error message is "ChoreType with id=chore-type-id already exists"
 
 
-  Scenario: Create two chore types with same id in different flats
-    Given I create a flat and I use the flat API key
-    Given the field "flat_name_1" saved as "created_flat_name"
-    When I send a request to the Api with body params
-      | param_name  | param_value            |
-      | id          | chore-type-id          |
-      | name        | chore-type-name        |
-      | description | chore-type-description |
-    Then the response status code is "200"
-    Given I create a flat and I use the flat API key
-    Given the field "flat_name_2" saved as "created_flat_name"
-    When I send a request to the Api with body params
-      | param_name  | param_value            |
-      | id          | chore-type-id          |
-      | name        | chore-type-name        |
-      | description | chore-type-description |
-    Then the response status code is "200"
-    And the response status code is defined
-    Given I use the admin API key
-    And the field "chore_type_id" with value "chore-type-id"
-    And the "[CONTEXT:flat_name_1]" as X-Flat header
-    When I send a request to the Api resource "getChoreType"
-    Then the response status code is "200"
-    Given the "[CONTEXT:flat_name_2]" as X-Flat header
-    When I send a request to the Api resource "getChoreType"
-    Then the response status code is "200"
-
-
+  @test
   Scenario Outline: Validate error response when missing required fields
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value   |
       | id          | <id>          |
@@ -251,32 +177,31 @@ Feature: Chore Types API - createChoreType
     Then the response status code is "422"
     And the response status code is defined
     And the response contains the following validation errors
-      | location | param   | msg   | value   |
-      | body     | <param> | <msg> | <value> |
-    And the response error message is defined
+      | location | param   | msg   |
+      | body     | <param> | <msg> |
 
-    Examples: id = <id>, name = <name>, description = <description>, param = <param>, msg = <msg>, value = <value>
-      | id                      | name                    | description              | param       | msg                                                               | value                    |
-      | [NONE]                  | ct-name                 | ct-description           | id          | body.id is required                                               | [NONE]                   |
-      | [NULL]                  | ct-name                 | ct-description           | id          | body.id is required                                               | [NULL]                   |
-      | ct-id                   | [NONE]                  | ct-description           | name        | body.name is required                                             | [NONE]                   |
-      | ct-id                   | [NULL]                  | ct-description           | name        | body.name is required                                             | [NULL]                   |
-      | ct-id                   | ct-name                 | [NONE]                   | description | body.description is required                                      | [NONE]                   |
-      | ct-id                   | ct-name                 | [NULL]                   | description | body.description is required                                      | [NULL]                   |
-      | [EMPTY]                 | ct-name                 | ct-description           | id          | body.id must be between 1 and 25 characters long                  | [EMPTY]                  |
-      | Invalid                 | ct-name                 | ct-description           | id          | body.id does not match the pattern '[CONF:pattern.chore_type_id]' | Invalid                  |
-      | [STRING_WITH_LENGTH_26] | ct-name                 | ct-description           | id          | body.id must be between 1 and 25 characters long                  | [STRING_WITH_LENGTH_26]  |
-      | ct-id                   | [EMPTY]                 | ct-description           | name        | body.name must be between 1 and 50 characters long                | [EMPTY]                  |
-      | ct-id                   | [B]                     | ct-description           | name        | body.name must be between 1 and 50 characters long                | [EMPTY]                  |
-      | ct-id                   | [STRING_WITH_LENGTH_51] | ct-description           | name        | body.name must be between 1 and 50 characters long                | [STRING_WITH_LENGTH_51]  |
-      | ct-id                   | ct-name                 | [EMPTY]                  | description | body.description must be between 1 and 255 characters long        | [EMPTY]                  |
-      | ct-id                   | ct-name                 | [B]                      | description | body.description must be between 1 and 255 characters long        | [EMPTY]                  |
-      | ct-id                   | ct-name                 | [STRING_WITH_LENGTH_256] | description | body.description must be between 1 and 255 characters long        | [STRING_WITH_LENGTH_256] |
+    Examples: id = <id>, name = <name>, description = <description>, param = <param>, msg = <msg>
+      | id                      | name                    | description              | param       | msg                                          |
+      | [NONE]                  | ct-name                 | ct-description           | id          | field required                               |
+      | [NULL]                  | ct-name                 | ct-description           | id          | none is not an allowed value                 |
+      | ct-id                   | [NONE]                  | ct-description           | name        | field required                               |
+      | ct-id                   | [NULL]                  | ct-description           | name        | none is not an allowed value                 |
+      | ct-id                   | ct-name                 | [NONE]                   | description | field required                               |
+      | ct-id                   | ct-name                 | [NULL]                   | description | none is not an allowed value                 |
+      | [EMPTY]                 | ct-name                 | ct-description           | id          | ensure this value has at least 1 characters  |
+      | Invalid                 | ct-name                 | ct-description           | id          | string does not match regex "^[a-z-]+$"      |
+      | [STRING_WITH_LENGTH_26] | ct-name                 | ct-description           | id          | ensure this value has at most 25 characters  |
+      | ct-id                   | [EMPTY]                 | ct-description           | name        | ensure this value has at least 1 characters  |
+      | ct-id                   | [B]                     | ct-description           | name        | ensure this value has at least 1 characters  |
+      | ct-id                   | [STRING_WITH_LENGTH_51] | ct-description           | name        | ensure this value has at most 50 characters  |
+      | ct-id                   | ct-name                 | [EMPTY]                  | description | ensure this value has at least 1 characters  |
+      | ct-id                   | ct-name                 | [B]                      | description | ensure this value has at least 1 characters  |
+      | ct-id                   | ct-name                 | [STRING_WITH_LENGTH_256] | description | ensure this value has at most 255 characters |
 
 
 
   Scenario: Create a chore type with the largest id possible
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | [STRING_WITH_LENGTH_25]  |
@@ -300,7 +225,7 @@ Feature: Chore Types API - createChoreType
 
 
   Scenario: Create a choreType with the largest name possible
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | chore-type-a             |
@@ -324,7 +249,7 @@ Feature: Chore Types API - createChoreType
 
 
   Scenario: Create a choreType with the largest description possible
-    Given I create a flat and I use the flat API key
+    Given I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value              |
       | id          | chore-type-a             |
