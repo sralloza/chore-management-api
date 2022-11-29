@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, Depends
 
 from .. import crud
 from ..dependencies.auth import admin_required
-from ..models import SettingsIO, SettingsUpdate, SettingsUpdateIO
+from ..models.settings import SettingsIO, SettingsUpdate, SettingsUpdateIO
 
 router = APIRouter()
 

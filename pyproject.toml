@@ -20,6 +20,7 @@ databases = {extras = ["aiomysql"], version = "^0.6.2"}
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
 black = "^22.10.0"
+ruff = "^0.0.146"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

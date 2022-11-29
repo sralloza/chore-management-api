@@ -3,7 +3,7 @@ from fastapi.exceptions import RequestValidationError
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .api import router as router_v1
-from .db.db import database
+from .db.session import database
 from .middlewares.correlator import inject_correlator
 from .middlewares.errors import (
     http_exception_handler,

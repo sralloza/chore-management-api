@@ -1,5 +1,5 @@
 from ..db import tables
-from ..models import ChoreType
+from ..models.chore_type import ChoreType
 from .base import CRUDBase
 
 REAL_ID = "9ccce886-4fe2-42fc-872e-3afc2fa14ccf"

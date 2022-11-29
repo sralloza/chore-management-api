@@ -1,7 +1,13 @@
 from .. import crud
 from ..db import tables
-from ..db.db import database
-from ..models import RotationSign, Settings, SettingsCreate, SettingsIO, SettingsUpdate
+from ..db.session import database
+from ..models.settings import (
+    RotationSign,
+    Settings,
+    SettingsCreate,
+    SettingsIO,
+    SettingsUpdate,
+)
 from .base import CRUDBase
 
 REAL_ID = "9ccce886-4fe2-42fc-872e-3afc2fa14ccf"

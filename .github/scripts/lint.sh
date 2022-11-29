@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
-set -e
+set -ueo pipefail
 
-cd test
+cd app
+poetry run ruff .
 poetry run isort .
 poetry run black .
-cd ../app
+
+cd ../test
 poetry run isort .
 poetry run black .
+# poetry run ruff .
+
 # poetry run pytest -m 'not responses'
 
 cd ..

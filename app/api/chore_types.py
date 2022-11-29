@@ -2,7 +2,8 @@ from fastapi import APIRouter, Body, Depends
 
 from .. import crud
 from ..dependencies.auth import admin_required, user_required
-from ..models import ChoreType, Message
+from ..models.chore_type import ChoreType
+from ..models.extras import Message
 
 router = APIRouter()
 
