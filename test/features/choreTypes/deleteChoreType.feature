@@ -10,17 +10,15 @@ Feature: Chore Types API - deleteChoreType
 
     @authorization
     Scenario: Validate response for guest user
-        Given the field "choreTypeId" with value "A"
         When I send a request to the Api
-        Then the response status code is "403"
-        And the error message is "Admin access required"
+        Then the response status code is "401"
+        And the error message is "Missing API key"
 
 
     @authorization
-    Scenario: Validate response for tenant user
+    Scenario: Validate response for user
         Given there is 1 chore type
-        And the field "choreTypeId" with value "A"
-        And I use a tenant's token
+        And I create a user and I use the user API key
         When I send a request to the Api
         Then the response status code is "403"
         And the error message is "Admin access required"
@@ -29,8 +27,8 @@ Feature: Chore Types API - deleteChoreType
     @authorization
     Scenario: Validate response for admin user
         Given there is 1 chore type
-        And the field "choreTypeId" with value "A"
         And I use the admin API key
+        And the field "chore_type_id" with value "ct-a"
         When I send a request to the Api
         Then the response status code is "204"
 
@@ -38,7 +36,7 @@ Feature: Chore Types API - deleteChoreType
     Scenario: Delete chore type
         Given there is 1 chore type
         And I use the admin API key
-        And the field "choreTypeId" with value "A"
+        And the field "chore_type_id" with value "ct-a"
         When I send a request to the Api
         Then the response status code is "204"
         And the Api response is empty
@@ -51,29 +49,31 @@ Feature: Chore Types API - deleteChoreType
 
 
     Scenario: Validate error response when deleting a non existing chore type
-        Given the field "choreTypeId" with value "invalid"
+        Given the field "chore_type_id" with value "invalid"
         And I use the admin API key
         When I send a request to the Api
         Then the response status code is "404"
-        And the error message is "No chore type found with id invalid"
+        And the error message is "ChoreType with id=invalid does not exist"
 
 
+    @skip
     Scenario: Validate error response when deleting a chore type with pending chores
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
-        And the field "choreTypeId" with value "A"
+        And the field "chore_type_id" with value "A"
         Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
         And the error message is "Chore type A has 2 pending chores"
 
 
+    @skip
     Scenario: Validate error response when deleting a chore type with non balanced tickets
         Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
             | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
             | 1              | 2            | A          | 2022.01 | True     |
-        And the field "choreTypeId" with value "A"
+        And the field "chore_type_id" with value "A"
         And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"

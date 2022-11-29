@@ -144,7 +144,7 @@ Feature: Users API - createUser
       | location | param   | msg   |
       | body     | <param> | <msg> |
 
-    Examples:
+    Examples: username = <username> | id = <id> | param = <param> | msg = <msg>
       | username                | id                      | param    | msg                                         |
       | x                       | user-id                 | username | ensure this value has at least 2 characters |
       | [STRING_WITH_LENGTH_26] | user-id                 | username | ensure this value has at most 25 characters |
@@ -156,6 +156,7 @@ Feature: Users API - createUser
       | xx                      | ME                      | id       | Forbidden user ID: me                       |
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

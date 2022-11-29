@@ -56,6 +56,7 @@ Feature: Week ID API - getNextWeekId
     And the response attribute "week_id" as string is "[NOW(%Y.%W) + 7 DAYS]"
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

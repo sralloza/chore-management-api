@@ -85,6 +85,7 @@ Feature: Users API - getUser
     And the error message is "User with id=xxx does not exist"
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

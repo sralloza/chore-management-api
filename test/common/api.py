@@ -31,8 +31,7 @@ def send_request(context, endpoint=None, payload=None, raw_payload=False):
 
 def get_url_params(context, path):
     param_names = [x.group(1) for x in re.finditer(r"\{(\w+)\}", path) if x]
-    scenario_name = context.scenario.name.split(" -- ")[0]
-    if scenario_name in COMMON_SCENARIOS:
+    if "authorization" in context.tags or "common" in context.tags:
         return {k: getattr(context, k, "xxx") for k in param_names}
     return {k: getattr(context, k) for k in param_names}
 

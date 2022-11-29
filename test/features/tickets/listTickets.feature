@@ -152,6 +152,7 @@ Feature: Tickets API - listTickets
     And the response error message is defined
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

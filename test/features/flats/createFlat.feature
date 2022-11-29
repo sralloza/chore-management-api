@@ -204,6 +204,7 @@ Feature: Flats API - createFlat
       | [CONTEXT:create_code] | me        | name        | Forbidden flat name: me                                         | me      |
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

@@ -74,6 +74,7 @@ Feature: Flats API - listFlats
     And the Api response contains the expected data
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api
