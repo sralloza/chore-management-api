@@ -53,3 +53,17 @@ async def get_chore_type(chore_type_id: str):
 )
 async def get_chore_types():
     return await crud.chore_types.get_multi()
+
+@router.delete(
+    "/{chore_type_id}",
+    status_code=204,
+    dependencies=[Depends(admin_required)],
+    operation_id="deleteChoreType",
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+        404: {"model": Message, "description": "Chore type not found"},
+    }
+)
+async def delete_chore_type(chore_type_id: str):
+    return await crud.chore_types.delete(id=chore_type_id)

@@ -66,6 +66,6 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
 
         return await self.get_or_404(id=id)
 
-    async def remove(self, *, id: IDType) -> None:
+    async def delete(self, *, id: IDType) -> None:
         await self.get_or_404(id=id)
         await database.execute(self.table.delete().where(self.table.c.id == id))
