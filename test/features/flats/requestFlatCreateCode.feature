@@ -60,6 +60,7 @@ Feature: Flats API - requestFlatCreateCode
     And the response body is validated against the json-schema
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

@@ -66,6 +66,7 @@ Feature: Chore Types API - getChoreType
     And the error message is "ChoreType with id=ct-a does not exist"
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

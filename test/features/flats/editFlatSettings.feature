@@ -184,6 +184,7 @@ Feature: Flats API - editFlatSettings
       | xxxx      | [NONE]        | assignment_order | [LIST:['xxxx']] | body.assignment_order contains invalid user ids or is missing some |
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

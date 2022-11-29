@@ -272,6 +272,7 @@ Feature: Chore Types API - createChoreType
       """
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api

@@ -156,6 +156,7 @@ Feature: Users API - createUser
       | xx                      | ME                      | id       | Forbidden user ID: me                       |
 
 
+  @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
     When I send a request to the Api
