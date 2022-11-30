@@ -48,11 +48,13 @@ jobs:
         run: ./run-tests.sh
 
       - name: Compress test results
-        if: "!contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)"
+        if: |
+          !contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)
         run: tar cvfz test/reports.zip test/reports
 
       - uses: actions/upload-artifact@v2
-        if: "!contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)"
+        if: |
+          !contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)
         with:
           name: "Test Reports"
           path: test/reports.zip
