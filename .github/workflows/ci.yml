@@ -48,11 +48,11 @@ jobs:
         run: ./run-tests.sh
 
       - name: Compress test results
-        if: ${{ always() && ! ('cancelled', 'skipped').contains(steps.lint.conclusion) }}
+        if: ${{ always() && ! contains("cancelled" "skipped", steps.lint.conclusion) }}
         run: tar cvfz test/reports.zip test/reports
 
       - uses: actions/upload-artifact@v2
-        if: ${{ always() && ! ('cancelled', 'skipped').contains(steps.lint.conclusion) }}
+        if: ${{ always() && ! contains("cancelled" "skipped", steps.lint.conclusion) }}
         with:
           name: "Test Reports"
           path: test/reports.zip
