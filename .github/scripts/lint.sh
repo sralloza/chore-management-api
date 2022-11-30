@@ -10,7 +10,7 @@ poetry run black .
 cd ../test
 poetry run isort .
 poetry run black .
-# poetry run ruff .
+poetry run ruff --ignore F403,F405 .
 
 # poetry run pytest -m 'not responses'
 

@@ -5,7 +5,8 @@ from common.weekly_chores import *
 
 
 @step(
-    'I create the weekly chores for the week "{week_id}" with force={force} using the API'
+    'I create the weekly chores for the week "{week_id}" '
+    "with force={force} using the API"
 )
 @given('I create the weekly chores for the week "{week_id}" using the API')
 @given("I create the weekly chores for the following weeks using the API")

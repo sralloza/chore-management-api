@@ -14,7 +14,7 @@ from toolium.behave.environment import before_scenario as tlm_before_scenario
 from toolium.utils import dataset
 
 from common.db import reset_databases
-from common.metrics import METRICS_URL, get_metrics
+from common.metrics import get_metrics
 
 RESPONSES_FOLDER = Path(__file__).parent / "output" / "responses"
 

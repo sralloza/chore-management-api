@@ -7,7 +7,7 @@ import jq
 from behave import *
 from dateutil.parser import parse
 from hamcrest import *
-from toolium.utils.dataset import map_param, replace_param
+from toolium.utils.dataset import replace_param
 
 from common.api import send_request
 from common.request import table_to_dict
@@ -42,7 +42,10 @@ def step_impl(context, message=None):
     message = message or context.text
     assert "errors" in context.res.json(), "No errors array in response"
     errors_array = [x["defaultMessage"] for x in context.res.json()["errors"]]
-    error_msg = f'One of the messages in the errors array should contain "{message}" ({errors_array})'
+    error_msg = (
+        "One of the messages in the errors array should"
+        f'contain "{message}" ({errors_array})'
+    )
     assert message in errors_array, error_msg
 
 

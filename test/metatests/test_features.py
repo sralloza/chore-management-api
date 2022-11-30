@@ -32,7 +32,8 @@ def test_validate_xflat_header_scenarios(api_feature: Feature):
 
 
 def test_scenarios_should_leave_two_break_lines(feature: Feature):
-    # The only cases where two break lines are accepted are the Feature: description and examples
+    # The only cases where two break lines are accepted are:
+    # Feature: description and examples
     pattern = re.compile(r".\n\n( +\w+)", re.MULTILINE)
     text = Path(feature.filename).read_text()
     for match in pattern.finditer(text):
