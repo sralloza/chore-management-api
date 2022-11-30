@@ -38,20 +38,23 @@ jobs:
         run: poetry debug info && poetry env info
 
       - name: Run poetry install
-        run: cd test && poetry install
+        run: poetry install
 
       - name: Lint
+        id: lint
         run: .github/scripts/lint.sh
 
       - name: Run tests e2e
         run: ./run-tests.sh
 
       - name: Compress test results
-        if: always()
+        if: |
+          !contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)
         run: tar cvfz test/reports.zip test/reports
 
       - uses: actions/upload-artifact@v2
-        if: always()
+        if: |
+          !contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)
         with:
           name: "Test Reports"
           path: test/reports.zip
