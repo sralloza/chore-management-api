@@ -23,12 +23,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Install jq
-        run: sudo apt-get install jq
-
       - name: Get project version
         id: project_version
-        run: echo "::set-output name=version::$(jq -r .version package.json)"
+        run: echo "::set-output name=version::$(cat pyproject.toml | grep version | head -1 | cut -d '=' -f2 | tr -d '"')"
 
       - name: Build and push
         uses: docker/build-push-action@v2

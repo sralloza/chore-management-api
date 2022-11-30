@@ -12,7 +12,7 @@ router = APIRouter()
     "",
     response_model=ChoreType,
     dependencies=[Depends(admin_required)],
-    operation_id="createChoreType" ,
+    operation_id="createChoreType",
     responses={
         400: {
             "model": Message,
