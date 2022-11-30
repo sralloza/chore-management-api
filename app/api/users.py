@@ -2,7 +2,8 @@ from fastapi import APIRouter, Body, Depends, Header
 
 from .. import crud
 from ..dependencies.auth import admin_required, user_required_me_path
-from ..models import Message, UserCreate, UserOutput, UserSimple
+from ..models.extras import Message
+from ..models.user import UserCreate, UserOutput, UserSimple
 
 router = APIRouter()
 
@@ -45,7 +46,8 @@ async def create_user(user: UserCreate = Body()):
     },
 )
 async def get_user(user_id: str, x_token: str = Header(None)):
-    """Get user by id. Any user can access their own data using the special keyword `me`."""
+    """Get user by id. Any user can access their own data using the
+    special keyword `me`."""
     return await crud.user.get_or_404_me_safe(id=user_id, api_key=x_token)
 
 

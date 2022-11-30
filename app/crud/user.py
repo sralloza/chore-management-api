@@ -2,8 +2,8 @@ import sqlalchemy as sa
 
 from .. import crud
 from ..db import tables
-from ..db.db import database
-from ..models import User, UserCreate, UserCreateInner
+from ..db.session import database
+from ..models.user import User, UserCreate, UserCreateInner
 from .base import CRUDBase
 
 UserUpdate = UserCreate

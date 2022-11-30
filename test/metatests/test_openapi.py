@@ -115,14 +115,17 @@ def test_validate_security_schema(api_feature: Feature):
         return
 
     assert 401 in defined_status_codes
-    assert len(security_schemas) == 1, f"Only one security schema is allowed"
+    assert len(security_schemas) == 1, "Only one security schema is allowed"
     schema = security_schemas[0]
 
     assert schema in SECURITY_SCHEMAS, f"Unknown security schema {schema!r}"
 
     examples = get_examples(operation_id=operation_id, code=403)
     expected = {"message": SECURITY_EXAMPLES[schema]}
-    msg = f"Example {expected!r} is not defined for 403 response and {schema!r} security schema"
+    msg = (
+        f"Example {expected!r} is not defined for 403 "
+        f"response and {schema!r} security schema"
+    )
     assert expected in examples, msg
 
 
@@ -145,7 +148,10 @@ def test_all_status_codes_covered(api_feature: Feature):
     expected.sort()
 
     actual_status_codes = get_reached_status_codes_by_operation_id(operation_id)
-    msg = f"{operation_id}: Status codes should be the same as defined in the OpenAPI spec"
+    msg = (
+        f"{operation_id}: Status codes should be the same "
+        "as defined in the OpenAPI spec"
+    )
     assert actual_status_codes == expected, msg
 
 

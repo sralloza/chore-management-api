@@ -1,8 +1,3 @@
-import json
-import os
-import warnings
-from pathlib import Path
-
 from behave import *
 from hamcrest import *
 from jsonschema import RefResolver

@@ -68,9 +68,9 @@ def _send_request(
 
     res = context.session.request(method, url, **kwargs)
     if context.operation_id == operation_id:
-        # Note: when calling the testing operation multiple times (like in createFlat), each request will
-        # overwrite the previous one. This is not a problem, as we only care about the last one. If the test
-        # fails, the last request will be removed so.
+        # Note: when calling the testing operation multiple times, each request will
+        # overwrite the previous one. This is not a problem, as we only care about
+        # the last one.
         register_response(context, res)
 
     if operation_id not in BLACKLISTED_STDOUT_FEATURES:

@@ -4,7 +4,7 @@ from fastapi import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import Table
 
-from ..db.db import database
+from ..db.session import database
 
 ModelType = TypeVar("ModelType", bound=BaseModel)
 IDType = TypeVar("IDType", bound=Any)

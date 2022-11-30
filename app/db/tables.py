@@ -3,7 +3,7 @@ from datetime import datetime
 
 import sqlalchemy as sa
 
-from ..models import RotationSign
+from ..models.settings import RotationSign
 from .session import metadata
 
 __all__ = ["chore_type", "chore", "settings", "ticket", "transfer", "user"]

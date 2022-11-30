@@ -5,8 +5,9 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from alembic import context
-from app.db.db import url, metadata
-from app.db.tables import *
+from app.db.db import url
+from app.db.session import metadata
+from app.db.tables import *  # noqa: F403
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -2,7 +2,8 @@ from behave import *
 
 
 @given(
-    'there are {a:d} users, {b:d} chore types and weekly chores for the week "{week_id}"'
+    "there are {a:d} users, {b:d} chore types and "
+    'weekly chores for the week "{week_id}"'
 )
 @given(
     'there is {a:d} user, {b:d} chore type and weekly chores for the week "{week_id}"'
