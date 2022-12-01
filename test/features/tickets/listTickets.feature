@@ -1,9 +1,8 @@
 @api.tickets
 @listTickets
-@old
 Feature: Tickets API - listTickets
 
-  As an admin, flat admin or user
+  As an admin or user
   I want to list the tickets
 
 
@@ -14,7 +13,6 @@ Feature: Tickets API - listTickets
     Then the response status code is "403"
     And the response status code is defined
     And the error message is "User access required"
-    And the response error message is defined
 
 
   @authorization
@@ -23,20 +21,11 @@ Feature: Tickets API - listTickets
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
-    And the response error message is defined
 
 
   @authorization
   Scenario: Validate response for user
-    Given I create a flat with a user and I use the user API key
-    When I send a request to the Api
-    Then the response status code is "200"
-    And the response status code is defined
-
-
-  @authorization
-  Scenario: Validate response for flat admin
-    Given I create a flat with a user and I use the flat API key
+    Given I create a user and I use the user API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
@@ -44,22 +33,21 @@ Feature: Tickets API - listTickets
 
   @authorization
   Scenario: Validate response for admin
-    Given I create a flat
-    And the "[CONTEXT:created_flat_name]" as X-Flat header
-    And I use the admin API key
+    Given I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
 
 
   Scenario: List tickets with only one user and one chore type
-    Given I create a flat with a user
+    Given I use the admin API key
     When I send a request to the Api resource "createChoreType" with body params
       | param_name  | param_value     |
       | id          | test-chore-type |
       | name        | Test chore type |
       | description | whatever        |
     Then the response status code is "200"
+    Given I create a user and I use the user API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response body is validated against the json-schema
@@ -82,10 +70,9 @@ Feature: Tickets API - listTickets
 
 
   Scenario: List tickets with only three users and three chore types
-    Given I create a flat
-    And there are 3 chore types
+    Given there are 3 chore types
     And there are 3 users
-    And I use the flat API key
+    And I use the user API key
     When I send a request to the Api
     Then the response status code is "200"
     Then the response status code is defined
@@ -94,7 +81,7 @@ Feature: Tickets API - listTickets
 
 
   Scenario: List tickets when there are no chore types
-    Given I create a flat with a user and I use the flat API key
+    Given I create a user and I use the user API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response body is validated against the json-schema
@@ -105,9 +92,8 @@ Feature: Tickets API - listTickets
 
 
   Scenario: List tickets when there are no users
-    Given I create a flat
-    And there are 2 chore types
-    And I use the flat API key
+    Given there are 2 chore types
+    And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response body is validated against the json-schema
@@ -132,26 +118,6 @@ Feature: Tickets API - listTickets
       """
 
 
-  Scenario: Validate error response when using the admin API key without the X-Flat header
-    Given I create a flat
-    And I use the admin API key
-    When I send a request to the Api with body params
-    Then the response status code is "400"
-    And the response status code is defined
-    And the error message is "Must use the X-Flat header with the admin API key"
-    And the response error message is defined
-
-
-  Scenario: Validate error response when using the X-Flat header without the admin API key
-    Given I create a flat with a user and I use the flat API key
-    And the "xxx" as X-Flat header
-    When I send a request to the Api with body params
-    Then the response status code is "400"
-    And the response status code is defined
-    And the error message is "Can't use the X-Flat header without the admin API key"
-    And the response error message is defined
-
-
   @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
@@ -165,8 +131,3 @@ Feature: Tickets API - listTickets
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
