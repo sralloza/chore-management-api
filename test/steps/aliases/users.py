@@ -14,6 +14,7 @@ def step_impl(context, users):
             When I send a request to the Api resource "createUser" with body params
             {payload_to_table_format(raw_data)}
             Then the response status code is "200"
+            And I save the "api_key" attribute of the response as "user_api_key"
             And I clear the token
             """
         )

@@ -53,7 +53,6 @@ Feature: Chore Types API - createChoreType
     And the response status code is defined
 
 
-  @skip
   Scenario: Create a chore type without users
     Given I use the admin API key
     When I send a request to the Api with body params
@@ -91,10 +90,9 @@ Feature: Chore Types API - createChoreType
       """
 
 
-  @skip
   Scenario: Validate that tickets are created after the chore type
     Given there are 3 users
-    And I use the flat API key
+    And I use the admin API key
     When I send a request to the Api with body params
       | param_name  | param_value           |
       | id          | new-chore             |
