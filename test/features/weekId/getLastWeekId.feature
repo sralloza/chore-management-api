@@ -1,6 +1,5 @@
 @api.week-id
 @getLastWeekId
-@old
 Feature: Week ID API - getLastWeekId
 
   As a non authenticated user
@@ -24,17 +23,7 @@ Feature: Week ID API - getLastWeekId
 
   @authorization
   Scenario: Validate response for user
-    Given I create a flat with a user
-    And I use the user API key
-    When I send a request to the Api
-    Then the response status code is "200"
-    And the response status code is defined
-
-
-  @authorization
-  Scenario: Validate response for flat admin
-    Given I create a flat
-    And I use the flat API key
+    Given I create a user and I use the user API key
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
@@ -68,8 +57,3 @@ Feature: Week ID API - getLastWeekId
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
