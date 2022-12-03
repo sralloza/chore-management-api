@@ -1,5 +1,5 @@
 from ..db import tables
-from ..models.chore import Chore
+from ..models.chore import Chore, ChoreCreate
 from .base import CRUDBase
 
 
@@ -21,7 +21,7 @@ def apply_filter(
     return True
 
 
-class CRUDChore(CRUDBase[Chore, Chore, Chore, int]):
+class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
     async def get_multi(
         self,
         *,

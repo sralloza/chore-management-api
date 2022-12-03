@@ -44,12 +44,16 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
 
     async def create(self, *, obj_in: CreateSchemaType) -> ModelType:
         obj_in_data = obj_in.dict()
-        if "id" in obj_in_data and await self.get(id=obj_in_data["id"]):
-            detail = f"{self.model.__name__} with id={obj_in_data['id']} already exists"
+        if self.primary_key in obj_in_data and await self.get(
+            id=obj_in_data[self.primary_key]
+        ):
+            detail = f"{self.model.__name__} with {self.primary_key}={obj_in_data[self.primary_key]} already exists"
             raise HTTPException(409, detail)
 
         db_id = await database.execute(self.table.insert(), obj_in_data)
-        real_id = obj_in_data["id"] if "id" in obj_in_data else db_id
+        real_id = (
+            obj_in_data[self.primary_key] if self.primary_key in obj_in_data else db_id
+        )
         return await self.get_or_404(id=real_id)
 
     async def update(

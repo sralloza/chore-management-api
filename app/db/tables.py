@@ -26,6 +26,14 @@ chore = sa.Table(
     sa.Column("week_id", sa.String(7), nullable=False),
 )
 
+rotations = sa.Table(
+    "rotations",
+    metadata,
+    sa.Column("week_id", sa.String(7), primary_key=True, nullable=False),
+    sa.Column("rotation", sa.Integer, nullable=False),
+    sa.Column("user_ids_hash", sa.String(64), nullable=False),
+)
+
 settings = sa.Table(
     "settings",
     metadata,

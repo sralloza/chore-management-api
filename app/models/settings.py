@@ -23,7 +23,7 @@ class SettingsUpdate(SettingsBase):
 
 
 class SettingsUpdateIO(SettingsUpdate):
-    assignment_order: list[str]
+    assignment_order: list[str] | None = None
 
 
 class SettingsIO(SettingsBase):

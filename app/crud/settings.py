@@ -21,6 +21,9 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
     async def get_or_404(self, **kwargs) -> Settings:
         return await super().get_or_404(id=REAL_ID)
 
+    async def get_multi(self, *, skip: int = 0, limit: int = 100) -> list[Settings]:
+        raise NotImplementedError
+
     async def reset_assignment_order(self):
         settings = await self.get()
         user_ids = await crud.user.get_user_ids()

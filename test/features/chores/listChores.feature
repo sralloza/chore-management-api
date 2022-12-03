@@ -50,20 +50,19 @@ Feature: Chores API - listChores
       """
 
 
-  @skip
   Scenario: List simple chores when database is not empty
     Given there are 4 tenants, 4 chore types and weekly chores for the week "2030.01"
     And the fields
       | field     | value   |
       | weekId    | 2030.01 |
       | choreType | A       |
-    And I use the token of the tenant with id "1"
+    And I use the token of the user with id "1"
     When I send a request to the Api resource "completeTask"
     Then the response status code is "204"
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
-    And the response body is validated against the json-schema "simple-chore-list"
+    And the response body is validated against the json-schema
     And the Api response contains the expected data
 
 

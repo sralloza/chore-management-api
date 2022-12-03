@@ -13,7 +13,7 @@ function cleanup {
 
 function runTests() {
   exitCode=0
-  behave -t=-old
+  behave -t=-old -t=-skip
   behaveExitCode=$?
   if [ $behaveExitCode -ne 0 ]; then
     exitCode=$behaveExitCode
