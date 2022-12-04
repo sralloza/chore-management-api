@@ -56,15 +56,14 @@ Feature: Chore Types API - deleteChoreType
         And the error message is "ChoreType with id=invalid does not exist"
 
 
-    @skip
     Scenario: Validate error response when deleting a chore type with pending chores
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
+        Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
         And I create the weekly chores for the week "2022.02" using the API
-        And the field "chore_type_id" with value "A"
+        And the field "chore_type_id" with value "ct-a"
         Given I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"
-        And the error message is "Chore type A has 2 pending chores"
+        And the error message is "Can't delete chore type with active chores"
 
 
     @skip
