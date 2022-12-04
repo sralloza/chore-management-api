@@ -283,32 +283,32 @@ Feature: Weekly Chores API - createWeeklyChores
       | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
 
     Examples: week_id = <week_id>
-      | invalid_week_id |
-      | invalid-week    |
-      | 2022-03         |
-      | 2022.3          |
-      | 2022.00         |
-      | 2022.55         |
-      | 2022023         |
-      | whatever        |
+      | week_id      |
+      | invalid-week |
+      | 2022-03      |
+      | 2022.3       |
+      | 2022.00      |
+      | 2022.55      |
+      | 2022023      |
+      | whatever     |
 
 
-  @skip
   Scenario Outline: Validate error response when creating weekly chores for an old week
-    Given there are 1 tenant, 1 chore type and weekly chores for the week "[NOW(%Y.%W)]"
-    And the field "weekId" with string value "<old_week_id>"
+    Given there is 1 user, 1 chore type and weekly chores for the week "[NOW(%Y.%W)]"
+    And the field "week_id" with string value "<week_id>"
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is "Invalid week ID (too old): <old_week_id>"
+    And the error message is "Chore types exist after week <parsed_week_id>"
 
-    Examples: old_week_id = <old_week_id>
-      | old_week_id           |
-      | 2022.09               |
-      | 2022.04               |
-      | 2021.04               |
-      | 2020.44               |
-      | [NOW(%Y.%W) - 7 DAYS] |
+    Examples: week_id = <week_id> | parsed_week_id = <parsed_week_id>
+      | week_id               | parsed_week_id        |
+      | 2022.09               | 2022.09               |
+      | 2022.04               | 2022.04               |
+      | 2021.04               | 2021.04               |
+      | 2020.44               | 2020.44               |
+      | [NOW(%Y.%W) - 7 DAYS] | [NOW(%Y.%W) - 7 DAYS] |
+      | last                  | [NOW(%Y.%W) - 7 DAYS] |
 
 
   @skip
