@@ -47,7 +47,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         if self.primary_key in obj_in_data and await self.get(
             id=obj_in_data[self.primary_key]
         ):
-            detail = f"{self.model.__name__} with {self.primary_key}={obj_in_data[self.primary_key]} already exists"
+            detail = (
+                f"{self.model.__name__} with {self.primary_key}="
+                f"{obj_in_data[self.primary_key]} already exists"
+            )
             raise HTTPException(409, detail)
 
         db_id = await database.execute(self.table.insert(), obj_in_data)

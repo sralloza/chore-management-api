@@ -1,6 +1,3 @@
-import sqlalchemy as sa
-
-from .. import crud
 from ..db import tables
 from ..db.session import database
 from ..models.rotations import Rotation

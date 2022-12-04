@@ -18,17 +18,15 @@ async def create_next_weekly_chores(week_id: str):
     chores = await crud.chores.get_multi(week_id=week_id)
 
     if not users:
-        raise HTTPException(
-            status_code=400, detail="Can't create weekly chores, no users registered"
-        )
+        raise HTTPException(400, "Can't create weekly chores, no users registered")
     if not chore_types:
         raise HTTPException(
-            status_code=400, detail="Can't create weekly chores, no chore types registered"
+            400, "Can't create weekly chores, no chore types registered"
         )
     if chores:
         raise HTTPException(
-            status_code=409,
-            detail=f"Weekly chores for week {week_id} already exist",
+            409,
+            f"Weekly chores for week {week_id} already exist",
         )
 
     rotation = await crud.rotation.get_last_rotation()

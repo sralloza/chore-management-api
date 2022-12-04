@@ -15,7 +15,7 @@ def step_impl(context, api_key):
 @step('I use the token of the user with id "{user_id}"')
 def step_impl(context, user_id):
     context.execute_steps(
-        f"""
+        """
         Given I use the admin API key
         When I send a request to the API resource "listUsers"
         Then the response status code is "200"
@@ -23,7 +23,6 @@ def step_impl(context, user_id):
     )
     users = context.res.json()
     context.token = next(user["api_key"] for user in users if user["id"] == user_id)
-
 
 
 @step("I use a random API key")

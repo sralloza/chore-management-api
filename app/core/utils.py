@@ -1,6 +1,6 @@
+from collections import deque
 from itertools import cycle
 from typing import TypeVar
-from collections import deque
 
 T = TypeVar("T")
 

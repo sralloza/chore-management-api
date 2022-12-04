@@ -1,6 +1,7 @@
-from ..core.config import settings
 from fastapi import HTTPException
+
 from .. import crud
+from ..core.config import settings
 
 
 async def expand_user_id(user_id: str, x_token: str) -> str:

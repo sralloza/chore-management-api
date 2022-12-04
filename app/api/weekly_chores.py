@@ -17,10 +17,7 @@ router = APIRouter()
     operation_id="createWeeklyChores",
     dependencies=[Depends(admin_required)],
 )
-async def create_weekly_chores(
-    week_id: str = Path(...,
-    regex=WEEK_ID_EXPANDED_REGEX)
-):
+async def create_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_REGEX)):
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     await create_next_weekly_chores(week_id)

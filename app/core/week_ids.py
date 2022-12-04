@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
+
+from fastapi import HTTPException
+
 from .. import crud
 from ..models.extras import WeekId
-from fastapi import HTTPException
+
 
 def expand_week_id(week_id: str) -> str:
     if week_id == "next":

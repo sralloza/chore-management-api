@@ -20,7 +20,7 @@ databases = {extras = ["aiomysql"], version = "^0.6.2"}
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"
 black = "^22.10.0"
-ruff = "^0.0.146"
+ruff = "^0.0.155"
 allure-behave = "^2.12.0"
 behave = "^1.2.6"
 deepdiff = "^6.2.1"
