@@ -18,7 +18,7 @@ def step_impl(context, user_id):
         f"""
         Given I use the admin API key
         When I send a request to the API resource "listUsers"
-        Then the response status code is 200
+        Then the response status code is "200"
         """
     )
     users = context.res.json()

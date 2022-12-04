@@ -65,8 +65,8 @@ def validate_response(api_response, json_schema, resolver):
             format_checker=FormatChecker(),
         )
     except ValidationError as exc:
-        msg = f"- Json Schema ValidationError: {exc.message}"
-        assert False, msg
+        msg = f"Json Schema ValidationError: {exc.message}"
+        raise ValueError(msg) from exc
 
 
 def resolve_ref(ref: str):

@@ -1,26 +1,26 @@
 [
   {
     "week_id": "2030.01",
-    "tenant_id": 1,
-    "chore_type": "A",
+    "user_id": "user-1",
+    "chore_type": "ct-a",
     "done": true
   },
   {
     "week_id": "2030.01",
-    "chore_type": "B",
-    "tenant_id": 2,
+    "chore_type": "ct-b",
+    "user_id": "user-2",
     "done": false
   },
   {
     "week_id": "2030.01",
-    "chore_type": "C",
-    "tenant_id": 3,
+    "chore_type": "ct-c",
+    "user_id": "user-3",
     "done": false
   },
   {
     "week_id": "2030.01",
-    "chore_type": "D",
-    "tenant_id": 4,
+    "chore_type": "ct-d",
+    "user_id": "user-4",
     "done": false
   }
 ]

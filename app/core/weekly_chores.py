@@ -19,11 +19,11 @@ async def create_next_weekly_chores(week_id: str):
 
     if not users:
         raise HTTPException(
-            status_code=400, detail="Can't create weekly chores, no users found"
+            status_code=400, detail="Can't create weekly chores, no users registered"
         )
     if not chore_types:
         raise HTTPException(
-            status_code=400, detail="Can't create weekly chores, no chore types found"
+            status_code=400, detail="Can't create weekly chores, no chore types registered"
         )
     if chores:
         raise HTTPException(
