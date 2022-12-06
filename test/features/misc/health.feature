@@ -1,5 +1,4 @@
 @health
-@old
 Feature: health
 
   As a non authenticated user

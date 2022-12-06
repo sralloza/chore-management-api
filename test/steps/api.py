@@ -30,32 +30,18 @@ def step_impl(context):
 
 @step('the error message contains "{message}"')
 def step_impl(context, message):
-    assert "message" in context.res.json(), "No error message in response"
-    actual = context.res.json()["message"]
+    assert "detail" in context.res.json(), "No error message in response"
+    actual = context.res.json()["detail"]
     error_msg = f'The error message should contain "{message}", but it is "{actual}"'
     assert re.search(message, actual), error_msg
 
 
-@then('one of messages in the errors array is "{message}"')
-@then("one of messages in the errors array is the following")
-def step_impl(context, message=None):
-    message = message or context.text
-    assert "errors" in context.res.json(), "No errors array in response"
-    errors_array = [x["defaultMessage"] for x in context.res.json()["errors"]]
-    error_msg = (
-        "One of the messages in the errors array should"
-        f'contain "{message}" ({errors_array})'
-    )
-    assert message in errors_array, error_msg
-
-
-@step("the error message is the following")
 @step('the error message is "{message}"')
 def step_impl(context, message=None):
     message = message or context.text
     message = replace_param(message, infer_param_type=False)
-    assert "message" in context.res.json(), "No error message in response"
-    actual = context.res.json()["message"]
+    assert "detail" in context.res.json(), "No error message in response"
+    actual = context.res.json()["detail"]
 
     msg = 'The error message should be "{}", but it is "{}"'
     assert actual == message, msg.format(message, actual)

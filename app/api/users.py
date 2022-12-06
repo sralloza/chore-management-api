@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends, Header
+from fastapi import APIRouter, Body, Depends, Header, HTTPException
 
 from .. import crud
 from ..dependencies.auth import admin_required, user_required_me_path
@@ -64,3 +64,10 @@ async def get_user(user_id: str, x_token: str = Header(None)):
 async def list_users():
     """List all users."""
     return await crud.user.get_multi()
+
+
+@router.delete(
+    "/{user_id}", dependencies=[Depends(admin_required)], operation_id="deleteUser"
+)
+async def delete_user(user_id: str):
+    raise HTTPException(status_code=501, detail="Not implemented")

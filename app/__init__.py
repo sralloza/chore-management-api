@@ -1,19 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
+from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .api import router as router_v1
 from .db.session import database
 from .middlewares.correlator import inject_correlator
-from .middlewares.errors import (
-    http_exception_handler,
-    internal_exception_handler,
-    validation_exception_handler,
-)
+from .middlewares.errors import internal_exception_handler, validation_exception_handler
 
-app = FastAPI()
+app = FastAPI(default_response_class=ORJSONResponse)
 app.exception_handler(500)(internal_exception_handler)
-app.exception_handler(HTTPException)(http_exception_handler)
 app.exception_handler(RequestValidationError)(validation_exception_handler)
 app.middleware("http")(inject_correlator)
 
@@ -22,7 +18,11 @@ app.include_router(router_v1, prefix="/api/v1")
 
 @app.on_event("startup")
 async def startup():
-    Instrumentator().instrument(app).expose(app)
+    Instrumentator(
+        excluded_handlers=["/metrics", "/health"],
+        should_group_status_codes=False,
+        should_group_untemplated=False,
+    ).instrument(app).expose(app)
     await database.connect()
 
 
@@ -33,4 +33,4 @@ async def shutdown():
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "OK"}
