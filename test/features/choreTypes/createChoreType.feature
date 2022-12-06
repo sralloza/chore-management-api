@@ -164,7 +164,6 @@ Feature: Chore Types API - createChoreType
     And the error message is "ChoreType with id=chore-type-id already exists"
 
 
-  @test
   Scenario Outline: Validate error response when missing required fields
     Given I use the admin API key
     When I send a request to the Api with body params

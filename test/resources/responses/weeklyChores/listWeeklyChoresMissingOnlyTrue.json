@@ -2,41 +2,39 @@
   {
     "chores": [
       {
-        "type": "A",
+        "type": "ct-a",
         "done": true,
         "week_id": "2022.02",
-        "assigned_ids": [2],
-        "assigned_usernames": ["tenant2"]
+        "assigned_ids": ["user-2"],
+        "assigned_usernames": ["username-2"]
       },
       {
-        "type": "B",
+        "type": "ct-b",
         "done": false,
         "week_id": "2022.02",
-        "assigned_ids": [1],
-        "assigned_usernames": ["tenant1"]
+        "assigned_ids": ["user-1"],
+        "assigned_usernames": ["username-1"]
       }
     ],
-    "rotation": 1,
     "week_id": "2022.02"
   },
   {
     "chores": [
       {
-        "type": "A",
+        "type": "ct-a",
         "done": false,
         "week_id": "2022.03",
-        "assigned_ids": [1],
-        "assigned_usernames": ["tenant1"]
+        "assigned_ids": ["user-1"],
+        "assigned_usernames": ["username-1"]
       },
       {
-        "type": "B",
+        "type": "ct-b",
         "done": false,
         "week_id": "2022.03",
-        "assigned_ids": [2],
-        "assigned_usernames": ["tenant2"]
+        "assigned_ids": ["user-2"],
+        "assigned_usernames": ["username-2"]
       }
     ],
-    "rotation": 0,
     "week_id": "2022.03"
   }
 ]

@@ -8,7 +8,7 @@ from common.utils import toolium_replace
 ValidationError = namedtuple("ValidationError", ["location", "param", "msg"])
 
 
-def parse_errors(errors):
+def parse_errors(errors) -> list[ValidationError]:
     parsed = []
     for error in errors:
         parsed.append(ValidationError(error["loc"][0], error["loc"][1], error["msg"]))
@@ -27,6 +27,8 @@ def step_impl(context):
         )
 
         print(f"Expected error: {error}")
+        errors_str = "".join([f"\n - {x}" for x in errors])
+        print(f"Actual errors: {errors_str}")
         if len(errors) == 1:
             diff = DeepDiff(error, errors[0])
             assert not diff, f"Unexpected validation error: {diff}"

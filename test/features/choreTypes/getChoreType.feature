@@ -24,7 +24,7 @@ Feature: Chore Types API - getChoreType
     And the error message is "Missing API key"
 
 
-  @authorization @test @wip
+  @authorization
   Scenario: Validate response for user
     Given I create a user
     And there is 1 chore type

@@ -38,6 +38,11 @@ def step_impl(context, ids):
 
     original = map_param("[CONF:examples.simple_chore_types]")
     res_json = context.res.json()
+
+    for field_name in ("closed_at", "created_at", "id"):
+        for item in res_json:
+            del item[field_name]
+
     expected = [original[x - 1] for x in ids]
 
     assert_arrays_equal(expected, res_json)

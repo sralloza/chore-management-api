@@ -28,7 +28,7 @@ def step_impl(context, week_id=None, force=None):
     for week_id in weeks:
         context.execute_steps(
             f"""
-            Given the field "weekId" with string value "{week_id}"
+            Given the field "week_id" with string value "{week_id}"
             And I use the admin API key
             When I send a request to the Api resource "createWeeklyChores"
             Then the response status code is "200"

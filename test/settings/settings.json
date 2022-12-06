@@ -1,45 +1,58 @@
 {
+  "patterns": {
+    "weekIdExtended": "(\\d{4}\\.(0[1-9]|[1-4][0-9]|5[0-4])|next|current|last)$"
+  },
   "examples": {
     "expired_flat_create_code": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjaG9yZS1tYW5hZ2VtZW50LWFwaSIsImV4cCI6MTY2NTA5MDg4NSwiaWF0IjoxNjY1MDkwNTg1fQ.DfnlyVxwliKslcKn6Kykn3SeGyA_FhmcvhIQ2Qpd-ME",
     "simple_chore_types": [
-      { "done": true, "chore_type": "A", "tenant_id": 1, "week_id": "2030.01" },
       {
-        "done": false,
-        "chore_type": "B",
-        "tenant_id": 2,
+        "done": true,
+        "chore_type": "ct-a",
+        "user_id": "user-1",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "C",
-        "tenant_id": 3,
+        "chore_type": "ct-b",
+        "user_id": "user-2",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "D",
-        "tenant_id": 4,
+        "chore_type": "ct-c",
+        "user_id": "user-3",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "A",
-        "tenant_id": 2,
+        "chore_type": "ct-d",
+        "user_id": "user-4",
+        "week_id": "2030.01"
+      },
+      {
+        "done": false,
+        "chore_type": "ct-a",
+        "user_id": "user-2",
         "week_id": "2030.02"
       },
       {
         "done": false,
-        "chore_type": "B",
-        "tenant_id": 3,
+        "chore_type": "ct-b",
+        "user_id": "user-3",
         "week_id": "2030.02"
       },
       {
         "done": false,
-        "chore_type": "C",
-        "tenant_id": 4,
+        "chore_type": "ct-c",
+        "user_id": "user-4",
         "week_id": "2030.02"
       },
-      { "done": false, "chore_type": "D", "tenant_id": 1, "week_id": "2030.02" }
+      {
+        "done": false,
+        "chore_type": "ct-d",
+        "user_id": "user-1",
+        "week_id": "2030.02"
+      }
     ]
   }
 }

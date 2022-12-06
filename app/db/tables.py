@@ -1,5 +1,4 @@
 import time
-from datetime import datetime
 
 import sqlalchemy as sa
 
@@ -24,6 +23,16 @@ chore = sa.Table(
     sa.Column("done", sa.Boolean, nullable=False, default=False),
     sa.Column("user_id", sa.String(40), nullable=False),
     sa.Column("week_id", sa.String(7), nullable=False),
+    sa.Column("created_at", sa.DateTime, nullable=False),
+    sa.Column("closed_at", sa.DateTime, nullable=True),
+)
+
+rotations = sa.Table(
+    "rotations",
+    metadata,
+    sa.Column("week_id", sa.String(7), primary_key=True, nullable=False),
+    sa.Column("rotation", sa.Integer, nullable=False),
+    sa.Column("user_ids_hash", sa.String(64), nullable=False),
 )
 
 settings = sa.Table(
@@ -52,7 +61,7 @@ transfer = sa.Table(
     sa.Column("completed", sa.Boolean, default=False, nullable=False),
     sa.Column("user_id_from", sa.String(40), nullable=False),
     sa.Column("user_id_to", sa.String(40), nullable=False),
-    sa.Column("created_at", sa.DateTime, default=datetime.now),
+    sa.Column("created_at", sa.DateTime),
     sa.Column("closed_at", sa.DateTime, nullable=True),
     sa.Column("week_id", sa.String(7), nullable=False),
 )

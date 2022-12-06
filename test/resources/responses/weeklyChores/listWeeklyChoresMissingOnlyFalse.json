@@ -2,21 +2,58 @@
   {
     "chores": [
       {
-        "type": "A",
+        "assigned_ids": ["user-1"],
+        "assigned_usernames": ["username-1"],
         "done": true,
-        "week_id": "2022.01",
-        "assigned_ids": [1],
-        "assigned_usernames": ["tenant1"]
+        "type": "ct-a",
+        "week_id": "2022.01"
       },
       {
-        "type": "B",
+        "assigned_ids": ["user-2"],
+        "assigned_usernames": ["username-2"],
         "done": true,
-        "week_id": "2022.01",
-        "assigned_ids": [2],
-        "assigned_usernames": ["tenant2"]
+        "type": "ct-b",
+        "week_id": "2022.01"
       }
     ],
-    "rotation": 0,
     "week_id": "2022.01"
+  },
+  {
+    "chores": [
+      {
+        "assigned_ids": ["user-2"],
+        "assigned_usernames": ["username-2"],
+        "done": true,
+        "type": "ct-a",
+        "week_id": "2022.02"
+      },
+      {
+        "assigned_ids": ["user-1"],
+        "assigned_usernames": ["username-1"],
+        "done": false,
+        "type": "ct-b",
+        "week_id": "2022.02"
+      }
+    ],
+    "week_id": "2022.02"
+  },
+  {
+    "chores": [
+      {
+        "assigned_ids": ["user-1"],
+        "assigned_usernames": ["username-1"],
+        "done": false,
+        "type": "ct-a",
+        "week_id": "2022.03"
+      },
+      {
+        "assigned_ids": ["user-2"],
+        "assigned_usernames": ["username-2"],
+        "done": false,
+        "type": "ct-b",
+        "week_id": "2022.03"
+      }
+    ],
+    "week_id": "2022.03"
   }
 ]

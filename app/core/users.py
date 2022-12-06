@@ -1,0 +1,31 @@
+from copy import deepcopy
+from hashlib import sha256
+
+from fastapi import HTTPException
+
+from .. import crud
+from ..core.config import settings
+
+
+async def expand_user_id(user_id: str, x_token: str) -> str:
+    if user_id != "me":
+        return user_id
+
+    if x_token == settings.admin_api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="Can't use the special keyword me with the admin API key",
+        )
+
+    users = await crud.user.get_multi()
+    for user in users:
+        if user.api_key == x_token:
+            return user.id
+
+    raise ValueError("Can't expand user_id (configuration error)")
+
+
+def calculate_hash(user_ids: list[str]) -> str:
+    user_ids = deepcopy(user_ids)
+    user_ids.sort()
+    return sha256("".join(user_ids).encode()).hexdigest()
