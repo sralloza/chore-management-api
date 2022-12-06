@@ -22,7 +22,10 @@ def step_impl(context, user_id):
         """
     )
     users = context.res.json()
-    context.token = next(user["api_key"] for user in users if user["id"] == user_id)
+    try:
+        context.token = next(user["api_key"] for user in users if user["id"] == user_id)
+    except StopIteration:
+        raise ValueError(f"User with id {user_id!r} not found ({users})")
 
 
 @step("I use a random API key")

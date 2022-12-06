@@ -7,7 +7,7 @@ from common.utils import *
 @given("there are {users:d} users")
 def step_impl(context, users):
     for i in range(1, users + 1):
-        raw_data = {"id": f"user-{i}", "username": f"user-{i}"}
+        raw_data = {"id": f"user-{i}", "username": f"username-{i}"}
         context.execute_steps(
             f"""
             Given I use the admin API key

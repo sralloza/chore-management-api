@@ -9,9 +9,9 @@
       "user-3": 0
     },
     "tickets_by_user_name": {
-      "user-1": 0,
-      "user-2": 0,
-      "user-3": 0
+      "username-1": 0,
+      "username-2": 0,
+      "username-3": 0
     }
   },
   {
@@ -24,9 +24,9 @@
       "user-3": 0
     },
     "tickets_by_user_name": {
-      "user-1": 0,
-      "user-2": 0,
-      "user-3": 0
+      "username-1": 0,
+      "username-2": 0,
+      "username-3": 0
     }
   },
   {
@@ -39,9 +39,9 @@
       "user-3": 0
     },
     "tickets_by_user_name": {
-      "user-1": 0,
-      "user-2": 0,
-      "user-3": 0
+      "username-1": 0,
+      "username-2": 0,
+      "username-3": 0
     }
   }
 ]

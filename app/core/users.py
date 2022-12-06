@@ -1,3 +1,6 @@
+from copy import deepcopy
+from hashlib import sha256
+
 from fastapi import HTTPException
 
 from .. import crud
@@ -20,3 +23,9 @@ async def expand_user_id(user_id: str, x_token: str) -> str:
             return user.id
 
     raise ValueError("Can't expand user_id (configuration error)")
+
+
+def calculate_hash(user_ids: list[str]) -> str:
+    user_ids = deepcopy(user_ids)
+    user_ids.sort()
+    return sha256("".join(user_ids).encode()).hexdigest()

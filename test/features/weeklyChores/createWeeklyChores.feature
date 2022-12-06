@@ -311,24 +311,20 @@ Feature: Weekly Chores API - createWeeklyChores
       | last                  | [NOW(%Y.%W) - 7 DAYS] |
 
 
-  @skip
   Scenario: Validate error response when creating weekly chores after users have changed
     Given there are 3 users
     And there are 3 chore types
     And I create the weekly chores for the week "2022.01" using the API
     And I use the admin API key
-    When I send a request to the Api resource "createTenant" with body params
+    When I send a request to the Api resource "createUser" with body params
       | param_name | param_value |
       | username   | John        |
-      | tenant_id  | 111         |
+      | id         | 1111        |
     Then the response status code is "200"
-    Given the field "weekId" with string value "2022.02"
+    Given the field "week_id" with string value "2022.02"
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is the following
-      """
-      users have changed since weekly chore creation. Use force parameter to restart the weekly chores creation.
-      """
+    And the error message is "Users have changed since last weekly chores creation"
 
 
   @skip

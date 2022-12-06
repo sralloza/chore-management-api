@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends, Path, Query
 
 from ..core.constants import WEEK_ID_EXPANDED_REGEX
 from ..core.week_ids import expand_week_id, validate_week_id_age
@@ -7,7 +7,8 @@ from ..core.weekly_chores import (
     get_all_weekly_chores,
     get_weekly_chores_by_week_id,
 )
-from ..dependencies.auth import admin_required
+from ..dependencies.auth import admin_required, user_required
+from ..models.weekly_chores import WeeklyChores
 
 router = APIRouter()
 
@@ -16,6 +17,7 @@ router = APIRouter()
     "/{week_id}",
     operation_id="createWeeklyChores",
     dependencies=[Depends(admin_required)],
+    response_model=WeeklyChores,
 )
 async def create_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_REGEX)):
     week_id = expand_week_id(week_id)
@@ -24,6 +26,18 @@ async def create_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_R
     return await get_weekly_chores_by_week_id(week_id)
 
 
-@router.get("", operation_id="listWeeklyChores")
-async def list_weekly_chores():
-    return await get_all_weekly_chores()
+@router.get(
+    "/{week_id}",
+    operation_id="getWeeklyChores",
+    dependencies=[Depends(user_required)],
+    response_model=WeeklyChores,
+)
+async def get_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_REGEX)):
+    week_id = expand_week_id(week_id)
+    await validate_week_id_age(week_id)
+    return await get_weekly_chores_by_week_id(week_id)
+
+
+@router.get("", operation_id="listWeeklyChores", dependencies=[Depends(user_required)])
+async def list_weekly_chores(missing_only: bool = Query(False)):
+    return await get_all_weekly_chores(missing_only=missing_only)

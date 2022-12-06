@@ -1,9 +1,9 @@
-from hashlib import sha256
 from itertools import groupby
 
 from fastapi import HTTPException
 
 from .. import crud
+from ..core.users import calculate_hash
 from ..core.utils import expand_array, rotate_array
 from ..models.chore import ChoreCreate
 from ..models.chore_type import ChoreType
@@ -32,6 +32,11 @@ async def create_next_weekly_chores(week_id: str):
     rotation = await crud.rotation.get_last_rotation()
     if rotation is None:
         return await create_first_weekly_chores(chore_types, week_id)
+
+    users_hash = calculate_hash([user.id for user in users])
+    if rotation.user_ids_hash != users_hash:
+        raise HTTPException(400, "Users have changed since last weekly chores creation")
+
     return await create_weekly_chores(chore_types, week_id, rotation.rotation)
 
 
@@ -64,8 +69,7 @@ async def create_weekly_chores(
     for chore in chores:
         await crud.chores.create(obj_in=chore)
 
-    user_ids.sort()
-    user_ids_hash = sha256("".join(user_ids).encode()).hexdigest()
+    user_ids_hash = calculate_hash(user_ids)
     await crud.rotation.create(
         obj_in=Rotation(
             rotation=new_rotation, week_id=week_id, user_ids_hash=user_ids_hash
@@ -92,14 +96,13 @@ async def create_first_weekly_chores(chore_types: list[ChoreType], week_id: str)
     for chore in chores:
         await crud.chores.create(obj_in=chore)
 
-    user_ids.sort()
-    user_ids_hash = sha256("".join(user_ids).encode()).hexdigest()
+    user_ids_hash = calculate_hash(user_ids)
     await crud.rotation.create(
         obj_in=Rotation(rotation=0, week_id=week_id, user_ids_hash=user_ids_hash)
     )
 
 
-async def get_all_weekly_chores() -> list[WeeklyChores]:
+async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
     chores = await crud.chores.get_multi()
     users = await crud.user.get_multi()
 
@@ -121,13 +124,20 @@ async def get_all_weekly_chores() -> list[WeeklyChores]:
                 week_id=week_id,
             )
             weekly_chores.append(weekly_chore)
-        result.append(WeeklyChores(chores=weekly_chores, week_id=week_id))
+        if missing_only is False:
+            result.append(WeeklyChores(chores=weekly_chores, week_id=week_id))
+        else:
+            if all([chore.done for chore in weekly_chores]) is False:
+                result.append(WeeklyChores(chores=weekly_chores, week_id=week_id))
     return result
 
 
 async def get_weekly_chores_by_week_id(week_id: str) -> WeeklyChores:
     chores = await crud.chores.get_multi(week_id=week_id)
     users = await crud.user.get_multi()
+
+    if not chores:
+        raise HTTPException(404, f"No weekly chores found for week {week_id}")
 
     def get_user_name(user_id: str):
         return next(user.username for user in users if user.id == user_id)
