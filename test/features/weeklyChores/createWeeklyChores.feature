@@ -9,6 +9,7 @@ Feature: Weekly Chores API - createWeeklyChores
   Scenario: Validate response for guest
     When I send a request to the Api
     Then the response status code is "401"
+    And the response status code is defined
     And the error message is "Missing API key"
 
 
@@ -17,6 +18,7 @@ Feature: Weekly Chores API - createWeeklyChores
     Given I create a user and I use the user API key
     When I send a request to the Api
     Then the response status code is "403"
+    And the response status code is defined
     And the error message is "Admin access required"
 
 
@@ -28,6 +30,7 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
+    And the response status code is defined
 
 
   Scenario: Create weekly chores when same number of users and chore types (postive rotation)
@@ -248,6 +251,7 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
+    And the response status code is defined
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
@@ -261,6 +265,19 @@ Feature: Weekly Chores API - createWeeklyChores
       | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
+  Scenario: Validate error response when creating weekly chores for a system deactivated week
+    Given there is 1 user
+    And there is 1 chore type
+    And I use the admin API key
+    And the field "week_id" with string value "2022.01"
+    When I send a request to the Api resource "deactivateWeekSystem"
+    Then the response status code is "200"
+    When I send a request to the Api
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "Week 2022.01 is deactivated"
+
+
   Scenario: Validate error response when creating duplicate weekly chores
     Given there is 1 user
     And there is 1 chore type
@@ -270,6 +287,7 @@ Feature: Weekly Chores API - createWeeklyChores
     Then the response status code is "200"
     When I send a request to the Api
     Then the response status code is "409"
+    And the response status code is defined
     And the error message contains "Weekly chores for week .+ already exist"
 
 
@@ -278,6 +296,7 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "422"
+    And the response status code is defined
     And the response contains the following validation errors
       | location | param   | msg                                                          |
       | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
@@ -299,6 +318,7 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
+    And the response status code is defined
     And the error message is "Chore types exist after week <parsed_week_id>"
 
     Examples: week_id = <week_id> | parsed_week_id = <parsed_week_id>
@@ -389,6 +409,7 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
+    And the response status code is defined
     And the error message is "Can't create weekly chores, no users registered"
 
 
@@ -398,4 +419,5 @@ Feature: Weekly Chores API - createWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
+    And the response status code is defined
     And the error message is "Can't create weekly chores, no chore types registered"

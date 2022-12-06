@@ -22,7 +22,7 @@ async def startup():
         excluded_handlers=["/metrics", "/health"],
         should_group_status_codes=False,
         should_group_untemplated=False,
-    ).instrument(app).expose(app)
+    ).instrument(app).expose(app, include_in_schema=False)
     await database.connect()
 
 
@@ -31,6 +31,6 @@ async def shutdown():
     await database.disconnect()
 
 
-@app.get("/health")
+@app.get("/health", include_in_schema=False)
 def health():
     return {"status": "OK"}

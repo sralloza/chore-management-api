@@ -8,4 +8,4 @@ class Message(BaseModel):
 
 
 class WeekId(BaseModel):
-    week_id: str = Field(regex=WEEK_ID_REGEX)
+    week_id: str = Field(regex=WEEK_ID_REGEX, example="2022.01")

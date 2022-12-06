@@ -22,7 +22,6 @@ Feature: Prometheus metrics
     Then the response status code is "<status_code>"
     And the metric counter "http_requests" added has been incremented by 1
 
-    @wip
     Examples: resource = <resource> | status_code = <status_code>
       | resource         | status_code |
       | notFound         | 404         |

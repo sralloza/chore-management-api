@@ -7,6 +7,7 @@ import mysql.connector
 DATABASES = (
     "chore_type",
     "chore",
+    "deactivated_weeks",
     "rotations",
     "settings",
     "ticket",

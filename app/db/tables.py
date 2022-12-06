@@ -27,6 +27,14 @@ chore = sa.Table(
     sa.Column("closed_at", sa.DateTime, nullable=True),
 )
 
+deactivated_weeks = sa.Table(
+    "deactivated_weeks",
+    metadata,
+    sa.Column("id", sa.String(48), primary_key=True, nullable=False),
+    sa.Column("week_id", sa.String(7), nullable=False),
+    sa.Column("user_id", sa.String(40), nullable=True),
+)
+
 rotations = sa.Table(
     "rotations",
     metadata,
