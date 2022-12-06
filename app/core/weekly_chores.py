@@ -13,6 +13,13 @@ from ..models.weekly_chores import WeeklyChore, WeeklyChores
 
 
 async def create_next_weekly_chores(week_id: str):
+    deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
+    if deactivated_weeks:
+        raise HTTPException(
+            400,
+            f"Week {week_id} is deactivated",
+        )
+
     users = await crud.user.get_multi()
     chore_types = await crud.chore_types.get_multi()
     chores = await crud.chores.get_multi(week_id=week_id)

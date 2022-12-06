@@ -20,7 +20,7 @@ router = APIRouter()
         },
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "Admin access required"},
-        409: {"model": Message, "description": "ChoreType already exists required"},
+        409: {"model": Message, "description": "ChoreType already exists"},
     },
 )
 async def create_chore_type(chore_type: ChoreType = Body(...)):

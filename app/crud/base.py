@@ -15,6 +15,8 @@ SELECT_QUERY = "SELECT * FROM {table_name} WHERE {id} = :id"
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
+    template_409 = "{model_name} with {primary_key}={id} already exists"
+
     def __init__(self, model: Type[ModelType], table: Table, primary_key="id"):
         self.model = model
         self.table = table
@@ -47,9 +49,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         if self.primary_key in obj_in_data and await self.get(
             id=obj_in_data[self.primary_key]
         ):
-            detail = (
-                f"{self.model.__name__} with {self.primary_key}="
-                f"{obj_in_data[self.primary_key]} already exists"
+            detail = self.template_409.format(
+                model_name=self.model.__name__,
+                primary_key=self.primary_key,
+                id=obj_in_data[self.primary_key],
             )
             raise HTTPException(409, detail)
 

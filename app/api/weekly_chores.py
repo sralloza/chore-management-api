@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Query
 
-from ..core.constants import WEEK_ID_EXPANDED_REGEX
+from ..core.constants import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..core.weekly_chores import (
     create_next_weekly_chores,
@@ -8,6 +8,7 @@ from ..core.weekly_chores import (
     get_weekly_chores_by_week_id,
 )
 from ..dependencies.auth import admin_required, user_required
+from ..models.extras import Message
 from ..models.weekly_chores import WeeklyChores
 
 router = APIRouter()
@@ -18,8 +19,14 @@ router = APIRouter()
     operation_id="createWeeklyChores",
     dependencies=[Depends(admin_required)],
     response_model=WeeklyChores,
+    responses={
+        400: {"model": Message, "description": "Bad request"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+        409: {"model": Message, "description": "Weekly chores already exist"},
+    },
 )
-async def create_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_REGEX)):
+async def create_weekly_chores(week_id: str = WEEK_ID_PATH):
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     await create_next_weekly_chores(week_id)
@@ -32,7 +39,7 @@ async def create_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_R
     dependencies=[Depends(user_required)],
     response_model=WeeklyChores,
 )
-async def get_weekly_chores(week_id: str = Path(..., regex=WEEK_ID_EXPANDED_REGEX)):
+async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     return await get_weekly_chores_by_week_id(week_id)

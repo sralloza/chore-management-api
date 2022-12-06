@@ -16,13 +16,16 @@ def expand_week_id(week_id: str) -> str:
     return week_id
 
 
-async def validate_week_id_age(week_id: str):
+async def validate_week_id_age(week_id: str, *, equals=False):
     last_rotation = await crud.rotation.get_last_rotation()
     if last_rotation is None:
         return
 
     if week_id < last_rotation.week_id:
         raise HTTPException(400, f"Chore types exist after week {week_id}")
+
+    if equals is True and week_id == last_rotation.week_id:
+        raise HTTPException(400, f"Chore types exist for week {week_id}")
 
 
 def get_week_id(datetime: datetime) -> WeekId:
