@@ -25,7 +25,7 @@ RUN poetry install --only main
 
 COPY ./delivery /utils/
 
-COPY API.md ./
+COPY API.md ./g
 
 RUN chmod +x /utils/*.sh
 
