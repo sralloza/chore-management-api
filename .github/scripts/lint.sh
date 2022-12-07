@@ -15,7 +15,7 @@ poetry run ruff --ignore F403,F405 .
 # poetry run pytest -m 'not responses'
 
 cd ..
-npm run format
+npx prettier --write '{app,test,.}/**/*.{js,md,json,ts}'
 
 dirtyFiles="$(git status -s)"
 if [[ "$dirtyFiles" != "" ]]; then
