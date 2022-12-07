@@ -11,6 +11,5 @@ WEEK_ID_PATH = Path(
 )
 
 USER_ID_PATH = Path(
-    ...,
-    description="User identifier. Special keyword `me` is also allowed."
+    ..., description="User identifier. Special keyword `me` is also allowed."
 )

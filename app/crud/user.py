@@ -1,11 +1,11 @@
 import sqlalchemy as sa
 
 from .. import crud
+from ..core.users import expand_user_id
 from ..db import tables
 from ..db.session import database
 from ..models.user import User, UserCreate, UserCreateInner
 from .base import CRUDBase
-from ..core.users import expand_user_id
 
 UserUpdate = UserCreate
 

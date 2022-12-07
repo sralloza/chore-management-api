@@ -88,7 +88,6 @@ async def create_weekly_chores(
         else:
             new_rotation = 0
 
-
     expanded_user_ids = rotate_array(expanded_user_ids, new_rotation)
 
     chores: list[ChoreCreate] = []

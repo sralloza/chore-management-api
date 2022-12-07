@@ -26,7 +26,9 @@ async def user_required(*, x_token: str = Header(None)):
     raise HTTPException(status_code=403, detail="User access required")
 
 
-async def user_required_me_path(*, x_token: str = Header(None), user_id: str = USER_ID_PATH):
+async def user_required_me_path(
+    *, x_token: str = Header(None), user_id: str = USER_ID_PATH
+):
     if x_token is None:
         raise HTTPException(status_code=401, detail="Missing API key")
     if x_token == settings.admin_api_key:
