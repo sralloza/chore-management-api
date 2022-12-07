@@ -20,15 +20,18 @@ def step_impl(context, users):
         )
 
 
-@given('the user "{user_id}" skips the week "{week_id}"')
+@given(
+    'the user with id "{user_id}" deactivates its'
+    ' chores assigments for the week "{week_id}"'
+)
 def step_impl(context, user_id, week_id):
     context.execute_steps(
         f"""
-        Given the field "user_id" with value "{user_id}"
+        Given the field "user_id" with value "me"
         And I use the token of the user with id "{user_id}"
         And the field "week_id" with string value "{week_id}"
-        When I send a request to the Api resource "skipWeek"
-        Then the response status code is "204"
+        When I send a request to the Api resource "deactivateWeekUser"
+        Then the response status code is "200"
         And I clear the token
         """
     )

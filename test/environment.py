@@ -5,6 +5,7 @@ from uuid import uuid4
 
 import allure
 import requests
+from icecream import install
 from toolium.behave.environment import after_all as tlm_after_all
 from toolium.behave.environment import after_feature as tlm_after_feature
 from toolium.behave.environment import after_scenario as tlm_after_scenario
@@ -16,6 +17,7 @@ from toolium.utils import dataset
 from common.db import reset_databases
 from common.metrics import get_metrics
 
+install()
 RESPONSES_FOLDER = Path(__file__).parent / "output" / "responses"
 
 

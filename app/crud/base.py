@@ -26,6 +26,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             table_name=self.table.name, id=primary_key
         )
 
+    def get_409_detail(self, id: IDType) -> str:
+        return self.template_409.format(
+            model_name=self.model.__name__, primary_key=self.primary_key, id=id
+        )
+
     def throw_404_exception(self, id: IDType):
         detail = f"{self.model.__name__} with id={id} does not exist"
         raise HTTPException(404, detail)
@@ -49,11 +54,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         if self.primary_key in obj_in_data and await self.get(
             id=obj_in_data[self.primary_key]
         ):
-            detail = self.template_409.format(
-                model_name=self.model.__name__,
-                primary_key=self.primary_key,
-                id=obj_in_data[self.primary_key],
-            )
+            detail = self.get_409_detail(obj_in_data[self.primary_key])
             raise HTTPException(409, detail)
 
         db_id = await database.execute(self.table.insert(), obj_in_data)

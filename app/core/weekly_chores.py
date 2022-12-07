@@ -38,7 +38,7 @@ async def create_next_weekly_chores(week_id: str):
 
     rotation = await crud.rotation.get_last_rotation()
     if rotation is None:
-        return await create_first_weekly_chores(chore_types, week_id)
+        return await create_weekly_chores(chore_types, week_id, None)
 
     users_hash = calculate_hash([user.id for user in users])
     if rotation.user_ids_hash != users_hash:
@@ -47,31 +47,66 @@ async def create_next_weekly_chores(week_id: str):
     return await create_weekly_chores(chore_types, week_id, rotation.rotation)
 
 
+def get_rotation_sign(settings):
+    return -1 if settings.rotation_sign == RotationSign.negative else 1
+
+
 async def create_weekly_chores(
-    chore_types: list[ChoreType], week_id: str, last_rotation: int
+    chore_types: list[ChoreType],
+    week_id: str,
+    last_rotation: int | None,
 ):
     settings = await crud.settings.get_or_404()
+    deactivated_weeks = await crud.deactivated_weeks.get_multi(
+        week_id=week_id, user_id_assigned=True
+    )
     user_ids = crud.settings.map_to_io(settings).assignment_order
+
+    user_ids_skipping = [x.user_id for x in deactivated_weeks]
+    user_ids_not_skipping = [x for x in user_ids if x not in user_ids_skipping]
+
     max_len = len(user_ids) * len(chore_types)
     expanded_user_ids = expand_array(user_ids, max_len)
 
-    new_rotation = abs(last_rotation) + 1
-    if new_rotation >= max_len:
-        new_rotation -= max_len
+    increment_rotation = True
+    if len(deactivated_weeks) == len(chore_types) - 1:
+        skipping = set([x.user_id for x in deactivated_weeks])
+        user_alone = list(set(user_ids) - skipping)[0]
+        expanded_user_ids = [user_alone] * len(expanded_user_ids)
+        increment_rotation = False
 
-    if settings.rotation_sign == RotationSign.positive:
-        new_rotation = -new_rotation
+    if last_rotation is not None:
+        new_rotation = last_rotation
+        if increment_rotation:
+            new_rotation += get_rotation_sign(settings)
+
+        if new_rotation >= max_len:
+            new_rotation -= max_len
+    else:
+        if not increment_rotation:
+            new_rotation = -1 * get_rotation_sign(settings)
+        else:
+            new_rotation = 0
 
     expanded_user_ids = rotate_array(expanded_user_ids, new_rotation)
 
     chores: list[ChoreCreate] = []
     for i in range(len(chore_types)):
-        chore = ChoreCreate(
-            user_id=expanded_user_ids[i],
-            chore_type=chore_types[i].id,
-            week_id=week_id,
-        )
-        chores.append(chore)
+        if expanded_user_ids[i] not in user_ids_skipping:
+            chore = ChoreCreate(
+                user_id=expanded_user_ids[i],
+                chore_type=chore_types[i].id,
+                week_id=week_id,
+            )
+            chores.append(chore)
+        else:
+            for user_id in user_ids_not_skipping:
+                chore = ChoreCreate(
+                    user_id=user_id,
+                    chore_type=chore_types[i].id,
+                    week_id=week_id,
+                )
+                chores.append(chore)
 
     for chore in chores:
         await crud.chores.create(obj_in=chore)
@@ -81,31 +116,6 @@ async def create_weekly_chores(
         obj_in=Rotation(
             rotation=new_rotation, week_id=week_id, user_ids_hash=user_ids_hash
         )
-    )
-
-
-async def create_first_weekly_chores(chore_types: list[ChoreType], week_id: str):
-    settings = await crud.settings.get_or_404()
-    user_ids = crud.settings.map_to_io(settings).assignment_order
-    max_len = len(user_ids) * len(chore_types)
-
-    expanded_user_ids = expand_array(user_ids, max_len)
-
-    chores: list[ChoreCreate] = []
-    for i in range(len(chore_types)):
-        chore = ChoreCreate(
-            user_id=expanded_user_ids[i],
-            chore_type=chore_types[i].id,
-            week_id=week_id,
-        )
-        chores.append(chore)
-
-    for chore in chores:
-        await crud.chores.create(obj_in=chore)
-
-    user_ids_hash = calculate_hash(user_ids)
-    await crud.rotation.create(
-        obj_in=Rotation(rotation=0, week_id=week_id, user_ids_hash=user_ids_hash)
     )
 
 

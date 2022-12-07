@@ -50,15 +50,15 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
-      | week_id | ct-a   | ct-b   | ct-c   | ct-d   |
-      | 2022.01 | user-1 | user-2 | user-3 | user-4 |
-      | 2022.02 | user-2 | user-3 | user-4 | user-1 |
-      | 2022.03 | user-3 | user-4 | user-1 | user-2 |
-      | 2022.04 | user-4 | user-1 | user-2 | user-3 |
-      | 2022.15 | user-1 | user-2 | user-3 | user-4 |
-      | 2022.16 | user-2 | user-3 | user-4 | user-1 |
-      | 2022.17 | user-3 | user-4 | user-1 | user-2 |
-      | 2022.18 | user-4 | user-1 | user-2 | user-3 |
+      | week_id | A | B | C | D |
+      | 2022.01 | 1 | 2 | 3 | 4 |
+      | 2022.02 | 2 | 3 | 4 | 1 |
+      | 2022.03 | 3 | 4 | 1 | 2 |
+      | 2022.04 | 4 | 1 | 2 | 3 |
+      | 2022.15 | 1 | 2 | 3 | 4 |
+      | 2022.16 | 2 | 3 | 4 | 1 |
+      | 2022.17 | 3 | 4 | 1 | 2 |
+      | 2022.18 | 4 | 1 | 2 | 3 |
 
 
   Scenario: Create weekly chores when same number of users and chore types (negative rotation)
@@ -83,15 +83,15 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
-      | week_id | ct-a   | ct-b   | ct-c   | ct-d   |
-      | 2022.01 | user-1 | user-2 | user-3 | user-4 |
-      | 2022.02 | user-4 | user-1 | user-2 | user-3 |
-      | 2022.03 | user-3 | user-4 | user-1 | user-2 |
-      | 2022.04 | user-2 | user-3 | user-4 | user-1 |
-      | 2022.15 | user-1 | user-2 | user-3 | user-4 |
-      | 2022.16 | user-4 | user-1 | user-2 | user-3 |
-      | 2022.17 | user-3 | user-4 | user-1 | user-2 |
-      | 2022.18 | user-2 | user-3 | user-4 | user-1 |
+      | week_id | A | B | C | D |
+      | 2022.01 | 1 | 2 | 3 | 4 |
+      | 2022.02 | 4 | 1 | 2 | 3 |
+      | 2022.03 | 3 | 4 | 1 | 2 |
+      | 2022.04 | 2 | 3 | 4 | 1 |
+      | 2022.15 | 1 | 2 | 3 | 4 |
+      | 2022.16 | 4 | 1 | 2 | 3 |
+      | 2022.17 | 3 | 4 | 1 | 2 |
+      | 2022.18 | 2 | 3 | 4 | 1 |
 
 
   Scenario: Create weekly chores when there are more users than chore types
@@ -111,15 +111,15 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
-      | week_id | ct-a   | ct-b   | ct-c   |
-      | 2022.01 | user-1 | user-2 | user-3 |
-      | 2022.02 | user-2 | user-3 | user-4 |
-      | 2022.03 | user-3 | user-4 | user-5 |
-      | 2022.04 | user-4 | user-5 | user-1 |
-      | 2022.15 | user-5 | user-1 | user-2 |
-      | 2022.16 | user-1 | user-2 | user-3 |
-      | 2022.17 | user-2 | user-3 | user-4 |
-      | 2022.18 | user-3 | user-4 | user-5 |
+      | week_id | A | B | C |
+      | 2022.01 | 1 | 2 | 3 |
+      | 2022.02 | 2 | 3 | 4 |
+      | 2022.03 | 3 | 4 | 5 |
+      | 2022.04 | 4 | 5 | 1 |
+      | 2022.15 | 5 | 1 | 2 |
+      | 2022.16 | 1 | 2 | 3 |
+      | 2022.17 | 2 | 3 | 4 |
+      | 2022.18 | 3 | 4 | 5 |
 
 
   Scenario: Create weekly chores when there are more chore types than users
@@ -139,22 +139,21 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
-      | week_id | ct-a   | ct-b   | ct-c   | ct-d   | ct-e   |
-      | 2022.01 | user-1 | user-2 | user-3 | user-1 | user-2 |
-      | 2022.02 | user-2 | user-3 | user-1 | user-2 | user-3 |
-      | 2022.03 | user-3 | user-1 | user-2 | user-3 | user-1 |
-      | 2022.04 | user-1 | user-2 | user-3 | user-1 | user-2 |
-      | 2022.15 | user-2 | user-3 | user-1 | user-2 | user-3 |
-      | 2022.16 | user-3 | user-1 | user-2 | user-3 | user-1 |
-      | 2022.17 | user-1 | user-2 | user-3 | user-1 | user-2 |
-      | 2022.18 | user-2 | user-3 | user-1 | user-2 | user-3 |
+      | week_id | A | B | C | D | E |
+      | 2022.01 | 1 | 2 | 3 | 1 | 2 |
+      | 2022.02 | 2 | 3 | 1 | 2 | 3 |
+      | 2022.03 | 3 | 1 | 2 | 3 | 1 |
+      | 2022.04 | 1 | 2 | 3 | 1 | 2 |
+      | 2022.15 | 2 | 3 | 1 | 2 | 3 |
+      | 2022.16 | 3 | 1 | 2 | 3 | 1 |
+      | 2022.17 | 1 | 2 | 3 | 1 | 2 |
+      | 2022.18 | 2 | 3 | 1 | 2 | 3 |
 
 
-  @skip
-  Scenario: Create weekly chores when a tenant skips a week
+  Scenario: Create weekly chores when a user deactivates its chores assignment in a specific week
     Given there are 4 users
     And there are 4 chore types
-    And the tenant "2" skips the week "2025.15"
+    And the user with id "user-2" deactivates its chores assigments for the week "2025.15"
     And I create the weekly chores for the following weeks using the API
       | week_id |
       | 2025.01 |
@@ -180,13 +179,12 @@ Feature: Weekly Chores API - createWeeklyChores
       | 2025.18 | 4 | 1     | 2 | 3 |
 
 
-  @skip
-  Scenario: Create weekly chores when two users skips a couple of weeks
+  Scenario: Create weekly chores when two users deactivates their chore assigments
     Given there are 4 users
     And there are 4 chore types
-    And the tenant "2" skips the week "2025.15"
-    And the tenant "3" skips the week "2025.15"
-    And the tenant "3" skips the week "2025.16"
+    And the user with id "user-2" deactivates its chores assigments for the week "2025.15"
+    And the user with id "user-3" deactivates its chores assigments for the week "2025.15"
+    And the user with id "user-3" deactivates its chores assigments for the week "2025.16"
     And I create the weekly chores for the following weeks using the API
       | week_id |
       | 2025.01 |
@@ -212,13 +210,12 @@ Feature: Weekly Chores API - createWeeklyChores
       | 2025.18 | 4 | 1     | 2   | 3 |
 
 
-  @skip
-  Scenario: Create weekly chores when all users but one skip a week
+  Scenario: Create weekly chores when all users deactivates their chore assigments for a specific week
     Given there are 4 users
     And there are 4 chore types
-    And the tenant "1" skips the week "2025.15"
-    And the tenant "2" skips the week "2025.15"
-    And the tenant "4" skips the week "2025.15"
+    And the user with id "user-1" deactivates its chores assigments for the week "2025.15"
+    And the user with id "user-2" deactivates its chores assigments for the week "2025.15"
+    And the user with id "user-4" deactivates its chores assigments for the week "2025.15"
     And I create the weekly chores for the following weeks using the API
       | week_id |
       | 2025.01 |
@@ -255,8 +252,8 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "listWeeklyChores"
     Then the response status code is "200"
     And the response contains the following weekly chores
-      | week_id        | ct-a   | ct-b   | ct-c   | ct-d   |
-      | <real_week_id> | user-1 | user-2 | user-3 | user-4 |
+      | week_id        | A | B | C | D |
+      | <real_week_id> | 1 | 2 | 3 | 4 |
 
     Examples:
       | week_id | real_week_id          |

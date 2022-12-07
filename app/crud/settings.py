@@ -43,13 +43,17 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
         await database.execute(query)
 
     async def update(self, *, obj_in: SettingsUpdate) -> Settings:
+        db_obj = await self.get()
+        if not db_obj:
+            await self.reset_assignment_order()
         return await super().update(id=REAL_ID, obj_in=obj_in)
 
     @staticmethod
     def map_to_io(settings: Settings) -> SettingsIO:
+        order = [x for x in settings.assignment_order.split(",") if x]
         return SettingsIO(
             rotation_sign=settings.rotation_sign,
-            assignment_order=settings.assignment_order.split(","),
+            assignment_order=order,
         )
 
 

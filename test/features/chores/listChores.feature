@@ -2,7 +2,7 @@
 @listChores
 Feature: Chores API - listChores
 
-  As an admin or tenant
+  As an admin or user
   I want to list the ungrouped chores
 
 

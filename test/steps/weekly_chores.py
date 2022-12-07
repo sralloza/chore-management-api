@@ -41,10 +41,18 @@ def step_impl(context, week_id=None, force=None):
 def step_impl(context):
     context.execute_steps("Given the response body is a valid json")
     actual = parse_weekly_chores_res_table_str(context.res)
-    expected = parse_table(context.table, attrs=["week_id"], infer_param_type=False)
+    expected_raw = parse_table(context.table, attrs=["week_id"], infer_param_type=False)
 
-    for line in expected:
-        line["week_id"] = str(line["week_id"])
+    expected = []
+    for line_raw in expected_raw:
+        line = {}
+        for key, value in line_raw.items():
+            if key != "week_id":
+                key = "ct-" + key.lower()
+                value = ",".join([f"user-{x}" for x in value.split(",")])
+                line[key] = value
+        line["week_id"] = str(line_raw["week_id"])
+        expected.append(line)
     assert_arrays_equal(expected, actual)
 
 
