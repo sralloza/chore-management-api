@@ -30,7 +30,6 @@ Feature: System API - deactivateWeekSystem
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
-    And the response body is validated against the json-schema
 
 
   Scenario: The admin deactivates the weekly chores generation on a specific week
