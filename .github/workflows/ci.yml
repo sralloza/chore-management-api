@@ -47,6 +47,9 @@ jobs:
       - name: Run tests e2e
         run: ./run-tests.sh
 
+      - name: Adding summary
+        run: echo "Defined $(ls -l test/reports/*.json | wc -l) scenarios" >> $GITHUB_STEP_SUMMARY
+
       - name: Compress test results
         if: |
           !contains(fromJson('["cancelled", "skipped"]'), steps.lint.conclusion)
