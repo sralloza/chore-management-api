@@ -45,6 +45,19 @@ async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
     return await get_weekly_chores_by_week_id(week_id)
 
 
-@router.get("", operation_id="listWeeklyChores", dependencies=[Depends(user_required)])
-async def list_weekly_chores(missing_only: bool = Query(False)):
+@router.get(
+    "",
+    dependencies=[Depends(user_required)],
+    operation_id="listWeeklyChores",
+    response_model=list[WeeklyChores],
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+    },
+)
+async def list_weekly_chores(
+    missing_only: bool = Query(
+        False, description="Only show weekly chores that have missing chores"
+    )
+):
     return await get_all_weekly_chores(missing_only=missing_only)
