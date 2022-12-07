@@ -18,6 +18,7 @@ PyMySQL = "^1.0.2"
 databases = {extras = ["aiomysql"], version = "^0.6.2"}
 orjson = "^3.8.3"
 APScheduler = "^3.9.1"
+toml = "^0.10.2"
 
 [tool.poetry.dev-dependencies]
 isort = "^5.10.1"

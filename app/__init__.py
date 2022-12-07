@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
+from toml import loads
 
 from .api import router as router_v1
 from .core.config import settings
@@ -10,6 +13,8 @@ from .core.scheduler import scheduler
 from .db.session import database
 from .middlewares.correlator import inject_correlator
 from .middlewares.errors import internal_exception_handler, validation_exception_handler
+
+version = loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
 
 app = FastAPI(default_response_class=ORJSONResponse)
 app.exception_handler(500)(internal_exception_handler)
@@ -45,4 +50,4 @@ async def shutdown():
 
 @app.get("/health", include_in_schema=False)
 def health():
-    return {"status": "OK"}
+    return {"status": "OK", "version": version}
