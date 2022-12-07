@@ -9,3 +9,8 @@ WEEK_ID_PATH = Path(
     description="""Week identifier. Special keywords `next`,
     `current` and `last` are also allowed.""",
 )
+
+USER_ID_PATH = Path(
+    ...,
+    description="User identifier. Special keyword `me` is also allowed."
+)

@@ -5,6 +5,7 @@ from ..db import tables
 from ..db.session import database
 from ..models.user import User, UserCreate, UserCreateInner
 from .base import CRUDBase
+from ..core.users import expand_user_id
 
 UserUpdate = UserCreate
 
@@ -18,14 +19,8 @@ class CRUDUser(CRUDBase[User, UserCreateInner, UserUpdate, str]):
         return result
 
     async def get_or_404_me_safe(self, *, api_key: str, id: str) -> User:
-        if id == "me":
-            query = self.table.select().where(self.table.c.api_key == api_key)
-            db_user = await database.fetch_one(query)
-            if not db_user:
-                self.throw_404_exception(id)
-            return self.model(**db_user)
-        else:
-            return await self.get_or_404(id=id)
+        id = await expand_user_id(id, api_key)
+        return await super().get_or_404(id=id)
 
     async def get_user_ids(self) -> list[str]:
         query = sa.select([self.table.c.id]).order_by(self.table.c.created_at)
