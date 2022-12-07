@@ -42,6 +42,7 @@ Configuration is done by setting environment variables.
 
 #### Optional
 
+- **_ENABLE_DB_CLEANUP_**: when set to `true`, the scheduler will be enabled and will run periodically some cleanup database tasks. Defaults to `true`.
 - **_REDIS_HOST_**: redis host. Defaults to `localhost`.
 - **_REDIS_PORT_**: redis port. Defaults to `6379`.
 - **_DATABASE_HOST_**: database host. Defaults to `localhost`.
@@ -54,6 +55,6 @@ Configuration is done by setting environment variables.
 
 These variables are only used when running the docker image. The docker entrypoint script will manage them.
 
-- **_CREATE_DATABASE_**: if set to true, it will try to create the database each time the container starts.
+- **_CREATE_DATABASE_**: if set to `true`, it will try to create the database each time the container starts.
 - **_RUN_MIGRATIONS_**: run migrations on start. Defaults to `true`, meaning by default migrations are executed on start.
 - **_WAIT_FOR_IT_ADDRESS_**: address to wait for. For example, to wait for a database to be ready, set it to `database:3306`. It currently supports only one address, but in the future it will support multiple addresses separated by commas.
