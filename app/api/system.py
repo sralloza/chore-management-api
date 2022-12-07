@@ -57,3 +57,23 @@ async def deactivate_week(week_id: str = WEEK_ID_PATH):
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=None)
     await crud.deactivated_weeks.create(obj_in=obj_in)
     return WeekId(week_id=week_id)
+
+
+@router.post(
+    "/reactivate/{week_id}",
+    dependencies=[Depends(admin_required)],
+    operation_id="reactivateWeekSystem",
+    response_model=WeekId,
+    responses={
+        400: {"model": Message, "description": "Week is not deactivated"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+    },
+    summary="Reactivate chore creation",
+)
+async def reactivate_week(week_id: str = WEEK_ID_PATH):
+    """Reactivates the chore creation on a specific week for all users."""
+    week_id = expand_week_id(week_id)
+    obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=None)
+    await crud.deactivated_weeks.delete(id=obj_in.compute_id())
+    return WeekId(week_id=week_id)

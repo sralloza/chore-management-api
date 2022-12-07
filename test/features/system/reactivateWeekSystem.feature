@@ -1,9 +1,10 @@
 @api.system
-@deactivateWeekSystem
-Feature: System API - deactivateWeekSystem
+@reactivateWeekSystem
+Feature: System API - reactivateWeekSystem
 
   As an admin
-  I want to deactivate the weekly chores generation on a specific week
+  After I deactivate the weekly chores generation on a specific week
+  I want to reactivate the weekly chores generation on a specific week
 
 
   @authorization
@@ -25,7 +26,8 @@ Feature: System API - deactivateWeekSystem
 
   @authorization
   Scenario: Validate response for admin
-    Given I use the admin API key
+    Given I deactivate the chore creation for the week 2022.01
+    And I use the admin API key
     And the field "week_id" with value "2022.01"
     When I send a request to the Api
     Then the response status code is "200"
@@ -33,8 +35,9 @@ Feature: System API - deactivateWeekSystem
     And the response body is validated against the json-schema
 
 
-  Scenario: The admin deactivates the weekly chores generation on a specific week
-    Given I use the admin API key
+  Scenario: The admin reactivates the weekly chores generation on a specific week
+    Given I deactivate the chore creation for the week 2022.01
+    And I use the admin API key
     And the field "week_id" with value "2022.01"
     When I send a request to the Api
     Then the response status code is "200"
@@ -43,7 +46,8 @@ Feature: System API - deactivateWeekSystem
 
 
   Scenario Outline: Validate multiweek syntax support
-    Given I use the admin API key
+    Given I deactivate the chore creation for the week "<real_week_id>"
+    And I use the admin API key
     And the field "week_id" with value "<week_id>"
     When I send a request to the Api
     Then the response status code is "200"
@@ -83,9 +87,8 @@ Feature: System API - deactivateWeekSystem
       | whatever     |
 
 
-  Scenario Outline: Validate error response when deactivating a week that has chores created
-    Given there is 1 user, 1 chore type and weekly chores for the week "<week_id_1>"
-    And I use the admin API key
+  Scenario Outline: Validate error response when reactivating a week is not deactivated
+    Given I use the admin API key
     And the field "week_id" with value "<week_id_2>"
     When I send a request to the Api
     Then the response status code is "400"
@@ -93,18 +96,6 @@ Feature: System API - deactivateWeekSystem
     And the error message is "<error_message>"
 
     Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | error_message = <error_message>
-      | week_id_1 | week_id_2 | error_message                        |
-      | 2022.01   | 2022.01   | Chore types exist for week 2022.01   |
-      | 2022.04   | 2022.01   | Chore types exist after week 2022.01 |
-
-
-  Scenario: Validate error response when deactivating a week twice
-    Given I use the admin API key
-    And the field "week_id" with value "2022.01"
-    When I send a request to the Api
-    Then the response status code is "200"
-    And the response status code is defined
-    When I send a request to the Api
-    Then the response status code is "409"
-    And the response status code is defined
-    And the error message is "Week 2022.01 is already deactivated"
+      | week_id_1 | week_id_2 | error_message                       |
+      | 2022.01   | 2022.01   | Week 2022.01 is already deactivated |
+      | 2022.04   | 2022.01   | Week 2022.01 is already deactivated |
