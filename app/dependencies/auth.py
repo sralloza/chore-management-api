@@ -1,18 +1,21 @@
-from fastapi import Header, HTTPException
+from fastapi import HTTPException, Security
+from fastapi.security import APIKeyHeader
 
 from .. import crud
 from ..core.config import settings
 from ..core.constants import USER_ID_PATH
 
+APIKeySecurity = Security(APIKeyHeader(name="X-Token", auto_error=False))
 
-def admin_required(x_token: str = Header(None)):
+
+def admin_required(x_token: str = APIKeySecurity):
     if x_token is None:
         raise HTTPException(status_code=401, detail="Missing API key")
     if x_token != settings.admin_api_key:
         raise HTTPException(status_code=403, detail="Admin access required")
 
 
-async def user_required(*, x_token: str = Header(None)):
+async def user_required(*, x_token: str = APIKeySecurity):
     if x_token is None:
         raise HTTPException(status_code=401, detail="Missing API key")
     if x_token == settings.admin_api_key:
@@ -27,7 +30,7 @@ async def user_required(*, x_token: str = Header(None)):
 
 
 async def user_required_me_path(
-    *, x_token: str = Header(None), user_id: str = USER_ID_PATH
+    *, x_token: str = APIKeySecurity, user_id: str = USER_ID_PATH
 ):
     if x_token is None:
         raise HTTPException(status_code=401, detail="Missing API key")

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Header, Query
+from fastapi import APIRouter, Depends, Query
 
 from .. import crud
 from ..core.constants import WEEK_ID_EXPANDED_REGEX
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
-from ..dependencies.auth import user_required
+from ..dependencies.auth import APIKeySecurity, user_required
 from ..models.chore import Chore
 from ..models.extras import Message
 
@@ -34,7 +34,7 @@ async def list_chores(
         regex=WEEK_ID_EXPANDED_REGEX,
     ),
     done: bool = Query(None, description="Filter by status"),
-    x_token: str = Header(None),
+    x_token: str = APIKeySecurity,
 ):
     week_id = expand_week_id(week_id)
     user_id = await expand_user_id(user_id, x_token)
