@@ -16,7 +16,11 @@ from .middlewares.errors import internal_exception_handler, validation_exception
 
 version = loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
 
-app = FastAPI(default_response_class=ORJSONResponse)
+app = FastAPI(
+    title="Chore Management",
+    description=Path(__file__).parent.with_name("API.md").read_text(),
+    default_response_class=ORJSONResponse,
+)
 app.exception_handler(500)(internal_exception_handler)
 app.exception_handler(RequestValidationError)(validation_exception_handler)
 app.middleware("http")(inject_correlator)

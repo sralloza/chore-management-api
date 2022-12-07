@@ -25,6 +25,8 @@ RUN poetry install --only main
 
 COPY ./delivery /utils/
 
+COPY API.md ./
+
 RUN chmod +x /utils/*.sh
 
 EXPOSE 8080
