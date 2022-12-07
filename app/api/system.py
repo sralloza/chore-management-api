@@ -3,7 +3,7 @@ from fastapi import APIRouter, Body, Depends
 from .. import crud
 from ..core.constants import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
-from ..dependencies.auth import admin_required
+from ..dependencies.auth import admin_required, user_required
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
 from ..models.settings import SettingsIO, SettingsUpdate, SettingsUpdateIO
@@ -77,3 +77,20 @@ async def reactivate_week(week_id: str = WEEK_ID_PATH):
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=None)
     await crud.deactivated_weeks.delete(id=obj_in.compute_id())
     return WeekId(week_id=week_id)
+
+
+@router.get(
+    "/deactivate-calendar",
+    dependencies=[Depends(user_required)],
+    operation_id="listDeactivatedWeeksSystem",
+    response_model=list[WeekId],
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+    },
+    summary="List deactivated weeks",
+)
+async def list_deactivated_weeks():
+    """Lists the weeks that are deactivated for chore creation."""
+    result = await crud.deactivated_weeks.get_multi()
+    return [WeekId(week_id=week.week_id) for week in result if week.user_id is None]
