@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Body, Depends, Header, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
 
 from .. import crud
 from ..core.constants import USER_ID_PATH, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id, validate_week_id_age
-from ..dependencies.auth import admin_required, user_required_me_path
+from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
 from ..models.user import UserCreate, UserOutput, UserSimple
@@ -49,7 +49,7 @@ async def create_user(user: UserCreate = Body()):
         404: {"model": Message, "description": "User not found"},
     },
 )
-async def get_user(user_id: str = USER_ID_PATH, x_token: str = Header(None)):
+async def get_user(user_id: str = USER_ID_PATH, x_token: str = APIKeySecurity):
     """Get user by id. Any user can access their own data using the
     special keyword `me`."""
     return await crud.user.get_or_404_me_safe(id=user_id, api_key=x_token)
@@ -94,7 +94,7 @@ async def delete_user(user_id: str):
 async def deactivate_week(
     user_id: str = USER_ID_PATH,
     week_id: str = WEEK_ID_PATH,
-    x_token: str = Header(None),
+    x_token: str = APIKeySecurity,
 ):
     """Deactivates the chore creation on a specific week for just a specific user."""
     user_id = await expand_user_id(user_id, x_token)

@@ -3,9 +3,9 @@
 set -ueo pipefail
 
 cd app
-poetry run ruff .
 poetry run isort .
 poetry run black .
+poetry run ruff .
 
 cd ../test
 poetry run isort .
