@@ -9,6 +9,8 @@ Feature: health
     When I send a request to the Api
     Then the response status code is "200"
     And the Api response contains the expected data
+      | skip_param |
+      | version    |
 
 
   @common
