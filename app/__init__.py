@@ -4,6 +4,9 @@ from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from .api import router as router_v1
+from .core.config import settings
+from .core.deactivated_weeks import clean_old_deactivated_weeks
+from .core.scheduler import scheduler
 from .db.session import database
 from .middlewares.correlator import inject_correlator
 from .middlewares.errors import internal_exception_handler, validation_exception_handler
@@ -24,6 +27,15 @@ async def startup():
         should_group_untemplated=False,
     ).instrument(app).expose(app, include_in_schema=False)
     await database.connect()
+    if settings.enable_db_cleanup:
+        scheduler.add_job(
+            clean_old_deactivated_weeks,
+            "interval",
+            days=1,
+            id="clean-old-deactivated-weeks",
+        )
+        scheduler.start()
+        scheduler.print_jobs()
 
 
 @app.on_event("shutdown")
