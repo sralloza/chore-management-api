@@ -45,3 +45,7 @@ def execute_query(query: str, data, commit: bool = False):
     with open_database(commit=commit) as cursor:
         cursor.execute(query, data)
         return cursor.fetchall()
+
+
+if __name__ == "__main__":
+    reset_databases()

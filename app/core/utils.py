@@ -16,5 +16,5 @@ def expand_array(array: list[T], length: int) -> list[T]:
 
 def rotate_array(array: list[T], rotation: int) -> list[T]:
     arr = deque(array)
-    arr.rotate(rotation)
+    arr.rotate(-rotation)
     return list(arr)

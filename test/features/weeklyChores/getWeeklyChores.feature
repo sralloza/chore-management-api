@@ -39,8 +39,8 @@ Feature: Weekly Chores API - getWeeklyChores
     Then the response status code is "200"
     And the response body is validated against the json-schema
     And the response contains the following weekly chores
-      | week_id        | ct-a   |
-      | <real_week_id> | user-1 |
+      | week_id        | A |
+      | <real_week_id> | 1 |
 
     Examples: week_id = <week_id> | real_week_id = <real_week_id>
       | week_id | real_week_id          |
