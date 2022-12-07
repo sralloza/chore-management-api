@@ -27,6 +27,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -53,6 +54,10 @@ jobs:
 
       - name: Generate documentation
         run: poetry run python -c "from app import app; from json import dumps; print(dumps(app.openapi()))" > docs/openapi.json
+        env:
+          ADMIN_API_KEY: 1d2fd5f4-f86c-42e8-9504-2fc700cfe4e1
+          APPLICATION_SECRET: whatever
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
