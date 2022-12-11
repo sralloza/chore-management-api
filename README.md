@@ -65,4 +65,4 @@ These variables are only used when running the docker image. The docker entrypoi
 
 - **_CREATE_DATABASE_**: if set to `true`, it will try to create the database each time the container starts.
 - **_RUN_MIGRATIONS_**: run migrations on start. Defaults to `true`, meaning by default migrations are executed on start.
-- **_WAIT_FOR_IT_ADDRESS_**: address to wait for. For example, to wait for a database to be ready, set it to `database:3306`. It currently supports only one address, but in the future it will support multiple addresses separated by commas.
+- **_WAIT_FOR_IT_ADDRESS_**: comma separated addresses to wait for. For example, to wait for a database to be ready, set it to `database:3306`.
