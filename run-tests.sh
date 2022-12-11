@@ -5,8 +5,23 @@ maxRetries=30
 retriesLeft="$maxRetries"
 
 python -c "import allure" || exit 2
+keepUp=false
+
+if [[ " $@ " =~ " --keep-up=true " ]]; then
+  keepUp=true
+fi
+if [[ " $@ " =~ " --keep-up true " ]]; then
+  keepUp=true
+fi
 
 function cleanup {
+  if [[ "$mustExit" = "false" ]]; then
+    if [[ "$keepUp" = "true" ]]; then
+      echo "Keeping containers up"
+      mustExit=true
+      tail -f /dev/null
+    fi
+  fi
   docker-compose down -v
   mustExit=true
 }
