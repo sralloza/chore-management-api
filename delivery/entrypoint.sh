@@ -10,8 +10,12 @@ function getSettings() {
 if [[ -z "$WAIT_FOR_IT_ADDRESS" ]]; then
     echo "\$WAIT_FOR_IT_ADDRESS is not set"
 else
-    echo "Executing 'wait-for-it.sh -t 0 $WAIT_FOR_IT_ADDRESS'"
-    /utils/wait-for-it.sh -t 0 "$WAIT_FOR_IT_ADDRESS"
+    echo "Waiting for $WAIT_FOR_IT_ADDRESS..."
+    for addr in ${WAIT_FOR_IT_ADDRESS//,/ }; do
+        echo "Executing 'wait-for-it.sh -t 0 $addr'"
+        /utils/wait-for-it.sh -t 0 "$addr"
+    done
+
 fi
 
 databaseSettings=$(getSettings | jq -r '.database')
