@@ -8,6 +8,14 @@ The API is written in python using FastAPI. The first implementation was written
 
 ### Testing
 
+#### Run all tests
+
+The `run-tests.sh` script will start all containers, run the tests and stop the containers. With the flag `--keep-up=true` it will keep the containers up until CTRL-C is pressed.
+
+#### Run some tests
+
+Note that you must have the containers up and running before running the tests (`docker-compose up -d`).
+
 ```shell
 # Launch all tests
 behave
