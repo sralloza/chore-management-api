@@ -1,10 +1,10 @@
 from behave import step
 
-from common.utils import *
+from common.utils import assert_arrays_equal, parse_table, table_to_str
 
 
 @step("the response contains the following transfers")
-def step_impl(context):
+def step_check_response_transfers(context):
     context.execute_steps("Given the response body is a valid json")
 
     actual = context.res.json()
@@ -23,7 +23,7 @@ def step_impl(context):
 
 
 @step("the database contains the following transfers")
-def step_impl(context):
+def step_check_db_transfers(context):
     context.execute_steps(
         f"""
     Given I use the admin API key

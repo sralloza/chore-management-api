@@ -1,7 +1,7 @@
-from behave import *
+from behave import given, step
 
-from common.utils import *
-from common.weekly_chores import *
+from common.utils import assert_arrays_equal, parse_table, table_to_str
+from common.weekly_chores import parse_weekly_chores_res_table_str
 
 
 @step(
@@ -10,7 +10,7 @@ from common.weekly_chores import *
 )
 @given('I create the weekly chores for the week "{week_id}" using the API')
 @given("I create the weekly chores for the following weeks using the API")
-def step_impl(context, week_id=None, force=None):
+def step_create_weekly_chores_api(context, week_id=None, force=None):
     if force is not None:
         context.execute_steps(
             f"""
@@ -38,7 +38,7 @@ def step_impl(context, week_id=None, force=None):
 
 
 @step("the response contains the following weekly chores")
-def step_impl(context):
+def step_check_response_weekly_chores(context):
     context.execute_steps("Given the response body is a valid json")
     actual = parse_weekly_chores_res_table_str(context.res)
     expected_raw = parse_table(context.table, attrs=["week_id"], infer_param_type=False)
@@ -57,7 +57,7 @@ def step_impl(context):
 
 
 @step("the database contains the following weekly chores")
-def step_impl(context):
+def step_check_db_weekly_chores(context):
     context.execute_steps(
         f"""
         Given I use the admin API key

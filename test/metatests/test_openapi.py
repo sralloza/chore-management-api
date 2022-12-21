@@ -1,9 +1,25 @@
+import re
+
 import pytest
 from behave.model import Feature
 
-from common.openapi import *
-from constants import *
-from metatests.core import *
+from common.openapi import (
+    get_examples,
+    get_method,
+    get_operation,
+    get_operation_path,
+    get_parameters,
+    get_request_body,
+    get_request_headers,
+    get_request_path_parameters,
+    get_response_codes,
+    get_responses,
+    get_security_schemas,
+)
+from metatests.core import (
+    get_operation_id_by_feature,
+    get_reached_status_codes_by_operation_id,
+)
 
 PATH_PARAM_REGEX = re.compile(r"\{([\w]+)\}")
 SECURITY_SCHEMAS = ["AdminApiKey", "FlatAdminApiKey", "UserApiKey"]

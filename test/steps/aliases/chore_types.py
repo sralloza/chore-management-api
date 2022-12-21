@@ -1,14 +1,14 @@
 from string import ascii_lowercase
 
-from behave import *
+from behave import given, then
 from toolium.utils.dataset import map_param
 
-from common.utils import *
+from common.utils import assert_arrays_equal, payload_to_table_format, replace_param
 
 
 @given("there is {chore_types:d} chore type")
 @given("there are {chore_types:d} chore types")
-def step_impl(context, chore_types):
+def step_create_chore_types(context, chore_types):
     for i in range(chore_types):
         raw_data = {
             "id": f"ct-{ascii_lowercase[i]}",
@@ -26,8 +26,8 @@ def step_impl(context, chore_types):
         )
 
 
-@then('the response contains the simple chores "{ids}"')
-def step_impl(context, ids):
+@then('the response contains the chores "{ids}"')
+def step_response_contains_chores(context, ids):
     ids = replace_param(ids)
     if not ids:
         ids = []

@@ -1,4 +1,4 @@
-from behave import *
+from behave import given
 
 
 @given(
@@ -8,7 +8,7 @@ from behave import *
 @given(
     'there is {a:d} user, {b:d} chore type and weekly chores for the week "{week_id}"'
 )
-def step_impl(context, a, b, week_id):
+def step_create_user_chore_type_weekly_chores(context, a, b, week_id):
     context.execute_steps(
         f"""
         Given there are {a} users

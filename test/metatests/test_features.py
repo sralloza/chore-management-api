@@ -1,10 +1,11 @@
+import re
 from pathlib import Path
 
 from behave.model import Feature
 
 from common.openapi import get_request_headers
-from constants import *
-from metatests.core import *
+from constants import COMMON_SCENARIOS, X_FLAT_HEADER_SCENARIOS
+from metatests.core import get_operation_id_by_feature
 
 
 def test_validate_feature_name(api_feature: Feature):

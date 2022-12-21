@@ -1,19 +1,19 @@
 from uuid import uuid4
 
-from behave import *
+from behave import step
 from hamcrest import assert_that, is_in
 
 VALID_API_KEYS = ("admin", "flat", "user")
 
 
 @step("I use the {api_key} API key")
-def step_impl(context, api_key):
+def step_use_api_key(context, api_key):
     assert_that(api_key, is_in(VALID_API_KEYS))
     context.token = getattr(context, f"{api_key}_api_key")
 
 
 @step('I use the token of the user with id "{user_id}"')
-def step_impl(context, user_id):
+def step_use_api_key_user(context, user_id):
     context.execute_steps(
         """
         Given I use the admin API key
@@ -29,10 +29,10 @@ def step_impl(context, user_id):
 
 
 @step("I use a random API key")
-def step_impl(context):
+def step_use_random_api_key(context):
     context.token = str(uuid4())
 
 
 @step("I clear the token")
-def step_impl(context):
+def step_clear_api_key(context):
     context.token = None

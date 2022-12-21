@@ -1,12 +1,18 @@
-from behave import *
-from hamcrest import *
+from behave import then
+from hamcrest import assert_that, is_in, matches_regexp
 from jsonschema import RefResolver
 
-from common.openapi import *
+from common.openapi import (
+    get_current_operation,
+    get_defined_schemas,
+    get_examples,
+    get_operation_schema,
+    validate_response,
+)
 
 
 @then("the response status code is defined")
-def step_impl(context):
+def step_response_status_code_defined(context):
     code = str(context.res.status_code)
     operation = get_current_operation(context)
 
@@ -20,7 +26,7 @@ def step_impl(context):
 
 
 # @then("the response error message is defined")
-def step_impl(context):
+def step_response_error_message_defined(context):
     code = str(context.res.status_code)
     if code[0] not in ("4", "5"):
         raise ValueError(f"Response code {code} is not an error code")
@@ -51,7 +57,7 @@ def step_impl(context):
 
 
 @then("the response body is validated against the json-schema")
-def step_impl(context):
+def step_response_body_json_schema(context):
     context.execute_steps("Then the response status code is defined")
 
     schema = get_operation_schema(context)

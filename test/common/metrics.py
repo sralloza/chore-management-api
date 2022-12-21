@@ -1,4 +1,4 @@
-from hamcrest import *
+from hamcrest import assert_that, equal_to
 from prometheus_client.parser import text_string_to_metric_families
 
 from common.api import send_request

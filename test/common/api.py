@@ -4,8 +4,8 @@ from requests import Response
 
 from common.openapi import get_current_operation, get_operation
 from common.response import register_response
-from common.utils import *
-from constants import *
+from common.utils import URL, VERSIONED_PATH, VERSIONED_URL_TEMPLATE
+from constants import BLACKLISTED_STDOUT_FEATURES
 
 
 def send_request(context, endpoint=None, payload=None, raw_payload=False):
