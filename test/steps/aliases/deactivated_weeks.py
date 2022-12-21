@@ -17,7 +17,7 @@ def step_impl(context, week_id, user_id):
     )
 
 
-@given(f"{DEACTIVATE_MSG}")
+@given(DEACTIVATE_MSG)
 def step_impl(context, week_id, user_id):
     context.execute_steps(
         f"""
