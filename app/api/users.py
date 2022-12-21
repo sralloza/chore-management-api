@@ -106,3 +106,39 @@ async def deactivate_week(
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=user_id)
     await crud.deactivated_weeks.create(obj_in=obj_in)
     return WeekId(week_id=week_id)
+
+
+@router.post(
+    "/{user_id}/reactivate/{week_id}",
+    dependencies=[Depends(user_required_me_path)],
+    operation_id="reactivateWeekUser",
+    response_model=WeekId,
+    responses={
+        400: {"model": Message, "description": "Chore types exist for week"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "User not found"},
+        409: {"model": Message, "description": "Week is already activated"},
+    },
+    summary="Reactivate chore creation",
+)
+async def reactivate_week(
+    user_id: str = USER_ID_PATH,
+    week_id: str = WEEK_ID_PATH,
+    x_token: str = APIKeySecurity,
+):
+    """Reactivates the chore creation on a specific week for just a specific user."""
+    user_id = await expand_user_id(user_id, x_token)
+    await crud.user.get_or_404(id=user_id)
+
+    week_id = expand_week_id(week_id)
+    await validate_week_id_age(week_id, equals=True)
+
+    obj = DeactivatedWeekCreate(week_id=week_id, user_id=user_id)
+
+    if not await crud.deactivated_weeks.get(id=obj.compute_id()):
+        crud.deactivated_weeks.throw_conflict_exception(id=obj.compute_id(), action="activated")
+
+    await crud.deactivated_weeks.delete(id=obj.compute_id())
+
+    return WeekId(week_id=week_id)
