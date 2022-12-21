@@ -1,8 +1,12 @@
 from behave import *
 from common.db import execute_query
 
+DEACTIVATE_MSG = (
+    'I deactivate the chore creation for the week "{week_id}" and user "{user_id}"'
+)
 
-@given('I deactivate the chore creation for the week "{week_id}" and user "{user_id}" editing the database')
+
+@given(f"{DEACTIVATE_MSG} editing the database")
 def step_impl(context, week_id, user_id):
     row_id = f"{week_id}#{user_id}"
     execute_query(
@@ -11,7 +15,8 @@ def step_impl(context, week_id, user_id):
         commit=True,
     )
 
-@given('I deactivate the chore creation for the week "{week_id}" and user "{user_id}"')
+
+@given(f"{DEACTIVATE_MSG}")
 def step_impl(context, week_id, user_id):
     context.execute_steps(
         f"""
@@ -24,7 +29,6 @@ def step_impl(context, week_id, user_id):
         """
     )
     del context.week_id
-
 
 
 @given('I deactivate the chore creation for the week "{week_id}"')

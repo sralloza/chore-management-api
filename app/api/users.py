@@ -137,7 +137,9 @@ async def reactivate_week(
     obj = DeactivatedWeekCreate(week_id=week_id, user_id=user_id)
 
     if not await crud.deactivated_weeks.get(id=obj.compute_id()):
-        crud.deactivated_weeks.throw_conflict_exception(id=obj.compute_id(), action="activated")
+        crud.deactivated_weeks.throw_conflict_exception(
+            id=obj.compute_id(), action="activated"
+        )
 
     await crud.deactivated_weeks.delete(id=obj.compute_id())
 
