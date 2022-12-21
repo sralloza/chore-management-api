@@ -96,7 +96,7 @@ Feature: Chores API - listChores
     Then the response status code is "200"
     And the response status code is defined
     # And the response body is validated against the json-schema
-    And the response contains the simple chores "<result>"
+    And the response contains the chores "<result>"
 
     Examples: chore_type_id = <chore_type_id> | user_id = <user_id> | week_id = <week_id> | done = <done> | result = <result>
       | chore_type_id | user_id | week_id | done    | result          |

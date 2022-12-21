@@ -1,4 +1,4 @@
-from behave import *
+from behave import given
 
 from common.db import execute_query
 
@@ -8,7 +8,7 @@ DEACTIVATE_MSG = (
 
 
 @given(f"{DEACTIVATE_MSG} editing the database")
-def step_impl(context, week_id, user_id):
+def step_insert_deactivated_weeks_db(context, week_id, user_id):
     row_id = f"{week_id}#{user_id}"
     execute_query(
         "INSERT INTO deactivated_weeks (id, week_id, user_id) VALUES (%s, %s, %s)",
@@ -18,7 +18,7 @@ def step_impl(context, week_id, user_id):
 
 
 @given(DEACTIVATE_MSG)
-def step_impl(context, week_id, user_id):
+def step_deactivate_week_user_api(context, week_id, user_id):
     context.execute_steps(
         f"""
         Given the field "week_id" with string value "{week_id}"
@@ -33,7 +33,7 @@ def step_impl(context, week_id, user_id):
 
 
 @given('I deactivate the chore creation for the week "{week_id}"')
-def step_impl(context, week_id):
+def step_deactivate_week_system_api(context, week_id):
     context.execute_steps(
         f"""
         Given the field "week_id" with string value "{week_id}"

@@ -1,8 +1,5 @@
 from behave.model import Scenario
 
-from constants import *
-from metatests.core import *
-
 
 def test_scenario_name_is_upper(scenario: Scenario):
     if not scenario.name[0].isupper():

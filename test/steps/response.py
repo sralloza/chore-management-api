@@ -2,10 +2,9 @@ from json import JSONDecodeError, loads
 from pathlib import Path
 
 import jq
-from behave import *
+from behave import step, then
 from deepdiff import DeepDiff
-from hamcrest import *
-from toolium.utils.dataset import replace_param
+from hamcrest import assert_that, equal_to, has_key, is_not
 
 from common.response import get_step_body_json
 from common.utils import map_param_nested_obj, remove_attributes
@@ -14,13 +13,13 @@ RESPONSES_PATH = Path(__file__).parent.parent / "resources/responses"
 
 
 @step("the Api response is empty")
-def step_impl(context):
+def step_response_empty(context):
     msg = f"Response is not empty: {context.res.text}"
     assert context.res.text == "", msg
 
 
 @step("the Api response contains the expected data")
-def step_impl(context):
+def step_response_expected_data(context):
     json_file = None
     if context.table:
         context.table.require_columns(["skip_param"])
@@ -57,17 +56,8 @@ def step_impl(context):
     assert not diff, f"JSON response differs: {diff}"
 
 
-@step('"I save the response field "{field}" as "{attr}"')
-def step_impl(context, field, attr):
-    field = "." + field if not field.startswith(".") else field
-    context.logger.debug(f'Saving response field "{field}" as "{attr}"')
-    res_json = context.res.json()
-    value = jq.compile(attr).input(res_json).first()
-    setattr(context, attr, value)
-
-
 @then('the response field "{res_attr}" is different than "{saved_attr}"')
-def step_impl(context, res_attr, saved_attr):
+def step_check_response_field_different(context, res_attr, saved_attr):
     res_attr = "." + res_attr if not res_attr.startswith(".") else res_attr
     res_json = context.res.json()
     actual = jq.compile(res_attr).input(res_json).first()
@@ -76,7 +66,7 @@ def step_impl(context, res_attr, saved_attr):
 
 
 @then('the response field "{res_attr}" is equal to "{saved_attr}"')
-def step_impl(context, res_attr, saved_attr):
+def step_check_response_field_equal(context, res_attr, saved_attr):
     res_attr = "." + res_attr if not res_attr.startswith(".") else res_attr
     res_json = context.res.json()
     actual = jq.compile(res_attr).input(res_json).first()
@@ -85,24 +75,7 @@ def step_impl(context, res_attr, saved_attr):
 
 
 @step('I save the "{attr}" attribute of the response as "{dest}"')
-def step_impl(context, attr, dest):
+def step_save_response_attr(context, attr, dest):
     res_json = context.res.json()
     assert_that(res_json, has_key(attr))
     setattr(context, dest, res_json[attr])
-
-
-@step('I save the "{attr}" attribute of the response with "{key}={value}" as "{dest}"')
-def step_impl(context, attr, key, value, dest):
-    res_json = context.res.json()
-    if not isinstance(res_json, list):
-        raise ValueError("Response is not a list")
-
-    key = replace_param(key)
-    value = replace_param(value)
-
-    for item in res_json:
-        if item[key] == value:
-            setattr(context, dest, item)
-            return
-    else:
-        raise ValueError(f"Item not found (key={key!r}, value={value!r}")

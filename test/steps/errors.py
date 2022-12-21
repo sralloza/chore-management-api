@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from behave import *
+from behave import then
 from deepdiff import DeepDiff
 
 from common.utils import toolium_replace
@@ -16,7 +16,7 @@ def parse_errors(errors) -> list[ValidationError]:
 
 
 @then("the response contains the following validation errors")
-def step_impl(context):
+def step_response_validation_errors(context):
     context.table.require_columns(["location", "param", "msg"])
     errors = parse_errors(context.res.json()["errors"])
     for row in context.table:

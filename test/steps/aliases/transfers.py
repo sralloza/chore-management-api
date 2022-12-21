@@ -1,10 +1,10 @@
-from behave import *
+from behave import given
 
-from common.utils import *
+from common.utils import assert_has_table, parse_table
 
 
 @given("the following transfers are created")
-def step_impl(context):
+def step_create_transfers(context):
     assert_has_table(context)
     context.table.require_columns(
         ["tenant_id_from", "tenant_id_to", "chore_type", "week_id", "accepted"]
