@@ -1,4 +1,5 @@
 from behave import *
+
 from common.db import execute_query
 
 DEACTIVATE_MSG = (
