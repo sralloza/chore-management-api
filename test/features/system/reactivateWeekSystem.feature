@@ -26,7 +26,7 @@ Feature: System API - reactivateWeekSystem
 
   @authorization
   Scenario: Validate response for admin
-    Given I deactivate the chore creation for the week 2022.01
+    Given I deactivate the chore creation for the week "2022.01"
     And I use the admin API key
     And the field "week_id" with value "2022.01"
     When I send a request to the Api
@@ -35,7 +35,7 @@ Feature: System API - reactivateWeekSystem
 
 
   Scenario: The admin reactivates the weekly chores generation on a specific week
-    Given I deactivate the chore creation for the week 2022.01
+    Given I deactivate the chore creation for the week "2022.01"
     And I use the admin API key
     And the field "week_id" with value "2022.01"
     When I send a request to the Api

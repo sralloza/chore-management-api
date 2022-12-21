@@ -24,7 +24,7 @@ Feature: System API - listDeactivatedWeeksSystem
 
   @authorization
   Scenario: Validate response for admin
-    Given I deactivate the chore creation for the week 2022.01
+    Given I deactivate the chore creation for the week "2022.01"
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"

@@ -3,7 +3,7 @@
 Feature: Users API - deactivateWeekUser
 
   As an admin or user
-  I want to remove a user from the weekly chores assigments
+  I want to remove a user or myself from the weekly chores assigments
 
 
   @authorization

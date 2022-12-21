@@ -26,12 +26,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             table_name=self.table.name, id=primary_key
         )
 
-    def get_409_detail(self, id: IDType) -> str:
-        return self.template_409.format(
+    def throw_conflict_exception(self, id: IDType) -> str:
+        detail = self.template_409.format(
             model_name=self.model.__name__, primary_key=self.primary_key, id=id
         )
+        raise HTTPException(409, detail)
 
-    def throw_404_exception(self, id: IDType):
+    def throw_not_found_exception(self, id: IDType):
         detail = f"{self.model.__name__} with id={id} does not exist"
         raise HTTPException(404, detail)
 
@@ -43,7 +44,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         obj = await self.get(id=id)
         if obj is not None:
             return obj
-        self.throw_404_exception(id)
+        self.throw_not_found_exception(id)
 
     async def get_multi(self, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
         data = await database.fetch_all(self.table.select().offset(skip).limit(limit))
@@ -54,7 +55,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         if self.primary_key in obj_in_data and await self.get(
             id=obj_in_data[self.primary_key]
         ):
-            detail = self.get_409_detail(obj_in_data[self.primary_key])
+            detail = self.throw_conflict_exception(obj_in_data[self.primary_key])
             raise HTTPException(409, detail)
 
         db_id = await database.execute(self.table.insert(), obj_in_data)

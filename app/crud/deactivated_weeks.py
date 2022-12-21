@@ -18,15 +18,16 @@ def filter_week(
 class CRUDDeactivatedWeeks(
     CRUDBase[DeactivatedWeek, DeactivatedWeek, DeactivatedWeek, str]
 ):
-    def throw_404_exception(self, id: str):
+    def throw_not_found_exception(self, id: str):
         raise HTTPException(400, f"Week {id} is already deactivated")
 
-    def get_409_detail(self, id: str) -> str:
+    def throw_conflict_exception(self, id: str, action="deactivated"):
         if "#" not in id:
-            return f"Week {id} is already deactivated"
-
-        week_id, user_id = id.split("#")
-        return f"Week {week_id} is already deactivated for user {user_id}"
+            detail = f"Week {id} is already {action}"
+        else:
+            week_id, user_id = id.split("#")
+            detail = f"Week {week_id} is already {action} for user {user_id}"
+        raise HTTPException(409, detail)
 
     async def create(self, *, obj_in: DeactivatedWeekCreate) -> DeactivatedWeek:
         obj = DeactivatedWeek(**obj_in.dict(), id=obj_in.compute_id())
