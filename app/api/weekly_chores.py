@@ -30,10 +30,13 @@ router = APIRouter()
 async def route_create_weekly_chores(
     week_id: str = WEEK_ID_PATH,
     dry_run: bool = Query(False, description="Simulate creation of weekly chores"),
+    force: bool = Query(
+        False, description="Force creation of weekly chores even if users have changed"
+    ),
 ):
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
-    chores = await create_weekly_chores(week_id, dry_run=dry_run)
+    chores = await create_weekly_chores(week_id, dry_run=dry_run, force=force)
     return await get_weekly_chores_by_chores(chores, week_id)
 
 

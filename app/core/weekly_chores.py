@@ -13,7 +13,9 @@ from ..models.settings import RotationSign
 from ..models.weekly_chores import WeeklyChore, WeeklyChores
 
 
-async def create_weekly_chores(week_id: str, *, dry_run: bool = False):
+async def create_weekly_chores(
+    week_id: str, *, dry_run: bool = False, force: bool = False
+):
     deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
     if deactivated_weeks:
         raise HTTPException(
@@ -42,7 +44,7 @@ async def create_weekly_chores(week_id: str, *, dry_run: bool = False):
         return await _create_weekly_chores(chore_types, week_id, None, dry_run=dry_run)
 
     users_hash = calculate_hash([user.id for user in users])
-    if rotation.user_ids_hash != users_hash:
+    if rotation.user_ids_hash != users_hash and force is False:
         raise HTTPException(400, "Users have changed since last weekly chores creation")
 
     return await _create_weekly_chores(
