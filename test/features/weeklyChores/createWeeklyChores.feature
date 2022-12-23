@@ -344,6 +344,27 @@ Feature: Weekly Chores API - createWeeklyChores
     And the error message is "Users have changed since last weekly chores creation"
 
 
+  Scenario: Validate dry run mode
+    Given there are 3 users
+    And there are 3 chore types
+    And I use the admin API key
+    And the field "week_id" with string value "2022.01"
+    And the parameters to filter the request
+      | param_name | param_value |
+      | dry_run    | true        |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response body is validated against the json-schema
+    Given the parameters to filter the request
+      | param_name | param_value |
+      | dry_run    | true        |
+    When I send a request to the Api
+    Then the response status code is "200"
+
+
   @skip
   Scenario: Create weekly tasks if a tenant is created and deleted
     Given there are 3 users
