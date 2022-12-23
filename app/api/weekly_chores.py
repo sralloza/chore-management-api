@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends, Query
 from ..core.constants import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..core.weekly_chores import (
-    create_next_weekly_chores,
+    create_weekly_chores,
     get_all_weekly_chores,
+    get_weekly_chores_by_chores,
     get_weekly_chores_by_week_id,
 )
 from ..dependencies.auth import admin_required, user_required
@@ -26,11 +27,14 @@ router = APIRouter()
         409: {"model": Message, "description": "Weekly chores already exist"},
     },
 )
-async def create_weekly_chores(week_id: str = WEEK_ID_PATH):
+async def route_create_weekly_chores(
+    week_id: str = WEEK_ID_PATH,
+    dry_run: bool = Query(False, description="Simulate creation of weekly chores"),
+):
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
-    await create_next_weekly_chores(week_id)
-    return await get_weekly_chores_by_week_id(week_id)
+    chores = await create_weekly_chores(week_id, dry_run=dry_run)
+    return await get_weekly_chores_by_chores(chores, week_id)
 
 
 @router.get(
