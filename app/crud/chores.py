@@ -12,7 +12,7 @@ def apply_filter(
     week_id: str | None = None,
     done: bool | None = None,
 ):
-    if chore_type_id is not None and chore.chore_type != chore_type_id:
+    if chore_type_id is not None and chore.chore_type_id != chore_type_id:
         return False
     if user_id is not None and chore.user_id != user_id:
         return False
@@ -27,7 +27,7 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
     async def complete_chore(
         self, *, week_id: str, chore_type_id: str, user_id: str | None = None
     ):
-        chores = await self.get_multi(week_id=week_id, chore_type_id=chore_type_id)
+        chores = await self.get_multi(week_id=week_id, chore_type=chore_type_id)
         if not chores:
             detail = (
                 f"{self.model.__name__} with week_id={week_id} and"
@@ -60,21 +60,6 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
                 continue
             chore.done = True
             await self.update(id=chore.id, obj_in=chore)
-
-    async def get_multi(
-        self,
-        *,
-        skip: int = 0,
-        limit: int = 100,
-        chore_type_id: str | None = None,
-        user_id: str | None = None,
-        week_id: str | None = None,
-        done: bool | None = None,
-    ) -> list[Chore]:
-        result = await super().get_multi(skip=skip, limit=limit)
-        return [
-            x for x in result if apply_filter(x, chore_type_id, user_id, week_id, done)
-        ]
 
 
 chores = CRUDChore(Chore, tables.chore)

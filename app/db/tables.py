@@ -19,7 +19,7 @@ chore = sa.Table(
     "chore",
     metadata,
     sa.Column("id", sa.Integer, primary_key=True, nullable=False),
-    sa.Column("chore_type", sa.String(25), nullable=False),
+    sa.Column("chore_type_id", sa.String(25), nullable=False),
     sa.Column("done", sa.Boolean, nullable=False, default=False),
     sa.Column("user_id", sa.String(40), nullable=False),
     sa.Column("week_id", sa.String(7), nullable=False),

@@ -33,16 +33,5 @@ class CRUDDeactivatedWeeks(
         obj = DeactivatedWeek(**obj_in.dict(), id=obj_in.compute_id())
         return await super().create(obj_in=obj)
 
-    async def get_multi(
-        self,
-        *,
-        skip: int = 0,
-        limit: int = 100,
-        user_id_assigned: bool | None = None,
-        week_id: str | None = None,
-    ) -> list[DeactivatedWeek]:
-        data = await super().get_multi(skip=skip, limit=limit)
-        return [x for x in data if filter_week(x, user_id_assigned, week_id)]
-
 
 deactivated_weeks = CRUDDeactivatedWeeks(DeactivatedWeek, tables.deactivated_weeks)
