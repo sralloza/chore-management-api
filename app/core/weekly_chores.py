@@ -187,3 +187,20 @@ async def get_weekly_chores_by_chores(
         )
         weekly_chores.append(weekly_chore)
     return WeeklyChores(chores=weekly_chores, week_id=week_id)
+
+
+async def delete_weekly_chores_by_week_id(week_id: str):
+    chores = await crud.chores.get_multi(week_id=week_id)
+    if not chores:
+        raise HTTPException(404, f"No weekly chores found for week {week_id}")
+
+    for chore in chores:
+        if chore.done:
+            raise HTTPException(400, "Weekly chores are partially completed")
+    for chore in chores:
+        await crud.chores.delete(id=chore.id)
+
+    last_rotation = await crud.rotation.get_last_rotation()
+    if last_rotation is None:
+        raise ValueError("No rotation found")
+    await crud.rotation.delete(id=last_rotation.week_id)
