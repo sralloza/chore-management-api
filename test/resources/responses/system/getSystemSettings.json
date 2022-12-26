@@ -1,0 +1,4 @@
+{
+  "rotation_sign": "positive",
+  "assignment_order": ["[CONTEXT:created_user_id]"]
+}

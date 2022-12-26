@@ -25,7 +25,10 @@ class InvalidAssigmentOrder(PydanticValueError):
 
 class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
     async def get(self, **kwargs) -> Settings | None:
-        return await super().get(id=REAL_ID)
+        res = await super().get(id=REAL_ID)
+        if res:
+            return res
+        return await self.create_default(check_409=False)
 
     async def get_or_404(self, **kwargs) -> Settings:
         return await super().get_or_404(id=REAL_ID)
@@ -33,19 +36,23 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
     async def get_multi(self, *, page: int = 1, per_page: int = 30) -> list[Settings]:
         raise NotImplementedError
 
-    async def reset_assignment_order(self):
-        settings = await self.get()
-        user_ids = await crud.user.get_user_ids()
+    async def create_default(
+        self, user_ids: list[str] | None = None, check_409: bool = True
+    ) -> Settings:
+        if not user_ids:
+            user_ids = await crud.user.get_user_ids()
+        return await super().create(
+            obj_in=SettingsCreate(
+                id=REAL_ID,
+                rotation_sign=RotationSign.positive,
+                assignment_order=",".join(user_ids),
+            ),
+            check_409=check_409,
+        )
 
-        if not settings:
-            await super().create(
-                obj_in=SettingsCreate(
-                    id=REAL_ID,
-                    rotation_sign=RotationSign.positive,
-                    assignment_order=",".join(user_ids),
-                )
-            )
-            return
+    async def reset_assignment_order(self):
+        await self.get()
+        user_ids = await crud.user.get_user_ids()
 
         values = dict(assignment_order=",".join(user_ids))
         query = self.table.update().where(self.table.c.id == REAL_ID).values(values)
@@ -62,8 +69,8 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
                 )
                 raise RequestValidationError(errors=[error])
 
-        if not await self.get():
-            await self.reset_assignment_order()
+        # self.get() creates the default settings if they don't exist
+        await self.get()
 
         update_data = obj_in.dict(exclude_unset=True)
         assignment_order = update_data.pop("assignment_order", None)

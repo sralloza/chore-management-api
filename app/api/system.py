@@ -24,7 +24,7 @@ router = APIRouter()
     },
 )
 async def edit_settings(settings: SettingsUpdateIO = Body(...)):
-    """Edits the system settings."""
+    """Edit the system settings."""
     return crud.settings.map_to_io(await crud.settings.update(obj_in=settings))
 
 
@@ -33,8 +33,14 @@ async def edit_settings(settings: SettingsUpdateIO = Body(...)):
     response_model=SettingsIO,
     dependencies=[Depends(admin_required)],
     operation_id="getSystemSettings",
+    summary="Get system settings",
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+    },
 )
 async def get_settings():
+    """Get the system settings."""
     return crud.settings.map_to_io(await crud.settings.get_or_404())
 
 

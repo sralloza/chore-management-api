@@ -6,6 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from . import crud
 from .api import router as router_v1
 from .core.config import settings
 from .core.deactivated_weeks import clean_old_deactivated_weeks
@@ -55,6 +56,9 @@ async def startup():
         )
         scheduler.start()
         scheduler.print_jobs()
+
+    # crud.settings.get() creates the default settings if they don't exist
+    await crud.settings.get()
     logger.info("Application started")
 
 

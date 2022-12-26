@@ -64,13 +64,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         data = await database.fetch_all(query)
         return [self.model(**x) for x in data]
 
-    async def create(self, *, obj_in: CreateSchemaType) -> ModelType:
+    async def create(
+        self, *, obj_in: CreateSchemaType, check_409: bool = True
+    ) -> ModelType:
         obj_in_data = obj_in.dict()
-        if self.primary_key in obj_in_data and await self.get(
-            id=obj_in_data[self.primary_key]
-        ):
-            detail = self.throw_conflict_exception(obj_in_data[self.primary_key])
-            raise HTTPException(409, detail)
+        if self.primary_key in obj_in_data and check_409:
+            if await self.get(id=obj_in_data[self.primary_key]):
+                detail = self.throw_conflict_exception(obj_in_data[self.primary_key])
+                raise HTTPException(409, detail)
 
         db_id = await database.execute(self.table.insert(), obj_in_data)
         real_id = (

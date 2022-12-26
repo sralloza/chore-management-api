@@ -133,7 +133,10 @@ def map_param_nested_obj(obj):
 
     dotty_obj = dotty(obj)
     for key, value in dotty_obj.items():
-        dotty_obj[key] = map_param(value)
+        if isinstance(value, list):
+            dotty_obj[key] = [map_param(item) for item in value]
+        else:
+            dotty_obj[key] = map_param(value)
 
     return dotty_obj.to_dict()
 
