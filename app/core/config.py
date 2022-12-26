@@ -30,6 +30,7 @@ class Config(BaseSettings):
     admin_api_key: str = Field(env="ADMIN_API_KEY")
     application_secret: str = Field(env="APPLICATION_SECRET")
     enable_db_cleanup: bool = Field(True, env="ENABLE_DB_CLEANUP")
+    is_production: bool = Field(False, env="IS_PRODUCTION")
 
     class Config:
         env_file = ".env"

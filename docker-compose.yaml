@@ -19,6 +19,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - RUN_MIGRATIONS=true
+      - TZ=Europe/Madrid
       - WAIT_FOR_IT_ADDRESS=database:3306
     ports:
       - "8080:8080"

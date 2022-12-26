@@ -27,6 +27,8 @@ app = FastAPI(
     title="Chore Management",
     description=Path(__file__).parent.with_name("API.md").read_text(),
     default_response_class=ORJSONResponse,
+    redoc_url="/docs" if not settings.is_production else None,
+    docs_url=None,
 )
 
 app.middleware("http")(inject_correlator_response)
@@ -41,6 +43,9 @@ app.include_router(router_v1, prefix="/api/v1")
 @app.on_event("startup")
 async def startup():
     setup_logging()
+    if settings.is_production:
+        logger.info("Running in PRO environment")
+
     Instrumentator(
         excluded_handlers=["/metrics", "/health"],
         should_group_status_codes=False,
