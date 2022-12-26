@@ -5,6 +5,7 @@ from ..core.constants import WEEK_ID_EXPANDED_REGEX
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
 from ..dependencies.auth import APIKeySecurity, user_required
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.chore import Chore
 from ..models.extras import Message
 
@@ -35,11 +36,14 @@ async def list_chores(
     ),
     done: bool = Query(None, description="Filter by status"),
     x_token: str = APIKeySecurity,
+    pagination: PaginationParams = Depends(pagination_params),
 ):
     week_id = expand_week_id(week_id)
     user_id = await expand_user_id(user_id, x_token)
 
     return await crud.chores.get_multi(
+        page=pagination.page,
+        per_page=pagination.per_page,
         chore_type_id=chore_type_id,
         user_id=user_id,
         week_id=week_id,

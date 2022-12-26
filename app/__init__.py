@@ -1,35 +1,45 @@
+from logging import getLogger
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
-from toml import loads
 
 from .api import router as router_v1
 from .core.config import settings
 from .core.deactivated_weeks import clean_old_deactivated_weeks
+from .core.logging import setup_logging
 from .core.scheduler import scheduler
+from .core.version import version
 from .db.session import database
-from .middlewares.correlator import inject_correlator
+from .middlewares.correlator import (
+    inject_correlator_request,
+    inject_correlator_response,
+)
 from .middlewares.errors import internal_exception_handler, validation_exception_handler
+from .middlewares.logging import logging_middleware
 
-version = loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
+logger = getLogger(__name__)
 
 app = FastAPI(
     title="Chore Management",
     description=Path(__file__).parent.with_name("API.md").read_text(),
     default_response_class=ORJSONResponse,
 )
-app.exception_handler(500)(internal_exception_handler)
+
+app.middleware("http")(inject_correlator_response)
+app.middleware("http")(logging_middleware)
 app.exception_handler(RequestValidationError)(validation_exception_handler)
-app.middleware("http")(inject_correlator)
+app.exception_handler(500)(internal_exception_handler)
+app.middleware("http")(inject_correlator_request)
 
 app.include_router(router_v1, prefix="/api/v1")
 
 
 @app.on_event("startup")
 async def startup():
+    setup_logging()
     Instrumentator(
         excluded_handlers=["/metrics", "/health"],
         should_group_status_codes=False,
@@ -45,11 +55,14 @@ async def startup():
         )
         scheduler.start()
         scheduler.print_jobs()
+    logger.info("Application started")
 
 
 @app.on_event("shutdown")
 async def shutdown():
+    logger.info("Application shutting down")
     await database.disconnect()
+    logger.info("Application shut down")
 
 
 @app.get("/health", include_in_schema=False)

@@ -36,13 +36,22 @@ class CRUDDeactivatedWeeks(
     async def get_multi(
         self,
         *,
-        skip: int = 0,
-        limit: int = 100,
-        user_id_assigned: bool | None = None,
-        week_id: str | None = None,
+        page: int = 1,
+        per_page: int = 30,
+        assigned_to_user: bool | None = None,
+        **kwargs,
     ) -> list[DeactivatedWeek]:
-        data = await super().get_multi(skip=skip, limit=limit)
-        return [x for x in data if filter_week(x, user_id_assigned, week_id)]
+        query_mod = None
+        if assigned_to_user is not None:
+
+            def query_mod(query):
+                if assigned_to_user:
+                    return query.where(self.table.c.user_id is not None)
+                return query.where(self.table.c.user_id is None)
+
+        return await super().get_multi(
+            page=page, per_page=per_page, query_mod=query_mod, **kwargs
+        )
 
 
 deactivated_weeks = CRUDDeactivatedWeeks(DeactivatedWeek, tables.deactivated_weeks)

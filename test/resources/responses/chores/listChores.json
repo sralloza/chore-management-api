@@ -2,24 +2,24 @@
   {
     "week_id": "2030.01",
     "user_id": "user-1",
-    "chore_type": "ct-a",
+    "chore_type_id": "ct-a",
     "done": true
   },
   {
     "week_id": "2030.01",
-    "chore_type": "ct-b",
+    "chore_type_id": "ct-b",
     "user_id": "user-2",
     "done": false
   },
   {
     "week_id": "2030.01",
-    "chore_type": "ct-c",
+    "chore_type_id": "ct-c",
     "user_id": "user-3",
     "done": false
   },
   {
     "week_id": "2030.01",
-    "chore_type": "ct-d",
+    "chore_type_id": "ct-d",
     "user_id": "user-4",
     "done": false
   }

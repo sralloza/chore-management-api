@@ -46,8 +46,22 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             return obj
         self.throw_not_found_exception(id)
 
-    async def get_multi(self, *, skip: int = 0, limit: int = 100) -> List[ModelType]:
-        data = await database.fetch_all(self.table.select().offset(skip).limit(limit))
+    async def get_multi(
+        self, *, page: int = 1, per_page: int = 30, query_mod=None, **kwargs
+    ) -> List[ModelType]:
+        query = self.table.select().offset((page - 1) * per_page).limit(per_page)
+        if query_mod is not None:
+            query = query_mod(query)
+
+        for key, value in kwargs.items():
+            try:
+                field = getattr(self.table.c, key)
+            except AttributeError:
+                raise ValueError(f"Invalid field {key} for {self.model.__name__}")
+            if value is not None:
+                query = query.where(field == value)
+
+        data = await database.fetch_all(query)
         return [self.model(**x) for x in data]
 
     async def create(self, *, obj_in: CreateSchemaType) -> ModelType:

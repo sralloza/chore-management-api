@@ -92,32 +92,36 @@ Feature: Chores API - listChores
       | user_id       | <user_id>       |
       | week_id       | <week_id>       |
       | done          | <done>          |
+      | page          | <page>          |
+      | per_page      | <per_page>      |
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
-    # And the response body is validated against the json-schema
     And the response contains the chores "<result>"
 
-    Examples: chore_type_id = <chore_type_id> | user_id = <user_id> | week_id = <week_id> | done = <done> | result = <result>
-      | chore_type_id | user_id | week_id | done    | result          |
-      | [NULL]        | [NULL]  | [NULL]  | [NULL]  | 1,2,3,4,5,6,7,8 |
-      | ct-a          | [NULL]  | [NULL]  | [NULL]  | 1,5             |
-      | [NULL]        | user-1  | [NULL]  | [NULL]  | 1,8             |
-      | [NULL]        | me      | [NULL]  | [NULL]  | 1,8             |
-      | [NULL]        | [NULL]  | 2030.01 | [NULL]  | 1,2,3,4         |
-      | [NULL]        | [NULL]  | 2030.02 | [NULL]  | 5,6,7,8         |
-      | [NULL]        | [NULL]  | [NULL]  | [TRUE]  | 1               |
-      | [NULL]        | [NULL]  | [NULL]  | [FALSE] | 2,3,4,5,6,7,8   |
-      | ct-a          | user-1  | [NULL]  | [NULL]  | 1               |
-      | ct-a          | me      | [NULL]  | [NULL]  | 1               |
-      | [NULL]        | [NULL]  | 2030.01 | [TRUE]  | 1               |
-      | [NULL]        | [NULL]  | 2030.01 | [FALSE] | 2,3,4           |
-      | [NULL]        | [NULL]  | 2030.02 | [TRUE]  | [EMPTY]         |
-      | [NULL]        | user-1  | [NULL]  | [FALSE] | 8               |
-      | [NULL]        | me      | [NULL]  | [FALSE] | 8               |
-      | [NULL]        | user-1  | [NULL]  | [TRUE]  | 1               |
-      | [NULL]        | me      | [NULL]  | [TRUE]  | 1               |
-      | ct-b          | [NULL]  | [NULL]  | [FALSE] | 2,6             |
+    Examples: chore_type_id = <chore_type_id> | user_id = <user_id> | week_id = <week_id> | done = <done> | page = <page> | per_page = <per_page> | result = <result>
+      | chore_type_id | user_id | week_id | done    | page   | per_page | result          |
+      | [NULL]        | [NULL]  | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1,2,3,4,5,6,7,8 |
+      | [NULL]        | [NULL]  | [NULL]  | [NULL]  | [NONE] | 4        | 1,2,3,4         |
+      | [NULL]        | [NULL]  | [NULL]  | [NULL]  | 2      | 4        | 5,6,7,8         |
+      | [NULL]        | [NULL]  | [NULL]  | [NULL]  | 2      | 7        | 8               |
+      | ct-a          | [NULL]  | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1,5             |
+      | [NULL]        | user-1  | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1,8             |
+      | [NULL]        | me      | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1,8             |
+      | [NULL]        | [NULL]  | 2030.01 | [NULL]  | [NONE] | [NONE]   | 1,2,3,4         |
+      | [NULL]        | [NULL]  | 2030.02 | [NULL]  | [NONE] | [NONE]   | 5,6,7,8         |
+      | [NULL]        | [NULL]  | [NULL]  | [TRUE]  | [NONE] | [NONE]   | 1               |
+      | [NULL]        | [NULL]  | [NULL]  | [FALSE] | [NONE] | [NONE]   | 2,3,4,5,6,7,8   |
+      | ct-a          | user-1  | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1               |
+      | ct-a          | me      | [NULL]  | [NULL]  | [NONE] | [NONE]   | 1               |
+      | [NULL]        | [NULL]  | 2030.01 | [TRUE]  | [NONE] | [NONE]   | 1               |
+      | [NULL]        | [NULL]  | 2030.01 | [FALSE] | [NONE] | [NONE]   | 2,3,4           |
+      | [NULL]        | [NULL]  | 2030.02 | [TRUE]  | [NONE] | [NONE]   | [EMPTY]         |
+      | [NULL]        | user-1  | [NULL]  | [FALSE] | [NONE] | [NONE]   | 8               |
+      | [NULL]        | me      | [NULL]  | [FALSE] | [NONE] | [NONE]   | 8               |
+      | [NULL]        | user-1  | [NULL]  | [TRUE]  | [NONE] | [NONE]   | 1               |
+      | [NULL]        | me      | [NULL]  | [TRUE]  | [NONE] | [NONE]   | 1               |
+      | ct-b          | [NULL]  | [NULL]  | [FALSE] | [NONE] | [NONE]   | 2,6             |
 
 
   Scenario: Validate error response when using keyword me with the admin token
