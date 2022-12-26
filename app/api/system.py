@@ -6,7 +6,7 @@ from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import admin_required, user_required
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
-from ..models.settings import SettingsIO, SettingsUpdate, SettingsUpdateIO
+from ..models.settings import SettingsIO, SettingsUpdateIO
 
 router = APIRouter()
 
@@ -16,15 +16,16 @@ router = APIRouter()
     response_model=SettingsIO,
     dependencies=[Depends(admin_required)],
     operation_id="editSystemSettings",
+    summary="Edit system settings",
+    responses={
+        400: {"model": Message, "description": "Request body is not a valid JSON"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+    },
 )
 async def edit_settings(settings: SettingsUpdateIO = Body(...)):
-    update_data = settings.dict()
-    assignment_order = update_data.pop("assignment_order", None)
-    if assignment_order:
-        update_data["assignment_order"] = ",".join(assignment_order)
-    return crud.settings.map_to_io(
-        await crud.settings.update(obj_in=SettingsUpdate(**update_data))
-    )
+    """Edits the system settings."""
+    return crud.settings.map_to_io(await crud.settings.update(obj_in=settings))
 
 
 @router.get(

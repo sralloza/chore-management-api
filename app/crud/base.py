@@ -86,9 +86,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     ) -> ModelType:
         await self.get_or_404(id=id)
         values = obj_in.dict(exclude_unset=True)
-
-        query = self.table.update().where(self.table.c.id == id).values(values)
-        await database.execute(query)
+        if values:
+            query = self.table.update().where(self.table.c.id == id).values(values)
+            await database.execute(query)
 
         return await self.get_or_404(id=id)
 
