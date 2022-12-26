@@ -129,7 +129,9 @@ async def _create_weekly_chores(
     return chores
 
 
-async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
+async def get_all_weekly_chores(
+    missing_only=False, page: int = 1, per_page: int = 10
+) -> list[WeeklyChores]:
     users = await crud.user.get_multi()
     chores = await crud.chores.get_multi(per_page=10**3)
 
@@ -156,7 +158,9 @@ async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
         else:
             if all([chore.done for chore in weekly_chores]) is False:
                 result.append(WeeklyChores(chores=weekly_chores, week_id=week_id))
-    return result
+
+    res = result[per_page * (page - 1) : per_page * page]
+    return res
 
 
 async def get_weekly_chores_by_week_id(week_id: str) -> WeeklyChores:

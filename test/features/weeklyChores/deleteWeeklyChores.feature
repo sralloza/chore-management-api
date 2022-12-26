@@ -11,6 +11,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     When I send a request to the Api
     Then the response status code is "401"
     And the error message is "Missing API key"
+    And the response status code is defined
 
 
   @authorization
@@ -19,6 +20,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     When I send a request to the Api
     Then the response status code is "403"
     And the error message is "Admin access required"
+    And the response status code is defined
 
 
   @authorization
@@ -28,6 +30,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "204"
+    And the response status code is defined
 
 
   Scenario Outline: Validate multiweek support syntax
@@ -36,6 +39,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     And the field "week_id" with string value "<week_id>"
     When I send a request to the Api
     Then the response status code is "204"
+    And the response status code is defined
     And the Api response is empty
     And the database contains the following weekly chores
 
@@ -51,6 +55,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     And the field "week_id" with string value "2022.01"
     When I send a request to the Api
     Then the response status code is "404"
+    And the response status code is defined
     And the error message is "No weekly chores found for week 2022.01"
 
 
@@ -61,6 +66,7 @@ Feature: Weekly Chores API - deleteWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
+    And the response status code is defined
     And the error message is "Weekly chores are partially completed"
 
 

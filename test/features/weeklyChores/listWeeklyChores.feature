@@ -75,6 +75,8 @@ Feature: Weekly Chores API - listWeeklyChores
     And the parameters to filter the request
       | param_name   | param_value    |
       | missing_only | <missing_only> |
+      | page         | <page>         |
+      | per_page     | <per_page>     |
     When I send a request to the Api
     Then the response status code is "200"
     And the response status code is defined
@@ -84,7 +86,10 @@ Feature: Weekly Chores API - listWeeklyChores
       <expected_json>
       """
 
-    Examples: missing_only = <missing_only> | expected_json = <expected_json>
-      | missing_only | expected_json                    |
-      | [TRUE]       | listWeeklyChoresMissingOnlyTrue  |
-      | [FALSE]      | listWeeklyChoresMissingOnlyFalse |
+    Examples: missing_only = <missing_only> | page = <page> | per_page = <per_page> | expected_json = <expected_json>
+      | missing_only | page   | per_page | expected_json                     |
+      | [TRUE]       | [NONE] | [NONE]   | listWeeklyChoresMissingOnlyTrue   |
+      | [FALSE]      | [NONE] | [NONE]   | listWeeklyChoresMissingOnlyFalse  |
+      | [NONE]       | 1      | 1        | listWeeklyChoresOnlyPerPage1Page1 |
+      | [NONE]       | 2      | 1        | listWeeklyChoresOnlyPerPage1Page2 |
+      | [NONE]       | 3      | 1        | listWeeklyChoresOnlyPerPage1Page3 |

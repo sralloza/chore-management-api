@@ -10,6 +10,7 @@ Feature: Weekly Chores API - getWeeklyChores
   Scenario: Validate response for guest
     When I send a request to the Api
     Then the response status code is "401"
+    And the response status code is defined
     And the error message is "Missing API key"
 
 
@@ -20,6 +21,7 @@ Feature: Weekly Chores API - getWeeklyChores
     And I use the token of the user with id "user-1"
     When I send a request to the Api
     Then the response status code is "200"
+    And the response status code is defined
 
 
   @authorization
@@ -29,6 +31,7 @@ Feature: Weekly Chores API - getWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"
+    And the response status code is defined
 
 
   Scenario Outline: Get weekly chores by week_id
@@ -37,6 +40,7 @@ Feature: Weekly Chores API - getWeeklyChores
     And the field "week_id" with string value "<week_id>"
     When I send a request to the Api
     Then the response status code is "200"
+    And the response status code is defined
     And the response body is validated against the json-schema
     And the response contains the following weekly chores
       | week_id        | A |
@@ -54,6 +58,7 @@ Feature: Weekly Chores API - getWeeklyChores
     And the field "week_id" with value "2022.01"
     When I send a request to the Api
     Then the response status code is "404"
+    And the response status code is defined
     And the error message is "No weekly chores found for week 2022.01"
 
 
@@ -62,6 +67,7 @@ Feature: Weekly Chores API - getWeeklyChores
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "422"
+    And the response status code is defined
     And the response contains the following validation errors
       | location | param   | msg                                                          |
       | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |

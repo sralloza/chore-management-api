@@ -10,6 +10,7 @@ from ..core.weekly_chores import (
     get_weekly_chores_by_week_id,
 )
 from ..dependencies.auth import admin_required, user_required
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.extras import Message
 from ..models.weekly_chores import WeeklyChores
 
@@ -20,7 +21,7 @@ router = APIRouter()
     "/{week_id}",
     operation_id="createWeeklyChores",
     dependencies=[Depends(admin_required)],
-    description="Create weekly chores for a week",
+    summary="Create weekly chores",
     response_model=WeeklyChores,
     responses={
         400: {"model": Message, "description": "Bad request"},
@@ -36,6 +37,7 @@ async def route_create_weekly_chores(
         False, description="Force creation of weekly chores even if users have changed"
     ),
 ):
+    """Create weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     chores = await create_weekly_chores(week_id, dry_run=dry_run, force=force)
@@ -46,10 +48,16 @@ async def route_create_weekly_chores(
     "/{week_id}",
     operation_id="getWeeklyChores",
     dependencies=[Depends(user_required)],
-    description="Get weekly chores for a week",
+    summary="Get single weekly chores",
     response_model=WeeklyChores,
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+        404: {"model": Message, "description": "Weekly chores not found"},
+    },
 )
 async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
+    """Get weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     return await get_weekly_chores_by_week_id(week_id)
@@ -58,7 +66,7 @@ async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
 @router.get(
     "",
     dependencies=[Depends(user_required)],
-    description="List weekly chores",
+    summary="List weekly chores",
     operation_id="listWeeklyChores",
     response_model=list[WeeklyChores],
     responses={
@@ -69,19 +77,30 @@ async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
 async def list_weekly_chores(
     missing_only: bool = Query(
         False, description="Only show weekly chores that have missing chores"
-    )
+    ),
+    pagination: PaginationParams = Depends(pagination_params),
 ):
-    return await get_all_weekly_chores(missing_only=missing_only)
+    """List all weekly chores."""
+    return await get_all_weekly_chores(
+        missing_only=missing_only, page=pagination.page, per_page=pagination.per_page
+    )
 
 
 @router.delete(
     "/{week_id}",
     operation_id="deleteWeeklyChores",
     dependencies=[Depends(admin_required)],
-    description="Delete weekly chores for a week",
+    summary="Delete single weekly chores",
     status_code=204,
+    responses={
+        400: {"model": Message, "description": "Weekly chores are partially completed"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "Admin access required"},
+        404: {"model": Message, "description": "Weekly chores not found"},
+    },
 )
 async def delete_weekly_chores(week_id: str = WEEK_ID_PATH):
+    """Delete weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
     return await delete_weekly_chores_by_week_id(week_id)
