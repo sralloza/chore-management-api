@@ -62,10 +62,9 @@ async def _create_weekly_chores(
     last_rotation: int | None,
     dry_run: bool = False,
 ) -> list[ChoreCreate]:
-    print(dry_run)
     settings = await crud.settings.get_or_404()
     deactivated_weeks = await crud.deactivated_weeks.get_multi(
-        week_id=week_id, user_id_assigned=True
+        week_id=week_id, assigned_to_user=True
     )
     user_ids = crud.settings.map_to_io(settings).assignment_order
 
@@ -102,7 +101,7 @@ async def _create_weekly_chores(
         if expanded_user_ids[i] not in user_ids_skipping:
             chore = ChoreCreate(
                 user_id=expanded_user_ids[i],
-                chore_type=chore_types[i].id,
+                chore_type_id=chore_types[i].id,
                 week_id=week_id,
             )
             chores.append(chore)
@@ -110,7 +109,7 @@ async def _create_weekly_chores(
             for user_id in user_ids_not_skipping:
                 chore = ChoreCreate(
                     user_id=user_id,
-                    chore_type=chore_types[i].id,
+                    chore_type_id=chore_types[i].id,
                     week_id=week_id,
                 )
                 chores.append(chore)
@@ -131,8 +130,8 @@ async def _create_weekly_chores(
 
 
 async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
-    chores = await crud.chores.get_multi()
     users = await crud.user.get_multi()
+    chores = await crud.chores.get_multi(per_page=10**3)
 
     def get_user_name(user_id: str):
         return next(user.username for user in users if user.id == user_id)
@@ -140,7 +139,7 @@ async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
     result: list[WeeklyChores] = []
     for week_id, group in groupby(chores, lambda chore: chore.week_id):
         weekly_chores: list[WeeklyChore] = []
-        for chore_type, chore_list in groupby(group, lambda x: x.chore_type):
+        for chore_type, chore_list in groupby(group, lambda x: x.chore_type_id):
             chore_list = list(chore_list)
             weekly_chore = WeeklyChore(
                 assigned_ids=[chore.user_id for chore in chore_list],
@@ -176,7 +175,7 @@ async def get_weekly_chores_by_chores(
         return next(user.username for user in users if user.id == user_id)
 
     weekly_chores: list[WeeklyChore] = []
-    for chore_type, chore_list in groupby(chores, lambda x: x.chore_type):
+    for chore_type, chore_list in groupby(chores, lambda x: x.chore_type_id):
         chore_list = list(chore_list)
         weekly_chore = WeeklyChore(
             assigned_ids=[chore.user_id for chore in chore_list],

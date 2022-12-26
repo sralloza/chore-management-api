@@ -51,15 +51,3 @@ Feature: Prometheus metrics
       | deleteChoreType | chore_type_id | DELETE | /api/v1/chore-types/{chore_type_id} |
       | getUser         | user_id       | GET    | /api/v1/users/{user_id}             |
       | deleteUser      | user_id       | DELETE | /api/v1/users/{user_id}             |
-
-
-  @old
-  Scenario: Increment metric when a flat is created
-    Given I request a flat create code
-    And I use a random API key
-    When I send a request to the Api resource "createFlat" with body params
-      | param_name  | param_value           |
-      | create_code | [CONTEXT:create_code] |
-      | name        | test-flat             |
-    Then the response status code is "200"
-    And the metric counter "flats_created" has been incremented by 1

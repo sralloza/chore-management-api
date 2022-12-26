@@ -1,9 +1,10 @@
 @api.users
 @reactivateWeekUser
-Feature: Tenants API - reactivateWeekUser
+Feature: Users API - reactivateWeekUser
 
   As an admin or user
   I want to add a user or myself to the weekly chores assigments after removing it
+
 
   @authorization
   Scenario: Validate response for guest
@@ -159,4 +160,3 @@ Feature: Tenants API - reactivateWeekUser
       | 2022.55      |
       | 2022023      |
       | whatever     |
-
