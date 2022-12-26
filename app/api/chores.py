@@ -52,7 +52,7 @@ async def list_chores(
 
 
 @router.post(
-    "/{week_id}/type/{chore_type_id}",
+    "/{week_id}/type/{chore_type_id}/complete",
     dependencies=[Depends(user_required)],
     operation_id="completeChore",
     status_code=204,
