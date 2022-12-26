@@ -4,7 +4,6 @@
       {
         "type": "ct-a",
         "done": false,
-        "week_id": "2022.01",
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
       }
@@ -16,7 +15,6 @@
       {
         "type": "ct-a",
         "done": false,
-        "week_id": "2022.02",
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
       }
@@ -28,7 +26,6 @@
       {
         "type": "ct-a",
         "done": false,
-        "week_id": "2022.03",
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
       }

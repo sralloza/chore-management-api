@@ -4,14 +4,12 @@
       {
         "type": "ct-a",
         "done": true,
-        "week_id": "2022.02",
         "assigned_ids": ["user-2"],
         "assigned_usernames": ["username-2"]
       },
       {
         "type": "ct-b",
         "done": false,
-        "week_id": "2022.02",
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
       }
@@ -23,14 +21,12 @@
       {
         "type": "ct-a",
         "done": false,
-        "week_id": "2022.03",
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
       },
       {
         "type": "ct-b",
         "done": false,
-        "week_id": "2022.03",
         "assigned_ids": ["user-2"],
         "assigned_usernames": ["username-2"]
       }
