@@ -4,6 +4,7 @@ from ..core.constants import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..core.weekly_chores import (
     create_weekly_chores,
+    delete_weekly_chores_by_week_id,
     get_all_weekly_chores,
     get_weekly_chores_by_chores,
     get_weekly_chores_by_week_id,
@@ -19,6 +20,7 @@ router = APIRouter()
     "/{week_id}",
     operation_id="createWeeklyChores",
     dependencies=[Depends(admin_required)],
+    description="Create weekly chores for a week",
     response_model=WeeklyChores,
     responses={
         400: {"model": Message, "description": "Bad request"},
@@ -44,6 +46,7 @@ async def route_create_weekly_chores(
     "/{week_id}",
     operation_id="getWeeklyChores",
     dependencies=[Depends(user_required)],
+    description="Get weekly chores for a week",
     response_model=WeeklyChores,
 )
 async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
@@ -55,6 +58,7 @@ async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
 @router.get(
     "",
     dependencies=[Depends(user_required)],
+    description="List weekly chores",
     operation_id="listWeeklyChores",
     response_model=list[WeeklyChores],
     responses={
@@ -68,3 +72,16 @@ async def list_weekly_chores(
     )
 ):
     return await get_all_weekly_chores(missing_only=missing_only)
+
+
+@router.delete(
+    "/{week_id}",
+    operation_id="deleteWeeklyChores",
+    dependencies=[Depends(admin_required)],
+    description="Delete weekly chores for a week",
+    status_code=204,
+)
+async def delete_weekly_chores(week_id: str = WEEK_ID_PATH):
+    week_id = expand_week_id(week_id)
+    await validate_week_id_age(week_id)
+    return await delete_weekly_chores_by_week_id(week_id)

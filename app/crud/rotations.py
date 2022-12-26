@@ -10,5 +10,9 @@ class CRUDRotation(CRUDBase[Rotation, Rotation, Rotation, str]):
         row = await database.fetch_one(query)
         return Rotation(**row) if row is not None else None
 
+    async def delete(self, *, id: str) -> None:
+        await self.get_or_404(id=id)
+        await database.execute(self.table.delete().where(self.table.c.week_id == id))
+
 
 rotation = CRUDRotation(Rotation, tables.rotations, "week_id")
