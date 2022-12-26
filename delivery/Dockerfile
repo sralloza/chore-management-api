@@ -31,6 +31,8 @@ RUN chmod +x /utils/*.sh
 
 EXPOSE 8080
 
+ENV IS_PRODUCTION=true
+
 ENTRYPOINT [ "/utils/entrypoint.sh" ]
 
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]

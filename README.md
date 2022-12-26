@@ -50,14 +50,15 @@ Configuration is done by setting environment variables.
 
 #### Optional
 
+- **_DATABASE_HOST_**: database host. Defaults to `localhost`.
+- **_DATABASE_NAME_**: database name. Defaults to `chore-management`.
+- **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
+- **_DATABASE_PORT_**: database port. Defaults to `3306`.
+- **_DATABASE_USERNAME_**: database username. Defaults to `root`.
 - **_ENABLE_DB_CLEANUP_**: when set to `true`, the scheduler will be enabled and will run periodically some cleanup database tasks. Defaults to `true`.
+- **_IS_PRODUCTION_**: when set to `true`, the application will run in production mode (for example, documentation will not be available). Defaults to `true`.
 - **_REDIS_HOST_**: redis host. Defaults to `localhost`.
 - **_REDIS_PORT_**: redis port. Defaults to `6379`.
-- **_DATABASE_HOST_**: database host. Defaults to `localhost`.
-- **_DATABASE_PORT_**: database port. Defaults to `3306`.
-- **_DATABASE_NAME_**: database name. Defaults to `chore-management`.
-- **_DATABASE_USERNAME_**: database username. Defaults to `root`.
-- **_DATABASE_PASSWORD_**: database password. Defaults to `root`.
 
 #### Optional only for docker
 
