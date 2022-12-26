@@ -1,6 +1,5 @@
 @api.chore-types
 @createChoreType
-@old
 Feature: Chore Types API - createChoreType
 
   As an admin
@@ -127,9 +126,9 @@ Feature: Chore Types API - createChoreType
             "user-3": 0
           },
           "tickets_by_user_name": {
-            "user-1": 0,
-            "user-2": 0,
-            "user-3": 0
+            "username-1": 0,
+            "username-2": 0,
+            "username-3": 0
           }
         }
       ]

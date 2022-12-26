@@ -47,9 +47,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         self.throw_not_found_exception(id)
 
     async def get_multi(
-        self, *, page: int = 1, per_page: int = 30, **kwargs
+        self, *, page: int = 1, per_page: int = 30, query_mod=None, **kwargs
     ) -> List[ModelType]:
-        query = self.table.select().offset(page - 1).limit(per_page)
+        query = self.table.select().offset((page - 1) * per_page).limit(per_page)
+        if query_mod is not None:
+            query = query_mod(query)
 
         for key, value in kwargs.items():
             try:

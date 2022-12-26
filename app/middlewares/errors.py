@@ -1,10 +1,17 @@
+import logging
+
 from fastapi import Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
 
+from ..core.logging import log_exception
+
+logger = logging.getLogger(__name__)
+
 
 def internal_exception_handler(request: Request, exc: Exception):
+    log_exception(request, exc)
     return ORJSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content=jsonable_encoder({"detail": "Internal server error"}),

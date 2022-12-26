@@ -64,7 +64,7 @@ async def _create_weekly_chores(
 ) -> list[ChoreCreate]:
     settings = await crud.settings.get_or_404()
     deactivated_weeks = await crud.deactivated_weeks.get_multi(
-        week_id=week_id, user_id=True
+        week_id=week_id, assigned_to_user=True
     )
     user_ids = crud.settings.map_to_io(settings).assignment_order
 
@@ -131,7 +131,7 @@ async def _create_weekly_chores(
 
 async def get_all_weekly_chores(missing_only=False) -> list[WeeklyChores]:
     users = await crud.user.get_multi()
-    chores = await crud.chores.get_multi(per_page=len(users))
+    chores = await crud.chores.get_multi(per_page=10**3)
 
     def get_user_name(user_id: str):
         return next(user.username for user in users if user.id == user_id)

@@ -1,8 +1,12 @@
+from logging import getLogger
+
 from fastapi import HTTPException
 
 from ..db import tables
 from ..models.chore import Chore, ChoreCreate
 from .base import CRUDBase
+
+logger = getLogger(__name__)
 
 
 def apply_filter(
@@ -27,7 +31,7 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
     async def complete_chore(
         self, *, week_id: str, chore_type_id: str, user_id: str | None = None
     ):
-        chores = await self.get_multi(week_id=week_id, chore_type=chore_type_id)
+        chores = await self.get_multi(week_id=week_id, chore_type_id=chore_type_id)
         if not chores:
             detail = (
                 f"{self.model.__name__} with week_id={week_id} and"
@@ -51,8 +55,8 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
                 )
                 raise HTTPException(status_code=400, detail=detail)
         else:
-            print(
-                "Warning: No user_id provided to complete_chore, skipping user_id check"
+            logger.warning(
+                "No user_id provided to complete_chore, skipping user_id check"
             )
 
         for chore in chores:

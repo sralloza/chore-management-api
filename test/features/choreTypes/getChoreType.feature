@@ -1,6 +1,5 @@
 @api.chore-types
 @getChoreType
-@old
 Feature: Chore Types API - getChoreType
 
   As an admin or user

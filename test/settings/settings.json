@@ -7,49 +7,49 @@
     "simple_chore_types": [
       {
         "done": true,
-        "chore_type": "ct-a",
+        "chore_type_id": "ct-a",
         "user_id": "user-1",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "ct-b",
+        "chore_type_id": "ct-b",
         "user_id": "user-2",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "ct-c",
+        "chore_type_id": "ct-c",
         "user_id": "user-3",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "ct-d",
+        "chore_type_id": "ct-d",
         "user_id": "user-4",
         "week_id": "2030.01"
       },
       {
         "done": false,
-        "chore_type": "ct-a",
+        "chore_type_id": "ct-a",
         "user_id": "user-2",
         "week_id": "2030.02"
       },
       {
         "done": false,
-        "chore_type": "ct-b",
+        "chore_type_id": "ct-b",
         "user_id": "user-3",
         "week_id": "2030.02"
       },
       {
         "done": false,
-        "chore_type": "ct-c",
+        "chore_type_id": "ct-c",
         "user_id": "user-4",
         "week_id": "2030.02"
       },
       {
         "done": false,
-        "chore_type": "ct-d",
+        "chore_type_id": "ct-d",
         "user_id": "user-1",
         "week_id": "2030.02"
       }
