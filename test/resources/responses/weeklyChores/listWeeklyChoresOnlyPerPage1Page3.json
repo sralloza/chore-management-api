@@ -5,15 +5,13 @@
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"],
         "done": false,
-        "type": "ct-a",
-        "week_id": "2022.03"
+        "type": "ct-a"
       },
       {
         "assigned_ids": ["user-2"],
         "assigned_usernames": ["username-2"],
         "done": false,
-        "type": "ct-b",
-        "week_id": "2022.03"
+        "type": "ct-b"
       }
     ],
     "week_id": "2022.03"

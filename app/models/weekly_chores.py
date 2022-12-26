@@ -12,7 +12,6 @@ class WeeklyChore(BaseModel):
     )
     done: bool = Field(description="Whether the chore has been completed", example=True)
     type: str = Field(description="Chore type identifier", example="clean-dishes")
-    week_id: str = Field(description="Week identifier", example="2022.01")
 
 
 class WeeklyChores(BaseModel):

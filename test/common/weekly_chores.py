@@ -21,11 +21,15 @@ def tenants_to_str(tenants):
 def parse_weekly_chores_res_table_str(res):
     res_json = res.json()
     if isinstance(res_json, list):
+        for weekly_chore in res_json:
+            for chore in weekly_chore["chores"]:
+                chore["week_id"] = weekly_chore["week_id"]
         chores = [x["chores"] for x in res_json]
         chores = [item for sublist in chores for item in sublist]
     else:
         chores = res_json["chores"]
-
+        for chore in res_json["chores"]:
+            chore["week_id"] = res_json["week_id"]
     parsed = {}
     for chore in chores:
         if chore["week_id"] not in parsed:
