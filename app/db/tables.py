@@ -24,7 +24,7 @@ chore = sa.Table(
     sa.Column("user_id", sa.String(40), nullable=False),
     sa.Column("week_id", sa.String(7), nullable=False),
     sa.Column("created_at", sa.DateTime, nullable=False),
-    sa.Column("closed_at", sa.DateTime, nullable=True),
+    sa.Column("completed_at", sa.DateTime, nullable=True),
 )
 
 deactivated_weeks = sa.Table(
@@ -70,7 +70,7 @@ transfer = sa.Table(
     sa.Column("user_id_from", sa.String(40), nullable=False),
     sa.Column("user_id_to", sa.String(40), nullable=False),
     sa.Column("created_at", sa.DateTime),
-    sa.Column("closed_at", sa.DateTime, nullable=True),
+    sa.Column("completed_at", sa.DateTime, nullable=True),
     sa.Column("week_id", sa.String(7), nullable=False),
 )
 

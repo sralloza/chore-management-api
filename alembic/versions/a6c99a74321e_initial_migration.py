@@ -1,7 +1,7 @@
 """Initial migration
 
 Revision ID: a6c99a74321e
-Revises: 
+Revises:
 Create Date: 2022-12-25 19:55:06.469566
 
 """
@@ -25,7 +25,7 @@ def upgrade() -> None:
     sa.Column('user_id', sa.String(length=40), nullable=False),
     sa.Column('week_id', sa.String(length=7), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
-    sa.Column('closed_at', sa.DateTime(), nullable=True),
+    sa.Column('completed_at', sa.DateTime(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('chore_type',
@@ -67,7 +67,7 @@ def upgrade() -> None:
     sa.Column('user_id_from', sa.String(length=40), nullable=False),
     sa.Column('user_id_to', sa.String(length=40), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('closed_at', sa.DateTime(), nullable=True),
+    sa.Column('completed_at', sa.DateTime(), nullable=True),
     sa.Column('week_id', sa.String(length=7), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )

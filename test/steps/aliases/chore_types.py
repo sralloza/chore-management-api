@@ -39,7 +39,7 @@ def step_response_contains_chores(context, ids):
     original = map_param("[CONF:examples.simple_chore_types]")
     res_json = context.res.json()
 
-    for field_name in ("closed_at", "created_at", "id"):
+    for field_name in ("completed_at", "created_at", "id"):
         for item in res_json:
             del item[field_name]
 
