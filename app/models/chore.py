@@ -12,7 +12,7 @@ class ChoreCreate(BaseModel):
     # Issue with pydantic creating a schema of a nullable field
     # https://github.com/pydantic/pydantic/issues/4111
     # https://github.com/pydantic/pydantic/pull/1611
-    closed_at: datetime | None = None
+    completed_at: datetime | None = None
 
 
 class Chore(ChoreCreate):

@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Path, Query
 
 from .. import crud
-from ..core.constants import WEEK_ID_EXPANDED_REGEX
+from ..core.constants import WEEK_ID_EXPANDED_REGEX, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
-from ..dependencies.auth import APIKeySecurity, user_required
+from ..dependencies.auth import APIKeySecurity, get_user_id_from_api_key, user_required
 from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.chore import Chore
 from ..models.extras import Message
@@ -56,6 +56,18 @@ async def list_chores(
     dependencies=[Depends(user_required)],
     operation_id="completeChore",
     status_code=204,
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "Chore not found"},
+    },
 )
-async def complete_chore(week_id: str, chore_type_id: str):
-    await crud.chores.complete_chore(week_id=week_id, chore_type_id=chore_type_id)
+async def complete_chore(
+    week_id: str = WEEK_ID_PATH,
+    chore_type_id: str = Path(..., description="Chore type ID"),
+    user_id: str | None = Depends(get_user_id_from_api_key),
+):
+    week_id = expand_week_id(week_id)
+    await crud.chores.complete_chore(
+        week_id=week_id, chore_type_id=chore_type_id, user_id=user_id
+    )

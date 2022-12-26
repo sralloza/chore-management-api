@@ -53,3 +53,18 @@ async def user_required_me_path(
             return
 
     raise HTTPException(status_code=403, detail="User access required")
+
+
+async def get_user_id_from_api_key(*, x_token: str = APIKeySecurity) -> str | None:
+    """Returns the user ID if the API key is valid, or None if it's the admin"""
+    if x_token is None:
+        raise HTTPException(status_code=401, detail="Missing API key")
+    if x_token == settings.admin_api_key:
+        return
+
+    users = await crud.user.get_multi()
+    for user in users:
+        if user.api_key == x_token:
+            return user.id
+
+    raise HTTPException(status_code=403, detail="User access required")

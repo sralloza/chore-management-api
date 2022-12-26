@@ -7,7 +7,7 @@ from deepdiff import DeepDiff
 from hamcrest import assert_that, equal_to, has_key, is_not
 
 from common.response import get_step_body_json
-from common.utils import map_param_nested_obj, remove_attributes
+from common.utils import map_param_nested_obj, remove_attributes, toolium_replace
 
 RESPONSES_PATH = Path(__file__).parent.parent / "resources/responses"
 
@@ -56,21 +56,21 @@ def step_response_expected_data(context):
     assert not diff, f"JSON response differs: {diff}"
 
 
-@then('the response field "{res_attr}" is different than "{saved_attr}"')
-def step_check_response_field_different(context, res_attr, saved_attr):
+@then('the response field "{res_attr}" is different than "{value}"')
+def step_check_response_field_different(context, res_attr, value):
     res_attr = "." + res_attr if not res_attr.startswith(".") else res_attr
     res_json = context.res.json()
     actual = jq.compile(res_attr).input(res_json).first()
-    expected = getattr(context, saved_attr)
+    expected = toolium_replace(value)
     assert_that(expected, is_not(equal_to(actual)))
 
 
-@then('the response field "{res_attr}" is equal to "{saved_attr}"')
-def step_check_response_field_equal(context, res_attr, saved_attr):
+@then('the response field "{res_attr}" is equal to "{value}"')
+def step_check_response_field_equal(context, res_attr, value):
     res_attr = "." + res_attr if not res_attr.startswith(".") else res_attr
     res_json = context.res.json()
     actual = jq.compile(res_attr).input(res_json).first()
-    expected = getattr(context, saved_attr)
+    expected = toolium_replace(value)
     assert_that(expected, equal_to(actual))
 
 

@@ -68,7 +68,7 @@ Feature: Chores API - listChores
     And the Api response contains the expected data
       | skip_param |
       | created_at |
-      | closed_at  |
+      | completed_at  |
       | id         |
 
 

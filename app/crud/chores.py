@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging import getLogger
 
 from fastapi import HTTPException
@@ -53,16 +54,15 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
                     f"You are not assigned to any chores of type {chore_type_id}"
                     f" for week {week_id}"
                 )
-                raise HTTPException(status_code=400, detail=detail)
+                raise HTTPException(status_code=404, detail=detail)
         else:
             logger.warning(
                 "No user_id provided to complete_chore, skipping user_id check"
             )
 
         for chore in chores:
-            if user_id and chore.user_id != user_id:
-                continue
             chore.done = True
+            chore.completed_at = datetime.now()
             await self.update(id=chore.id, obj_in=chore)
 
 
