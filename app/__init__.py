@@ -5,13 +5,13 @@ from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import ORJSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
-from toml import loads
 
 from .api import router as router_v1
 from .core.config import settings
 from .core.deactivated_weeks import clean_old_deactivated_weeks
 from .core.logging import setup_logging
 from .core.scheduler import scheduler
+from .core.version import version
 from .db.session import database
 from .middlewares.correlator import (
     inject_correlator_request,
@@ -21,7 +21,6 @@ from .middlewares.errors import internal_exception_handler, validation_exception
 from .middlewares.logging import logging_middleware
 
 logger = getLogger(__name__)
-version = loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
 
 app = FastAPI(
     title="Chore Management",

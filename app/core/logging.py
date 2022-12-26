@@ -7,6 +7,8 @@ from fastapi import Request, Response
 from orjson import dumps
 from starlette.datastructures import Address
 
+from .version import version
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,16 +26,20 @@ def log_request(request: Request):
         "method": request.method,
         "url": str(request.url),
         "headers": dict(request.headers),
+        "version": version,
     }
     logger.info(dumps({"request": data}).decode("utf-8"))
 
 
-def log_response(response: Response):
+def log_response(response: Response, timing=None):
     data = {
         "datetime": datetime.now(),
         "status_code": response.status_code,
         "headers": dict(response.headers),
+        "version": version,
     }
+    if timing:
+        data["duration_ms"] = round(timing * 1000)
     logger.info(dumps({"response": data}).decode("utf-8"))
     return response
 
@@ -111,4 +117,4 @@ def setup_logging():
     # logging.getLogger("watchfiles.main").setLevel("CRITICAL")
 
     loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
-    logging.info(f"Loggers: {loggers}")
+    print(f"Loggers: {loggers}")
