@@ -3,7 +3,7 @@ from fastapi.security import APIKeyHeader
 
 from .. import crud
 from ..core.config import settings
-from ..core.constants import USER_ID_PATH
+from ..core.params import USER_ID_PATH
 
 APIKeySecurity = Security(APIKeyHeader(name="X-Token", auto_error=False))
 

@@ -1,9 +1,16 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+
+from .common import (
+    CHORE_TYPE_DESCRIPTION_FIELD,
+    CHORE_TYPE_ID_FIELD,
+    CHORE_TYPE_NAME_FIELD,
+    USER_ID_FIELD,
+)
 
 
 class TicketCreate(BaseModel):
-    chore_type_id: str = Field(min_length=1, max_length=25, regex="^[a-z-]+$")
-    user_id: str = Field(max_length=40)
+    chore_type_id: str = CHORE_TYPE_ID_FIELD
+    user_id: str = USER_ID_FIELD
     tickets: int
 
 
@@ -12,8 +19,8 @@ class Ticket(TicketCreate):
 
 
 class GroupedTicket(BaseModel):
-    id: str = Field(min_length=1, max_length=25, regex="^[a-z-]+$")
-    name: str = Field(min_length=1, max_length=50)
-    description: str = Field(min_length=1, max_length=255)
+    id: str = CHORE_TYPE_ID_FIELD
+    name: str = CHORE_TYPE_NAME_FIELD
+    description: str = CHORE_TYPE_DESCRIPTION_FIELD
     tickets_by_user_id: dict[str, int]
     tickets_by_user_name: dict[str, int]

@@ -1,11 +1,9 @@
 import json
 import re
 import uuid
-from datetime import datetime
 
 import jq
 from behave import step, then
-from dateutil.parser import parse
 from hamcrest import assert_that, equal_to, is_in, is_not
 from toolium.utils.dataset import replace_param
 
@@ -45,24 +43,6 @@ def step_check_error_message(context, message=None):
 
     msg = 'The error message should be "{}", but it is "{}"'
     assert actual == message, msg.format(message, actual)
-
-
-@step('the response timestamp attribute is at most "{ms:d}" ms ago')
-def step_check_response_timestamp_max(context, ms):
-    now = datetime.now()
-    timestamp = parse(context.res.json()["timestamp"])
-    diff = now - timestamp
-
-    actual_ms = diff.total_seconds() * 1000
-    print(" TIMING DEBUG ".center(80, "-"))
-    print("Timestamp:", timestamp)
-    print("Current timestamp:", now)
-    print("Diff: ", diff)
-    print("Diff in ms:", actual_ms)
-    print("-" * 80)
-
-    assert actual_ms >= 0, f"Timestamp is {actual_ms:.2f} ms into the future"
-    assert actual_ms <= ms, f"Timestamp is {actual_ms:.2f} ms ago"
 
 
 @step("the parameters to filter the request")

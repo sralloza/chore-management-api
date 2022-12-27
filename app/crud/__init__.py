@@ -4,6 +4,7 @@ from .deactivated_weeks import deactivated_weeks
 from .rotations import rotation
 from .settings import settings
 from .tickets import tickets
+from .transfers import transfers
 from .user import user
 
 __all__ = [
@@ -13,5 +14,6 @@ __all__ = [
     "rotation",
     "settings",
     "tickets",
+    "transfers",
     "user",
 ]

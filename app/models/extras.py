@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from ..core.constants import WEEK_ID_REGEX
+from .common import WEEK_ID_FIELD
 
 
 class Message(BaseModel):
@@ -11,4 +11,4 @@ class Message(BaseModel):
 
 
 class WeekId(BaseModel):
-    week_id: str = Field(regex=WEEK_ID_REGEX, example="2022.01")
+    week_id: str = WEEK_ID_FIELD

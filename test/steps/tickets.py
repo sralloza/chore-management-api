@@ -1,14 +1,14 @@
 from behave import step, then
 
-from common.tickets import parse_tickets_res_table_str
-from common.utils import assert_arrays_equal, parse_table, table_to_str
+from common.tickets import parse_tickets_res_table_str, parse_tickets_table
+from common.utils import assert_arrays_equal, table_to_str
 
 
 @step("The response contains the following tickets")
 def step_check_response_tickets(context):
     context.execute_steps("Given the response body is a valid json")
-    actual = parse_tickets_res_table_str(context.res, lambda x: x["tenant"])
-    expected = parse_table(context.table)
+    actual = parse_tickets_res_table_str(context.res, lambda x: x["user_id"])
+    expected = parse_tickets_table(context.table)
     assert_arrays_equal(expected, actual)
 
 

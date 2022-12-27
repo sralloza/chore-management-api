@@ -12,11 +12,14 @@ def step_check_response_transfers(context):
         actual = [actual]
     for line in actual:
         del line["id"]
-        del line["timestamp"]
+        del line["completed_at"]
+        del line["created_at"]
 
     expected = parse_table(context.table)
     for line in expected:
         line["week_id"] = str(line["week_id"])
+        line["user_id_from"] = "user-" + str(line["user_id_from"])
+        line["user_id_to"] = "user-" + str(line["user_id_to"])
 
     # TODO: do not use assert_arrays_equal
     assert_arrays_equal(expected, actual)

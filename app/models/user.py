@@ -3,10 +3,12 @@ from uuid import uuid4
 
 from pydantic import BaseModel, Field, validator
 
+from .common import USER_ID_FIELD, USER_USERNAME_FIELD
+
 
 class UserCreate(BaseModel):
-    username: str = Field(min_length=2, max_length=25)
-    id: str = Field(primary_key=True, min_length=4, max_length=40)
+    username: str = USER_USERNAME_FIELD
+    id: str = USER_ID_FIELD
 
     @validator("id", pre=True)
     def check_blacklist(cls, v):

@@ -64,7 +64,7 @@ transfer = sa.Table(
     "transfer",
     metadata,
     sa.Column("id", sa.Integer, primary_key=True, nullable=False),
-    sa.Column("accepted", sa.Boolean, default=False, nullable=False),
+    sa.Column("accepted", sa.Boolean, default=False, nullable=True),
     sa.Column("chore_type_id", sa.String(25), nullable=False),
     sa.Column("completed", sa.Boolean, default=False, nullable=False),
     sa.Column("user_id_from", sa.String(40), nullable=False),
