@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import icecream
 from fastapi import HTTPException
 
 from .. import crud
@@ -9,8 +8,6 @@ from ..core.week_ids import expand_week_id
 from ..db import tables
 from ..models.transfer import Transfer, TransferCreate, TransferCreateInner
 from .base import CRUDBase
-
-icecream.install()
 
 
 def validate_user_id(expected: str, actual: str | None, action: str):
