@@ -10,24 +10,6 @@ from .base import CRUDBase
 logger = getLogger(__name__)
 
 
-def apply_filter(
-    chore: Chore,
-    chore_type_id: str | None = None,
-    user_id: str | None = None,
-    week_id: str | None = None,
-    done: bool | None = None,
-):
-    if chore_type_id is not None and chore.chore_type_id != chore_type_id:
-        return False
-    if user_id is not None and chore.user_id != user_id:
-        return False
-    if week_id is not None and chore.week_id != week_id:
-        return False
-    if done is not None and chore.done != done:
-        return False
-    return True
-
-
 class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
     async def complete_chore(
         self, *, week_id: str, chore_type_id: str, user_id: str | None = None

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 
-from ..core.constants import WEEK_ID_PATH
+from ..core.params import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..core.weekly_chores import (
     create_weekly_chores,

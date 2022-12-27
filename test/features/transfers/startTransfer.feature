@@ -1,347 +1,315 @@
-@old
 @api.transfers
 @startTransfer
-@old
 Feature: Transfers API - startTransfer
 
-    As a tenant or admin
-    I want to transfer a chore to another tenant
+  As an admin or user
+  I want to transfer a chore from one user to another
 
 
-    @authorization
-    Scenario: Validate response for guest user
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "403"
-        And the error message is "Tenant access required"
+  @authorization
+  Scenario: Validate response for guest
+    When I send a request to the Api
+    Then the response status code is "401"
+    And the response status code is defined
+    And the error message is "Missing API key"
 
 
-    @authorization
-    Scenario: Validate response for tenant user
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
+  @authorization
+  Scenario: Validate response for user
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And the response status code is defined
 
 
-    @authorization
-    Scenario: Validate response for admin user
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
+  @authorization
+  Scenario: Validate response for admin
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And the response status code is defined
 
 
-    Scenario: Validate error response when using keyword me with the admin token
-        Given there is 1 tenant
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | me          |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "400"
-        And the error message is "Cannot use keyword me with an admin token"
+  @skip
+  Scenario: Validate error response when using keyword me with the admin token
+    Given there is 1 user
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | me          |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "Cannot use keyword me with an admin token"
 
 
-    Scenario: Validate error response when requesting other tenant's data
-        Given there are 2 tenants
-        And I use the token of the tenant with id "2"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "403"
-        And the error message is "You don't have permission to access other tenant's data"
+  @skip
+  Scenario: Validate error response when requesting other user's data
+    Given there are 2 users
+    And I use the token of the user with id "user-2"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "You don't have permission to access other user's data"
 
 
-    Scenario Outline: Start chore transfer happy path
-        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "<real_tenant_id>"
-        When I send a request to the Api with body params
-            | param_name     | param_value | as_string |
-            | tenant_id_from | <tenant_id> | false     |
-            | tenant_id_to   | 2           | false     |
-            | chore_type     | A           | false     |
-            | week_id        | 2022.01     | true      |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And the database contains the following transfers
-            | tenant_id_from   | tenant_id_to | chore_type | week_id | completed | accepted |
-            | <real_tenant_id> | 2            | A          | 2022.01 | False     | None     |
-        And the database contains the following weekly chores
-            | week_id | A                | B | C |
-            | 2022.01 | <real_tenant_id> | 2 | 3 |
-        And the database contains the following tickets
-            | tenant  | A | B | C |
-            | tenant1 | 0 | 0 | 0 |
-            | tenant2 | 0 | 0 | 0 |
-            | tenant3 | 0 | 0 | 0 |
+  Scenario Outline: Start chore transfer happy path
+    Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
+    And I use the token of the user with id "<real_user_id>"
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | <user_id>   | false     |
+      | user_id_to    | user-2      | false     |
+      | chore_type_id | ct-a        | false     |
+      | week_id       | 2022.01     | true      |
+    Then the response status code is "200"
+    And the database contains the following transfers
+      | user_id_from     | user_id_to | chore_type_id | week_id | completed | accepted |
+      | <simple_user_id> | 2          | ct-a          | 2022.01 | False     | None     |
+    And the database contains the following weekly chores
+      | week_id | A                | B | C |
+      | 2022.01 | <simple_user_id> | 2 | 3 |
+    And the database contains the following tickets
+      | user_id | A | B | C |
+      | user-1  | 0 | 0 | 0 |
+      | user-2  | 0 | 0 | 0 |
+      | user-3  | 0 | 0 | 0 |
 
-        Examples: tenant_id = <tenant_id> | real_tenant_id = <real_tenant_id>
-            | tenant_id | real_tenant_id |
-            | me        | 1              |
-            | 1         | 1              |
-
-
-    Scenario: Start multiple chore transfers
-        Given there are 5 tenants
-        And there are 5 chore types
-        And I create the weekly chores for the week "2022.01" using the API
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And I use the token of the tenant with id "3"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 3           |
-            | tenant_id_to   | 1           |
-            | chore_type     | C           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And I use the token of the tenant with id "5"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 5           |
-            | tenant_id_to   | 4           |
-            | chore_type     | E           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And the database contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
-            | 1              | 2            | A          | 2022.01 | False     | None     |
-            | 3              | 1            | C          | 2022.01 | False     | None     |
-            | 5              | 4            | E          | 2022.01 | False     | None     |
-        And the database contains the following weekly chores
-            | week_id | A | B | C | D | E |
-            | 2022.01 | 1 | 2 | 3 | 4 | 5 |
-        And the database contains the following tickets
-            | tenant  | A | B | C | D | E |
-            | tenant1 | 0 | 0 | 0 | 0 | 0 |
-            | tenant2 | 0 | 0 | 0 | 0 | 0 |
-            | tenant3 | 0 | 0 | 0 | 0 | 0 |
-            | tenant4 | 0 | 0 | 0 | 0 | 0 |
-            | tenant5 | 0 | 0 | 0 | 0 | 0 |
+    Examples: user_id = <user_id> | real_user_id = <real_user_id>
+      | user_id | real_user_id | simple_user_id |
+      | me      | user-1       | 1              |
+      | user-1  | user-1       | 1              |
 
 
-    Scenario: Start chore transfer to user2 after user1 has rejected it.
-        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        Given I save the "id" attribute of the response as "transferId"
-        And I use the token of the tenant with id "2"
-        When I send a request to the Api resource "rejectTransfer"
-        Then the response status code is "200"
-        Given I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 3           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And the response contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
-            | 1              | 3            | A          | 2022.01 | False     | None     |
-        And the database contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
-            | 1              | 2            | A          | 2022.01 | True      | False    |
-            | 1              | 3            | A          | 2022.01 | False     | None     |
+  Scenario: Start multiple chore transfers
+    Given there are 5 users
+    And there are 5 chore types
+    And I create the weekly chores for the week "2022.01" using the API
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And I use the token of the user with id "user-3"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-3      |
+      | user_id_to    | user-1      |
+      | chore_type_id | ct-c        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And I use the token of the user with id "user-5"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-5      |
+      | user_id_to    | user-4      |
+      | chore_type_id | ct-e        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And the database contains the following transfers
+      | user_id_from | user_id_to | chore_type_id | week_id | completed | accepted |
+      | 1            | 2          | ct-a          | 2022.01 | False     | None     |
+      | 3            | 1          | ct-c          | 2022.01 | False     | None     |
+      | 5            | 4          | ct-e          | 2022.01 | False     | None     |
+    And the database contains the following weekly chores
+      | week_id | A | B | C | D | E |
+      | 2022.01 | 1 | 2 | 3 | 4 | 5 |
+    And the database contains the following tickets
+      | user_id | A | B | C | D | E |
+      | user-1  | 0 | 0 | 0 | 0 | 0 |
+      | user-2  | 0 | 0 | 0 | 0 | 0 |
+      | user-3  | 0 | 0 | 0 | 0 | 0 |
+      | user-4  | 0 | 0 | 0 | 0 | 0 |
+      | user-5  | 0 | 0 | 0 | 0 | 0 |
 
 
-    Scenario: Admin makes a chore transfer
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response body is validated against the json-schema "transfer"
-        And the database contains the following transfers
-            | tenant_id_from | tenant_id_to | chore_type | week_id | completed | accepted |
-            | 1              | 2            | A          | 2022.01 | False     | None     |
-        And the database contains the following weekly chores
-            | week_id | A | B |
-            | 2022.01 | 1 | 2 |
-        And the database contains the following tickets
-            | tenant  | A | B |
-            | tenant1 | 0 | 0 |
-            | tenant2 | 0 | 0 |
-
-    @timing
-    Scenario: Validate transfer timestamp after transfer is created
-        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        And the response timestamp attribute is at most "50" ms ago
+  Scenario: Start chore transfer to user2 after user1 has rejected it.
+    Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    Given I save the "id" attribute of the response as "transfer_id"
+    And I use the token of the user with id "user-2"
+    When I send a request to the Api resource "rejectTransfer"
+    Then the response status code is "200"
+    Given I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-3      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And the response contains the following transfers
+      | user_id_from | user_id_to | chore_type_id | week_id | completed | accepted |
+      | 1            | 3          | ct-a          | 2022.01 | False     | None     |
+    And the database contains the following transfers
+      | user_id_from | user_id_to | chore_type_id | week_id | completed | accepted |
+      | 1            | 2          | ct-a          | 2022.01 | True      | False    |
+      | 1            | 3          | ct-a          | 2022.01 | False     | None     |
 
 
-    Scenario: Validate error response when a tenant tries to transfer a chore to multiple tenants
-        Given there are 3 tenants, 3 chore types and weekly chores for the week "2022.01"
-        And I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value |
-            | tenant_id_from | 1           |
-            | tenant_id_to   | 2           |
-            | chore_type     | A           |
-            | week_id        | 2022.01     |
-        Then the response status code is "200"
-        When I send a request to the Api with body params
-            | param_name     | param_value | as_string |
-            | tenant_id_from | 1           | false     |
-            | tenant_id_to   | 3           | false     |
-            | chore_type     | A           | false     |
-            | week_id        | 2022.01     | true      |
-        Then the response status code is "400"
-        And the error message is "Cannot transfer chore to multiple tenants"
+  Scenario: Admin makes a chore transfer
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    And the database contains the following transfers
+      | user_id_from | user_id_to | chore_type_id | week_id | completed | accepted |
+      | 1            | 2          | ct-a          | 2022.01 | False     | None     |
+    And the database contains the following weekly chores
+      | week_id | A | B |
+      | 2022.01 | 1 | 2 |
+    And the database contains the following tickets
+      | user_id | A | B |
+      | user-1  | 0 | 0 |
+      | user-2  | 0 | 0 |
 
 
-    Scenario Outline: Validate error response automatic validations
-        Given there is 1 tenant
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value      | as_string |
-            | tenant_id_from | <tenant_id_from> | false     |
-            | tenant_id_to   | <tenant_id_to>   | false     |
-            | chore_type     | <chore_type>     | false     |
-            | week_id        | <week_id>        | true      |
-        Then the response status code is "400"
-        And one of messages in the errors array is "<err_msg>"
-
-        Examples: tenant_id_from = <tenant_id_from> | tenant_id_to = <tenant_id_to> | chore_type = <chore_type> | week_id = <week_id> | err_msg = <err_msg>
-            | tenant_id_from | tenant_id_to | chore_type | week_id | err_msg                       |
-            | [NULL]         | 2            | A          | 2022.01 | tenant_id_from is required    |
-            | 1              | [NULL]       | A          | 2022.01 | tenant_id_to is required      |
-            | 1              | -1           | A          | 2022.01 | tenant_id_to must be positive |
-            | 1              | 0            | A          | 2022.01 | tenant_id_to must be positive |
-            | 1              | 2            | [NULL]     | 2022.01 | chore_type is required        |
-            | 1              | 2            | [EMPTY]    | 2022.01 | chore_type can't be blank     |
-            | 1              | 2            | [B]        | 2022.01 | chore_type can't be blank     |
-            | 1              | 2            | A          | [NULL]  | week_id is required           |
-            | 1              | 2            | A          | [EMPTY] | week_id can't be blank        |
-            | 1              | 2            | A          | [B]     | week_id can't be blank        |
+  Scenario: Validate error response when a user tries to transfer a chore to multiple users
+    Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value |
+      | user_id_from  | user-1      |
+      | user_id_to    | user-2      |
+      | chore_type_id | ct-a        |
+      | week_id       | 2022.01     |
+    Then the response status code is "200"
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-3      | false     |
+      | chore_type_id | ct-a        | false     |
+      | week_id       | 2022.01     | true      |
+    Then the response status code is "400"
+    And the error message is "Cannot transfer chore to multiple users"
 
 
-    Scenario Outline: Validate error response manual validations
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value      | as_string |
-            | tenant_id_from | <tenant_id_from> | false     |
-            | tenant_id_to   | 2                | false     |
-            | chore_type     | A                | false     |
-            | week_id        | <week_id>          | true      |
-        Then the response status code is "400"
-        And the error message contains "<err_msg>"
-        Examples: tenant_id_from = <tenant_id_from> | week_id = <week_id> | err_msg = <err_msg>
-            | tenant_id_from | week_id  | err_msg                         |
-            | -1             | 2022.01  | tenant_id_from must be positive |
-            | 0              | 2022.01  | tenant_id_from must be positive |
-            | 1              | 2022-03  | Invalid week ID                 |
-            | 1              | 2022.3   | Invalid week ID                 |
-            | 1              | 2022.00  | Invalid week ID                 |
-            | 1              | 2022.55  | Invalid week ID                 |
-            | 1              | 2022023  | Invalid week ID                 |
-            | 1              | whatever | Invalid week ID                 |
+  Scenario Outline: Validate error response with invalid params
+    Given there is 1 user
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value     | as_string |
+      | user_id_from  | <user_id_from>  | false     |
+      | user_id_to    | <user_id_to>    | false     |
+      | chore_type_id | <chore_type_id> | false     |
+      | week_id       | <week_id>       | true      |
+    Then the response status code is "422"
+    And the response contains the following validation errors
+      | location | param   | msg       |
+      | body     | <param> | <err_msg> |
+
+    Examples: user_id_from = <user_id_from> | user_id_to = <user_id_to> | chore_type_id = <chore_type_id> | week_id = <week_id> | param = <param> | err_msg = <err_msg>
+      | user_id_from | user_id_to | chore_type_id | week_id | param         | err_msg                      |
+      | [NULL]       | user-2     | ct-a          | 2022.01 | user_id_from  | none is not an allowed value |
+      | user-1       | [NULL]     | ct-a          | 2022.01 | user_id_to    | none is not an allowed value |
+      | user-1       | user-2     | [NULL]        | 2022.01 | chore_type_id | none is not an allowed value |
+      | user-1       | user-2     | ct-a          | [NULL]  | week_id       | none is not an allowed value |
 
 
+  Scenario Outline: Validate multiweek syntax support
+    Given there are 2 users, 2 chore types and weekly chores for the week "<real_week_id>"
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-2      | false     |
+      | chore_type_id | ct-a        | false     |
+      | week_id       | <week_id>   | true      |
+    Then the response status code is "200"
+    And the response attribute "week_id" as string is "<real_week_id>"
 
-    Scenario Outline: Validate error response when the tenant_id does not belong to any tenant
-        Given there are 3 tenants
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value      | as_string |
-            | tenant_id_from | <tenant_id_from> | false     |
-            | tenant_id_to   | <tenant_id_to>   | false     |
-            | chore_type     | A                | false     |
-            | week_id        | 2022.01          | true      |
-        Then the response status code is "400"
-        And the error message is "Tenant with id 9999 does not exist"
-
-        Examples: tenant_id_from = <tenant_id_from> | tenant_id_to = <tenant_id_to>
-            | tenant_id_from | tenant_id_to |
-            | 9999           | 2            |
-            | 1              | 9999         |
-
-
-    Scenario: Validate error response when the tenant_id_from is the same as the tenant_id_to
-        Given I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value | as_string |
-            | tenant_id_from | 1           | false     |
-            | tenant_id_to   | 1           | false     |
-            | chore_type     | A           | false     |
-            | week_id        | 2022.01     | true      |
-        Then the response status code is "400"
-        And the error message is "Cannot transfer chore to the same tenant"
+    Examples: week_id = <week_id> | real_week_id = <real_week_id>
+      | week_id | real_week_id          |
+      | next    | [NOW(%Y.%W) + 7 DAYS] |
+      | current | [NOW(%Y.%W)]          |
+      | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-    Scenario: Validate error response when a tenant tries to transfer a chore that belongs to another tenant
-        Given there are 3 tenants
-        And there are 3 chore types
-        And I create the weekly chores for the week "2022.01" using the API
-        Given I use the token of the tenant with id "1"
-        When I send a request to the Api with body params
-            | param_name     | param_value | as_string |
-            | tenant_id_from | 1           | false     |
-            | tenant_id_to   | 2           | false     |
-            | chore_type     | C           | false     |
-            | week_id        | 2022.01     | true      |
-        Then the response status code is "403"
-        And the error message is the following
-            """
-            You cannot transfer chores from other tenants. The chore you are trying to transfer is assigned to tenant3.
-            """
+  Scenario Outline: Validate error response when the user_id does not belong to any user
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value    | as_string |
+      | user_id_from  | <user_id_from> | false     |
+      | user_id_to    | <user_id_to>   | false     |
+      | chore_type_id | ct-a           | false     |
+      | week_id       | 2022.01        | true      |
+    Then the response status code is "400"
+    And the error message is "User invalid does not exist"
+
+    Examples: user_id_from = <user_id_from> | user_id_to = <user_id_to>
+      | user_id_from | user_id_to |
+      | invalid      | user-1     |
+      | user-1       | invalid    |
 
 
-    Scenario: Validate error response when a tenant tries to transfer a chore which type does not exist
-        Given there are 3 tenants
-        And I use the admin API key
-        When I send a request to the Api with body params
-            | param_name     | param_value | as_string |
-            | tenant_id_from | 1           | false     |
-            | tenant_id_to   | 2           | false     |
-            | chore_type     | X           | false     |
-            | week_id        | 2022.01     | true      |
-        Then the response status code is "400"
-        And the error message is "Chore type with id X does not exist"
+  Scenario: Validate error response when the user_id_from is the same as the user_id_to
+    Given I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-1      | false     |
+      | chore_type_id | ct-a        | false     |
+      | week_id       | 2022.01     | true      |
+    Then the response status code is "400"
+    And the error message is "Cannot transfer chore to the same user"
+
+
+  Scenario: Validate error response when a tenant tries to transfer a chore that belongs to another tenant
+    Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
+    Given I use the token of the user with id "user-1"
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-2      | false     |
+      | chore_type_id | ct-c        | false     |
+      | week_id       | 2022.01     | true      |
+    Then the response status code is "400"
+    And the error message is "No chores of type ct-c for week 2022.01 assigned to user user-1"
+
+
+  Scenario: Validate error response when a tenant tries to transfer a chore which type does not exist
+    Given there are 3 users
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-2      | false     |
+      | chore_type_id | X           | false     |
+      | week_id       | 2022.01     | true      |
+    Then the response status code is "400"
+    And the error message is "Chore type with id X does not exist"

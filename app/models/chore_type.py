@@ -1,10 +1,16 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, validator
+
+from .common import (
+    CHORE_TYPE_DESCRIPTION_FIELD,
+    CHORE_TYPE_ID_FIELD,
+    CHORE_TYPE_NAME_FIELD,
+)
 
 
 class ChoreType(BaseModel):
-    id: str = Field(min_length=1, max_length=25, regex="^[a-z-]+$")
-    name: str = Field(min_length=1, max_length=50)
-    description: str = Field(min_length=1, max_length=255)
+    id: str = CHORE_TYPE_ID_FIELD
+    name: str = CHORE_TYPE_NAME_FIELD
+    description: str = CHORE_TYPE_DESCRIPTION_FIELD
 
     @validator("name", "description", pre=True)
     def strip(cls, v):

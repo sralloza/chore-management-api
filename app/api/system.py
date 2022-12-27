@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends
 
 from .. import crud
-from ..core.constants import WEEK_ID_PATH
+from ..core.params import WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import admin_required, user_required
 from ..models.deactivated_weeks import DeactivatedWeekCreate

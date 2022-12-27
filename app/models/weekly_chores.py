@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from .common import CHORE_TYPE_ID_FIELD, WEEK_ID_FIELD
+
 
 class WeeklyChore(BaseModel):
     assigned_ids: list[str] = Field(
@@ -11,11 +13,11 @@ class WeeklyChore(BaseModel):
         example=["username-1", "username-2"],
     )
     done: bool = Field(description="Whether the chore has been completed", example=True)
-    type: str = Field(description="Chore type identifier", example="clean-dishes")
+    type: str = CHORE_TYPE_ID_FIELD
 
 
 class WeeklyChores(BaseModel):
     chores: list[WeeklyChore] = Field(
         description="List of individual chores for the week"
     )
-    week_id: str = Field(description="Week identifier", example="2022.01")
+    week_id: str = WEEK_ID_FIELD

@@ -3,7 +3,6 @@ API to manage the chores with the flatmates in a shared flat.
 # Concepts
 
 - **User**: Each person living in the same flat, a flatmate.
-- **Flat**: A flat. Each user and chore is assigned to a different flat. This API is multi-flat, it can manage the chores of multiple flats. The flat is selected by the `X-Flat` header. For more info about the `X-Flat` header, please read the [multiflat](#section/Concepts/Multiflat) section.
 - **Chore Type**: A defined chore that needs to be executed weekly in the flat. Each chore type will be assigned weekly to a different flatmate.
 - **Weekly chores**: Chores grouped by week.
 - **Week ID**: Weeks are identified by the year and the week number, like `2022.03` (the third week of 2022).
@@ -17,7 +16,7 @@ Diferent chore types are considered non equivalent, so a ticket of (the chore ty
 
 # Chore Assignements
 
-You can assign weekly chores using the [createWeeklyChores](#) endpoint.
+You can assign weekly chores using the [createWeeklyChores](#tag/Weekly-Chores/operation/createWeeklyChores) endpoint.
 
 ## Examples
 
@@ -75,7 +74,7 @@ So, these will be the default chore assignments:
 
 If you want to assign the first time dishes to the user 501, garden to the user 293 and kitchen to the user 281, you will have to use the [editSystemSettings](#tag/System/operation/editSystemSettings) operation and send the `assignment_order` parameter set to `["501", "293", "381"]` (the assignments of the first week sorted alphabetically by the chore ID).
 
-The next weeks the chores will rotate. To ensure the chores will be assigned with the order you want, you can use the `dry_run` parameter in the [createWeeklyChores](#tag/WeeklyChores/CreateWeeklyChores) operation. This will return the chore assignments without actually creating them. If you detect the rotation is not correct, you can use the [editSystemSettings](#tag/System/operation/editSystemSettings) operation to set the rotation.
+The next weeks the chores will rotate. To ensure the chores will be assigned with the order you want, you can use the `dry_run` parameter in the [createWeeklyChores](#tag/Weekly-Chores/operation/createWeeklyChores) operation. This will return the chore assignments without actually creating them. If you detect the rotation is not correct, you can use the [editSystemSettings](#tag/System/operation/editSystemSettings) operation to set the rotation.
 
 ## Skip week
 

@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, Path, Query
 
 from .. import crud
-from ..core.constants import WEEK_ID_EXPANDED_REGEX, WEEK_ID_PATH
+from ..core.patterns import WEEK_ID_EXPANDED_REGEX
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
 from ..dependencies.auth import APIKeySecurity, get_user_id_from_api_key, user_required
 from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.chore import Chore
+from ..core.params import WEEK_ID_PATH
 from ..models.extras import Message
 
 router = APIRouter()

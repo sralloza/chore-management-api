@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
 
 from .. import crud
-from ..core.constants import USER_ID_PATH, WEEK_ID_PATH
+from ..core.params import USER_ID_PATH, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
