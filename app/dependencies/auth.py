@@ -10,16 +10,17 @@ APIKeySecurity = Security(APIKeyHeader(name="X-Token", auto_error=False))
 
 
 def raise_401_exception(lang: str):
-    raise HTTPException(status_code=401, detail=i18n.t("auth.401", locale=lang))
+    detail = i18n.t("auth.unauthorized", locale=lang)
+    raise HTTPException(status_code=401, detail=detail)
 
 
 def raise_admin_access_required(lang: str):
-    detail = i18n.t("auth.admin-required", locale=lang)
+    detail = i18n.t("auth.forbidden.admin_required", locale=lang)
     raise HTTPException(status_code=403, detail=detail)
 
 
 def raise_user_access_required(lang: str):
-    detail = i18n.t("auth.user-required", locale=lang)
+    detail = i18n.t("auth.forbidden.user_required", locale=lang)
     raise HTTPException(status_code=403, detail=detail)
 
 
@@ -56,7 +57,7 @@ async def user_required_me_path(
         if user_id == "me":
             raise HTTPException(
                 status_code=400,
-                detail=i18n.t("auth.keyword-me-admin", locale=lang),
+                detail=i18n.t("auth.bad_request.keyword_me_admin", locale=lang),
             )
         return
 
@@ -65,7 +66,8 @@ async def user_required_me_path(
         if user.api_key == x_token:
             if user_id != "me" and user_id != user.id:
                 raise HTTPException(
-                    status_code=403, detail=i18n.t("auth.403-user-data", locale=lang)
+                    status_code=403,
+                    detail=i18n.t("auth.forbidden.other_user_data", locale=lang),
                 )
             return
 

@@ -1,6 +1,6 @@
 en:
-  "401": Missing API key
-  user-required: User access required
-  admin-required: Admin access required
-  keyword-me-admin: Can't use the special keyword me with the admin API key
-  403-user-data: You don't have permission to access this user's data
+  unauthorized: Missing API key
+  forbidden.user_required: User access required
+  forbidden.admin_required: Admin access required
+  bad_request.keyword_me_admin: Can't use the special keyword me with the admin API key
+  forbidden.other_user_data: You don't have permission to access this user's data

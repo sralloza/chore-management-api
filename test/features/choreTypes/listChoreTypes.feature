@@ -7,20 +7,33 @@ Feature: Chore Types API - listChoreTypes
 
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "User access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for guest
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "Missing API key"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -73,8 +86,3 @@ Feature: Chore Types API - listChoreTypes
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
