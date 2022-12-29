@@ -19,6 +19,7 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
     async def create(
         self,
         *,
+        lang: str,
         x_token: str,
         obj_in: TransferCreate,
         check_409: bool = True,
@@ -61,10 +62,10 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
             )
 
         obj_in_inner = TransferCreateInner(**obj_in.dict())
-        return await super().create(obj_in=obj_in_inner, check_409=check_409)
+        return await super().create(lang=lang, obj_in=obj_in_inner, check_409=check_409)
 
-    async def accept(self, id: int, user_id: str | None) -> Transfer:
-        transfer = await self.get_or_404(id=id)
+    async def accept(self, *, lang: str, id: int, user_id: str | None) -> Transfer:
+        transfer = await self.get_or_404(lang=lang, id=id)
         if user_id is not None:
             if transfer.user_id_to != user_id:
                 raise HTTPException(
@@ -84,9 +85,10 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
 
         chore = chores[0]
         chore.user_id = transfer.user_id_to
-        await crud.chores.update(id=chore.id, obj_in=chore)
+        await crud.chores.update(id=chore.id, lang=lang, obj_in=chore)
 
         await crud.tickets.transfer_ticket(
+            lang=lang,
             user_id_from=transfer.user_id_from,
             user_id_to=transfer.user_id_to,
             chore_type_id=transfer.chore_type_id,
@@ -95,11 +97,11 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         transfer.accepted = True
         transfer.completed = True
         transfer.completed_at = datetime.now()
-        await self.update(id=id, obj_in=transfer)
-        return await self.get_or_404(id=id)
+        await self.update(id=id, lang=lang, obj_in=transfer)
+        return await self.get_or_404(lang=lang, id=id)
 
-    async def reject(self, id: int, user_id: str | None) -> Transfer:
-        transfer = await self.get_or_404(id=id)
+    async def reject(self, *, lang: str, id: int, user_id: str | None) -> Transfer:
+        transfer = await self.get_or_404(lang=lang, id=id)
         if user_id is not None:
             if transfer.user_id_to != user_id:
                 raise HTTPException(
@@ -111,8 +113,8 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         transfer.accepted = False
         transfer.completed = True
         transfer.completed_at = datetime.now()
-        await self.update(id=id, obj_in=transfer)
-        return await self.get_or_404(id=id)
+        await self.update(id=id, lang=lang, obj_in=transfer)
+        return await self.get_or_404(lang=lang, id=id)
 
 
 transfers = CRUDTransfers(Transfer, tables.transfer)

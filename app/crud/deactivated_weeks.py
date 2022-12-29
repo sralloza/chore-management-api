@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 
+from ..core.i18n import DEFAULT_LANG
 from ..db import tables
 from ..models.deactivated_weeks import DeactivatedWeek, DeactivatedWeekCreate
 from .base import CRUDBase
@@ -18,10 +19,12 @@ def filter_week(
 class CRUDDeactivatedWeeks(
     CRUDBase[DeactivatedWeek, DeactivatedWeek, DeactivatedWeek, str]
 ):
-    def throw_not_found_exception(self, id: str):
+    def throw_not_found_exception(self, id: str, **kwargs):  # noqa: ARG002
         raise HTTPException(400, f"Week {id} is already deactivated")
 
-    def throw_conflict_exception(self, id: str, action="deactivated"):
+    def throw_conflict_exception(
+        self, id: str, action="deactivated", **kwargs  # noqa: ARG002
+    ):
         if "#" not in id:
             detail = f"Week {id} is already {action}"
         else:
@@ -31,7 +34,7 @@ class CRUDDeactivatedWeeks(
 
     async def create(self, *, obj_in: DeactivatedWeekCreate) -> DeactivatedWeek:
         obj = DeactivatedWeek(**obj_in.dict(), id=obj_in.compute_id())
-        return await super().create(obj_in=obj)
+        return await super().create(lang=DEFAULT_LANG, obj_in=obj)
 
     async def get_multi(
         self,

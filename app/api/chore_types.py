@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Body, Depends
 
 from .. import crud
+from ..core.params import LANG_HEADER
 from ..dependencies.auth import admin_required, user_required
 from ..models.chore_type import ChoreType
 from ..models.extras import Message
@@ -23,8 +24,8 @@ router = APIRouter()
         409: {"model": Message, "description": "ChoreType already exists"},
     },
 )
-async def create_chore_type(chore_type: ChoreType = Body(...)):
-    return await crud.chore_types.create(obj_in=chore_type)
+async def create_chore_type(chore_type: ChoreType = Body(...), lang: str = LANG_HEADER):
+    return await crud.chore_types.create(lang=lang, obj_in=chore_type)
 
 
 @router.get(
@@ -38,8 +39,8 @@ async def create_chore_type(chore_type: ChoreType = Body(...)):
         404: {"model": Message, "description": "Chore type not found"},
     },
 )
-async def get_chore_type(chore_type_id: str):
-    return await crud.chore_types.get_or_404(id=chore_type_id)
+async def get_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
+    return await crud.chore_types.get_or_404(lang=lang, id=chore_type_id)
 
 
 @router.get(
@@ -67,5 +68,5 @@ async def get_chore_types():
         404: {"model": Message, "description": "Chore type not found"},
     },
 )
-async def delete_chore_type(chore_type_id: str):
-    return await crud.chore_types.delete(id=chore_type_id)
+async def delete_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
+    return await crud.chore_types.delete(id=chore_type_id, lang=lang)

@@ -1,3 +1,4 @@
+from ..core.i18n import DEFAULT_LANG
 from ..db import tables
 from ..db.session import database
 from ..models.rotations import Rotation
@@ -11,7 +12,7 @@ class CRUDRotation(CRUDBase[Rotation, Rotation, Rotation, str]):
         return Rotation(**row) if row is not None else None
 
     async def delete(self, *, id: str) -> None:
-        await self.get_or_404(id=id)
+        await self.get_or_404(lang=DEFAULT_LANG, id=id)
         await database.execute(self.table.delete().where(self.table.c.week_id == id))
 
 

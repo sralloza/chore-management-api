@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Path, Query
 
 from .. import crud
-from ..core.params import WEEK_ID_PATH
+from ..core.params import LANG_HEADER, WEEK_ID_PATH
 from ..core.patterns import WEEK_ID_EXPANDED_REGEX
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
@@ -67,8 +67,9 @@ async def complete_chore(
     week_id: str = WEEK_ID_PATH,
     chore_type_id: str = Path(..., description="Chore type ID"),
     user_id: str | None = Depends(get_user_id_from_api_key),
+    lang: str = LANG_HEADER,
 ):
     week_id = expand_week_id(week_id)
     await crud.chores.complete_chore(
-        week_id=week_id, chore_type_id=chore_type_id, user_id=user_id
+        lang=lang, week_id=week_id, chore_type_id=chore_type_id, user_id=user_id
     )

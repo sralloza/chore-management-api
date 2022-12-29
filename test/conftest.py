@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pytest
 from behave.parser import parse_feature
-
 from metatests.core import get_operation_id_by_scenario as gop_id
 
 

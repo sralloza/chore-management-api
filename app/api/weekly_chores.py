@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Query
 
-from ..core.params import WEEK_ID_PATH
+from ..core.params import LANG_HEADER, WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..core.weekly_chores import (
     create_weekly_chores,
@@ -36,11 +36,14 @@ async def route_create_weekly_chores(
     force: bool = Query(
         False, description="Force creation of weekly chores even if users have changed"
     ),
+    lang: str = LANG_HEADER,
 ):
     """Create weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
-    chores = await create_weekly_chores(week_id, dry_run=dry_run, force=force)
+    chores = await create_weekly_chores(
+        week_id, lang=lang, dry_run=dry_run, force=force
+    )
     return await get_weekly_chores_by_chores(chores, week_id)
 
 
@@ -82,7 +85,9 @@ async def list_weekly_chores(
 ):
     """List all weekly chores."""
     return await get_all_weekly_chores(
-        missing_only=missing_only, page=pagination.page, per_page=pagination.per_page
+        missing_only=missing_only,
+        page=pagination.page,
+        per_page=pagination.per_page,
     )
 
 
@@ -99,8 +104,8 @@ async def list_weekly_chores(
         404: {"model": Message, "description": "Weekly chores not found"},
     },
 )
-async def delete_weekly_chores(week_id: str = WEEK_ID_PATH):
+async def delete_weekly_chores(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     """Delete weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id)
-    return await delete_weekly_chores_by_week_id(week_id)
+    return await delete_weekly_chores_by_week_id(week_id, lang)

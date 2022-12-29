@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from .. import crud
+from ..core.params import LANG_HEADER
 from ..dependencies.auth import APIKeySecurity, get_user_id_from_api_key, user_required
 from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.extras import Message
@@ -24,10 +25,11 @@ async def start_transfer(
     transfer: TransferCreate,
     user_id: str = Depends(get_user_id_from_api_key),
     x_token: str = APIKeySecurity,
+    lang: str = LANG_HEADER,
 ):
     """Start a chore transfer."""
     return await crud.transfers.create(
-        obj_in=transfer, user_id=user_id, x_token=x_token
+        lang=lang, obj_in=transfer, user_id=user_id, x_token=x_token
     )
 
 
@@ -43,9 +45,9 @@ async def start_transfer(
     },
     summary="Get transfer",
 )
-async def get_transfer(transfer_id: int):
+async def get_transfer(transfer_id: int, lang: str = LANG_HEADER):
     """Get a chore transfer by its id."""
-    return await crud.transfers.get_or_404(id=transfer_id)
+    return await crud.transfers.get_or_404(lang=lang, id=transfer_id)
 
 
 @router.get(
@@ -82,9 +84,10 @@ async def list_transfers(pagination: PaginationParams = Depends(pagination_param
 async def accept_transfer(
     transfer_id: int,
     user_id: str = Depends(get_user_id_from_api_key),
+    lang: str = LANG_HEADER,
 ):
     """Accept a chore transfer."""
-    return await crud.transfers.accept(id=transfer_id, user_id=user_id)
+    return await crud.transfers.accept(lang=lang, id=transfer_id, user_id=user_id)
 
 
 @router.post(
@@ -103,6 +106,7 @@ async def accept_transfer(
 async def reject_transfer(
     transfer_id: int,
     user_id: str = Depends(get_user_id_from_api_key),
+    lang: str = LANG_HEADER,
 ):
     """Reject a chore transfer."""
-    return await crud.transfers.reject(id=transfer_id, user_id=user_id)
+    return await crud.transfers.reject(lang=lang, id=transfer_id, user_id=user_id)
