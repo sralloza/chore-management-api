@@ -236,3 +236,18 @@ Feature: Chores API - completeChore
       | 2022.55      |
       | 2022023      |
       | whatever     |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |
