@@ -1,6 +1,6 @@
 es:
-  "401": Falta la clave de API
-  user-required: Acceso de usuario requerido
-  admin-required: Acceso de administrador requerido
-  keyword-me-admin: No se puede usar la palabra clave especial me con la clave de API de administrador
-  403-user-data: No tienes permiso para acceder a los datos de este usuario
+  unauthorized: Falta la clave de la API
+  forbidden.user_required: Acceso de usuario requerido
+  forbidden.admin_required: Acceso de administrador requerido
+  bad_request.keyword_me_admin: No se puede usar la palabra clave especial me con la clave de API de administrador
+  forbidden.other_user_data: No tienes permiso para acceder a los datos de este usuario
