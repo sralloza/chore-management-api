@@ -7,7 +7,7 @@ from common.utils import assert_has_table, parse_table
 def step_create_transfers(context):
     assert_has_table(context)
     context.table.require_columns(
-        ["tenant_id_from", "tenant_id_to", "chore_type", "week_id", "accepted"]
+        ["user_id_from", "user_id_to", "chore_type_id", "week_id", "accepted"]
     )
 
     table = parse_table(context.table)
@@ -16,16 +16,16 @@ def step_create_transfers(context):
         accepted = line["accepted"]
         del line["accepted"]
 
-        attr_name = line.get("id_attr_name", "transferId")
+        attr_name = line.get("id_attr_name", "transfer_id")
         context.execute_steps(
             f"""
-        Given I use the token of the tenant with id "{line['tenant_id_from']}"
+        Given I use the token of the user with id "{line['user_id_from']}"
         When I send a request to the Api resource "startTransfer" with body params
-            | param_name     | param_value              |
-            | tenant_id_from | {line['tenant_id_from']} |
-            | tenant_id_to   | {line['tenant_id_to']}   |
-            | chore_type     | {line['chore_type']}     |
-            | week_id        | {line['week_id']}        |
+            | param_name    | param_value             |
+            | user_id_from  | {line['user_id_from']}  |
+            | user_id_to    | {line['user_id_to']}    |
+            | chore_type_id | {line['chore_type_id']} |
+            | week_id       | {line['week_id']}       |
         Then The response status code is "200"
         And I save the "id" attribute of the response as "{attr_name}"
         """
@@ -34,8 +34,8 @@ def step_create_transfers(context):
         transfer_id = getattr(context, attr_name)
 
         template = f"""
-        Given the field "transferId" with value "{transfer_id}"
-        And I use the token of the tenant with id "{line['tenant_id_to']}"
+        Given the field "transfer_id" with value "{transfer_id}"
+        And I use the token of the user with id "{line['user_id_to']}"
         When I send a request to the Api resource "{{}}"
         Then the response status code is "200"
         """
