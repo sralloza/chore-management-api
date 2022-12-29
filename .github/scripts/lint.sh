@@ -4,13 +4,11 @@ set -ueo pipefail
 
 cd app
 echo "Linting app"
-poetry run isort .
 poetry run black .
 poetry run ruff .
 
 cd ../test
 echo "Linting tests"
-poetry run isort .
 poetry run black .
 poetry run ruff .
 

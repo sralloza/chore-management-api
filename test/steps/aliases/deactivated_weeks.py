@@ -8,7 +8,7 @@ DEACTIVATE_MSG = (
 
 
 @given(f"{DEACTIVATE_MSG} editing the database")
-def step_insert_deactivated_weeks_db(context, week_id, user_id):
+def step_insert_deactivated_weeks_db(context, week_id, user_id):  # noqa: ARG001
     row_id = f"{week_id}#{user_id}"
     execute_query(
         "INSERT INTO deactivated_weeks (id, week_id, user_id) VALUES (%s, %s, %s)",
