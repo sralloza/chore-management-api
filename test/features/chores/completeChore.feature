@@ -6,20 +6,34 @@ Feature: Chores API - completeChore
   I want to complete a task
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "User access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for guest
     When I send a request to the Api
+    And the header language is set to "<lang>"
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -160,25 +174,28 @@ Feature: Chores API - completeChore
 
 
   Scenario Outline: Validate error response when requesting other user's data
-    Given there are 2 users, 2 chore types and weekly chores for the week "<week_id>"
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And the header language is set to "<lang>"
     And the fields
-      | field         | value           |
-      | week_id       | <week_id>       |
-      | chore_type_id | <chore_type_id> |
+      | field         | value   |
+      | week_id       | 2022.01 |
+      | chore_type_id | ct-a    |
     And I use the token of the user with id "user-2"
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "You are not assigned to any chores of type <chore_type_id> for week <week_id>"
+    And the error message is "<err_msg>"
 
-    Examples: week_id = <week_id> | chore_type_id = <chore_type_id>
-      | week_id | chore_type_id |
-      | 2022.01 | ct-a          |
-      | 2022.22 | ct-a          |
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                               |
+      | en       | You are not assigned to any chores of type ct-a for week 2022.01      |
+      | es       | No estás asignado a ninguna tarea de tipo ct-a para la semana 2022.01 |
+      | whatever | You are not assigned to any chores of type ct-a for week 2022.01      |
 
 
-  Scenario: Validate error response when completing a task twice
+  Scenario Outline: Validate error response when completing a task twice
     Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And the header language is set to "<lang>"
     And the fields
       | field         | value   |
       | week_id       | 2022.01 |
@@ -188,7 +205,13 @@ Feature: Chores API - completeChore
     Then the response status code is "204"
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is "Chore with week_id=2022.01 and chore_type_id=ct-a is already completed"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang>
+      | lang     | err_msg                                                                |
+      | en       | Chore with week_id=2022.01 and chore_type_id=ct-a is already completed |
+      | es       | La tarea de la semana 2022.01 y tipo ct-a está ya completada           |
+      | whatever | Chore with week_id=2022.01 and chore_type_id=ct-a is already completed |
 
 
   Scenario Outline: Validate error response invalid week_id

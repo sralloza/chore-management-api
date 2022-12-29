@@ -27,24 +27,25 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             table_name=self.table.name, id=primary_key
         )
 
+    def get_model_name(self, lang: str):
+        return i18n.t(f"models.{self.model.__name__}", locale=lang)
+
     def throw_conflict_exception(self, *, lang: str, id: IDType):
-        model = i18n.t(f"models.{self.model.__name__}", locale=lang)
         detail = i18n.t(
             "crud.conflict",
             locale=lang,
-            model_name=model,
+            model_name=self.get_model_name(lang=lang),
             primary_key=self.primary_key,
             id=id,
         )
         raise HTTPException(409, detail)
 
     def throw_not_found_exception(self, lang: str, id: IDType):
-        model = i18n.t(f"models.{self.model.__name__}", locale=lang)
         detail = i18n.t(
             "crud.not_found",
             locale=lang,
             id=id,
-            model_name=model,
+            model_name=self.get_model_name(lang=lang),
             primary_key=self.primary_key,
         )
         raise HTTPException(404, detail)
