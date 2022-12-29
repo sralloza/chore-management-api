@@ -86,6 +86,8 @@ If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek]
 
 This API supports error message internationalization only in user-scoped endpoints (those that need a user API key). The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
 
+**Disclaimer**: Only the common errors are translated. The validation errors (status code 422) are not translated.
+
 **Warning**: If the language is not supported or is invalid, the API will return an error in the default language.
 
 # Authorization

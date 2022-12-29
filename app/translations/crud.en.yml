@@ -1,3 +1,5 @@
 en:
   not_found: "%{model_name} with %{primary_key}=%{id} does not exist"
   conflict: "%{model_name} with %{primary_key}=%{id} already exists"
+  not_found.no_chores: "You are not assigned to any chores of type %{chore_type_id} for week %{week_id}"
+  bad_request.already_completed: "%{model_name} with week_id=%{week_id} and chore_type_id=%{chore_type_id} is already completed"

@@ -1,3 +1,5 @@
 es:
   not_found: "No existe ningún %{model_name} con %{primary_key}=%{id}"
   conflict: "Ya existe un %{model_name} con %{primary_key}=%{id}"
+  not_found.no_chores: "No estás asignado a ninguna tarea de tipo %{chore_type_id} para la semana %{week_id}"
+  bad_request.already_completed: "La tarea de la semana %{week_id} y tipo %{chore_type_id} está ya completada"
