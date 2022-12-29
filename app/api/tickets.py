@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from .. import crud
+from ..core.params import LANG_HEADER
 from ..dependencies.auth import user_required
 from ..models.extras import Message
 from ..models.ticket import GroupedTicket
@@ -18,5 +19,5 @@ router = APIRouter()
         403: {"model": Message, "description": "User access required"},
     },
 )
-async def get_tickets():
-    return await crud.tickets.get_grouped_tickets()
+async def get_tickets(lang: str = LANG_HEADER):
+    return await crud.tickets.get_grouped_tickets(lang=lang)

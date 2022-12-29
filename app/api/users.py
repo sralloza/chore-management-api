@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends, HTTPException
 
 from .. import crud
-from ..core.params import USER_ID_PATH, WEEK_ID_PATH
+from ..core.params import LANG_HEADER, USER_ID_PATH, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
@@ -28,10 +28,10 @@ router = APIRouter()
         },
     },
 )
-async def create_user(user: UserCreate = Body()):
+async def create_user(user: UserCreate = Body(), lang: str = LANG_HEADER):
     """Register a new user. Note that the system setting `assignment_order` will be
     reset after this operation."""
-    return await crud.user.create(obj_in=user)
+    return await crud.user.create(lang=lang, obj_in=user)
 
 
 @router.get(
@@ -49,10 +49,12 @@ async def create_user(user: UserCreate = Body()):
         404: {"model": Message, "description": "User not found"},
     },
 )
-async def get_user(user_id: str = USER_ID_PATH, x_token: str = APIKeySecurity):
+async def get_user(
+    user_id: str = USER_ID_PATH, x_token: str = APIKeySecurity, lang: str = LANG_HEADER
+):
     """Get user by id. Any user can access their own data using the
     special keyword `me`."""
-    return await crud.user.get_or_404_me_safe(id=user_id, api_key=x_token)
+    return await crud.user.get_or_404_me_safe(lang=lang, id=user_id, api_key=x_token)
 
 
 @router.get(
@@ -95,10 +97,11 @@ async def deactivate_week(
     user_id: str = USER_ID_PATH,
     week_id: str = WEEK_ID_PATH,
     x_token: str = APIKeySecurity,
+    lang: str = LANG_HEADER,
 ):
     """Deactivates the chore creation on a specific week for just a specific user."""
     user_id = await expand_user_id(user_id, x_token)
-    await crud.user.get_or_404(id=user_id)
+    await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id, equals=True)
@@ -126,10 +129,11 @@ async def reactivate_week(
     user_id: str = USER_ID_PATH,
     week_id: str = WEEK_ID_PATH,
     x_token: str = APIKeySecurity,
+    lang: str = LANG_HEADER,
 ):
     """Reactivates the chore creation on a specific week for just a specific user."""
     user_id = await expand_user_id(user_id, x_token)
-    await crud.user.get_or_404(id=user_id)
+    await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id, equals=True)
@@ -141,6 +145,6 @@ async def reactivate_week(
             id=obj.compute_id(), action="activated"
         )
 
-    await crud.deactivated_weeks.delete(id=obj.compute_id())
+    await crud.deactivated_weeks.delete(lang=lang, id=obj.compute_id())
 
     return WeekId(week_id=week_id)

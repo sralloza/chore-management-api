@@ -11,16 +11,16 @@ UserUpdate = UserCreate
 
 
 class CRUDUser(CRUDBase[User, UserCreateInner, UserUpdate, str]):
-    async def create(self, *, obj_in: UserCreate) -> User:
+    async def create(self, *, lang: str, obj_in: UserCreate) -> User:
         user = UserCreateInner(**obj_in.dict())
-        result = await super().create(obj_in=user)
-        await crud.settings.reset_assignment_order()
-        await crud.tickets.create_tickets_for_new_user(user_id=result.id)
+        result = await super().create(lang=lang, obj_in=user)
+        await crud.settings.reset_assignment_order(lang=lang)
+        await crud.tickets.create_tickets_for_new_user(lang=lang, user_id=result.id)
         return result
 
-    async def get_or_404_me_safe(self, *, api_key: str, id: str) -> User:
+    async def get_or_404_me_safe(self, *, lang: str, api_key: str, id: str) -> User:
         id = await expand_user_id(id, api_key)
-        return await super().get_or_404(id=id)
+        return await super().get_or_404(lang=lang, id=id)
 
     async def get_user_ids(self) -> list[str]:
         query = sa.select([self.table.c.id]).order_by(self.table.c.created_at)

@@ -1,0 +1,6 @@
+en:
+  "401": Missing API key
+  user-required: User access required
+  admin-required: Admin access required
+  keyword-me-admin: Can't use the special keyword me with the admin API key
+  403-user-data: You don't have permission to access this user's data

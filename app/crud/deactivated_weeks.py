@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 
+from ..core.i18n import DEFAULT_LANG
 from ..db import tables
 from ..models.deactivated_weeks import DeactivatedWeek, DeactivatedWeekCreate
 from .base import CRUDBase
@@ -31,7 +32,7 @@ class CRUDDeactivatedWeeks(
 
     async def create(self, *, obj_in: DeactivatedWeekCreate) -> DeactivatedWeek:
         obj = DeactivatedWeek(**obj_in.dict(), id=obj_in.compute_id())
-        return await super().create(obj_in=obj)
+        return await super().create(lang=DEFAULT_LANG, obj_in=obj)
 
     async def get_multi(
         self,

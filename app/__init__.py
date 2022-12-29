@@ -10,6 +10,7 @@ from . import crud
 from .api import router as router_v1
 from .core.config import settings
 from .core.deactivated_weeks import clean_old_deactivated_weeks
+from .core.i18n import load_translations
 from .core.logging import setup_logging
 from .core.scheduler import scheduler
 from .core.version import version
@@ -43,6 +44,7 @@ app.include_router(router_v1, prefix="/api/v1")
 @app.on_event("startup")
 async def startup():
     setup_logging()
+    load_translations()
     if settings.is_production:
         logger.info("Running in PRO environment")
 

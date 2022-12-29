@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Body, Depends
 
 from .. import crud
-from ..core.params import WEEK_ID_PATH
+from ..core.params import LANG_HEADER, WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import admin_required, user_required
 from ..models.deactivated_weeks import DeactivatedWeekCreate
@@ -23,9 +23,13 @@ router = APIRouter()
         403: {"model": Message, "description": "Admin access required"},
     },
 )
-async def edit_settings(settings: SettingsUpdateIO = Body(...)):
+async def edit_settings(
+    settings: SettingsUpdateIO = Body(...), lang: str = LANG_HEADER
+):
     """Edit the system settings."""
-    return crud.settings.map_to_io(await crud.settings.update(obj_in=settings))
+    return crud.settings.map_to_io(
+        await crud.settings.update(lang=lang, obj_in=settings)
+    )
 
 
 @router.get(
@@ -39,9 +43,9 @@ async def edit_settings(settings: SettingsUpdateIO = Body(...)):
         403: {"model": Message, "description": "Admin access required"},
     },
 )
-async def get_settings():
+async def get_settings(lang: str = LANG_HEADER):
     """Get the system settings."""
-    return crud.settings.map_to_io(await crud.settings.get_or_404())
+    return crud.settings.map_to_io(await crud.settings.get_or_404(lang=lang))
 
 
 @router.post(
@@ -78,11 +82,11 @@ async def deactivate_week(week_id: str = WEEK_ID_PATH):
     },
     summary="Reactivate chore creation",
 )
-async def reactivate_week(week_id: str = WEEK_ID_PATH):
+async def reactivate_week(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     """Reactivates the chore creation on a specific week for all users."""
     week_id = expand_week_id(week_id)
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=None)
-    await crud.deactivated_weeks.delete(id=obj_in.compute_id())
+    await crud.deactivated_weeks.delete(id=obj_in.compute_id(), lang=lang)
     return WeekId(week_id=week_id)
 
 

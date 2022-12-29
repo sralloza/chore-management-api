@@ -1,5 +1,4 @@
 from datetime import datetime
-from logging import getLogger
 
 from fastapi import HTTPException
 
@@ -7,12 +6,10 @@ from ..db import tables
 from ..models.chore import Chore, ChoreCreate
 from .base import CRUDBase
 
-logger = getLogger(__name__)
-
 
 class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
     async def complete_chore(
-        self, *, week_id: str, chore_type_id: str, user_id: str | None = None
+        self, *, lang: str, week_id: str, chore_type_id: str, user_id: str | None
     ):
         chores = await self.get_multi(week_id=week_id, chore_type_id=chore_type_id)
         if not chores:
@@ -29,7 +26,7 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
             )
             raise HTTPException(status_code=400, detail=detail)
 
-        if user_id:
+        if user_id is not None:
             user_ids = set(chore.user_id for chore in chores)
             if user_id not in user_ids:
                 detail = (
@@ -37,15 +34,11 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
                     f" for week {week_id}"
                 )
                 raise HTTPException(status_code=404, detail=detail)
-        else:
-            logger.warning(
-                "No user_id provided to complete_chore, skipping user_id check"
-            )
 
         for chore in chores:
             chore.done = True
             chore.completed_at = datetime.now()
-            await self.update(id=chore.id, obj_in=chore)
+            await self.update(id=chore.id, lang=lang, obj_in=chore)
 
 
 chores = CRUDChore(Chore, tables.chore)

@@ -1,0 +1,6 @@
+es:
+  "401": Falta la clave de API
+  user-required: Acceso de usuario requerido
+  admin-required: Acceso de administrador requerido
+  keyword-me-admin: No se puede usar la palabra clave especial me con la clave de API de administrador
+  403-user-data: No tienes permiso para acceder a los datos de este usuario
