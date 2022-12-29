@@ -63,20 +63,42 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         obj_in_inner = TransferCreateInner(**obj_in.dict())
         return await super().create(obj_in=obj_in_inner, check_409=check_409)
 
-    async def accept(self, id: int, user_id: str | None = None) -> Transfer:
+    async def accept(self, id: int, user_id: str | None) -> Transfer:
         transfer = await self.get_or_404(id=id)
         if user_id is not None:
             if transfer.user_id_to != user_id:
                 raise HTTPException(
                     403, "You cannot accept a transfer for another user"
                 )
+
+        if transfer.completed:
+            raise HTTPException(400, "Transfer is already completed")
+
+        chores = await crud.chores.get_multi(
+            chore_type_id=transfer.chore_type_id,
+            week_id=transfer.week_id,
+            user_id=transfer.user_id_from,
+        )
+        if len(chores) > 1:
+            raise ValueError("More than one chore of the same type for the same week")
+
+        chore = chores[0]
+        chore.user_id = transfer.user_id_to
+        await crud.chores.update(id=chore.id, obj_in=chore)
+
+        await crud.tickets.transfer_ticket(
+            user_id_from=transfer.user_id_from,
+            user_id_to=transfer.user_id_to,
+            chore_type_id=transfer.chore_type_id,
+        )
+
         transfer.accepted = True
         transfer.completed = True
         transfer.completed_at = datetime.now()
         await self.update(id=id, obj_in=transfer)
         return await self.get_or_404(id=id)
 
-    async def reject(self, id: int, user_id: str | None = None) -> Transfer:
+    async def reject(self, id: int, user_id: str | None) -> Transfer:
         transfer = await self.get_or_404(id=id)
         if user_id is not None:
             if transfer.user_id_to != user_id:
