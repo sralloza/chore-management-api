@@ -23,8 +23,8 @@ Feature: Chores API - completeChore
 
   @authorization
   Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
-    And the header language is set to "<lang>"
     Then the response status code is "401"
     And the response status code is defined
     And the error message is "<err_msg>"
