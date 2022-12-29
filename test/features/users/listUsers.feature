@@ -7,29 +7,50 @@ Feature: Users API - listUsers
 
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
-  Scenario: Validate response for user
+  Scenario Outline: Validate response for user
     Given I create a user and I use the user API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
@@ -65,8 +86,3 @@ Feature: Users API - listUsers
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
