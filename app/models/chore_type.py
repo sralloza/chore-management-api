@@ -13,7 +13,7 @@ class ChoreType(BaseModel):
     description: str = CHORE_TYPE_DESCRIPTION_FIELD
 
     @validator("name", "description", pre=True)
-    def strip(cls, v): # noqa: N805
+    def strip(cls, v):  # noqa: N805
         if isinstance(v, str):
             return v.strip()
         return v

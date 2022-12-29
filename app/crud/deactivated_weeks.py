@@ -23,7 +23,7 @@ class CRUDDeactivatedWeeks(
         raise HTTPException(400, f"Week {id} is already deactivated")
 
     def throw_conflict_exception(
-        self, id: str, action="deactivated", **kwargs # noqa: ARG002
+        self, id: str, action="deactivated", **kwargs  # noqa: ARG002
     ):
         if "#" not in id:
             detail = f"Week {id} is already {action}"

@@ -75,7 +75,7 @@ async def list_users():
 @router.delete(
     "/{user_id}", dependencies=[Depends(admin_required)], operation_id="deleteUser"
 )
-async def delete_user(user_id: str): # noqa: ARG001
+async def delete_user(user_id: str):  # noqa: ARG001
     raise HTTPException(status_code=501, detail="Not implemented")
 
 

@@ -128,7 +128,7 @@ async def _create_weekly_chores(
         lang=lang,
         obj_in=Rotation(
             rotation=new_rotation, week_id=week_id, user_ids_hash=user_ids_hash
-        )
+        ),
     )
     return chores
 
