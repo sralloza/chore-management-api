@@ -100,7 +100,7 @@ async def deactivate_week(
     lang: str = LANG_HEADER,
 ):
     """Deactivates the chore creation on a specific week for just a specific user."""
-    user_id = await expand_user_id(user_id, x_token)
+    user_id = await expand_user_id(user_id, x_token, lang)
     await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)
@@ -132,7 +132,7 @@ async def reactivate_week(
     lang: str = LANG_HEADER,
 ):
     """Reactivates the chore creation on a specific week for just a specific user."""
-    user_id = await expand_user_id(user_id, x_token)
+    user_id = await expand_user_id(user_id, x_token, lang)
     await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)

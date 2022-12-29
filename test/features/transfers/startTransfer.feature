@@ -7,11 +7,34 @@ Feature: Transfers API - startTransfer
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -42,9 +65,9 @@ Feature: Transfers API - startTransfer
     And the response status code is defined
 
 
-  @skip
-  Scenario: Validate error response when using keyword me with the admin token
+  Scenario Outline: Validate error response when using keyword me with the admin token
     Given there is 1 user
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api with body params
       | param_name    | param_value |
@@ -54,12 +77,18 @@ Feature: Transfers API - startTransfer
       | week_id       | 2022.01     |
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Cannot use keyword me with an admin token"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                            |
+      | en       | Can't use the special keyword me with the admin API key                            |
+      | es       | No se puede usar la palabra clave especial me con la clave de API de administrador |
+      | whatever | Can't use the special keyword me with the admin API key                            |
 
 
-  @skip
-  Scenario: Validate error response when requesting other user's data
+  Scenario Outline: Validate error response when requesting other user's data
     Given there are 2 users
+    And the header language is set to "<lang>"
     And I use the token of the user with id "user-2"
     When I send a request to the Api with body params
       | param_name    | param_value |
@@ -69,7 +98,13 @@ Feature: Transfers API - startTransfer
       | week_id       | 2022.01     |
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "You don't have permission to access other user's data"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                             |
+      | en       | You cannot create a transfer for another user       |
+      | es       | No puedes crear una transferencia para otro usuario |
+      | whatever | You cannot create a transfer for another user       |
 
 
   Scenario Outline: Start chore transfer happy path
@@ -145,7 +180,7 @@ Feature: Transfers API - startTransfer
       | user-5  | 0 | 0 | 0 | 0 | 0 |
 
 
-  Scenario: Start chore transfer to user2 after user1 has rejected it.
+  Scenario: Start chore transfer to user-2 after user-1 has rejected it.
     Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
     And I use the token of the user with id "user-1"
     When I send a request to the Api with body params
@@ -198,8 +233,9 @@ Feature: Transfers API - startTransfer
       | user-2  | 0 | 0 |
 
 
-  Scenario: Validate error response when a user tries to transfer a chore to multiple users
+  Scenario Outline: Validate error response when a user tries to transfer a chore to multiple users
     Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
+    And the header language is set to "<lang>"
     And I use the token of the user with id "user-1"
     When I send a request to the Api with body params
       | param_name    | param_value |
@@ -215,7 +251,13 @@ Feature: Transfers API - startTransfer
       | chore_type_id | ct-a        | false     |
       | week_id       | 2022.01     | true      |
     Then the response status code is "400"
-    And the error message is "Cannot transfer chore to multiple users"
+    And the error message is "<err_msg>"
+
+    Examples:
+      | lang     | err_msg                                               |
+      | en       | Cannot transfer chore to multiple users               |
+      | es       | No se puede transferir una tarea a múltiples usuarios |
+      | whatever | Cannot transfer chore to multiple users               |
 
 
   Scenario Outline: Validate error response with invalid params
@@ -228,6 +270,7 @@ Feature: Transfers API - startTransfer
       | chore_type_id | <chore_type_id> | false     |
       | week_id       | <week_id>       | true      |
     Then the response status code is "422"
+    And the response status code is defined
     And the response contains the following validation errors
       | location | param   | msg       |
       | body     | <param> | <err_msg> |
@@ -261,6 +304,7 @@ Feature: Transfers API - startTransfer
 
   Scenario Outline: Validate error response when the user_id does not belong to any user
     Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api with body params
       | param_name    | param_value    | as_string |
@@ -269,16 +313,22 @@ Feature: Transfers API - startTransfer
       | chore_type_id | ct-a           | false     |
       | week_id       | 2022.01        | true      |
     Then the response status code is "400"
-    And the error message is "User invalid does not exist"
+    And the response status code is defined
+    And the error message is "<err_msg>"
 
     Examples: user_id_from = <user_id_from> | user_id_to = <user_id_to>
-      | user_id_from | user_id_to |
-      | invalid      | user-1     |
-      | user-1       | invalid    |
+      | user_id_from | user_id_to | lang     | err_msg                                 |
+      | invalid      | user-1     | en       | User with id=invalid does not exist     |
+      | invalid      | user-1     | es       | No existe ningún usuario con id=invalid |
+      | invalid      | user-1     | whatever | User with id=invalid does not exist     |
+      | user-1       | invalid    | en       | User with id=invalid does not exist     |
+      | user-1       | invalid    | es       | No existe ningún usuario con id=invalid |
+      | user-1       | invalid    | whatever | User with id=invalid does not exist     |
 
 
-  Scenario: Validate error response when the user_id_from is the same as the user_id_to
+  Scenario Outline: Validate error response when the user_id_from is the same as the user_id_to
     Given I use the admin API key
+    And the header language is set to "<lang>"
     When I send a request to the Api with body params
       | param_name    | param_value | as_string |
       | user_id_from  | user-1      | false     |
@@ -286,12 +336,20 @@ Feature: Transfers API - startTransfer
       | chore_type_id | ct-a        | false     |
       | week_id       | 2022.01     | true      |
     Then the response status code is "400"
-    And the error message is "Cannot transfer chore to the same user"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                           |
+      | en       | Cannot transfer chore to the same user            |
+      | es       | No se puede transferir una tarea al mismo usuario |
+      | whatever | Cannot transfer chore to the same user            |
 
 
-  Scenario: Validate error response when a tenant tries to transfer a chore that belongs to another tenant
+  Scenario Outline: Validate error response when a user tries to transfer a chore that belongs to another user
     Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
-    Given I use the token of the user with id "user-1"
+    And I use the token of the user with id "user-1"
+    And the header language is set to "<lang>"
     When I send a request to the Api with body params
       | param_name    | param_value | as_string |
       | user_id_from  | user-1      | false     |
@@ -299,11 +357,19 @@ Feature: Transfers API - startTransfer
       | chore_type_id | ct-c        | false     |
       | week_id       | 2022.01     | true      |
     Then the response status code is "400"
-    And the error message is "No chores of type ct-c for week 2022.01 assigned to user user-1"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                              |
+      | en       | No chores of type ct-c for week 2022.01 assigned to user with id=user-1              |
+      | es       | No hay tareas de tipo ct-c para la semana 2022.01 asignadas al usuario con id=user-1 |
+      | whatever | No chores of type ct-c for week 2022.01 assigned to user with id=user-1              |
 
 
-  Scenario: Validate error response when a tenant tries to transfer a chore which type does not exist
+  Scenario Outline: Validate error response when a user tries to transfer a chore which type does not exist
     Given there are 3 users
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api with body params
       | param_name    | param_value | as_string |
@@ -312,4 +378,26 @@ Feature: Transfers API - startTransfer
       | chore_type_id | X           | false     |
       | week_id       | 2022.01     | true      |
     Then the response status code is "400"
-    And the error message is "Chore type with id X does not exist"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                 |
+      | en       | ChoreType with id=X does not exist      |
+      | es       | No existe ningún tipo de tarea con id=X |
+      | whatever | ChoreType with id=X does not exist      |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |

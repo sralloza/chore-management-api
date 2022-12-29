@@ -38,9 +38,10 @@ async def list_chores(
     done: bool = Query(None, description="Filter by status"),
     x_token: str = APIKeySecurity,
     pagination: PaginationParams = Depends(pagination_params),
+    lang: str = LANG_HEADER,
 ):
     week_id = expand_week_id(week_id)
-    user_id = await expand_user_id(user_id, x_token)
+    user_id = await expand_user_id(user_id, x_token, lang)
 
     return await crud.chores.get_multi(
         page=pagination.page,

@@ -16,6 +16,7 @@ router = APIRouter()
     operation_id="startTransfer",
     response_model=Transfer,
     responses={
+        400: {"model": Message, "description": "Bad request"},
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
     },

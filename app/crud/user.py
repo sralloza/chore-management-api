@@ -19,7 +19,7 @@ class CRUDUser(CRUDBase[User, UserCreateInner, UserUpdate, str]):
         return result
 
     async def get_or_404_me_safe(self, *, lang: str, api_key: str, id: str) -> User:
-        id = await expand_user_id(id, api_key)
+        id = await expand_user_id(id, api_key, lang)
         return await super().get_or_404(lang=lang, id=id)
 
     async def get_user_ids(self) -> list[str]:
