@@ -30,6 +30,15 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     def get_model_name(self, lang: str):
         return i18n.t(f"models.{self.model.__name__}", locale=lang)
 
+    def get_not_found_detail(self, lang: str, id: IDType):
+        return i18n.t(
+            "crud.not_found",
+            locale=lang,
+            id=id,
+            model_name=self.get_model_name(lang=lang),
+            primary_key=self.primary_key,
+        )
+
     def throw_conflict_exception(self, *, lang: str, id: IDType):
         detail = i18n.t(
             "crud.conflict",
@@ -41,14 +50,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         raise HTTPException(409, detail)
 
     def throw_not_found_exception(self, lang: str, id: IDType):
-        detail = i18n.t(
-            "crud.not_found",
-            locale=lang,
-            id=id,
-            model_name=self.get_model_name(lang=lang),
-            primary_key=self.primary_key,
-        )
-        raise HTTPException(404, detail)
+        raise HTTPException(404, self.get_not_found_detail(lang, id))
 
     async def get(self, id: IDType) -> Optional[ModelType]:
         data = await database.fetch_one(query=self.select_query, values={"id": id})
