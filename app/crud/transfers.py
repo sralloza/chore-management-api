@@ -81,8 +81,11 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         if user_id is not None:
             if transfer.user_id_to != user_id:
                 raise HTTPException(
-                    403, "You cannot accept a transfer for another user"
+                    403, "You cannot reject a transfer for another user"
                 )
+        if transfer.completed:
+            raise HTTPException(400, "Transfer is already completed")
+
         transfer.accepted = False
         transfer.completed = True
         transfer.completed_at = datetime.now()

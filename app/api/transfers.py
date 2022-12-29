@@ -11,45 +11,95 @@ router = APIRouter()
 
 @router.post(
     "",
+    dependencies=[Depends(user_required)],
     operation_id="startTransfer",
     response_model=Transfer,
-    dependencies=[Depends(user_required)],
     responses={
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
     },
+    summary="Start transfer",
 )
 async def start_transfer(
     transfer: TransferCreate,
     user_id: str = Depends(get_user_id_from_api_key),
     x_token: str = APIKeySecurity,
 ):
+    """Start a chore transfer."""
     return await crud.transfers.create(
         obj_in=transfer, user_id=user_id, x_token=x_token
     )
 
 
-@router.get("/{transfer_id}", operation_id="getTransfer", response_model=Transfer)
+@router.get(
+    "/{transfer_id}",
+    dependencies=[Depends(user_required)],
+    operation_id="getTransfer",
+    response_model=Transfer,
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "Transfer not found"},
+    },
+    summary="Get transfer",
+)
 async def get_transfer(transfer_id: int):
+    """Get a chore transfer by its id."""
     return await crud.transfers.get_or_404(id=transfer_id)
 
 
-@router.get("", operation_id="listTransfers", response_model=list[Transfer])
+@router.get(
+    "",
+    dependencies=[Depends(user_required)],
+    operation_id="listTransfers",
+    response_model=list[Transfer],
+    responses={
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+    },
+    summary="List transfers",
+)
 async def list_transfers(pagination: PaginationParams = Depends(pagination_params)):
+    """List chore transfers."""
     return await crud.transfers.get_multi(
         page=pagination.page, per_page=pagination.per_page
     )
 
 
 @router.post(
-    "/{transfer_id}/accept", operation_id="acceptTransfer", response_model=Transfer
+    "/{transfer_id}/accept",
+    dependencies=[Depends(user_required)],
+    operation_id="acceptTransfer",
+    response_model=Transfer,
+    responses={
+        400: {"model": Message, "description": "Transfer already completed"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "Transfer not found"},
+    },
+    summary="Accept transfer",
 )
 async def accept_transfer(transfer_id: int):
+    """Accept a chore transfer."""
     return await crud.transfers.accept(id=transfer_id)
 
 
 @router.post(
-    "/{transfer_id}/reject", operation_id="rejectTransfer", response_model=Transfer
+    "/{transfer_id}/reject",
+    dependencies=[Depends(user_required)],
+    operation_id="rejectTransfer",
+    response_model=Transfer,
+    responses={
+        400: {"model": Message, "description": "Transfer already completed"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "Transfer not found"},
+    },
+    summary="Reject transfer",
 )
-async def reject_transfer(transfer_id: int):
-    return await crud.transfers.reject(id=transfer_id)
+async def reject_transfer(
+    transfer_id: int,
+    user_id: str = Depends(get_user_id_from_api_key),
+):
+    """Reject a chore transfer."""
+    return await crud.transfers.reject(id=transfer_id, user_id=user_id)
