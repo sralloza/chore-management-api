@@ -2,25 +2,25 @@
   {
     "accepted": true,
     "completed": true,
-    "tenant_id_from": 1,
-    "tenant_id_to": 2,
-    "chore_type": "A",
+    "user_id_from": "user-1",
+    "user_id_to": "user-2",
+    "chore_type_id": "ct-a",
     "week_id": "2022.01"
   },
   {
     "accepted": false,
     "completed": true,
-    "tenant_id_from": 3,
-    "tenant_id_to": 2,
-    "chore_type": "C",
+    "user_id_from": "user-3",
+    "user_id_to": "user-2",
+    "chore_type_id": "ct-c",
     "week_id": "2022.01"
   },
   {
     "accepted": null,
     "completed": false,
-    "tenant_id_from": 4,
-    "tenant_id_to": 2,
-    "chore_type": "D",
+    "user_id_from": "user-4",
+    "user_id_to": "user-2",
+    "chore_type_id": "ct-d",
     "week_id": "2022.01"
   }
 ]
