@@ -3,6 +3,7 @@ from pydantic.error_wrappers import ErrorWrapper
 from pydantic.errors import PydanticValueError
 
 from .. import crud
+from ..core.i18n import DEFAULT_LANG
 from ..db import tables
 from ..db.session import database
 from ..models.settings import (
@@ -18,22 +19,21 @@ from .base import CRUDBase
 REAL_ID = "9ccce886-4fe2-42fc-872e-3afc2fa14ccf"
 
 
-class InvalidAssigmentOrder(PydanticValueError):
+class InvalidAssigmentOrderError(PydanticValueError):
     code = "value_error.invalid_assignment_order"
     msg_template = "assignment_order contains invalid user ids or is missing some"
 
 
 class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
-    async def get(self, *, lang: str, **kwargs) -> Settings | None:
-        res = await super().get(id=REAL_ID)
-        if res:
-            return res
-        return await self.create_default(lang=lang, check_409=False)
+    async def get(self, **kwargs) -> Settings | None:  # noqa: ARG002
+        return await super().get(id=REAL_ID)
 
-    async def get_or_404(self, *, lang: str, **kwargs) -> Settings:
+    async def get_or_404(self, *, lang: str, **kwargs) -> Settings:  # noqa: ARG002
         return await super().get_or_404(lang=lang, id=REAL_ID)
 
-    async def get_multi(self, *, page: int = 1, per_page: int = 30) -> list[Settings]:
+    async def get_multi(
+        self, *, page: int = 1, per_page: int = 30  # noqa: ARG002
+    ) -> list[Settings]:
         raise NotImplementedError
 
     async def create_default(
@@ -51,8 +51,12 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
             check_409=check_409,
         )
 
-    async def reset_assignment_order(self, lang: str):
-        await self.get(lang=lang)
+    async def ensure_exists(self):
+        if not await self.get():
+            await self.create_default(lang=DEFAULT_LANG)
+
+    async def reset_assignment_order(self):
+        await self.ensure_exists()
         user_ids = await crud.user.get_user_ids()
 
         values = dict(assignment_order=",".join(user_ids))
@@ -66,12 +70,11 @@ class CRUDSettings(CRUDBase[Settings, SettingsCreate, SettingsUpdate, str]):
             existing_user_ids = set([x.id for x in users])
             if asked_user_ids != existing_user_ids:
                 error = ErrorWrapper(
-                    InvalidAssigmentOrder(), loc=("body", "assignment_order")
+                    InvalidAssigmentOrderError(), loc=("body", "assignment_order")
                 )
                 raise RequestValidationError(errors=[error])
 
-        # self.get() creates the default settings if they don't exist
-        await self.get(lang=lang)
+        await self.ensure_exists()
 
         update_data = obj_in.dict(exclude_unset=True)
         assignment_order = update_data.pop("assignment_order", None)

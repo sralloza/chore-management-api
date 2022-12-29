@@ -11,7 +11,7 @@ class UserCreate(BaseModel):
     id: str = USER_ID_FIELD
 
     @validator("id", pre=True)
-    def check_blacklist(cls, v):
+    def check_blacklist(cls, v): # noqa: N805
         if isinstance(v, str) and v.lower() == "me":
             raise ValueError("Forbidden user ID: me")
         return v

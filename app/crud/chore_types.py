@@ -9,7 +9,9 @@ from .base import CRUDBase
 class CRUDChoreTypes(CRUDBase[ChoreType, ChoreType, ChoreType, str]):
     async def create(self, *, lang: str, obj_in: ChoreType) -> ChoreType:
         result = await super().create(lang=lang, obj_in=obj_in)
-        await crud.tickets.create_tickets_for_new_chore_type(chore_type_id=result.id)
+        await crud.tickets.create_tickets_for_new_chore_type(
+            lang=lang, chore_type_id=result.id
+        )
         return result
 
     async def delete(self, *, lang: str, id: str) -> None:

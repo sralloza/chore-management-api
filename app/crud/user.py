@@ -14,7 +14,7 @@ class CRUDUser(CRUDBase[User, UserCreateInner, UserUpdate, str]):
     async def create(self, *, lang: str, obj_in: UserCreate) -> User:
         user = UserCreateInner(**obj_in.dict())
         result = await super().create(lang=lang, obj_in=user)
-        await crud.settings.reset_assignment_order(lang=lang)
+        await crud.settings.reset_assignment_order()
         await crud.tickets.create_tickets_for_new_user(lang=lang, user_id=result.id)
         return result
 

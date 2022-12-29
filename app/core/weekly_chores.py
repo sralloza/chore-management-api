@@ -14,7 +14,7 @@ from ..models.weekly_chores import WeeklyChore, WeeklyChores
 
 
 async def create_weekly_chores(
-    week_id: str, *, dry_run: bool = False, force: bool = False
+    week_id: str, *, dry_run: bool = False, force: bool = False, lang: str
 ):
     deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
     if deactivated_weeks:
@@ -41,14 +41,14 @@ async def create_weekly_chores(
 
     rotation = await crud.rotation.get_last_rotation()
     if rotation is None:
-        return await _create_weekly_chores(chore_types, week_id, None, dry_run=dry_run)
+        return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
 
     users_hash = calculate_hash([user.id for user in users])
     if rotation.user_ids_hash != users_hash and force is False:
         raise HTTPException(400, "Users have changed since last weekly chores creation")
 
     return await _create_weekly_chores(
-        chore_types, week_id, rotation.rotation, dry_run=dry_run
+        chore_types, week_id, lang, rotation.rotation, dry_run=dry_run
     )
 
 
@@ -59,10 +59,13 @@ def get_rotation_sign(settings):
 async def _create_weekly_chores(
     chore_types: list[ChoreType],
     week_id: str,
-    last_rotation: int | None,
+    lang: str,
+    last_rotation: int | None = None,
     dry_run: bool = False,
 ) -> list[ChoreCreate]:
-    settings = await crud.settings.get_or_404()
+    settings = await crud.settings.get(lang=lang)
+    if settings is None:
+        settings = await crud.settings.create_default(lang=lang)
     deactivated_weeks = await crud.deactivated_weeks.get_multi(
         week_id=week_id, assigned_to_user=True
     )
@@ -118,10 +121,11 @@ async def _create_weekly_chores(
         return chores
 
     for chore in chores:
-        await crud.chores.create(obj_in=chore)
+        await crud.chores.create(lang=lang, obj_in=chore)
 
     user_ids_hash = calculate_hash(user_ids)
     await crud.rotation.create(
+        lang=lang,
         obj_in=Rotation(
             rotation=new_rotation, week_id=week_id, user_ids_hash=user_ids_hash
         )
@@ -150,7 +154,6 @@ async def get_all_weekly_chores(
                 ],
                 done=all([chore.done for chore in chore_list]),
                 type=chore_type,
-                week_id=week_id,
             )
             weekly_chores.append(weekly_chore)
         if missing_only is False:
@@ -186,13 +189,12 @@ async def get_weekly_chores_by_chores(
             assigned_usernames=[get_user_name(chore.user_id) for chore in chore_list],
             done=all([chore.done for chore in chore_list]),
             type=chore_type,
-            week_id=week_id,
         )
         weekly_chores.append(weekly_chore)
     return WeeklyChores(chores=weekly_chores, week_id=week_id)
 
 
-async def delete_weekly_chores_by_week_id(week_id: str):
+async def delete_weekly_chores_by_week_id(week_id: str, lang: str):
     chores = await crud.chores.get_multi(week_id=week_id)
     if not chores:
         raise HTTPException(404, f"No weekly chores found for week {week_id}")
@@ -201,7 +203,7 @@ async def delete_weekly_chores_by_week_id(week_id: str):
         if chore.done:
             raise HTTPException(400, "Weekly chores are partially completed")
     for chore in chores:
-        await crud.chores.delete(id=chore.id)
+        await crud.chores.delete(lang=lang, id=chore.id)
 
     last_rotation = await crud.rotation.get_last_rotation()
     if last_rotation is None:

@@ -27,12 +27,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             table_name=self.table.name, id=primary_key
         )
 
-    def throw_conflict_exception(self, lang: str, id: IDType):
-        model = i18n.t(f"model.{self.model.__name__}", locale=lang)
+    def throw_conflict_exception(self, *, lang: str, id: IDType):
+        model = i18n.t(f"models.{self.model.__name__}", locale=lang)
         detail = i18n.t(
             "crud.conflict",
             locale=lang,
-            model=model,
+            model_name=model,
             primary_key=self.primary_key,
             id=id,
         )
@@ -57,7 +57,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         obj = await self.get(id=id)
         if obj is not None:
             return obj
-        self.throw_not_found_exception(lang, id)
+        self.throw_not_found_exception(lang=lang, id=id)
 
     async def get_multi(
         self, *, page: int = 1, per_page: int = 30, query_mod=None, **kwargs
@@ -83,7 +83,9 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         obj_in_data = obj_in.dict()
         if self.primary_key in obj_in_data and check_409:
             if await self.get(id=obj_in_data[self.primary_key]):
-                self.throw_conflict_exception(lang, obj_in_data[self.primary_key])
+                self.throw_conflict_exception(
+                    lang=lang, id=obj_in_data[self.primary_key]
+                )
 
         db_id = await database.execute(self.table.insert(), obj_in_data)
         real_id = (

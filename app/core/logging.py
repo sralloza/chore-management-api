@@ -55,12 +55,12 @@ def log_exception(request: Request, exc: Exception):
 
 
 def setup_logging():
-    DISABLED_LOGGERS = (
+    disabled_loggers = (
         "uvicorn",
         "uvicorn.access",
         "uvicorn.error",
     )
-    LOGGING_CONFIG = {
+    logging_config = {
         "version": 1,
         "loggers": {
             "": {
@@ -96,7 +96,7 @@ def setup_logging():
         },
         "formatters": {
             "default_formatter": {
-                "format": "[%(asctime)s] [%(levelname)s] %(name)s: %(message)s",
+                "format": "[%(asctime)s] [%(levelname)s] {%(name)s}: %(message)s",
             },
             "access_formatter": {
                 "format": "%(message)s",
@@ -104,17 +104,10 @@ def setup_logging():
         },
     }
     print("Setting up logging")
-    for logger in DISABLED_LOGGERS:
-        LOGGING_CONFIG["loggers"][logger] = {"level": "CRITICAL", "propagate": False}
+    for logger in disabled_loggers:
+        logging_config["loggers"][logger] = {"level": "ERROR", "propagate": False}
 
-    logging.config.dictConfig(LOGGING_CONFIG)
-    # logging.basicConfig(level="INFO", format="[%(levelname)s] %(name)s - %(message)s")
-    # logging.getLogger("uvicorn").setLevel("CRITICAL")
-    # logging.getLogger("uvicorn.error").setLevel("CRITICAL")
-    # logging.getLogger("uvicorn.access").setLevel("CRITICAL")
-    # logging.getLogger("watchfiles.watcher").setLevel("CRITICAL")
-    # logging.getLogger("watchfiles").setLevel("CRITICAL")
-    # logging.getLogger("watchfiles.main").setLevel("CRITICAL")
+    logging.config.dictConfig(logging_config)
 
     loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
     print(f"Loggers: {loggers}")

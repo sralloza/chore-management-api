@@ -45,7 +45,10 @@ async def edit_settings(
 )
 async def get_settings(lang: str = LANG_HEADER):
     """Get the system settings."""
-    return crud.settings.map_to_io(await crud.settings.get_or_404(lang=lang))
+    settings = await crud.settings.get(lang=lang)
+    if settings is None:
+        settings = await crud.settings.create_default(lang=lang)
+    return crud.settings.map_to_io(settings)
 
 
 @router.post(

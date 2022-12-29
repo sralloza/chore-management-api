@@ -75,7 +75,7 @@ async def list_users():
 @router.delete(
     "/{user_id}", dependencies=[Depends(admin_required)], operation_id="deleteUser"
 )
-async def delete_user(user_id: str):
+async def delete_user(user_id: str): # noqa: ARG001
     raise HTTPException(status_code=501, detail="Not implemented")
 
 
@@ -142,7 +142,7 @@ async def reactivate_week(
 
     if not await crud.deactivated_weeks.get(id=obj.compute_id()):
         crud.deactivated_weeks.throw_conflict_exception(
-            id=obj.compute_id(), action="activated"
+            lang=lang, id=obj.compute_id(), action="activated"
         )
 
     await crud.deactivated_weeks.delete(lang=lang, id=obj.compute_id())
