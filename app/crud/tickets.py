@@ -69,5 +69,25 @@ class CRUDTickets(CRUDBase[Ticket, TicketCreate, Ticket, int]):
                 )
             )
 
+    async def transfer_ticket(
+        self, *, user_id_from: str, user_id_to: str, chore_type_id: str
+    ):
+        await crud.user.get_or_404(id=user_id_from)
+        await crud.user.get_or_404(id=user_id_to)
+        await crud.chore_types.get_or_404(id=chore_type_id)
+
+        db_ticket_from = (
+            await self.get_multi(chore_type_id=chore_type_id, user_id=user_id_from)
+        )[0]
+        db_ticket_to = (
+            await self.get_multi(chore_type_id=chore_type_id, user_id=user_id_to)
+        )[0]
+
+        db_ticket_from.tickets -= 1
+        db_ticket_to.tickets += 1
+
+        await self.update(id=db_ticket_from.id, obj_in=db_ticket_from)
+        await self.update(id=db_ticket_to.id, obj_in=db_ticket_to)
+
 
 tickets = CRUDTickets(Ticket, tables.ticket)

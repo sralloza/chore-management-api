@@ -79,9 +79,12 @@ async def list_transfers(pagination: PaginationParams = Depends(pagination_param
     },
     summary="Accept transfer",
 )
-async def accept_transfer(transfer_id: int):
+async def accept_transfer(
+    transfer_id: int,
+    user_id: str = Depends(get_user_id_from_api_key),
+):
     """Accept a chore transfer."""
-    return await crud.transfers.accept(id=transfer_id)
+    return await crud.transfers.accept(id=transfer_id, user_id=user_id)
 
 
 @router.post(
