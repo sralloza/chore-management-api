@@ -1,5 +1,6 @@
 es:
   not_found: "No existe ningún %{model_name} con %{primary_key}=%{id}"
+  not_found.femenine: "No existe ninguna %{model_name} con %{primary_key}=%{id}"
   conflict: "Ya existe un %{model_name} con %{primary_key}=%{id}"
   not_found.no_chores: "No estás asignado a ninguna tarea de tipo %{chore_type_id} para la semana %{week_id}"
   bad_request.already_completed: "La tarea de la semana %{week_id} y tipo %{chore_type_id} está ya completada"
@@ -7,3 +8,4 @@ es:
   forbidden.transfer_other_user: No puedes %{action} una transferencia para otro usuario
   bad_request.transfer_to_self: No se puede transferir una tarea al mismo usuario
   bad_request.transfer_no_chores: "No hay tareas de tipo %{chore_type_id} para la semana %{week_id} asignadas al usuario con id=%{user_id}"
+  bad_request.transfer_completed: La transferencia ya está completada
