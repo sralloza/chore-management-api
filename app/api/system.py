@@ -64,12 +64,12 @@ async def get_settings(lang: str = LANG_HEADER):
     },
     summary="Deactivate chore creation",
 )
-async def deactivate_week(week_id: str = WEEK_ID_PATH):
+async def deactivate_week(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     """Deactivates the chore creation on a specific week for all users."""
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id, equals=True)
+    await validate_week_id_age(week_id, lang, equals=True)
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=None)
-    await crud.deactivated_weeks.create(obj_in=obj_in)
+    await crud.deactivated_weeks.create(obj_in=obj_in, lang=lang)
     return WeekId(week_id=week_id)
 
 

@@ -105,7 +105,7 @@ def setup_logging():
     }
     print("Setting up logging")
     for logger in disabled_loggers:
-        logging_config["loggers"][logger] = {"level": "ERROR", "propagate": False}
+        logging_config["loggers"][logger] = {"level": "CRITICAL", "propagate": False}
 
     logging.config.dictConfig(logging_config)
 

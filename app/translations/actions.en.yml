@@ -2,3 +2,5 @@ en:
   reject: reject
   accept: accept
   create: create
+  activated: activated
+  deactivated: deactivated

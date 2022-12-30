@@ -9,3 +9,7 @@ es:
   bad_request.transfer_to_self: No se puede transferir una tarea al mismo usuario
   bad_request.transfer_no_chores: "No hay tareas de tipo %{chore_type_id} para la semana %{week_id} asignadas al usuario con id=%{user_id}"
   bad_request.transfer_completed: La transferencia ya está completada
+  bad_request.chores_exist_week: Ya hay tareas creadas para la semana %{week_id}
+  bad_request.chores_exist_after_week: Ya hay tareas creadas para después de la semana %{week_id}
+  conflict.week_already_action_user: La semana %{week_id} ya está %{action} para el usuario con id=%{user_id}
+  conflict.week_already_action: La semana %{week_id} ya está %{action}

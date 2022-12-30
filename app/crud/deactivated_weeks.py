@@ -1,6 +1,6 @@
+import i18n
 from fastapi import HTTPException
 
-from ..core.i18n import DEFAULT_LANG
 from ..db import tables
 from ..models.deactivated_weeks import DeactivatedWeek, DeactivatedWeekCreate
 from .base import CRUDBase
@@ -19,22 +19,28 @@ def filter_week(
 class CRUDDeactivatedWeeks(
     CRUDBase[DeactivatedWeek, DeactivatedWeek, DeactivatedWeek, str]
 ):
-    def throw_not_found_exception(self, id: str, **kwargs):  # noqa: ARG002
-        raise HTTPException(400, f"Week {id} is already deactivated")
+    def throw_not_found_exception(self, lang: str, id: str):
+        kwargs = dict(locale=lang, action="deactivated", week_id=id)
+        detail = i18n.t("crud.conflict.week_already_action", **kwargs)
+        raise HTTPException(400, detail)
 
-    def throw_conflict_exception(
-        self, id: str, action="deactivated", **kwargs  # noqa: ARG002
-    ):
+    def throw_conflict_exception(self, *, id: str, lang: str, action="deactivated"):
+        action = i18n.t(f"actions.{action}", locale=lang)
+        kwargs = dict(locale=lang, action=action, week_id=id)
+
         if "#" not in id:
-            detail = f"Week {id} is already {action}"
+            detail = i18n.t("crud.conflict.week_already_action", **kwargs)
         else:
             week_id, user_id = id.split("#")
-            detail = f"Week {week_id} is already {action} for user {user_id}"
+            kwargs.update(week_id=week_id, user_id=user_id)
+            detail = i18n.t("crud.conflict.week_already_action_user", **kwargs)
         raise HTTPException(409, detail)
 
-    async def create(self, *, obj_in: DeactivatedWeekCreate) -> DeactivatedWeek:
+    async def create(
+        self, *, lang: str, obj_in: DeactivatedWeekCreate
+    ) -> DeactivatedWeek:
         obj = DeactivatedWeek(**obj_in.dict(), id=obj_in.compute_id())
-        return await super().create(lang=DEFAULT_LANG, obj_in=obj)
+        return await super().create(lang=lang, obj_in=obj)
 
     async def get_multi(
         self,

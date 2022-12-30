@@ -40,7 +40,7 @@ async def route_create_weekly_chores(
 ):
     """Create weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id)
+    await validate_week_id_age(week_id, lang)
     chores = await create_weekly_chores(
         week_id, lang=lang, dry_run=dry_run, force=force
     )
@@ -59,10 +59,10 @@ async def route_create_weekly_chores(
         404: {"model": Message, "description": "Weekly chores not found"},
     },
 )
-async def get_weekly_chores(week_id: str = WEEK_ID_PATH):
+async def get_weekly_chores(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     """Get weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id)
+    await validate_week_id_age(week_id, lang)
     return await get_weekly_chores_by_week_id(week_id)
 
 
@@ -107,5 +107,5 @@ async def list_weekly_chores(
 async def delete_weekly_chores(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     """Delete weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id)
+    await validate_week_id_age(week_id, lang)
     return await delete_weekly_chores_by_week_id(week_id, lang)

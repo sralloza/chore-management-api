@@ -104,10 +104,10 @@ async def deactivate_week(
     await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id, equals=True)
+    await validate_week_id_age(week_id, lang, equals=True)
 
     obj_in = DeactivatedWeekCreate(week_id=week_id, user_id=user_id)
-    await crud.deactivated_weeks.create(obj_in=obj_in)
+    await crud.deactivated_weeks.create(obj_in=obj_in, lang=lang)
     return WeekId(week_id=week_id)
 
 
@@ -136,7 +136,7 @@ async def reactivate_week(
     await crud.user.get_or_404(lang=lang, id=user_id)
 
     week_id = expand_week_id(week_id)
-    await validate_week_id_age(week_id, equals=True)
+    await validate_week_id_age(week_id, lang, equals=True)
 
     obj = DeactivatedWeekCreate(week_id=week_id, user_id=user_id)
 
