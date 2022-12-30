@@ -316,7 +316,7 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Chore types exist after week <parsed_week_id>"
+    And the error message is "Chores exist after week <parsed_week_id>"
 
     Examples: week_id = <week_id> | parsed_week_id = <parsed_week_id>
       | week_id               | parsed_week_id        |

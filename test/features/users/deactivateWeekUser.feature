@@ -151,7 +151,7 @@ Feature: Users API - deactivateWeekUser
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is "Chore types exist for week 2022.01"
+    And the error message is "Chores exist for week 2022.01"
 
 
   Scenario: Validate error respones deactivating a week twice

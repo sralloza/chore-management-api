@@ -57,7 +57,7 @@ async def get_settings(lang: str = LANG_HEADER):
     operation_id="deactivateWeekSystem",
     response_model=WeekId,
     responses={
-        400: {"model": Message, "description": "Chore types exist for week"},
+        400: {"model": Message, "description": "Chores exist for week"},
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "Admin access required"},
         409: {"model": Message, "description": "Week is already deactivated"},

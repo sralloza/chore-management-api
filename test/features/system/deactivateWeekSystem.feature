@@ -93,8 +93,8 @@ Feature: System API - deactivateWeekSystem
 
     Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | error_message = <error_message>
       | week_id_1 | week_id_2 | error_message                        |
-      | 2022.01   | 2022.01   | Chore types exist for week 2022.01   |
-      | 2022.04   | 2022.01   | Chore types exist after week 2022.01 |
+      | 2022.01   | 2022.01   | Chores exist for week 2022.01   |
+      | 2022.04   | 2022.01   | Chores exist after week 2022.01 |
 
 
   Scenario: Validate error response when deactivating a week twice

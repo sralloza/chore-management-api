@@ -97,8 +97,8 @@ Feature: Users API - reactivateWeekUser
 
     Examples: week_id = <week_id> | msg = <msg>
       | week_id | msg                                  |
-      | 2022.05 | Chore types exist for week 2022.05   |
-      | 2022.01 | Chore types exist after week 2022.01 |
+      | 2022.05 | Chores exist for week 2022.05   |
+      | 2022.01 | Chores exist after week 2022.01 |
 
 
   Scenario: Validate error response when using keyword me with the admin token
