@@ -7,3 +7,4 @@ en:
   forbidden.transfer_other_user: You cannot %{action} a transfer for another user
   bad_request.transfer_to_self: Cannot transfer chore to the same user
   bad_request.transfer_no_chores: "No chores of type %{chore_type_id} for week %{week_id} assigned to user with id=%{user_id}"
+  bad_request.transfer_completed: Transfer is already completed

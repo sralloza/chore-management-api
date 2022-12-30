@@ -16,7 +16,7 @@ SELECT_QUERY = "SELECT * FROM {table_name} WHERE {id} = :id"
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
-    template_409 = "{model_name} with {primary_key}={id} already exists"
+    spanish_model_femenine = False
 
     def __init__(self, model: Type[ModelType], table: Table, primary_key="id"):
         self.model = model
@@ -31,8 +31,12 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         return i18n.t(f"models.{self.model.__name__}", locale=lang)
 
     def get_not_found_detail(self, lang: str, id: IDType):
+        key = "crud.not_found"
+        if self.spanish_model_femenine and lang == "es":
+            key += ".femenine"
+
         return i18n.t(
-            "crud.not_found",
+            key,
             locale=lang,
             id=id,
             model_name=self.get_model_name(lang=lang),

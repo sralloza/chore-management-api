@@ -21,6 +21,12 @@ def validate_user_id(expected: str, actual: str | None, action: str, lang: str):
 
 
 class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
+    spanish_model_femenine = True
+
+    def raise_transfer_completed_exception(self, lang: str):
+        detail = i18n.t("crud.bad_request.transfer_completed", locale=lang)
+        raise HTTPException(400, detail)
+
     async def create(
         self,
         *,
@@ -85,7 +91,7 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         validate_user_id(transfer.user_id_to, user_id, "accept", lang)
 
         if transfer.completed:
-            raise HTTPException(400, "Transfer is already completed")
+            self.raise_transfer_completed_exception(lang)
 
         chores = await crud.chores.get_multi(
             chore_type_id=transfer.chore_type_id,
@@ -117,7 +123,7 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         validate_user_id(transfer.user_id_to, user_id, "reject", lang)
 
         if transfer.completed:
-            raise HTTPException(400, "Transfer is already completed")
+            self.raise_transfer_completed_exception(lang)
 
         transfer.accepted = False
         transfer.completed = True
