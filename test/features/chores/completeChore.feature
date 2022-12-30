@@ -2,7 +2,7 @@
 @completeChore
 Feature: Chores API - completeChore
 
-  As a tenant or admin
+  As a user or admin
   I want to complete a task
 
   @authorization

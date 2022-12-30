@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-WeeklyChore = namedtuple("WeeklyChore", "week_id chore tenants")
+WeeklyChore = namedtuple("WeeklyChore", "week_id chore user_ids")
 
 
 def parse_weekly_chores_res(res):
@@ -9,13 +9,13 @@ def parse_weekly_chores_res(res):
     chores = [y for x in chores for y in x]
 
     return [
-        WeeklyChore(x["week_id"], x["type"], tenants_to_str(x["assigned_ids"]))
+        WeeklyChore(x["week_id"], x["type"], user_ids_to_str(x["assigned_ids"]))
         for x in chores
     ]
 
 
-def tenants_to_str(tenants):
-    return ",".join([str(x) for x in tenants])
+def user_ids_to_str(user_ids):
+    return ",".join([str(x) for x in user_ids])
 
 
 def parse_weekly_chores_res_table_str(res):
@@ -35,7 +35,7 @@ def parse_weekly_chores_res_table_str(res):
         if chore["week_id"] not in parsed:
             parsed[chore["week_id"]] = {}
 
-        parsed[chore["week_id"]][chore["type"]] = tenants_to_str(chore["assigned_ids"])
+        parsed[chore["week_id"]][chore["type"]] = user_ids_to_str(chore["assigned_ids"])
 
     data = []
     for week_id, chore_dict in parsed.items():

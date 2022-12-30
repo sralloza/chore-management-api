@@ -4,16 +4,16 @@ from common.utils import toolium_replace
 def parse_tickets_res_table_str(res, sort_key=lambda x: x):
     step_1 = {}
     for line in res.json():
-        for tenant, tickets in line["tickets_by_user_id"].items():
-            if tenant not in step_1:
-                step_1[tenant] = {}
+        for user_id, tickets in line["tickets_by_user_id"].items():
+            if user_id not in step_1:
+                step_1[user_id] = {}
 
-            step_1[tenant][line["id"]] = tickets
+            step_1[user_id][line["id"]] = tickets
 
     data = []
-    for tenant, ticket_map in step_1.items():
+    for user_id, ticket_map in step_1.items():
         result = {}
-        result["user_id"] = tenant
+        result["user_id"] = user_id
         for _id, tickets in ticket_map.items():
             result[_id] = tickets
         data.append(result)
