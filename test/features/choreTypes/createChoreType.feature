@@ -7,37 +7,50 @@ Feature: Chore Types API - createChoreType
 
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
-  Scenario: Validate response for guest
-    When I send a request to the Api with body params
-      | param_name  | param_value              |
-      | id          | chore-type-a             |
-      | name        | chore-type-a             |
-      | description | description-chore-type-a |
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
+    When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
-  Scenario: Validate response for user
+  Scenario Outline: Validate response for user
     Given I create a user and I use the user API key
-    When I send a request to the Api with body params
-      | param_name  | param_value              |
-      | id          | chore-type-a             |
-      | name        | chore-type-a             |
-      | description | description-chore-type-a |
+    And the header language is set to "<lang>"
+    When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
@@ -135,18 +148,26 @@ Feature: Chore Types API - createChoreType
       """
 
 
-  Scenario: Validate error response when sending an invalid body
+  Scenario Outline: Validate error response when the payload is not a valid json
+    Given the header language is set to "<lang>"
     When I send a request to the Api with body
       """
       xxx
       """
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Request body is not a valid JSON"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                       |
+      | en       | Request body is not a valid JSON              |
+      | es       | El cuerpo de la petición no es un JSON válido |
+      | whatever | Request body is not a valid JSON              |
 
 
-  Scenario: Validate error response when creating a duplicated chore type
+  Scenario Outline: Validate error response when creating a duplicated chore type
     Given I use the admin API key
+    And the header language is set to "<lang>"
     When I send a request to the Api with body params
       | param_name  | param_value            |
       | id          | chore-type-id          |
@@ -160,7 +181,13 @@ Feature: Chore Types API - createChoreType
       | description | chore-type-description |
     Then the response status code is "409"
     And the response status code is defined
-    And the error message is "ChoreType with id=chore-type-id already exists"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                           |
+      | en       | ChoreType with id=chore-type-id already exists    |
+      | es       | Ya existe un tipo de tarea con id=chore-type-id |
+      | whatever | ChoreType with id=chore-type-id already exists    |
 
 
   Scenario Outline: Validate error response when missing required fields
@@ -193,7 +220,6 @@ Feature: Chore Types API - createChoreType
       | ct-id                   | ct-name                 | [EMPTY]                  | description | ensure this value has at least 1 characters  |
       | ct-id                   | ct-name                 | [B]                      | description | ensure this value has at least 1 characters  |
       | ct-id                   | ct-name                 | [STRING_WITH_LENGTH_256] | description | ensure this value has at most 255 characters |
-
 
 
   Scenario: Create a chore type with the largest id possible
@@ -281,8 +307,3 @@ Feature: Chore Types API - createChoreType
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
