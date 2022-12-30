@@ -63,7 +63,7 @@ async def get_weekly_chores(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER
     """Get weekly chores for a specific week."""
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id, lang)
-    return await get_weekly_chores_by_week_id(week_id)
+    return await get_weekly_chores_by_week_id(week_id, lang)
 
 
 @router.get(
