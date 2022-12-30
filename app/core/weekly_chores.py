@@ -24,34 +24,36 @@ async def create_weekly_chores(
 ):
     deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
     if deactivated_weeks:
-        raise HTTPException(
-            400,
-            f"Week {week_id} is deactivated",
+        detail = i18n.t(
+            "crud.bad_request.week_deactivated", locale=lang, week_id=week_id
         )
+        raise HTTPException(400, detail)
 
     users = await crud.user.get_multi()
-    chore_types = await crud.chore_types.get_multi()
-    chores = await crud.chores.get_multi(week_id=week_id)
-
     if not users:
-        raise HTTPException(400, "Can't create weekly chores, no users registered")
+        detail = i18n.t("crud.bad_request.no_users", locale=lang)
+        raise HTTPException(400, detail)
+
+    chore_types = await crud.chore_types.get_multi()
     if not chore_types:
-        raise HTTPException(
-            400, "Can't create weekly chores, no chore types registered"
-        )
+        detail = i18n.t("crud.bad_request.no_chore_types", locale=lang)
+        raise HTTPException(400, detail)
+
+    chores = await crud.chores.get_multi(week_id=week_id)
     if chores:
-        raise HTTPException(
-            409,
-            f"Weekly chores for week {week_id} already exist",
-        )
+        detail = i18n.t("crud.conflict.weekly_chores", locale=lang, week_id=week_id)
+        raise HTTPException(409, detail)
 
     rotation = await crud.rotation.get_last_rotation()
     if rotation is None:
         return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
 
     users_hash = calculate_hash([user.id for user in users])
-    if rotation.user_ids_hash != users_hash and force is False:
-        raise HTTPException(400, "Users have changed since last weekly chores creation")
+    if rotation.user_ids_hash != users_hash:
+        if force is False:
+            detail = i18n.t("crud.bad_request.users_changed", locale=lang)
+            raise HTTPException(400, detail)
+        return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
 
     return await _create_weekly_chores(
         chore_types, week_id, lang, rotation.rotation, dry_run=dry_run
