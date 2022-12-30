@@ -1,0 +1,2 @@
+es:
+  request_invalid_json: El cuerpo de la petición no es un JSON válido
