@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import i18n
 from fastapi import HTTPException
 
 from .. import crud
@@ -16,16 +17,26 @@ def expand_week_id(week_id: str) -> str:
     return week_id
 
 
-async def validate_week_id_age(week_id: str, *, equals=False):
+async def validate_week_id_age(week_id: str, lang: str, *, equals=False):
     last_rotation = await crud.rotation.get_last_rotation()
     if last_rotation is None:
         return
 
     if week_id < last_rotation.week_id:
-        raise HTTPException(400, f"Chores exist after week {week_id}")
+        detail = i18n.t(
+            "crud.bad_request.chores_exist_after_week",
+            locale=lang,
+            week_id=week_id,
+        )
+        raise HTTPException(400, detail)
 
     if equals is True and week_id == last_rotation.week_id:
-        raise HTTPException(400, f"Chores exist for week {week_id}")
+        detail = i18n.t(
+            "crud.bad_request.chores_exist_week",
+            locale=lang,
+            week_id=week_id,
+        )
+        raise HTTPException(400, detail)
 
 
 def get_week_id(datetime: datetime) -> WeekId:

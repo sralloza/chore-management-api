@@ -7,11 +7,34 @@ Feature: Users API - deactivateWeekUser
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -79,10 +102,13 @@ Feature: Users API - deactivateWeekUser
     Examples: week_id = <week_id> | real_week_id = <real_week_id>
       | week_id | real_week_id          |
       | next    | [NOW(%Y.%W) + 7 DAYS] |
+      | current | [NOW(%Y.%W)]          |
+      | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-  Scenario: Validate error response when accesing a non-existing user using the admin token
+  Scenario Outline: Validate error response when accesing a non-existing user using the admin token
     Given I use the admin API key
+    And the header language is set to "<lang>"
     And the fields
       | field   | value   |
       | user_id | xxx     |
@@ -90,11 +116,18 @@ Feature: Users API - deactivateWeekUser
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "User with id=xxx does not exist"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                             |
+      | en       | User with id=xxx does not exist     |
+      | es       | No existe ningún usuario con id=xxx |
+      | whatever | User with id=xxx does not exist     |
 
 
-  Scenario: Validate error response when using keyword me with the admin token
+  Scenario Outline: Validate error response when using keyword me with the admin token
     Given there is 1 user
+    And the header language is set to "<lang>"
     And I use the admin API key
     And the fields
       | field   | value   |
@@ -102,11 +135,19 @@ Feature: Users API - deactivateWeekUser
       | week_id | 2022.01 |
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is "Can't use the special keyword me with the admin API key"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                            |
+      | en       | Can't use the special keyword me with the admin API key                            |
+      | es       | No se puede usar la palabra clave especial me con la clave de API de administrador |
+      | whatever | Can't use the special keyword me with the admin API key                            |
 
 
-  Scenario: Validate error response when requesting other user's data
+  Scenario Outline: Validate error response when requesting other user's data
     Given there are 2 users
+    And the header language is set to "<lang>"
     And I use the token of the user with id "user-1"
     And the fields
       | field   | value   |
@@ -114,7 +155,14 @@ Feature: Users API - deactivateWeekUser
       | week_id | 2022.01 |
     When I send a request to the Api
     Then the response status code is "403"
-    And the error message is "You don't have permission to access this user's data"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang>
+      | lang     | err_msg                                                    |
+      | en       | You don't have permission to access this user's data       |
+      | es       | No tienes permiso para acceder a los datos de este usuario |
+      | whatever | You don't have permission to access this user's data       |
 
 
   Scenario Outline: Validate error response when a user skips an invalid week
@@ -142,8 +190,9 @@ Feature: Users API - deactivateWeekUser
       | whatever     |
 
 
-  Scenario: Validate error response deactivating a week that already has weekly chores
+  Scenario Outline: Validate error response deactivating a week that already has weekly chores
     Given there is 1 user, 1 chore type and weekly chores for the week "2022.01"
+    And the header language is set to "<lang>"
     And the fields
       | field   | value   | as_string |
       | user_id | user-1  | false     |
@@ -151,11 +200,19 @@ Feature: Users API - deactivateWeekUser
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
-    And the error message is "Chores exist for week 2022.01"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                      |
+      | en       | Chores exist for week 2022.01                |
+      | es       | Ya hay tareas creadas para la semana 2022.01 |
+      | whatever | Chores exist for week 2022.01                |
 
 
-  Scenario: Validate error respones deactivating a week twice
+  Scenario Outline: Validate error respones deactivating a week twice
     Given there is 1 user
+    And the header language is set to "<lang>"
     And the fields
       | field   | value   | as_string |
       | user_id | user-1  | false     |
@@ -166,4 +223,26 @@ Feature: Users API - deactivateWeekUser
     And the Api response contains the expected data
     When I send a request to the Api
     Then the response status code is "409"
-    And the error message is "Week 2022.01 is already deactivated for user user-1"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                             |
+      | en       | Week 2022.01 is already deactivated for user with id=user-1         |
+      | es       | La semana 2022.01 ya está desactivada para el usuario con id=user-1 |
+      | whatever | Week 2022.01 is already deactivated for user with id=user-1         |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |

@@ -134,7 +134,7 @@ Feature: Users API - reactivateWeekUser
     And I use the token of the user with id "user-1"
     When I send a request to the Api
     Then the response status code is "409"
-    And the error message is "Week 2025.01 is already activated for user user-1"
+    And the error message is "Week 2025.01 is already activated for user with id=user-1"
 
 
   Scenario Outline: Validate error response when reactivating chore creation for a syntactically invalid week
