@@ -14,3 +14,8 @@ es:
   conflict.week_already_action_user: La semana %{week_id} ya está %{action} para el usuario con id=%{user_id}
   conflict.week_already_action: La semana %{week_id} ya está %{action}
   not_found.weekly_chores: No hay tareas para la semana %{week_id}
+  bad_request.week_deactivated: La semana %{week_id} está desactivada
+  conflict.weekly_chores: Ya hay tareas creadas para la semana %{week_id}
+  bad_request.users_changed: Los usuarios han cambiado desde la última vez que se crearon las tareas
+  bad_request.no_users: No se pueden crear tareas semanales, no hay usuarios registrados
+  bad_request.no_chore_types: No se pueden crear tareas semanales, no hay tipos de tareas registrados

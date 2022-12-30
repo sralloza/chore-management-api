@@ -13,3 +13,8 @@ en:
   conflict.week_already_action_user: Week %{week_id} is already %{action} for user with id=%{user_id}
   conflict.week_already_action: Week %{week_id} is already %{action}
   not_found.weekly_chores: No weekly chores found for week %{week_id}
+  bad_request.week_deactivated: Week %{week_id} is deactivated
+  conflict.weekly_chores: Weekly chores for week %{week_id} already exist
+  bad_request.users_changed: Users have changed since last weekly chores creation
+  bad_request.no_users: Can't create weekly chores, no users registered
+  bad_request.no_chore_types: Can't create weekly chores, no chore types registered
