@@ -7,20 +7,34 @@ Feature: Users API - getUser
 
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "User access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -57,32 +71,53 @@ Feature: Users API - getUser
       | me                        |
 
 
-  Scenario: Validate error response when using keyword me with the admin API key
+  Scenario Outline: Validate error response when using keyword me with the admin API key
     Given I use the admin API key
+    And the header language is set to "<lang>"
     And the field "user_id" with value "me"
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Can't use the special keyword me with the admin API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                            |
+      | en       | Can't use the special keyword me with the admin API key                            |
+      | es       | No se puede usar la palabra clave especial me con la clave de API de administrador |
+      | whatever | Can't use the special keyword me with the admin API key                            |
 
 
-  Scenario: Validate error response when requesting other user's data
+  Scenario Outline: Validate error response when requesting other user's data
     Given I create a user
     And the field "user_id" with value "user-1"
+    And the header language is set to "<lang>"
     And I use the user API key
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "You don't have permission to access this user's data"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                    |
+      | en       | You don't have permission to access this user's data       |
+      | es       | No tienes permiso para acceder a los datos de este usuario |
+      | whatever | You don't have permission to access this user's data       |
 
 
-  Scenario: Validate error response when requesting a non existing user
+  Scenario Outline: Validate error response when requesting a non existing user
     Given I use the admin API key
     And the field "user_id" with value "xxx"
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "User with id=xxx does not exist"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                             |
+      | en       | User with id=xxx does not exist     |
+      | es       | No existe ningún usuario con id=xxx |
+      | whatever | User with id=xxx does not exist     |
 
 
   @common
