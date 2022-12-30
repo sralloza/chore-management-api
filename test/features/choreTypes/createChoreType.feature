@@ -222,7 +222,6 @@ Feature: Chore Types API - createChoreType
       | ct-id                   | ct-name                 | [STRING_WITH_LENGTH_256] | description | ensure this value has at most 255 characters |
 
 
-
   Scenario: Create a chore type with the largest id possible
     Given I use the admin API key
     When I send a request to the Api with body params
