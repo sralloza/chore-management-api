@@ -8,7 +8,7 @@ authors = ["Diego Alloza González <diego.allozagonzalez@telefonica.com>"]
 python = "^3.10"
 SQLAlchemy = "^1.4.45"
 fastapi = "^0.88.0"
-pydantic = "^1.10.3"
+pydantic = "^1.10.4"
 python-dotenv = "^0.21.0"
 uvicorn = {extras = ["standard"], version = "^0.20.0"}
 cryptography = "^38.0.3"
