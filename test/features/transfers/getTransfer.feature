@@ -5,12 +5,38 @@ Feature: Transfers API - getTransfer
   As an admin or user
   I want to get the details of a specific transfer
 
+
   @authorization
-  Scenario: Validate response for guest user
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
+    And the field "transfer_id" with value "1"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
     Given the field "transfer_id" with value "1"
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
-    And the error message is "Missing API key"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -54,9 +80,31 @@ Feature: Transfers API - getTransfer
       | 1            | 2          | ct-a          | 2022.01 | False     | None     |
 
 
-  Scenario: Validate error response when transfer does not exist
+  Scenario Outline: Validate error response when transfer does not exist
     Given I use the admin API key
+    And the header language is set to "<lang>"
     And the field "transfer_id" with value "999"
     When I send a request to the Api
     Then the response status code is "404"
-    And the error message is "Transfer with id=999 does not exist"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                    |
+      | en       | Transfer with id=999 does not exist        |
+      | es       | No existe ninguna transferencia con id=999 |
+      | whatever | Transfer with id=999 does not exist        |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |
