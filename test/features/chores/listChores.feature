@@ -7,20 +7,34 @@ Feature: Chores API - listChores
 
 
   @authorization
-  Scenario: Validate response for unauthorized user
+  Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "User access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -66,10 +80,10 @@ Feature: Chores API - listChores
     # app/models/chore.py:11
     # And the response body is validated against the json-schema
     And the Api response contains the expected data
-      | skip_param |
-      | created_at |
-      | completed_at  |
-      | id         |
+      | skip_param   |
+      | created_at   |
+      | completed_at |
+      | id           |
 
 
   Scenario Outline: Validate filters
@@ -124,16 +138,23 @@ Feature: Chores API - listChores
       | ct-b          | [NULL]  | [NULL]  | [FALSE] | [NONE] | [NONE]   | 2,6             |
 
 
-  Scenario: Validate error response when using keyword me with the admin token
+  Scenario Outline: Validate error response when using keyword me with the admin token
     Given there is 1 user
     And I use the admin API key
-    Given the parameters to filter the request
+    And the header language is set to "<lang>"
+    And the parameters to filter the request
       | param_name | param_value |
       | user_id    | me          |
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Can't use the special keyword me with the admin API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                            |
+      | en       | Can't use the special keyword me with the admin API key                            |
+      | es       | No se puede usar la palabra clave especial me con la clave de API de administrador |
+      | whatever | Can't use the special keyword me with the admin API key                            |
 
 
   Scenario Outline: Validate error response when filtering by an invalid weekId
@@ -156,3 +177,18 @@ Feature: Chores API - listChores
       | 2022.55      |
       | 2022023      |
       | whatever     |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |

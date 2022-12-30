@@ -7,11 +7,34 @@ Feature: Weekly Chores API - getWeeklyChores
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
     And the response status code is defined
-    And the error message is "Missing API key"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -53,13 +76,20 @@ Feature: Weekly Chores API - getWeeklyChores
       | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-  Scenario: Validate error response when weekly chores not found
+  Scenario Outline: Validate error response when weekly chores not found
     Given I use the admin API key
     And the field "week_id" with value "2022.01"
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "No weekly chores found for week 2022.01"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                 |
+      | en       | No weekly chores found for week 2022.01 |
+      | es       | No hay tareas para la semana 2022.01    |
+      | whatever | No weekly chores found for week 2022.01 |
 
 
   Scenario Outline: Validate error response when trying to get weekly chores by an invalid week_id
@@ -81,3 +111,18 @@ Feature: Weekly Chores API - getWeeklyChores
       | 2022.55      |
       | 2022023      |
       | whatever     |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |

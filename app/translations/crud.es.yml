@@ -13,3 +13,4 @@ es:
   bad_request.chores_exist_after_week: Ya hay tareas creadas para después de la semana %{week_id}
   conflict.week_already_action_user: La semana %{week_id} ya está %{action} para el usuario con id=%{user_id}
   conflict.week_already_action: La semana %{week_id} ya está %{action}
+  not_found.weekly_chores: No hay tareas para la semana %{week_id}
