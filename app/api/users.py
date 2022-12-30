@@ -85,7 +85,7 @@ async def delete_user(user_id: str):  # noqa: ARG001
     operation_id="deactivateWeekUser",
     response_model=WeekId,
     responses={
-        400: {"model": Message, "description": "Chore types exist for week"},
+        400: {"model": Message, "description": "Chores exist for week"},
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
         404: {"model": Message, "description": "User not found"},
@@ -117,7 +117,7 @@ async def deactivate_week(
     operation_id="reactivateWeekUser",
     response_model=WeekId,
     responses={
-        400: {"model": Message, "description": "Chore types exist for week"},
+        400: {"model": Message, "description": "Chores exist for week"},
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
         404: {"model": Message, "description": "User not found"},

@@ -22,10 +22,10 @@ async def validate_week_id_age(week_id: str, *, equals=False):
         return
 
     if week_id < last_rotation.week_id:
-        raise HTTPException(400, f"Chore types exist after week {week_id}")
+        raise HTTPException(400, f"Chores exist after week {week_id}")
 
     if equals is True and week_id == last_rotation.week_id:
-        raise HTTPException(400, f"Chore types exist for week {week_id}")
+        raise HTTPException(400, f"Chores exist for week {week_id}")
 
 
 def get_week_id(datetime: datetime) -> WeekId:
