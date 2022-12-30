@@ -1,6 +1,7 @@
 from itertools import groupby
 from typing import Sequence
 
+import i18n
 from fastapi import HTTPException
 
 from .. import crud
@@ -11,6 +12,11 @@ from ..models.chore_type import ChoreType
 from ..models.rotations import Rotation
 from ..models.settings import RotationSign
 from ..models.weekly_chores import WeeklyChore, WeeklyChores
+
+
+def throw_no_weekly_chores_found_exception(week_id: str, lang: str):
+    detail = i18n.t("crud.not_found.weekly_chores", locale=lang, week_id=week_id)
+    raise HTTPException(404, detail)
 
 
 async def create_weekly_chores(
@@ -166,10 +172,10 @@ async def get_all_weekly_chores(
     return res
 
 
-async def get_weekly_chores_by_week_id(week_id: str) -> WeeklyChores:
+async def get_weekly_chores_by_week_id(week_id: str, lang: str) -> WeeklyChores:
     chores = await crud.chores.get_multi(week_id=week_id)
     if not chores:
-        raise HTTPException(404, f"No weekly chores found for week {week_id}")
+        throw_no_weekly_chores_found_exception(week_id, lang)
     return await get_weekly_chores_by_chores(chores, week_id)
 
 
@@ -197,7 +203,7 @@ async def get_weekly_chores_by_chores(
 async def delete_weekly_chores_by_week_id(week_id: str, lang: str):
     chores = await crud.chores.get_multi(week_id=week_id)
     if not chores:
-        raise HTTPException(404, f"No weekly chores found for week {week_id}")
+        throw_no_weekly_chores_found_exception(week_id, lang)
 
     for chore in chores:
         if chore.done:
