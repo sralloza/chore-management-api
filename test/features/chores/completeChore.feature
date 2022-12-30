@@ -5,6 +5,7 @@ Feature: Chores API - completeChore
   As a user or admin
   I want to complete a task
 
+
   @authorization
   Scenario Outline: Validate response for unauthorized user
     Given I use a random API key
