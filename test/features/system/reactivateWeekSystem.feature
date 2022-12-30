@@ -8,20 +8,50 @@ Feature: System API - reactivateWeekSystem
 
 
   @authorization
-  Scenario: Validate response for guest
-    When I send a request to the Api
-    Then the response status code is "401"
-    And the response status code is defined
-    And the error message is "Missing API key"
-
-
-  @authorization
-  Scenario: Validate response for user
-    Given I create a user and I use the user API key
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "401"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
+
+
+  @authorization
+  Scenario Outline: Validate response for user
+    Given I create a user and I use the user API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
@@ -88,13 +118,33 @@ Feature: System API - reactivateWeekSystem
 
   Scenario Outline: Validate error response when reactivating a week is not deactivated
     Given I use the admin API key
+    And the header language is set to "<lang>"
     And the field "week_id" with value "<week_id_2>"
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "<error_message>"
+    And the error message is "<err_msg>"
 
-    Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | error_message = <error_message>
-      | week_id_1 | week_id_2 | error_message                       |
-      | 2022.01   | 2022.01   | Week 2022.01 is already deactivated |
-      | 2022.04   | 2022.01   | Week 2022.01 is already deactivated |
+    Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | lang = <lang> | err_msg = <err_msg>
+      | week_id_1 | week_id_2 | lang     | err_msg                               |
+      | 2022.01   | 2022.01   | en       | Week 2022.01 is already deactivated   |
+      | 2022.01   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
+      | 2022.01   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
+      | 2022.04   | 2022.01   | en       | Week 2022.01 is already deactivated   |
+      | 2022.04   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
+      | 2022.04   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |
