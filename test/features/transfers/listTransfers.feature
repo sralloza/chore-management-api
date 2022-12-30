@@ -5,11 +5,36 @@ Feature: Transfers API - listTransfers
   As a admin or user
   I want to list the chore transfers
 
+
   @authorization
-  Scenario: Validate response for guest user
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                     |
+      | en       | User access required        |
+      | es       | Acceso de usuario requerido |
+      | whatever | User access required        |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "401"
-    And the error message is "Missing API key"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
 
 
   @authorization
@@ -55,3 +80,18 @@ Feature: Transfers API - listTransfers
       """
       []
       """
+
+
+  @common
+  Scenario Outline: Validate X-Correlator injection
+    Given the <correlator> as X-Correlator header
+    When I send a request to the Api
+    Then the X-Correlator sent is the same as the X-Correlator in the response
+
+    Examples: correlator = <correlator>
+      | correlator   |
+      | [UUIDv1]     |
+      | [UUIDv4]     |
+      | [RANDOMSTR]  |
+      | 12 4AbC 1234 |
+      | *_?          |
