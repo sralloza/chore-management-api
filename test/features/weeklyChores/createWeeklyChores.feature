@@ -386,20 +386,20 @@ Feature: Weekly Chores API - createWeeklyChores
 
 
   @skip
-  Scenario: Create weekly tasks if a tenant is created and deleted
+  Scenario: Create weekly tasks if a user is created and deleted
     Given there are 3 users
     And there are 3 chore types
     And I create the weekly chores for the week "2022.01" using the API
     And I use the admin API key
-    When I send a request to the Api resource "createTenant" with body params
+    When I send a request to the Api resource "createUser" with body params
       | param_name | param_value |
       | username   | John        |
-      | tenant_id  | 111         |
+      | user_id    | 111         |
     Then the response status code is "200"
-    Given the field "tenantId" with value "111"
-    When I send a request to the Api resource "deleteTenant"
+    Given the field "user_id" with value "111"
+    When I send a request to the Api resource "deleteUser"
     Then the response status code is "204"
-    Given the field "weekId" with string value "2022.02"
+    Given the field "week_id" with string value "2022.02"
     When I send a request to the Api
     Then the response status code is "200"
     Given I use the admin API key
@@ -412,7 +412,7 @@ Feature: Weekly Chores API - createWeeklyChores
 
 
   @skip
-  Scenario: Restart weekly tasks creation if new tenant is registered using weekID endpoint
+  Scenario: Restart weekly tasks creation if new user is registered using weekID endpoint
     Given there are 3 users
     And there are 5 chore types
     And I create the weekly chores for the following weeks using the API
@@ -420,12 +420,12 @@ Feature: Weekly Chores API - createWeeklyChores
       | 2022.01 |
       | 2022.02 |
     And I use the admin API key
-    When I send a request to the Api resource "createTenant" with body params
+    When I send a request to the Api resource "createUser" with body params
       | param_name | param_value |
-      | username   | tenant4     |
-      | tenant_id  | 4           |
+      | username   | username-4  |
+      | user_id    | user-4      |
     Then the response status code is "200"
-    Given the field "weekId" with string value "2022.03"
+    Given the field "week_id" with string value "2022.03"
     And the parameters to filter the request
       | param_name | param_value |
       | force      | true        |

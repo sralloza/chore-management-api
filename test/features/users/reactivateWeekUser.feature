@@ -43,7 +43,7 @@ Feature: Users API - reactivateWeekUser
     Given there are 3 users
     And there are 3 chore types
     And I deactivate the chore creation for the week "2025.01" and user "<real_user_id>"
-    And the field "tenantId" with value "<user_id>"
+    And the field "user_id" with value "<user_id>"
     And I use the token of the user with id "<real_user_id>"
     And the field "week_id" with value "2025.01"
     When I send a request to the Api
@@ -64,9 +64,9 @@ Feature: Users API - reactivateWeekUser
     And there are 3 chore types
     And I deactivate the chore creation for the week "<real_week_id>" and user "user-2"
     And the fields
-      | field     | value     | as_string |
-      | tenant_id | user-2    | false     |
-      | week_id   | <week_id> | true      |
+      | field   | value     | as_string |
+      | user_id | user-2    | false     |
+      | week_id | <week_id> | true      |
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "200"

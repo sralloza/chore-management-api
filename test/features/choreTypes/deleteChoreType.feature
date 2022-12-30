@@ -68,11 +68,11 @@ Feature: Chore Types API - deleteChoreType
 
     @skip
     Scenario: Validate error response when deleting a chore type with non balanced tickets
-        Given there are 2 tenants, 2 chore types and weekly chores for the week "2022.01"
+        Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
         And the following transfers are created
-            | tenant_id_from | tenant_id_to | chore_type | week_id | accepted |
-            | 1              | 2            | A          | 2022.01 | True     |
-        And the field "chore_type_id" with value "A"
+            | user_id_from | user_id_to | chore_type | week_id | accepted |
+            | user-1       | user-2     | ct-a       | 2022.01 | True     |
+        And the field "chore_type_id" with value "ct-a"
         And I use the admin API key
         When I send a request to the Api
         Then the response status code is "400"

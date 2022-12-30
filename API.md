@@ -24,7 +24,7 @@ You can assign weekly chores using the [createWeeklyChores](#tag/Weekly-Chores/o
 
 Here is an example of the normal chore creation, with 3 users and 3 chore types.
 
-| Week | Chore A | Chore B | Chore C
+| Week | Chore A | Chore B | Chore C |
 | ---- | ------- | ------- | ------- |
 | 1    | User 1  | User 2  | User 3  |
 | 2    | User 2  | User 3  | User 1  |
@@ -32,7 +32,7 @@ Here is an example of the normal chore creation, with 3 users and 3 chore types.
 
 ### More chores than users
 
-**What happens if there are more chores than users?** Some tenants will have to complete more than one task in the same week.
+**What happens if there are more chores than users?** Some users will have to complete more than one task in the same week.
 
 | Week | Chore A | Chore B | Chore C | Chore D |
 | ---- | ------- | ------- | ------- | ------- |
