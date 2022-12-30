@@ -1,7 +1,6 @@
-@old
+@skip
 @api.chore-types
 @deleteChoreType
-@old
 Feature: Chore Types API - deleteChoreType
 
     As an admin
