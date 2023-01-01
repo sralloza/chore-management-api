@@ -209,7 +209,8 @@ async def delete_weekly_chores_by_week_id(week_id: str, lang: str):
 
     for chore in chores:
         if chore.done:
-            raise HTTPException(400, "Weekly chores are partially completed")
+            detail = i18n.t("crud.bad_request.partially_completed", locale=lang)
+            raise HTTPException(400, detail)
     for chore in chores:
         await crud.chores.delete(lang=lang, id=chore.id)
 
