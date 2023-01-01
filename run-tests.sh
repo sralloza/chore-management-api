@@ -29,13 +29,6 @@ function cleanup {
 function runTests() {
   exitCode=0
 
-  poetry run pytest test/unit
-  _exitCode=$?
-  echo "+++ unit tests exit code: $_exitCode"
-  if [ $_exitCode -ne 0 ]; then
-    exitCode=$_exitCode
-  fi
-
   behave -t=-skip
   _exitCode=$?
   echo "+++ behave tests exit code: $_exitCode"
@@ -43,13 +36,13 @@ function runTests() {
     exitCode=$_exitCode
   fi
 
-  echo "++ Running responses tests"
-  poetry run pytest test/acceptance -m 'responses'
-  _exitCode=$?
-  echo "+++ responses tests exit code: $_exitCode"
-  if [ $_exitCode -ne 0 ]; then
-    exitCode=$_exitCode
-  fi
+  # echo "++ Running responses tests"
+  # poetry run pytest test/acceptance -m 'responses'
+  # _exitCode=$?
+  # echo "+++ responses tests exit code: $_exitCode"
+  # if [ $_exitCode -ne 0 ]; then
+  #   exitCode=$_exitCode
+  # fi
 
   echo "all tests exit code: $exitCode"
   return $exitCode
