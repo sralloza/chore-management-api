@@ -28,23 +28,29 @@ function cleanup {
 
 function runTests() {
   exitCode=0
-  behave -t=-skip
-  behaveExitCode=$?
-  if [ $behaveExitCode -ne 0 ]; then
-    exitCode=$behaveExitCode
-  fi
-  echo "+++ behave tests exit code: $behaveExitCode"
 
-  cd test
-  echo "++ Running responses tests"
-  # poetry run pytest -m 'responses'
-  # pytestExitCode=$?
-  pytestExitCode=0
-  if [ $pytestExitCode -ne 0 ]; then
-    exitCode=$pytestExitCode
+  poetry run pytest test/unit
+  _exitCode=$?
+  echo "+++ unit tests exit code: $_exitCode"
+  if [ $_exitCode -ne 0 ]; then
+    exitCode=$_exitCode
   fi
-  echo "+++ responses tests exit code: $pytestExitCode"
-  cd ..
+
+  behave test/acceptance -t=-skip
+  _exitCode=$?
+  echo "+++ behave tests exit code: $_exitCode"
+  if [ $_exitCode -ne 0 ]; then
+    exitCode=$_exitCode
+  fi
+
+  echo "++ Running responses tests"
+  poetry run pytest test -m 'responses'
+  _exitCode=$?
+  echo "+++ responses tests exit code: $_exitCode"
+  if [ $_exitCode -ne 0 ]; then
+    exitCode=$_exitCode
+  fi
+
   echo "all tests exit code: $exitCode"
   return $exitCode
 }

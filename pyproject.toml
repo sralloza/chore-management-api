@@ -3,6 +3,9 @@ name = "chore-management-api"
 version = "0.1.0"
 description = "Chore Management API"
 authors = ["Diego Alloza González <diego.allozagonzalez@telefonica.com>"]
+packages = [
+    { include = "app"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
