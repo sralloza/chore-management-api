@@ -36,7 +36,7 @@ function runTests() {
     exitCode=$_exitCode
   fi
 
-  behave test/acceptance -t=-skip
+  behave -t=-skip
   _exitCode=$?
   echo "+++ behave tests exit code: $_exitCode"
   if [ $_exitCode -ne 0 ]; then
@@ -44,7 +44,7 @@ function runTests() {
   fi
 
   echo "++ Running responses tests"
-  poetry run pytest test -m 'responses'
+  poetry run pytest test/acceptance -m 'responses'
   _exitCode=$?
   echo "+++ responses tests exit code: $_exitCode"
   if [ $_exitCode -ne 0 ]; then
@@ -85,9 +85,9 @@ if [[ "$retriesLeft" -eq "0" ]]; then
 fi
 
 testsOk=true
-rm -rf test/reports
-rm -rf test/output
-rm -rf test/reports.zip
+rm -rf test/acceptance/reports
+rm -rf test/acceptance/output
+rm -rf test/acceptance/reports.zip
 runTests
 
 if [[ $? -ne 0 ]]; then
@@ -101,7 +101,7 @@ else
   echo "Tests failed"
   if tty -s; then
     echo "tty detected, launching allure"
-    allure serve test/reports
+    allure serve test/acceptance/reports
   else
     echo "tty not detected, showing docker-compose logs"
     docker-compose logs

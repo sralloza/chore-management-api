@@ -2,4 +2,5 @@ from pathlib import Path
 
 from toml import loads
 
-version = loads(Path("pyproject.toml").read_text())["tool"]["poetry"]["version"]
+PYPROJECT_PATH = Path(__file__).parent.parent.parent / "pyproject.toml"
+version = loads(PYPROJECT_PATH.read_text())["tool"]["poetry"]["version"]

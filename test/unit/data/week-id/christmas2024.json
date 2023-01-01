@@ -1,0 +1,44 @@
+[
+  {
+    "year": 2024,
+    "month": 12,
+    "day_start": 9,
+    "day_end": 15,
+    "week_id": "2024.50"
+  },
+  {
+    "year": 2024,
+    "month": 12,
+    "day_start": 16,
+    "day_end": 22,
+    "week_id": "2024.51"
+  },
+  {
+    "year": 2024,
+    "month": 12,
+    "day_start": 23,
+    "day_end": 29,
+    "week_id": "2024.52"
+  },
+  {
+    "year": 2024,
+    "month": 12,
+    "day_start": 30,
+    "day_end": 31,
+    "week_id": "2025.01"
+  },
+  {
+    "year": 2025,
+    "month": 1,
+    "day_start": 1,
+    "day_end": 5,
+    "week_id": "2025.01"
+  },
+  {
+    "year": 2025,
+    "month": 1,
+    "day_start": 6,
+    "day_end": 12,
+    "week_id": "2025.02"
+  }
+]

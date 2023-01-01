@@ -1,0 +1,44 @@
+[
+  {
+    "year": 2019,
+    "month": 12,
+    "day_start": 9,
+    "day_end": 15,
+    "week_id": "2019.50"
+  },
+  {
+    "year": 2019,
+    "month": 12,
+    "day_start": 16,
+    "day_end": 22,
+    "week_id": "2019.51"
+  },
+  {
+    "year": 2019,
+    "month": 12,
+    "day_start": 23,
+    "day_end": 29,
+    "week_id": "2019.52"
+  },
+  {
+    "year": 2019,
+    "month": 12,
+    "day_start": 30,
+    "day_end": 31,
+    "week_id": "2020.01"
+  },
+  {
+    "year": 2020,
+    "month": 1,
+    "day_start": 1,
+    "day_end": 5,
+    "week_id": "2020.01"
+  },
+  {
+    "year": 2020,
+    "month": 1,
+    "day_start": 6,
+    "day_end": 12,
+    "week_id": "2020.02"
+  }
+]

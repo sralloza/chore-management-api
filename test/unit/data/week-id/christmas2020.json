@@ -1,0 +1,44 @@
+[
+  {
+    "year": 2020,
+    "month": 12,
+    "day_start": 7,
+    "day_end": 13,
+    "week_id": "2020.50"
+  },
+  {
+    "year": 2020,
+    "month": 12,
+    "day_start": 14,
+    "day_end": 20,
+    "week_id": "2020.51"
+  },
+  {
+    "year": 2020,
+    "month": 12,
+    "day_start": 21,
+    "day_end": 27,
+    "week_id": "2020.52"
+  },
+  {
+    "year": 2020,
+    "month": 12,
+    "day_start": 28,
+    "day_end": 31,
+    "week_id": "2020.53"
+  },
+  {
+    "year": 2021,
+    "month": 1,
+    "day_start": 1,
+    "day_end": 3,
+    "week_id": "2020.53"
+  },
+  {
+    "year": 2021,
+    "month": 1,
+    "day_start": 4,
+    "day_end": 10,
+    "week_id": "2021.01"
+  }
+]
