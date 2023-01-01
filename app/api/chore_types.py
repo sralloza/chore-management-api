@@ -63,6 +63,10 @@ async def get_chore_types():
     dependencies=[Depends(admin_required)],
     operation_id="deleteChoreType",
     responses={
+        400: {
+            "model": Message,
+            "description": "Chore type has active chores or unbalanced tickets",
+        },
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "Admin access required"},
         404: {"model": Message, "description": "Chore type not found"},
