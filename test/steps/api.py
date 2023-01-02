@@ -173,7 +173,7 @@ def step_same_header_correlator(context):
     )
 
 
-@step('the X-Correlator is present in the response')
+@step("the X-Correlator is present in the response")
 def step_header_not_present(context):
     assert_that(
         "X-Correlator",

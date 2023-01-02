@@ -52,7 +52,6 @@ def _send_request(
             path = path.replace(VERSIONED_PATH.format(version=1), "", 1)
         url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
-
     token = getattr(context, "token", None)
     if token:
         context.headers["x-token"] = token
