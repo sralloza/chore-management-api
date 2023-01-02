@@ -7,20 +7,50 @@ Feature: Weekly Chores API - deleteWeeklyChores
 
 
   @authorization
-  Scenario: Validate response for guest
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
-    Then the response status code is "401"
-    And the error message is "Missing API key"
+    Then the response status code is "403"
     And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
-  Scenario: Validate response for user
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "401"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
+
+
+  @authorization
+  Scenario Outline: Validate response for user
     Given I create a user and I use the user API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
-    And the error message is "Admin access required"
     And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
@@ -50,24 +80,38 @@ Feature: Weekly Chores API - deleteWeeklyChores
       | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-  Scenario: Validate error response when deleting an unknown weekly chore
+  Scenario Outline: Validate error response when deleting an unknown weekly chore
     Given I use the admin API key
+    And the header language is set to "<lang>"
     And the field "week_id" with string value "2022.01"
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "No weekly chores found for week 2022.01"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                 |
+      | en       | No weekly chores found for week 2022.01 |
+      | es       | No hay tareas para la semana 2022.01    |
+      | whatever | No weekly chores found for week 2022.01 |
 
 
-  Scenario: Validate error response when deleting a partially completed weekly chore
+  Scenario Outline: Validate error response when deleting a partially completed weekly chore
     Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
     And the user "user-1" has completed the chore "ct-a" for the week "2022.01"
     And the field "week_id" with string value "2022.01"
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Weekly chores are partially completed"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                             |
+      | en       | Weekly chores are partially completed               |
+      | es       | Las tareas semanales están parcialmente completadas |
+      | whatever | Weekly chores are partially completed               |
 
 
   Scenario Outline: Validate error response when deleting weekly chores for invalid week

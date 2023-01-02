@@ -19,12 +19,17 @@ class CRUDChoreTypes(CRUDBase[ChoreType, ChoreType, ChoreType, str]):
         if any((chore.done is False for chore in chores)):
             raise HTTPException(400, "Can't delete chore type with active chores")
 
-        # TODO: check if there is any ticket with this chore type unbalanced
+        tickets = await crud.tickets.get_multi(chore_type_id=id)
+        for ticket in tickets:
+            if ticket.tickets != 0:
+                raise HTTPException(400, "Chore type has unbalanced tickets")
 
         for chore in chores:
             await crud.chores.delete(lang=lang, id=chore.id)
 
-        # TODO: delete all tickets with this chore type
+        for ticket in tickets:
+            await crud.tickets.delete(lang=lang, id=ticket.id)
+
         return await super().delete(lang=lang, id=id)
 
 
