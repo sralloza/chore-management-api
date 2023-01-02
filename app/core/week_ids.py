@@ -40,9 +40,8 @@ async def validate_week_id_age(week_id: str, lang: str, *, equals=False):
 
 
 def get_week_id(datetime: datetime) -> WeekId:
-    week_id = datetime.isocalendar()[1]
-    year = datetime.year
-    return WeekId(week_id=f"{year}.{week_id:02d}")
+    cal = datetime.isocalendar()
+    return WeekId(week_id=f"{cal.year}.{cal.week:02d}")
 
 
 def get_current_week_id() -> WeekId:
