@@ -24,9 +24,7 @@ async def create_weekly_chores(
 ):
     deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
     if deactivated_weeks:
-        detail = i18n.t(
-            "weekly_chores.deactivated_week", locale=lang, week_id=week_id
-        )
+        detail = i18n.t("weekly_chores.deactivated_week", locale=lang, week_id=week_id)
         raise HTTPException(400, detail)
 
     users = await crud.user.get_multi()

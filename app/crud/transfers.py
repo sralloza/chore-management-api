@@ -14,9 +14,7 @@ from .base import CRUDBase
 def validate_user_id(expected: str, actual: str | None, action: str, lang: str):
     if actual is not None and expected != actual:
         action = i18n.t(f"actions.{action}", locale=lang)
-        detail = i18n.t(
-            "transfers.transfer_other_user", locale=lang, action=action
-        )
+        detail = i18n.t("transfers.transfer_other_user", locale=lang, action=action)
         raise HTTPException(403, detail)
 
 
@@ -46,9 +44,7 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
             completed=False,
         )
         if transfers:
-            raise HTTPException(
-                400, i18n.t("transfers.multiple_users", locale=lang)
-            )
+            raise HTTPException(400, i18n.t("transfers.multiple_users", locale=lang))
 
         if obj_in.user_id_from == obj_in.user_id_to:
             detail = i18n.t("transfers.transfer_to_self", locale=lang)
