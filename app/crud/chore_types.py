@@ -18,13 +18,21 @@ class CRUDChoreTypes(CRUDBase[ChoreType, ChoreType, ChoreType, str]):
     async def delete(self, *, lang: str, id: str) -> None:
         chores = await crud.chores.get_multi(chore_type_id=id)
         if any((chore.done is False for chore in chores)):
-            detail = i18n.t("crud.bad_request.active_chores", locale=lang)
+            detail = i18n.t(
+                "crud.bad_request.active_chores",
+                locale=lang,
+                model=self.get_model_name(lang, lower=True),
+            )
             raise HTTPException(400, detail)
 
         tickets = await crud.tickets.get_multi(chore_type_id=id)
         for ticket in tickets:
             if ticket.tickets != 0:
-                detail = i18n.t("crud.bad_request.unbalanced_tickets", locale=lang)
+                detail = i18n.t(
+                    "crud.bad_request.unbalanced_tickets",
+                    locale=lang,
+                    model=self.get_model_name(lang, lower=True),
+                )
                 raise HTTPException(400, detail)
 
         for chore in chores:

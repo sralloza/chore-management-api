@@ -29,7 +29,7 @@ function cleanup {
 function runTests() {
   exitCode=0
 
-  behave -t=-skip
+  behave
   _exitCode=$?
   echo "+++ behave tests exit code: $_exitCode"
   if [ $_exitCode -ne 0 ]; then

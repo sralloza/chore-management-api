@@ -137,9 +137,9 @@ Feature: Chore Types API - deleteChoreType
 
     Examples: lang = <lang> | err_msg = <err_msg>
       | lang     | err_msg                                                  |
-      | en       | Can't delete chore type with active chores               |
+      | en       | Can't delete a chore type with active chores               |
       | es       | No se puede eliminar un tipo de tarea con tareas activas |
-      | whatever | Can't delete chore type with active chores               |
+      | whatever | Can't delete a chore type with active chores               |
 
 
   Scenario Outline: Validate error response when deleting a chore type with non balanced tickets
@@ -158,9 +158,9 @@ Feature: Chore Types API - deleteChoreType
 
     Examples: lang = <lang> | err_msg = <err_msg>
       | lang     | err_msg                                                       |
-      | en       | Can't delete chore type with unbalanced tickets               |
+      | en       | Can't delete a chore type with unbalanced tickets               |
       | es       | No se puede eliminar un tipo de tarea con tickets sin cuadrar |
-      | whatever | Can't delete chore type with unbalanced tickets               |
+      | whatever | Can't delete a chore type with unbalanced tickets               |
 
 
   @common

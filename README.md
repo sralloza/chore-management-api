@@ -16,8 +16,6 @@ The `run-tests.sh` script will start all containers, run the tests and stop the 
 
 You must have the containers up and running before running the tests (`docker-compose up -d`).
 
-**Note: the tests are under development, so some tests may fail. To manually launch only the working tests, filter out the tag skip (`behave -t=-skip [...]`). The `run-tests.sh` script already skips non working tests.**
-
 ```shell
 # Launch all tests
 behave

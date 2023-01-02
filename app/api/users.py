@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends
 
 from .. import crud
 from ..core.params import LANG_HEADER, USER_ID_PATH, WEEK_ID_PATH
@@ -73,10 +73,20 @@ async def list_users():
 
 
 @router.delete(
-    "/{user_id}", dependencies=[Depends(admin_required)], operation_id="deleteUser"
+    "/{user_id}",
+    dependencies=[Depends(admin_required)],
+    operation_id="deleteUser",
+    status_code=204,
+    responses={
+        400: {"model": Message, "description": "Chores exist for week"},
+        401: {"model": Message, "description": "Missing API key"},
+        403: {"model": Message, "description": "User access required"},
+        404: {"model": Message, "description": "User not found"},
+        409: {"model": Message, "description": "Week is already deactivated"},
+    },
 )
-async def delete_user(user_id: str):  # noqa: ARG001
-    raise HTTPException(status_code=501, detail="Not implemented")
+async def delete_user(user_id: str, lang: str = LANG_HEADER):
+    await crud.user.delete(lang=lang, id=user_id)
 
 
 @router.post(
