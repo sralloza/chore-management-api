@@ -14,7 +14,9 @@ The `run-tests.sh` script will start all containers, run the tests and stop the 
 
 #### Run some tests
 
-Note that you must have the containers up and running before running the tests (`docker-compose up -d`).
+You must have the containers up and running before running the tests (`docker-compose up -d`).
+
+**Note: the tests are under development, so some tests may fail. To manually launch only the working tests, filter out the tag skip (`behave -t=-skip [...]`). The `run-tests.sh` script already skips non working tests.**
 
 ```shell
 # Launch all tests
@@ -56,7 +58,7 @@ Configuration is done by setting environment variables.
 - **_DATABASE_PORT_**: database port. Defaults to `3306`.
 - **_DATABASE_USERNAME_**: database username. Defaults to `root`.
 - **_ENABLE_DB_CLEANUP_**: when set to `true`, the scheduler will be enabled and will run periodically some cleanup database tasks. Defaults to `true`.
-- **_IS_PRODUCTION_**: when set to `true`, the application will run in production mode (for example, documentation will not be available). Defaults to `true`.
+- **_IS_PRODUCTION_**: when set to `true`, the application will run in production mode (for example, documentation will not be available). Defaults to `true` in the docker application and to `false` in the python application.
 - **_REDIS_HOST_**: redis host. Defaults to `localhost`.
 - **_REDIS_PORT_**: redis port. Defaults to `6379`.
 
