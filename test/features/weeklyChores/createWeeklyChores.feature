@@ -438,7 +438,6 @@ Feature: Weekly Chores API - createWeeklyChores
     Then the response status code is "200"
 
 
-  @skip
   Scenario: Create weekly tasks if a user is created and deleted
     Given there are 3 users
     And there are 3 chore types
@@ -447,9 +446,9 @@ Feature: Weekly Chores API - createWeeklyChores
     When I send a request to the Api resource "createUser" with body params
       | param_name | param_value |
       | username   | John        |
-      | user_id    | 111         |
+      | id         | john-id     |
     Then the response status code is "200"
-    Given the field "user_id" with value "111"
+    Given the field "user_id" with value "john-id"
     When I send a request to the Api resource "deleteUser"
     Then the response status code is "204"
     Given the field "week_id" with string value "2022.02"

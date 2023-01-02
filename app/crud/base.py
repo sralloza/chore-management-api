@@ -1,3 +1,4 @@
+import re
 from typing import Any, Generic, List, Optional, Type, TypeVar
 
 import i18n
@@ -27,8 +28,11 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
             table_name=self.table.name, id=primary_key
         )
 
-    def get_model_name(self, lang: str):
-        return i18n.t(f"models.{self.model.__name__}", locale=lang)
+    def get_model_name(self, lang: str, lower=False):
+        result = i18n.t(f"models.{self.model.__name__}", locale=lang)
+        if lower:
+            return re.sub("([A-Z][a-z]+)", r" \1", result).strip().lower()
+        return result
 
     def get_not_found_detail(self, lang: str, id: IDType):
         key = "crud.not_found"

@@ -20,5 +20,5 @@ es:
   bad_request.no_users: No se pueden crear tareas semanales, no hay usuarios registrados
   bad_request.no_chore_types: No se pueden crear tareas semanales, no hay tipos de tareas registrados
   bad_request.partially_completed: Las tareas semanales están parcialmente completadas
-  bad_request.active_chores: No se puede eliminar un tipo de tarea con tareas activas
-  bad_request.unbalanced_tickets: No se puede eliminar un tipo de tarea con tickets sin cuadrar
+  bad_request.active_chores: No se puede eliminar un %{model} con tareas activas
+  bad_request.unbalanced_tickets: No se puede eliminar un %{model} con tickets sin cuadrar

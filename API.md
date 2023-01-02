@@ -82,6 +82,10 @@ There are occasions when user would want to skip a week. For example, when a use
 
 If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek](#tag/Skip-Chores/operation/undoSkipWeek) operation.
 
+## Other considerations
+
+When a user is created o deleted, the field [`settings.assignments_order`](#tag/System/operation/getSystemSettings) are reset. This means that if you have a custom `settings.assignments_order` and you create and delete a user, the `settings.assignments_order` will be reset to its default value.
+
 # Internationalization
 
 This API supports error message internationalization only in user-scoped endpoints (those that need a user API key). The language is selected by the `Accept-Language` header. If the header is not present, the default language is English. The supported languages are: english (en) and spanish (es).
