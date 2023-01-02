@@ -233,6 +233,23 @@ Feature: Transfers API - startTransfer
       | user-2  | 0 | 0 |
 
 
+  Scenario Outline: Validate error response when the payload is not a valid json
+    Given the header language is set to "<lang>"
+    When I send a request to the Api with body
+      """
+      xxx
+      """
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                       |
+      | en       | Request body is not a valid JSON              |
+      | es       | El cuerpo de la petición no es un JSON válido |
+      | whatever | Request body is not a valid JSON              |
+
+
   Scenario Outline: Validate error response when a user tries to transfer a chore to multiple users
     Given there are 3 users, 3 chore types and weekly chores for the week "2022.01"
     And the header language is set to "<lang>"
