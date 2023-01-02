@@ -19,3 +19,4 @@ es:
   bad_request.users_changed: Los usuarios han cambiado desde la última vez que se crearon las tareas
   bad_request.no_users: No se pueden crear tareas semanales, no hay usuarios registrados
   bad_request.no_chore_types: No se pueden crear tareas semanales, no hay tipos de tareas registrados
+  bad_request.partially_completed: Las tareas semanales están parcialmente completadas
