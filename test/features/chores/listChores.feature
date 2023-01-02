@@ -156,7 +156,7 @@ Feature: Chores API - listChores
     And the response status code is defined
     And the Api response contains the expected data
       | skip_param   |
-      | id   |
+      | id           |
       | created_at   |
       | completed_at |
       """
