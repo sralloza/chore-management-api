@@ -15,7 +15,7 @@ from ..models.weekly_chores import WeeklyChore, WeeklyChores
 
 
 def throw_no_weekly_chores_found_exception(week_id: str, lang: str):
-    detail = i18n.t("crud.not_found.weekly_chores", locale=lang, week_id=week_id)
+    detail = i18n.t("weekly_chores.no_chores_found", locale=lang, week_id=week_id)
     raise HTTPException(404, detail)
 
 
@@ -24,24 +24,22 @@ async def create_weekly_chores(
 ):
     deactivated_weeks = await crud.deactivated_weeks.get(id=week_id)
     if deactivated_weeks:
-        detail = i18n.t(
-            "crud.bad_request.week_deactivated", locale=lang, week_id=week_id
-        )
+        detail = i18n.t("weekly_chores.deactivated_week", locale=lang, week_id=week_id)
         raise HTTPException(400, detail)
 
     users = await crud.user.get_multi()
     if not users:
-        detail = i18n.t("crud.bad_request.no_users", locale=lang)
+        detail = i18n.t("weekly_chores.no_users_found", locale=lang)
         raise HTTPException(400, detail)
 
     chore_types = await crud.chore_types.get_multi()
     if not chore_types:
-        detail = i18n.t("crud.bad_request.no_chore_types", locale=lang)
+        detail = i18n.t("weekly_chores.no_chore_types", locale=lang)
         raise HTTPException(400, detail)
 
     chores = await crud.chores.get_multi(week_id=week_id)
     if chores:
-        detail = i18n.t("crud.conflict.weekly_chores", locale=lang, week_id=week_id)
+        detail = i18n.t("weekly_chores.already_exist", locale=lang, week_id=week_id)
         raise HTTPException(409, detail)
 
     rotation = await crud.rotation.get_last_rotation()
@@ -51,7 +49,7 @@ async def create_weekly_chores(
     users_hash = calculate_hash([user.id for user in users])
     if rotation.user_ids_hash != users_hash:
         if force is False:
-            detail = i18n.t("crud.bad_request.users_changed", locale=lang)
+            detail = i18n.t("weekly_chores.users_changed", locale=lang)
             raise HTTPException(400, detail)
         return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
 
@@ -209,7 +207,7 @@ async def delete_weekly_chores_by_week_id(week_id: str, lang: str):
 
     for chore in chores:
         if chore.done:
-            detail = i18n.t("crud.bad_request.partially_completed", locale=lang)
+            detail = i18n.t("weekly_chores.partially_completed", locale=lang)
             raise HTTPException(400, detail)
     for chore in chores:
         await crud.chores.delete(lang=lang, id=chore.id)

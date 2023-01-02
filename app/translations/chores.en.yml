@@ -1,0 +1,5 @@
+en:
+  already_completed: "%{model_name} with week_id=%{week_id} and chore_type_id=%{chore_type_id} is already completed"
+  already_exist_after: Chores exist after week %{week_id}
+  already_exist: Chores exist for week %{week_id}
+  not_found: "You are not assigned to any chores of type %{chore_type_id} for week %{week_id}"

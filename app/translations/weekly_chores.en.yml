@@ -1,0 +1,8 @@
+en:
+  already_exist: Weekly chores for week %{week_id} already exist
+  deactivated_week: Week %{week_id} is deactivated
+  no_chore_types: Can't create weekly chores, no chore types registered
+  no_chores_found: No weekly chores found for week %{week_id}
+  no_users_found: Can't create weekly chores, no users registered
+  partially_completed: Weekly chores are partially completed
+  users_changed: Users have changed since last weekly chores creation

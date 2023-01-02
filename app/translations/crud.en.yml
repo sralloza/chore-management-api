@@ -1,23 +1,5 @@
 en:
-  not_found: "%{model_name} with %{primary_key}=%{id} does not exist"
+  active_chores: Can't delete a %{model} with active chores
   conflict: "%{model_name} with %{primary_key}=%{id} already exists"
-  not_found.no_chores: "You are not assigned to any chores of type %{chore_type_id} for week %{week_id}"
-  bad_request.already_completed: "%{model_name} with week_id=%{week_id} and chore_type_id=%{chore_type_id} is already completed"
-  bad_request.transfer_multiple_users: Cannot transfer chore to multiple users
-  forbidden.transfer_other_user: You cannot %{action} a transfer for another user
-  bad_request.transfer_to_self: Cannot transfer chore to the same user
-  bad_request.transfer_no_chores: "No chores of type %{chore_type_id} for week %{week_id} assigned to user with id=%{user_id}"
-  bad_request.transfer_completed: Transfer is already completed
-  bad_request.chores_exist_week: Chores exist for week %{week_id}
-  bad_request.chores_exist_after_week: Chores exist after week %{week_id}
-  conflict.week_already_action_user: Week %{week_id} is already %{action} for user with id=%{user_id}
-  conflict.week_already_action: Week %{week_id} is already %{action}
-  not_found.weekly_chores: No weekly chores found for week %{week_id}
-  bad_request.week_deactivated: Week %{week_id} is deactivated
-  conflict.weekly_chores: Weekly chores for week %{week_id} already exist
-  bad_request.users_changed: Users have changed since last weekly chores creation
-  bad_request.no_users: Can't create weekly chores, no users registered
-  bad_request.no_chore_types: Can't create weekly chores, no chore types registered
-  bad_request.partially_completed: Weekly chores are partially completed
-  bad_request.active_chores: Can't delete a %{model} with active chores
-  bad_request.unbalanced_tickets: Can't delete a %{model} with unbalanced tickets
+  not_found: "%{model_name} with %{primary_key}=%{id} does not exist"
+  unbalanced_tickets: Can't delete a %{model} with unbalanced tickets

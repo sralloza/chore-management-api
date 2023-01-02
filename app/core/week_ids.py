@@ -24,7 +24,7 @@ async def validate_week_id_age(week_id: str, lang: str, *, equals=False):
 
     if week_id < last_rotation.week_id:
         detail = i18n.t(
-            "crud.bad_request.chores_exist_after_week",
+            "chores.already_exist_after",
             locale=lang,
             week_id=week_id,
         )
@@ -32,7 +32,7 @@ async def validate_week_id_age(week_id: str, lang: str, *, equals=False):
 
     if equals is True and week_id == last_rotation.week_id:
         detail = i18n.t(
-            "crud.bad_request.chores_exist_week",
+            "chores.already_exist",
             locale=lang,
             week_id=week_id,
         )

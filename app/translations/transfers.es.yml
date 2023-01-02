@@ -1,0 +1,6 @@
+es:
+  already_completed: La transferencia ya está completada
+  multiple_users: No se puede transferir una tarea a múltiples usuarios
+  no_chores: "No hay tareas de tipo %{chore_type_id} para la semana %{week_id} asignadas al usuario con id=%{user_id}"
+  transfer_other_user: No puedes %{action} una transferencia para otro usuario
+  transfer_to_self: No se puede transferir una tarea al mismo usuario

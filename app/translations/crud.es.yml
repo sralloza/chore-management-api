@@ -1,24 +1,6 @@
 es:
-  not_found: "No existe ningún %{model_name} con %{primary_key}=%{id}"
-  not_found.femenine: "No existe ninguna %{model_name} con %{primary_key}=%{id}"
+  active_chores: No se puede eliminar un %{model} con tareas activas
   conflict: "Ya existe un %{model_name} con %{primary_key}=%{id}"
-  not_found.no_chores: "No estás asignado a ninguna tarea de tipo %{chore_type_id} para la semana %{week_id}"
-  bad_request.already_completed: "La tarea de la semana %{week_id} y tipo %{chore_type_id} está ya completada"
-  bad_request.transfer_multiple_users: No se puede transferir una tarea a múltiples usuarios
-  forbidden.transfer_other_user: No puedes %{action} una transferencia para otro usuario
-  bad_request.transfer_to_self: No se puede transferir una tarea al mismo usuario
-  bad_request.transfer_no_chores: "No hay tareas de tipo %{chore_type_id} para la semana %{week_id} asignadas al usuario con id=%{user_id}"
-  bad_request.transfer_completed: La transferencia ya está completada
-  bad_request.chores_exist_week: Ya hay tareas creadas para la semana %{week_id}
-  bad_request.chores_exist_after_week: Ya hay tareas creadas para después de la semana %{week_id}
-  conflict.week_already_action_user: La semana %{week_id} ya está %{action} para el usuario con id=%{user_id}
-  conflict.week_already_action: La semana %{week_id} ya está %{action}
-  not_found.weekly_chores: No hay tareas para la semana %{week_id}
-  bad_request.week_deactivated: La semana %{week_id} está desactivada
-  conflict.weekly_chores: Ya hay tareas creadas para la semana %{week_id}
-  bad_request.users_changed: Los usuarios han cambiado desde la última vez que se crearon las tareas
-  bad_request.no_users: No se pueden crear tareas semanales, no hay usuarios registrados
-  bad_request.no_chore_types: No se pueden crear tareas semanales, no hay tipos de tareas registrados
-  bad_request.partially_completed: Las tareas semanales están parcialmente completadas
-  bad_request.active_chores: No se puede eliminar un %{model} con tareas activas
-  bad_request.unbalanced_tickets: No se puede eliminar un %{model} con tickets sin cuadrar
+  not_found: "No existe ningún %{model_name} con %{primary_key}=%{id}"
+  not_found.fem: "No existe ninguna %{model_name} con %{primary_key}=%{id}"
+  unbalanced_tickets: No se puede eliminar un %{model} con tickets sin cuadrar
