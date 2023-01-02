@@ -154,7 +154,7 @@ Feature: Users API - createUser
     And the header language is set to "<lang>"
     When I send a request to the Api with body
       """
-      whatever
+      xxx
       """
     Then the response status code is "400"
     And the response status code is defined

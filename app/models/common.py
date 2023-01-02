@@ -30,8 +30,8 @@ USER_USERNAME_FIELD = Field(min_length=2, max_length=25)
 
 
 WEEK_ID_FIELD = Field(
-    regex=WEEK_ID_REGEX, description="Week identifier", example="2022.01"
+    ..., regex=WEEK_ID_REGEX, description="Week identifier", example="2022.01"
 )
 WEEK_ID_EXTENDED_FIELD = Field(
-    regex=WEEK_ID_EXPANDED_REGEX, description="Week identifier", example="2022.01"
+    ..., regex=WEEK_ID_EXPANDED_REGEX, description="Week identifier", example="2022.01"
 )
