@@ -162,3 +162,10 @@ Feature: Transfers API - rejectTransfer
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
+
+
+  @common
+  Scenario: Validate X-Correlator creation
+    Given I don't include the X-Correlator header in the request
+    When I send a request to the Api
+    Then the X-Correlator is present in the response

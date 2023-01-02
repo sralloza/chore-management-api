@@ -21,11 +21,11 @@ def step_create_transfers(context):
             f"""
         Given I use the token of the user with id "{line['user_id_from']}"
         When I send a request to the Api resource "startTransfer" with body params
-            | param_name    | param_value             |
-            | user_id_from  | {line['user_id_from']}  |
-            | user_id_to    | {line['user_id_to']}    |
-            | chore_type_id | {line['chore_type_id']} |
-            | week_id       | {line['week_id']}       |
+          | param_name    | param_value             |
+          | user_id_from  | {line['user_id_from']}  |
+          | user_id_to    | {line['user_id_to']}    |
+          | chore_type_id | {line['chore_type_id']} |
+          | week_id       | {line['week_id']}       |
         Then The response status code is "200"
         And I save the "id" attribute of the response as "{attr_name}"
         """
