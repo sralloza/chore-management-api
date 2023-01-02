@@ -165,31 +165,6 @@ Feature: Users API - deactivateWeekUser
       | whatever | You don't have permission to access this user's data       |
 
 
-  Scenario Outline: Validate error response when a user skips an invalid week
-    Given I create a user and I use the user API key
-    And the fields
-      | field   | value                     | as_string |
-      | user_id | [CONTEXT:created_user_id] | false     |
-      | week_id | <week_id>                 | true      |
-    And I use the admin API key
-    When I send a request to the Api
-    Then the response status code is "422"
-    And the response status code is defined
-    And the response contains the following validation errors
-      | location | param   | msg                                                          |
-      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
-
-    Examples: week_id = <week_id>
-      | week_id      |
-      | invalid-week |
-      | 2022-03      |
-      | 2022.3       |
-      | 2022.00      |
-      | 2022.55      |
-      | 2022023      |
-      | whatever     |
-
-
   Scenario Outline: Validate error response deactivating a week that already has weekly chores
     Given there is 1 user, 1 chore type and weekly chores for the week "2022.01"
     And the header language is set to "<lang>"
@@ -231,6 +206,31 @@ Feature: Users API - deactivateWeekUser
       | en       | Week 2022.01 is already deactivated for user with id=user-1         |
       | es       | La semana 2022.01 ya está desactivada para el usuario con id=user-1 |
       | whatever | Week 2022.01 is already deactivated for user with id=user-1         |
+
+
+  Scenario Outline: Validate error response when a user skips an invalid week
+    Given I create a user and I use the user API key
+    And the fields
+      | field   | value                     | as_string |
+      | user_id | [CONTEXT:created_user_id] | false     |
+      | week_id | <week_id>                 | true      |
+    And I use the admin API key
+    When I send a request to the Api
+    Then the response status code is "422"
+    And the response status code is defined
+    And the response contains the following validation errors
+      | location | param   | msg                                                          |
+      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
+
+    Examples: week_id = <week_id>
+      | week_id      |
+      | invalid-week |
+      | 2022-03      |
+      | 2022.3       |
+      | 2022.00      |
+      | 2022.55      |
+      | 2022023      |
+      | whatever     |
 
 
   @common

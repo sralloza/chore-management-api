@@ -138,6 +138,51 @@ Feature: Chores API - listChores
       | ct-b          | [NULL]  | [NULL]  | [FALSE] | [NONE] | [NONE]   | 2,6             |
 
 
+
+  Scenario Outline: Validate multiweek syntax
+    Given there are 2 users, 2 chore types and weekly chores for the week "<real_week_id>"
+    And the fields
+      | field         | value          |
+      | week_id       | <real_week_id> |
+      | chore_type_id | ct-a           |
+    And I use the token of the user with id "user-1"
+    When I send a request to the Api resource "completeChore"
+    Then the response status code is "204"
+    Given the parameters to filter the request
+      | param_name | param_value |
+      | week_id    | <week_id>   |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    And the Api response contains the expected data
+      | skip_param   |
+      | id           |
+      | created_at   |
+      | completed_at |
+      """
+      [
+        {
+          "chore_type_id": "ct-a",
+          "done": true,
+          "user_id": "user-1",
+          "week_id": "<real_week_id>"
+        },
+        {
+          "chore_type_id": "ct-b",
+          "done": false,
+          "user_id": "user-2",
+          "week_id": "<real_week_id>"
+        }
+      ]
+      """
+
+    Examples: week_id = <week_id> | real_week_id = <real_week_id>
+      | week_id | real_week_id          |
+      | next    | [NOW(%Y.%W) + 7 DAYS] |
+      | current | [NOW(%Y.%W)]          |
+      | last    | [NOW(%Y.%W) - 7 DAYS] |
+
+
   Scenario Outline: Validate error response when using keyword me with the admin token
     Given there is 1 user
     And I use the admin API key
@@ -157,7 +202,7 @@ Feature: Chores API - listChores
       | whatever | Can't use the special keyword me with the admin API key                            |
 
 
-  Scenario Outline: Validate error response when filtering by an invalid weekId
+  Scenario Outline: Validate error response when filtering by an invalid week_id
     Given the parameters to filter the request
       | param_name | param_value |
       | week_id    | <week_id>   |
