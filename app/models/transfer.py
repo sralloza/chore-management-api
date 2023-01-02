@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from .common import (
     CHORE_TYPE_ID_FIELD,
     USER_ID_FIELD,
-    WEEK_ID_EXPANDED_REGEX,
+    WEEK_ID_EXTENDED_FIELD,
     WEEK_ID_FIELD,
 )
 
@@ -26,7 +26,7 @@ class TransferCreate(BaseModel):
     chore_type_id: str
     user_id_from: str
     user_id_to: str
-    week_id: str = WEEK_ID_EXPANDED_REGEX
+    week_id: str = WEEK_ID_EXTENDED_FIELD
 
 
 class TransferCreateInner(TransferCreate):

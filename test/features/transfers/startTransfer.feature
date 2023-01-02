@@ -388,6 +388,32 @@ Feature: Transfers API - startTransfer
       | whatever | ChoreType with id=X does not exist      |
 
 
+  Scenario Outline: Validate error response with invalid week_id
+    Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
+    And I use the admin API key
+    When I send a request to the Api with body params
+      | param_name    | param_value | as_string |
+      | user_id_from  | user-1      | false     |
+      | user_id_to    | user-2      | false     |
+      | chore_type_id | ct-a        | false     |
+      | week_id       | <week_id>   | true      |
+    Then the response status code is "422"
+    And the response status code is defined
+    And the response contains the following validation errors
+      | location | param   | msg                                                          |
+      | body     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
+
+    Examples: week_id = <week_id>
+      | week_id      |
+      | invalid-week |
+      | 2022-03      |
+      | 2022.3       |
+      | 2022.00      |
+      | 2022.55      |
+      | 2022023      |
+      | whatever     |
+
+
   @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header

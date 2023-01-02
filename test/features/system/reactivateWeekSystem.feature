@@ -95,6 +95,25 @@ Feature: System API - reactivateWeekSystem
       | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
+  Scenario Outline: Validate error response when reactivating a week is not deactivated
+    Given I use the admin API key
+    And the header language is set to "<lang>"
+    And the field "week_id" with value "<week_id_2>"
+    When I send a request to the Api
+    Then the response status code is "400"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | lang = <lang> | err_msg = <err_msg>
+      | week_id_1 | week_id_2 | lang     | err_msg                               |
+      | 2022.01   | 2022.01   | en       | Week 2022.01 is already deactivated   |
+      | 2022.01   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
+      | 2022.01   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
+      | 2022.04   | 2022.01   | en       | Week 2022.01 is already deactivated   |
+      | 2022.04   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
+      | 2022.04   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
+
+
   Scenario Outline: Validate error response when the week_id is invalid
     Given I use the admin API key
     And the field "week_id" with value "<week_id>"
@@ -114,25 +133,6 @@ Feature: System API - reactivateWeekSystem
       | 2022.55      |
       | 2022023      |
       | whatever     |
-
-
-  Scenario Outline: Validate error response when reactivating a week is not deactivated
-    Given I use the admin API key
-    And the header language is set to "<lang>"
-    And the field "week_id" with value "<week_id_2>"
-    When I send a request to the Api
-    Then the response status code is "400"
-    And the response status code is defined
-    And the error message is "<err_msg>"
-
-    Examples: week_id_1 = <week_id_1> | week_id_2 = <week_id_2> | lang = <lang> | err_msg = <err_msg>
-      | week_id_1 | week_id_2 | lang     | err_msg                               |
-      | 2022.01   | 2022.01   | en       | Week 2022.01 is already deactivated   |
-      | 2022.01   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
-      | 2022.01   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
-      | 2022.04   | 2022.01   | en       | Week 2022.01 is already deactivated   |
-      | 2022.04   | 2022.01   | es       | La semana 2022.01 ya está deactivated |
-      | 2022.04   | 2022.01   | whatever | Week 2022.01 is already deactivated   |
 
 
   @common

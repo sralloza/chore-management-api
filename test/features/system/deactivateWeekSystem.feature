@@ -91,27 +91,6 @@ Feature: System API - deactivateWeekSystem
       | last    | [NOW(%Y.%W) - 7 DAYS] |
 
 
-  Scenario Outline: Validate error response when the week_id is invalid
-    Given I use the admin API key
-    And the field "week_id" with value "<week_id>"
-    When I send a request to the Api
-    Then the response status code is "422"
-    And the response status code is defined
-    And the response contains the following validation errors
-      | location | param   | msg                                                          |
-      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
-
-    Examples: week_id = <week_id>
-      | week_id      |
-      | invalid-week |
-      | 2022-03      |
-      | 2022.3       |
-      | 2022.00      |
-      | 2022.55      |
-      | 2022023      |
-      | whatever     |
-
-
   Scenario Outline: Validate error response when deactivating a week that has chores created
     Given there is 1 user, 1 chore type and weekly chores for the week "<week_id_1>"
     And I use the admin API key
@@ -149,6 +128,27 @@ Feature: System API - deactivateWeekSystem
       | en       | Week 2022.01 is already deactivated   |
       | es       | La semana 2022.01 ya está desactivada |
       | whatever | Week 2022.01 is already deactivated   |
+
+
+  Scenario Outline: Validate error response when the week_id is invalid
+    Given I use the admin API key
+    And the field "week_id" with value "<week_id>"
+    When I send a request to the Api
+    Then the response status code is "422"
+    And the response status code is defined
+    And the response contains the following validation errors
+      | location | param   | msg                                                          |
+      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
+
+    Examples: week_id = <week_id>
+      | week_id      |
+      | invalid-week |
+      | 2022-03      |
+      | 2022.3       |
+      | 2022.00      |
+      | 2022.55      |
+      | 2022023      |
+      | whatever     |
 
 
   @common

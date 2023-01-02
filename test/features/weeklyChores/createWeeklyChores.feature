@@ -333,27 +333,6 @@ Feature: Weekly Chores API - createWeeklyChores
       | whatever | Weekly chores for week 2022.01 already exist |
 
 
-  Scenario Outline: Validate error response when creating weekly chores for invalid week
-    Given the field "week_id" with string value "<week_id>"
-    And I use the admin API key
-    When I send a request to the Api
-    Then the response status code is "422"
-    And the response status code is defined
-    And the response contains the following validation errors
-      | location | param   | msg                                                          |
-      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
-
-    Examples: week_id = <week_id>
-      | week_id      |
-      | invalid-week |
-      | 2022-03      |
-      | 2022.3       |
-      | 2022.00      |
-      | 2022.55      |
-      | 2022023      |
-      | whatever     |
-
-
   Scenario Outline: Validate error response when creating weekly chores for an old week
     Given there is 1 user, 1 chore type and weekly chores for the week "[NOW(%Y.%W)]"
     And the field "week_id" with string value "<week_id>"
@@ -524,6 +503,27 @@ Feature: Weekly Chores API - createWeeklyChores
       | en       | Can't create weekly chores, no chore types registered                   |
       | es       | No se pueden crear tareas semanales, no hay tipos de tareas registrados |
       | whatever | Can't create weekly chores, no chore types registered                   |
+
+
+  Scenario Outline: Validate error response when creating weekly chores for invalid week
+    Given the field "week_id" with string value "<week_id>"
+    And I use the admin API key
+    When I send a request to the Api
+    Then the response status code is "422"
+    And the response status code is defined
+    And the response contains the following validation errors
+      | location | param   | msg                                                          |
+      | path     | week_id | string does not match regex "[CONF:patterns.weekIdExtended]" |
+
+    Examples: week_id = <week_id>
+      | week_id      |
+      | invalid-week |
+      | 2022-03      |
+      | 2022.3       |
+      | 2022.00      |
+      | 2022.55      |
+      | 2022023      |
+      | whatever     |
 
 
   @common
