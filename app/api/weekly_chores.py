@@ -95,7 +95,7 @@ async def list_weekly_chores(
     "/{week_id}",
     operation_id="deleteWeeklyChores",
     dependencies=[Depends(admin_required)],
-    summary="Delete single weekly chores",
+    summary="Delete weekly chores",
     status_code=204,
     responses={
         400: {"model": Message, "description": "Weekly chores are partially completed"},

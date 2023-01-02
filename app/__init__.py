@@ -12,6 +12,7 @@ from .core.config import settings
 from .core.deactivated_weeks import clean_old_deactivated_weeks
 from .core.i18n import DEFAULT_LANG, load_translations
 from .core.logging import setup_logging
+from .core.metadata import TAGS_METADATA
 from .core.scheduler import scheduler
 from .core.version import version
 from .db.session import database
@@ -30,6 +31,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
     redoc_url="/docs" if not settings.is_production else None,
     docs_url=None,
+    openapi_tags=TAGS_METADATA,
 )
 
 app.middleware("http")(inject_correlator_response)

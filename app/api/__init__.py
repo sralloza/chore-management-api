@@ -19,7 +19,7 @@ router.include_router(system.router, prefix="/system", tags=["System"])
 router.include_router(tickets.router, prefix="/tickets", tags=["Tickets"])
 router.include_router(transfers.router, prefix="/transfers", tags=["Transfers"])
 router.include_router(users.router, prefix="/users", tags=["Users"])
-router.include_router(week_ids.router, prefix="/week-id", tags=["Week ID"])
 router.include_router(
     weekly_chores.router, prefix="/weekly-chores", tags=["Weekly Chores"]
 )
+router.include_router(week_ids.router, prefix="/week-id", tags=["Week ID"])
