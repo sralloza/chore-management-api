@@ -7,21 +7,50 @@ Feature: Chore Types API - deleteChoreType
 
 
   @authorization
-  Scenario: Validate response for guest user
-    When I send a request to the Api
-    Then the response status code is "401"
-    And the response status code is defined
-    And the error message is "Missing API key"
-
-
-  @authorization
-  Scenario: Validate response for user
-    Given there is 1 chore type
-    And I create a user and I use the user API key
+  Scenario Outline: Validate response for unauthorized user
+    Given I use a random API key
+    And the header language is set to "<lang>"
     When I send a request to the Api
     Then the response status code is "403"
     And the response status code is defined
-    And the error message is "Admin access required"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
+
+
+  @authorization
+  Scenario Outline: Validate response for guest
+    Given the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "401"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                  |
+      | en       | Missing API key          |
+      | es       | Falta la clave de la API |
+      | whatever | Missing API key          |
+
+
+  @authorization
+  Scenario Outline: Validate response for user
+    Given I create a user and I use the user API key
+    And the header language is set to "<lang>"
+    When I send a request to the Api
+    Then the response status code is "403"
+    And the response status code is defined
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                           |
+      | en       | Admin access required             |
+      | es       | Acceso de administrador requerido |
+      | whatever | Admin access required             |
 
 
   @authorization
@@ -79,38 +108,59 @@ Feature: Chore Types API - deleteChoreType
       """
 
 
-  Scenario: Validate error response when deleting a non existing chore type
+  Scenario Outline: Validate error response when deleting a non existing chore type
     Given the field "chore_type_id" with value "invalid"
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "404"
     And the response status code is defined
-    And the error message is "ChoreType with id=invalid does not exist"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                       |
+      | en       | ChoreType with id=invalid does not exist      |
+      | es       | No existe ningún tipo de tarea con id=invalid |
+      | whatever | ChoreType with id=invalid does not exist      |
 
 
-  Scenario: Validate error response when deleting a chore type with pending chores
+  Scenario Outline: Validate error response when deleting a chore type with pending chores
     Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
     And I create the weekly chores for the week "2022.02" using the API
+    And the header language is set to "<lang>"
     And the field "chore_type_id" with value "ct-a"
     Given I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Can't delete chore type with active chores"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                  |
+      | en       | Can't delete chore type with active chores               |
+      | es       | No se puede eliminar un tipo de tarea con tareas activas |
+      | whatever | Can't delete chore type with active chores               |
 
 
-  Scenario: Validate error response when deleting a chore type with non balanced tickets
+  Scenario Outline: Validate error response when deleting a chore type with non balanced tickets
     Given there are 2 users, 2 chore types and weekly chores for the week "2022.01"
     And the following transfers are created
       | user_id_from | user_id_to | chore_type_id | week_id | accepted |
       | user-1       | user-2     | ct-a          | 2022.01 | True     |
     And the user "user-2" has completed the chore "ct-a" for the week "2022.01"
     And the field "chore_type_id" with value "ct-a"
+    And the header language is set to "<lang>"
     And I use the admin API key
     When I send a request to the Api
     Then the response status code is "400"
     And the response status code is defined
-    And the error message is "Chore type has unbalanced tickets"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                       |
+      | en       | Can't delete chore type with unbalanced tickets               |
+      | es       | No se puede eliminar un tipo de tarea con tickets sin cuadrar |
+      | whatever | Can't delete chore type with unbalanced tickets               |
 
 
   @common

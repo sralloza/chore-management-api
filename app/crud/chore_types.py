@@ -1,3 +1,4 @@
+import i18n
 from fastapi import HTTPException
 
 from .. import crud
@@ -17,12 +18,14 @@ class CRUDChoreTypes(CRUDBase[ChoreType, ChoreType, ChoreType, str]):
     async def delete(self, *, lang: str, id: str) -> None:
         chores = await crud.chores.get_multi(chore_type_id=id)
         if any((chore.done is False for chore in chores)):
-            raise HTTPException(400, "Can't delete chore type with active chores")
+            detail = i18n.t("crud.bad_request.active_chores", locale=lang)
+            raise HTTPException(400, detail)
 
         tickets = await crud.tickets.get_multi(chore_type_id=id)
         for ticket in tickets:
             if ticket.tickets != 0:
-                raise HTTPException(400, "Chore type has unbalanced tickets")
+                detail = i18n.t("crud.bad_request.unbalanced_tickets", locale=lang)
+                raise HTTPException(400, detail)
 
         for chore in chores:
             await crud.chores.delete(lang=lang, id=chore.id)

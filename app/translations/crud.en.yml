@@ -19,3 +19,5 @@ en:
   bad_request.no_users: Can't create weekly chores, no users registered
   bad_request.no_chore_types: Can't create weekly chores, no chore types registered
   bad_request.partially_completed: Weekly chores are partially completed
+  bad_request.active_chores: Can't delete chore type with active chores
+  bad_request.unbalanced_tickets: Can't delete chore type with unbalanced tickets
