@@ -3,8 +3,8 @@ import re
 import uuid
 
 import jq
-from behave import step, then
-from hamcrest import assert_that, equal_to, is_in, is_not
+from behave import given, step, then
+from hamcrest import assert_that, equal_to, is_in
 from toolium.utils.dataset import replace_param
 
 from common.api import send_request
@@ -128,8 +128,8 @@ def step_set_correlator_header(context, correlator):
     context.execute_steps(
         f"""
         Given the request headers
-            | header_name  | header_value |
-            | X-Correlator | {correlator} |
+          | header_name  | header_value           |
+          | X-Correlator | {generated_correlator} |
         """
     )
 
@@ -173,10 +173,15 @@ def step_same_header_correlator(context):
     )
 
 
-@step('the header "{header}" is not present in the response')
-def step_header_not_present(context, header):
+@step("the X-Correlator is present in the response")
+def step_header_not_present(context):
     assert_that(
-        header,
-        is_not(is_in(context.res.headers)),
-        f"The header {header} is present in the response",
+        "X-Correlator",
+        is_in(context.res.headers),
+        "The X-Correlator header is not present in the response",
     )
+
+
+@given("I don't include the X-Correlator header in the request")
+def step_do_not_send_xcorelator_header(context):
+    context.headers = {}

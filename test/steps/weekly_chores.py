@@ -15,8 +15,8 @@ def step_create_weekly_chores_api(context, week_id=None, force=None):
         context.execute_steps(
             f"""
             Given the parameters to filter the request
-                | param_name | param_value |
-                | force      | {force}     |
+              | param_name | param_value |
+              | force      | {force}     |
             """
         )
 

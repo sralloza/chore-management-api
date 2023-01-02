@@ -52,15 +52,12 @@ def _send_request(
             path = path.replace(VERSIONED_PATH.format(version=1), "", 1)
         url = VERSIONED_URL_TEMPLATE.format(version=1) + path
 
-    headers = getattr(context, "headers", {})
-    headers["X-Correlator"] = context.correlator
-
     token = getattr(context, "token", None)
     if token:
-        headers["x-token"] = token
+        context.headers["x-token"] = token
 
     params = getattr(context, "params", None)
-    kwargs = dict(params=params, timeout=5, headers=headers)
+    kwargs = dict(params=params, timeout=5, headers=context.headers)
     if raw_payload:
         kwargs["data"] = payload
     else:
