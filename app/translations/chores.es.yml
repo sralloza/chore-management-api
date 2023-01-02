@@ -1,0 +1,5 @@
+es:
+  already_completed: "La tarea de la semana %{week_id} y tipo %{chore_type_id} está ya completada"
+  already_exist_after: Ya hay tareas creadas para después de la semana %{week_id}
+  already_exist: Ya hay tareas creadas para la semana %{week_id}
+  not_found: "No estás asignado a ninguna tarea de tipo %{chore_type_id} para la semana %{week_id}"

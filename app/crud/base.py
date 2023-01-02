@@ -17,7 +17,7 @@ SELECT_QUERY = "SELECT * FROM {table_name} WHERE {id} = :id"
 
 
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
-    spanish_model_femenine = False
+    spanish_model_fem = False
 
     def __init__(self, model: Type[ModelType], table: Table, primary_key="id"):
         self.model = model
@@ -36,8 +36,8 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
 
     def get_not_found_detail(self, lang: str, id: IDType):
         key = "crud.not_found"
-        if self.spanish_model_femenine and lang == "es":
-            key += ".femenine"
+        if self.spanish_model_fem and lang == "es":
+            key += ".fem"
 
         return i18n.t(
             key,

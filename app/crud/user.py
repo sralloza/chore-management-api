@@ -22,7 +22,7 @@ class CRUDUser(CRUDBase[User, UserCreateInner, UserCreate, str]):
         chores = await crud.chores.get_multi(user_id=id)
         if any((chore.done is False for chore in chores)):
             detail = i18n.t(
-                "crud.bad_request.active_chores",
+                "crud.active_chores",
                 locale=lang,
                 model=self.get_model_name(lang, lower=True),
             )
@@ -32,7 +32,7 @@ class CRUDUser(CRUDBase[User, UserCreateInner, UserCreate, str]):
         for ticket in tickets:
             if ticket.tickets != 0:
                 detail = i18n.t(
-                    "crud.bad_request.unbalanced_tickets",
+                    "crud.unbalanced_tickets",
                     locale=lang,
                     model=self.get_model_name(lang, lower=True),
                 )

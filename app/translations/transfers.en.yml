@@ -1,0 +1,6 @@
+en:
+  already_completed: Transfer is already completed
+  multiple_users: Cannot transfer chore to multiple users
+  no_chores: "No chores of type %{chore_type_id} for week %{week_id} assigned to user with id=%{user_id}"
+  transfer_other_user: You cannot %{action} a transfer for another user
+  transfer_to_self: Cannot transfer chore to the same user

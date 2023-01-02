@@ -15,16 +15,16 @@ def validate_user_id(expected: str, actual: str | None, action: str, lang: str):
     if actual is not None and expected != actual:
         action = i18n.t(f"actions.{action}", locale=lang)
         detail = i18n.t(
-            "crud.forbidden.transfer_other_user", locale=lang, action=action
+            "transfers.transfer_other_user", locale=lang, action=action
         )
         raise HTTPException(403, detail)
 
 
 class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
-    spanish_model_femenine = True
+    spanish_model_fem = True
 
     def raise_transfer_completed_exception(self, lang: str):
-        detail = i18n.t("crud.bad_request.transfer_completed", locale=lang)
+        detail = i18n.t("transfers.already_completed", locale=lang)
         raise HTTPException(400, detail)
 
     async def create(
@@ -47,11 +47,11 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         )
         if transfers:
             raise HTTPException(
-                400, i18n.t("crud.bad_request.transfer_multiple_users", locale=lang)
+                400, i18n.t("transfers.multiple_users", locale=lang)
             )
 
         if obj_in.user_id_from == obj_in.user_id_to:
-            detail = i18n.t("crud.bad_request.transfer_to_self", locale=lang)
+            detail = i18n.t("transfers.transfer_to_self", locale=lang)
             raise HTTPException(400, detail)
 
         if not await crud.user.get(id=obj_in.user_id_from):
@@ -75,7 +75,7 @@ class CRUDTransfers(CRUDBase[Transfer, TransferCreateInner, Transfer, int]):
         )
         if not chores:
             detail = i18n.t(
-                "crud.bad_request.transfer_no_chores",
+                "transfers.no_chores",
                 locale=lang,
                 chore_type_id=obj_in.chore_type_id,
                 week_id=obj_in.week_id,

@@ -21,7 +21,7 @@ class CRUDDeactivatedWeeks(
 ):
     def throw_not_found_exception(self, lang: str, id: str):
         kwargs = dict(locale=lang, action="deactivated", week_id=id)
-        detail = i18n.t("crud.conflict.week_already_action", **kwargs)
+        detail = i18n.t("deactivated_weeks.confict_action", **kwargs)
         raise HTTPException(400, detail)
 
     def throw_conflict_exception(self, *, id: str, lang: str, action="deactivated"):
@@ -29,11 +29,11 @@ class CRUDDeactivatedWeeks(
         kwargs = dict(locale=lang, action=action, week_id=id)
 
         if "#" not in id:
-            detail = i18n.t("crud.conflict.week_already_action", **kwargs)
+            detail = i18n.t("deactivated_weeks.confict_action", **kwargs)
         else:
             week_id, user_id = id.split("#")
             kwargs.update(week_id=week_id, user_id=user_id)
-            detail = i18n.t("crud.conflict.week_already_action_user", **kwargs)
+            detail = i18n.t("deactivated_weeks.confict_action_user", **kwargs)
         raise HTTPException(409, detail)
 
     async def create(

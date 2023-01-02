@@ -13,7 +13,7 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
         self, *, lang: str, week_id: str, chore_type_id: str
     ):
         detail = i18n.t(
-            "crud.bad_request.already_completed",
+            "chores.already_completed",
             locale=lang,
             model_name=self.get_model_name(lang=lang),
             week_id=week_id,
@@ -25,7 +25,7 @@ class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
         self, *, lang: str, week_id: str, chore_type_id: str
     ):
         detail = i18n.t(
-            "crud.not_found.no_chores",
+            "chores.not_found",
             locale=lang,
             chore_type_id=chore_type_id,
             week_id=week_id,

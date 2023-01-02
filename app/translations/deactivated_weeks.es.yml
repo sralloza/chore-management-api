@@ -1,0 +1,3 @@
+es:
+  confict_action_user: La semana %{week_id} ya está %{action} para el usuario con id=%{user_id}
+  confict_action: La semana %{week_id} ya está %{action}
