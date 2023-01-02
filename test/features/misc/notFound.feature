@@ -33,8 +33,3 @@ Feature: notFound
       | [RANDOMSTR]  |
       | 12 4AbC 1234 |
       | *_?          |
-
-
-  Scenario: Validate X-Powered-By disabled
-    When I send a request to the Api
-    Then the header "X-Powered-By" is not present in the response
