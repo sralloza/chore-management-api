@@ -7,7 +7,7 @@ from fastapi import HTTPException
 from .. import crud
 from ..core.users import calculate_hash
 from ..core.utils import expand_array, rotate_array
-from ..models.chore import ChoreCreate
+from ..models.chore import Chore, ChoreCreate
 from ..models.chore_type import ChoreType
 from ..models.rotations import Rotation
 from ..models.settings import RotationSign
@@ -75,7 +75,7 @@ async def _create_weekly_chores(
     lang: str,
     last_rotation: int | None = None,
     dry_run: bool = False,
-) -> list[ChoreCreate]:
+) -> list[Chore]:
     settings = await crud.settings.get(lang=lang)
     if settings is None:
         settings = await crud.settings.create_default(lang=lang)
@@ -131,10 +131,12 @@ async def _create_weekly_chores(
                 chores.append(chore)
 
     if dry_run:
-        return chores
+        return [Chore(**x.dict(), id=-1) for x in chores]
 
+    real_chores: list[Chore] = []
     for chore in chores:
-        await crud.chores.create(lang=lang, obj_in=chore)
+        new_chore = await crud.chores.create(lang=lang, obj_in=chore)
+        real_chores.append(new_chore)
 
     user_ids_hash = calculate_hash(user_ids)
     chore_types_hash = calculate_hash([chore_type.id for chore_type in chore_types])
@@ -147,7 +149,7 @@ async def _create_weekly_chores(
             chore_types_hash=chore_types_hash,
         ),
     )
-    return chores
+    return real_chores
 
 
 async def get_all_weekly_chores(
@@ -191,7 +193,7 @@ async def get_weekly_chores_by_week_id(week_id: str, lang: str) -> WeeklyChores:
 
 
 async def get_weekly_chores_by_chores(
-    chores: Sequence[ChoreCreate], week_id: str
+    chores: Sequence[Chore], week_id: str
 ) -> WeeklyChores:
     users = await crud.user.get_multi()
 

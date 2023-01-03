@@ -10,16 +10,23 @@ from .common import (
 )
 
 
-class Transfer(BaseModel):
-    id: int
-    accepted: bool | None = None
+class BaseTransfer(BaseModel):
+    accepted: bool | None
     chore_type_id: str = CHORE_TYPE_ID_FIELD
-    completed: bool = False
+    completed: bool
     user_id_from: str = USER_ID_FIELD
     user_id_to: str = USER_ID_FIELD
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime
     completed_at: datetime | None
     week_id: str = WEEK_ID_FIELD
+
+
+class Transfer(BaseTransfer):
+    id: int
+
+
+class TransferOutput(BaseTransfer):
+    pass
 
 
 class TransferCreate(BaseModel):

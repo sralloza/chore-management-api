@@ -9,6 +9,12 @@ from .base import CRUDBase
 
 
 class CRUDChore(CRUDBase[Chore, ChoreCreate, Chore, int]):
+    async def create(
+        self, *, lang: str, obj_in: ChoreCreate, check_409: bool = True
+    ) -> Chore:
+        real_obj_id = ChoreCreate(**obj_in.dict())
+        return await super().create(lang=lang, obj_in=real_obj_id, check_409=check_409)
+
     def throw_already_completed_exception(
         self, *, lang: str, week_id: str, chore_type_id: str
     ):

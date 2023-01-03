@@ -5,7 +5,7 @@ from ..core.params import LANG_HEADER
 from ..dependencies.auth import APIKeySecurity, get_user_id_from_api_key, user_required
 from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.extras import Message
-from ..models.transfer import Transfer, TransferCreate
+from ..models.transfer import TransferCreate, TransferOutput
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ router = APIRouter()
     "",
     dependencies=[Depends(user_required)],
     operation_id="startTransfer",
-    response_model=Transfer,
+    response_model=TransferOutput,
     responses={
         400: {"model": Message, "description": "Bad request"},
         401: {"model": Message, "description": "Missing API key"},
@@ -38,7 +38,7 @@ async def start_transfer(
     "/{transfer_id}",
     dependencies=[Depends(user_required)],
     operation_id="getTransfer",
-    response_model=Transfer,
+    response_model=TransferOutput,
     responses={
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
@@ -55,7 +55,7 @@ async def get_transfer(transfer_id: int, lang: str = LANG_HEADER):
     "",
     dependencies=[Depends(user_required)],
     operation_id="listTransfers",
-    response_model=list[Transfer],
+    response_model=list[TransferOutput],
     responses={
         401: {"model": Message, "description": "Missing API key"},
         403: {"model": Message, "description": "User access required"},
@@ -73,7 +73,7 @@ async def list_transfers(pagination: PaginationParams = Depends(pagination_param
     "/{transfer_id}/accept",
     dependencies=[Depends(user_required)],
     operation_id="acceptTransfer",
-    response_model=Transfer,
+    response_model=TransferOutput,
     responses={
         400: {"model": Message, "description": "Transfer already completed"},
         401: {"model": Message, "description": "Missing API key"},
@@ -95,7 +95,7 @@ async def accept_transfer(
     "/{transfer_id}/reject",
     dependencies=[Depends(user_required)],
     operation_id="rejectTransfer",
-    response_model=Transfer,
+    response_model=TransferOutput,
     responses={
         400: {"model": Message, "description": "Transfer already completed"},
         401: {"model": Message, "description": "Missing API key"},
