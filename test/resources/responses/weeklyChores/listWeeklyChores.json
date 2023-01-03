@@ -2,7 +2,7 @@
   {
     "chores": [
       {
-        "type": "ct-a",
+        "chore_type_id": "ct-a",
         "done": false,
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
@@ -13,7 +13,7 @@
   {
     "chores": [
       {
-        "type": "ct-a",
+        "chore_type_id": "ct-a",
         "done": false,
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]
@@ -24,7 +24,7 @@
   {
     "chores": [
       {
-        "type": "ct-a",
+        "chore_type_id": "ct-a",
         "done": false,
         "assigned_ids": ["user-1"],
         "assigned_usernames": ["username-1"]

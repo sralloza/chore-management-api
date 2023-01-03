@@ -1,17 +1,4 @@
-from collections import defaultdict, namedtuple
-
-WeeklyChore = namedtuple("WeeklyChore", "week_id chore user_ids")
-
-
-def parse_weekly_chores_res(res):
-    data = res.json()
-    chores = [x["chores"] for x in data]
-    chores = [y for x in chores for y in x]
-
-    return [
-        WeeklyChore(x["week_id"], x["type"], ",".join(x["assigned_ids"]))
-        for x in chores
-    ]
+from collections import defaultdict
 
 
 def parse_weekly_chores_res_table_str(res):
@@ -37,5 +24,5 @@ def _process_weekly_chore(result: defaultdict, weekly_chore: dict):
     chores = weekly_chore["chores"]
     for chore in chores:
         assigned = ",".join(chore["assigned_ids"])
-        chore_type = chore["type"]
+        chore_type = chore["chore_type_id"]
         result[week_id][chore_type] = assigned
