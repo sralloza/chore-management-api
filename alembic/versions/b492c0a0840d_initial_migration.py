@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 92e2d13b3f51
-Revises:
-Create Date: 2022-12-26 23:41:26.618270
+Revision ID: b492c0a0840d
+Revises: 
+Create Date: 2023-01-03 20:41:42.008803
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '92e2d13b3f51'
+revision = 'b492c0a0840d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,6 +44,7 @@ def upgrade() -> None:
     sa.Column('week_id', sa.String(length=7), nullable=False),
     sa.Column('rotation', sa.Integer(), nullable=False),
     sa.Column('user_ids_hash', sa.String(length=64), nullable=False),
+    sa.Column('chore_types_hash', sa.String(length=64), nullable=False),
     sa.PrimaryKeyConstraint('week_id')
     )
     op.create_table('settings',

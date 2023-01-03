@@ -7,3 +7,4 @@ class Rotation(BaseModel):
     week_id: str = USER_ID_FIELD
     rotation: int
     user_ids_hash: str = Field(min_length=64, max_length=64)
+    chore_types_hash: str = Field(min_length=64, max_length=64)

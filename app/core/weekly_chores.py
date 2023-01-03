@@ -53,6 +53,13 @@ async def create_weekly_chores(
             raise HTTPException(400, detail)
         return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
 
+    chore_types_hash = calculate_hash([chore_type.id for chore_type in chore_types])
+    if rotation.chore_types_hash != chore_types_hash:
+        if force is False:
+            detail = i18n.t("weekly_chores.chore_types_changed", locale=lang)
+            raise HTTPException(400, detail)
+        return await _create_weekly_chores(chore_types, week_id, lang, dry_run=dry_run)
+
     return await _create_weekly_chores(
         chore_types, week_id, lang, rotation.rotation, dry_run=dry_run
     )
@@ -130,10 +137,14 @@ async def _create_weekly_chores(
         await crud.chores.create(lang=lang, obj_in=chore)
 
     user_ids_hash = calculate_hash(user_ids)
+    chore_types_hash = calculate_hash([chore_type.id for chore_type in chore_types])
     await crud.rotation.create(
         lang=lang,
         obj_in=Rotation(
-            rotation=new_rotation, week_id=week_id, user_ids_hash=user_ids_hash
+            rotation=new_rotation,
+            week_id=week_id,
+            user_ids_hash=user_ids_hash,
+            chore_types_hash=chore_types_hash,
         ),
     )
     return chores
