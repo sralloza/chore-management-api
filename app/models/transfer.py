@@ -25,10 +25,6 @@ class Transfer(BaseTransfer):
     id: int
 
 
-class TransferOutput(BaseTransfer):
-    pass
-
-
 class TransferCreate(BaseModel):
     chore_type_id: str
     user_id_from: str
