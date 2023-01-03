@@ -1,5 +1,6 @@
 en:
   already_exist: Weekly chores for week %{week_id} already exist
+  chore_types_changed: Chore types have changed since last weekly chores creation
   deactivated_week: Week %{week_id} is deactivated
   no_chore_types: Can't create weekly chores, no chore types registered
   no_chores_found: No weekly chores found for week %{week_id}

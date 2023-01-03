@@ -396,6 +396,52 @@ Feature: Weekly Chores API - createWeeklyChores
     And the response body is validated against the json-schema
 
 
+
+  Scenario Outline: Validate error response when creating weekly chores after chore types have changed
+    Given there are 3 users
+    And there are 3 chore types
+    And the header language is set to "<lang>"
+    And I create the weekly chores for the week "2022.01" using the API
+    And I use the admin API key
+    When I send a request to the Api resource "createChoreType" with body params
+      | param_name  | param_value              |
+      | id          | ct-x                     |
+      | name        | chore type x             |
+      | description | chore type x description |
+    Then the response status code is "200"
+    Given the field "week_id" with string value "2022.02"
+    When I send a request to the Api
+    Then the response status code is "400"
+    And the error message is "<err_msg>"
+
+    Examples: lang = <lang> | err_msg = <err_msg>
+      | lang     | err_msg                                                                        |
+      | en       | Chore types have changed since last weekly chores creation                     |
+      | es       | Los tipos de tareas han cambiado desde la última vez que se crearon las tareas |
+      | whatever | Chore types have changed since last weekly chores creation                     |
+
+
+  Scenario: Validate force creation of weekly chores after chore types have changed
+    Given there are 3 users
+    And there are 3 chore types
+    And I create the weekly chores for the week "2022.01" using the API
+    And I use the admin API key
+    When I send a request to the Api resource "createChoreType" with body params
+      | param_name  | param_value              |
+      | id          | ct-x                     |
+      | name        | chore type x             |
+      | description | chore type x description |
+    Then the response status code is "200"
+    Given the field "week_id" with string value "2022.02"
+    And the parameters to filter the request
+      | param_name | param_value |
+      | force      | true        |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    And the response body is validated against the json-schema
+
+
   Scenario: Validate dry run mode
     Given there are 3 users
     And there are 3 chore types
