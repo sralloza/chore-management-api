@@ -3,7 +3,7 @@ from fastapi import APIRouter, Body, Depends
 from .. import crud
 from ..core.params import LANG_HEADER
 from ..dependencies.auth import admin_required, user_required
-from ..models.chore_type import ChoreType
+from ..models.chore_type import ChoreType, ChoreTypeIdentifier
 from ..models.extras import Message
 
 router = APIRouter()
@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.post(
     "",
-    response_model=ChoreType,
+    response_model=ChoreTypeIdentifier,
     dependencies=[Depends(admin_required)],
     operation_id="createChoreType",
     responses={
