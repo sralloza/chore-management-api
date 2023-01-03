@@ -43,8 +43,7 @@ app.middleware("http")(inject_correlator_request)
 app.include_router(router_v1, prefix="/api/v1")
 
 
-@app.on_event("startup")
-async def startup():
+async def setup():
     setup_logging()
     load_translations()
     if settings.is_production:
@@ -68,7 +67,16 @@ async def startup():
 
     if not await crud.settings.get():
         await crud.settings.create_default(lang=DEFAULT_LANG)
-    logger.info("Application started")
+
+
+@app.on_event("startup")
+async def startup():
+    try:
+        await setup()
+        logger.info("Application started")
+    except:
+        logger.exception("Failed to start application")
+        raise
 
 
 @app.on_event("shutdown")
