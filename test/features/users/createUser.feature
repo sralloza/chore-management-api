@@ -68,7 +68,7 @@ Feature: Users API - createUser
     Given I use the admin API key
     When I send a request to the Api with body params
       | param_name | param_value |
-      | username   | <username>  |
+      | username   | John        |
       | id         | <id>        |
     Then the response status code is "200"
     And the response status code is defined
@@ -77,19 +77,18 @@ Feature: Users API - createUser
       | api_key    |
       """
       {
-        "username": "<username>",
         "id": "<id>"
       }
       """
 
-    Examples:
-      | username                | id                      |
-      | John                    | john123                 |
-      | [STRING_WITH_LENGTH_25] | john123                 |
-      | [STRING_WITH_LENGTH_2]  | john123                 |
-      | John                    | [STRING_WITH_LENGTH_40] |
-      | John                    | [STRING_WITH_LENGTH_4]  |
-      | 1111                    | 1111                    |
+    Examples: id = <id>
+      | id                      |
+      | john123                 |
+      | john123                 |
+      | john123                 |
+      | [STRING_WITH_LENGTH_40] |
+      | [STRING_WITH_LENGTH_4]  |
+      | 1111                    |
 
 
   Scenario: Validate that the assignment_order setting of the flat is reset after creating a user

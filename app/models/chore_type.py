@@ -7,8 +7,15 @@ from .common import (
 )
 
 
-class ChoreType(BaseModel):
+class ChoreTypeBase(BaseModel):
     id: str = CHORE_TYPE_ID_FIELD
+
+
+class ChoreTypeIdentifier(ChoreTypeBase):
+    pass
+
+
+class ChoreType(ChoreTypeBase):
     name: str = CHORE_TYPE_NAME_FIELD
     description: str = CHORE_TYPE_DESCRIPTION_FIELD
 

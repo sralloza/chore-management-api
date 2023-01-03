@@ -7,14 +7,14 @@ from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
-from ..models.user import UserCreate, UserOutput, UserSimple
+from ..models.user import UserCreate, UserIdentifier, UserOutput, UserSimple
 
 router = APIRouter()
 
 
 @router.post(
     "",
-    response_model=UserOutput,
+    response_model=UserIdentifier,
     dependencies=[Depends(admin_required)],
     operation_id="createUser",
     summary="Register new user",

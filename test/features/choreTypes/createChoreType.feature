@@ -74,6 +74,7 @@ Feature: Chore Types API - createChoreType
       | description | description-chore-type-a |
     Then the response status code is "200"
     And the response body is validated against the json-schema
+    And the Api response contains the expected data
     When I send a request to the Api resource "listChoreTypes"
     Then the response status code is "200"
     And the Api response contains the expected data
