@@ -73,4 +73,13 @@ async def get_chore_types():
     },
 )
 async def delete_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
+    """Deletes a chore type. Note that the system setting `assignment_order` will
+    be reset after this operation.
+
+    This endpoint will throw a 400 error in the following cases:
+
+    * Chore type has active chores (not completed)
+    * Chore type has unbalanced tickets
+
+    """
     return await crud.chore_types.delete(id=chore_type_id, lang=lang)

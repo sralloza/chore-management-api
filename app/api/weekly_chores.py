@@ -34,11 +34,23 @@ async def route_create_weekly_chores(
     week_id: str = WEEK_ID_PATH,
     dry_run: bool = Query(False, description="Simulate creation of weekly chores"),
     force: bool = Query(
-        False, description="Force creation of weekly chores even if users have changed"
+        False,
+        description="Force creation of weekly chores even if "
+        "users or chore types have changed",
     ),
     lang: str = LANG_HEADER,
 ):
-    """Create weekly chores for a specific week."""
+    """Create weekly chores for a specific week.
+
+    This endpoint will throw a 400 error in the following cases:
+
+    * The users have changed since the last time weekly chores were created
+    * The chore types have changed since the last time weekly chores were created
+    * The week is deactivated by the admin (deactivateWeekSystem endpoint)
+    * Chores exist for a week after the week requested
+    * No users found
+    * No chore types found
+    """
     week_id = expand_week_id(week_id)
     await validate_week_id_age(week_id, lang)
     chores = await create_weekly_chores(

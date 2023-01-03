@@ -86,6 +86,15 @@ async def list_users():
     },
 )
 async def delete_user(user_id: str, lang: str = LANG_HEADER):
+    """Deletes a user. Note that the system setting `assignment_order` will be reset
+    after this operation.
+
+    This endpoint will throw a 400 error in the following cases:
+
+    * User has active chores (not completed)
+    * User has unbalanced tickets
+
+    """
     await crud.user.delete(lang=lang, id=user_id)
 
 
