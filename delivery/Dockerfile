@@ -1,30 +1,42 @@
-FROM python:3.10.8-alpine3.16
+FROM python:3.10.9-slim-bullseye as base
 
-RUN apk add bash curl gcc jq musl-dev libffi-dev && \
-    curl -sSL https://install.python-poetry.org | python - && \
+RUN apt update && apt upgrade -y && \
+    apt install jq curl -y
+
+FROM base as builder
+
+WORKDIR /app
+
+RUN apt install build-essential libssl-dev libffi-dev python3-dev cargo -y
+
+RUN curl -sSL https://install.python-poetry.org | python - && \
     cd /usr/local/bin && \
     ln -s /root/.local/bin/poetry
 
 ENV POETRY_VIRTUALENVS_CREATE false
 
-WORKDIR /app
+RUN pip install virtualenv && \
+    virtualenv /app/.venv
+
+ENV PATH="/app/.venv/bin:$PATH"
 
 COPY pyproject.toml poetry.lock README.md ./
-
 RUN poetry install --only main --no-root
 
-COPY alembic/ /app/alembic
-
-COPY alembic.ini /app/
-
-COPY ./app /app/app
-
-COPY ./utils /app/utils
-
+COPY ./app ./app
 RUN poetry install --only main
 
-COPY ./delivery /utils/
+FROM base
 
+WORKDIR /app
+
+COPY --from=builder /app/pyproject.toml /app/poetry.lock /app/README.md ./
+COPY alembic/ /app/alembic
+COPY alembic.ini /app/
+COPY --from=builder /app/app ./app
+COPY --from=builder /app/.venv ./.venv
+COPY ./utils /app/utils
+COPY ./delivery /utils/
 COPY API.md ./
 
 RUN chmod +x /utils/*.sh
@@ -32,6 +44,7 @@ RUN chmod +x /utils/*.sh
 EXPOSE 8080
 
 ENV IS_PRODUCTION=true
+ENV PATH="/app/.venv/bin:$PATH"
 
 ENTRYPOINT [ "/utils/entrypoint.sh" ]
 
