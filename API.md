@@ -10,7 +10,7 @@ API to manage the chores with the flatmates in a shared flat.
 
 # Tickets system
 
-This API supports chore transfers. When a user transfers a chore to other user, a ticket also is transferred. A ticket is like a currency, +1 tickets means that the user is owed a chore (in the future another user will complete his chore), and -1 tickets means that the user owns a chore (in the future he will complete another user's chore).
+This API supports chore transfers. When a user transfers a chore to other user, a ticket also is transferred. A ticket is like a currency, `+1` tickets means that the user is owed a chore (in the future another user will complete his chore), and `-1` tickets means that the user owns a chore (in the future he will complete another user's chore).
 
 Diferent chore types are considered non equivalent, so a ticket of (the chore type) X can not be compensated with a ticket of type Y.
 
@@ -76,11 +76,11 @@ If you want to assign the first time dishes to the user 501, garden to the user 
 
 The next weeks the chores will rotate. To ensure the chores will be assigned with the order you want, you can use the `dry_run` parameter in the [createWeeklyChores](#tag/Weekly-Chores/operation/createWeeklyChores) operation. This will return the chore assignments without actually creating them. If you detect the rotation is not correct, you can use the [editSystemSettings](#tag/System/operation/editSystemSettings) operation to set the rotation.
 
-## Skip week
+## Disable chore assignations
 
-There are occasions when user would want to skip a week. For example, when a user is on vacation. In this case, the user must tell the API to remove himself from the pool when the chores are assigned. This can be done by using the [skipWeek](#tag/Skip-Chores/operation/skipWeek) operation.
+There are occasions when user would want to skip a week (when a user is on vacation, for example) or we don't want any chore created (when no one is living in the flat that week). In this case, the user must tell the API to remove himself from the pool when the chores are assigned. This can be done by using the [deactivateWeekUser](#tag/Users/operation/deactivateWeekUser) operation for the first case and the [deactivateWeekSystem](#tag/System/operation/deactivateWeekSystem) for the second case. The first one will remove the user from the pool for the week, and the second one will not create any chore for the week. To get a list of the weeks where no chores will be created, use the [listDeactivatedWeeksSystem](#tag/System/operation/listDeactivatedWeeksSystem) operation.
 
-If a user has wrongly skipped a week, he can undo it by using the [undoSkipWeek](#tag/Skip-Chores/operation/undoSkipWeek) operation.
+If a user has wrongly deactivated a week, he can undo it by using the [reactivateWeekUser](#tag/Users/operation/reactivateWeekUser) operation. Or if the admin has wrongly deactivated a week, he can undo it by using the [reactivateWeekSystem](#tag/System/operation/reactivateWeekSystem) operation.
 
 ## Other considerations
 
@@ -98,6 +98,5 @@ This API supports error message internationalization only in user-scoped endpoin
 
 Access is controlled with API key based authorization. There are 3 types of API keys with different auth levels. Each one of them contains the same permissions as the ones below and more specific permissions.
 
-1. **Admin API key** (_AdminApiKey_): there is only one. It has permission to do anything, from creating a new flat to mark a chore as completed.
-2. **Flat API key** (_FlatAdminApiKey_): there is one for each flat. It has permission to manage the flat assigned and the users assigned to the flat.
-3. **User API key** (_UserApiKey_): there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.
+1. **Admin API key** (_AdminApiKey_): there is only one. It has permission to do anything, from creating the weely chores to mark a chore as completed.
+2. **User API key** (_UserApiKey_): there is one for each user. It has permission to act in name of the user, like transfering chores or completing chores.

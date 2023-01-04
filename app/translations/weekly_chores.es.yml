@@ -1,5 +1,6 @@
 es:
   already_exist: Ya hay tareas creadas para la semana %{week_id}
+  chore_types_changed: Los tipos de tareas han cambiado desde la última vez que se crearon las tareas
   deactivated_week: La semana %{week_id} está desactivada
   no_chore_types: No se pueden crear tareas semanales, no hay tipos de tareas registrados
   no_chores_found: No hay tareas para la semana %{week_id}

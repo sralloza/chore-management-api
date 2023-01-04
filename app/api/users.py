@@ -5,16 +5,17 @@ from ..core.params import LANG_HEADER, USER_ID_PATH, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
-from ..models.user import UserCreate, UserOutput, UserSimple
+from ..models.user import UserCreate, UserIdentifier, UserOutput, UserSimple
 
 router = APIRouter()
 
 
 @router.post(
     "",
-    response_model=UserOutput,
+    response_model=UserIdentifier,
     dependencies=[Depends(admin_required)],
     operation_id="createUser",
     summary="Register new user",
@@ -67,9 +68,9 @@ async def get_user(
         403: {"model": Message, "description": "Admin required"},
     },
 )
-async def list_users():
+async def list_users(pagination: PaginationParams = Depends(pagination_params)):
     """List all users."""
-    return await crud.user.get_multi()
+    return await crud.user.get_multi(page=pagination.page, per_page=pagination.per_page)
 
 
 @router.delete(
@@ -86,6 +87,15 @@ async def list_users():
     },
 )
 async def delete_user(user_id: str, lang: str = LANG_HEADER):
+    """Deletes a user. Note that the system setting `assignment_order` will be reset
+    after this operation.
+
+    This endpoint will throw a 400 error in the following cases:
+
+    * User has active chores (not completed)
+    * User has unbalanced tickets
+
+    """
     await crud.user.delete(lang=lang, id=user_id)
 
 

@@ -1,5 +1,8 @@
+from typing import Callable
+
 import i18n
 from fastapi import HTTPException
+from sqlalchemy.sql.selectable import Select
 
 from ..db import tables
 from ..models.deactivated_weeks import DeactivatedWeek, DeactivatedWeekCreate
@@ -50,13 +53,13 @@ class CRUDDeactivatedWeeks(
         assigned_to_user: bool | None = None,
         **kwargs,
     ) -> list[DeactivatedWeek]:
-        query_mod = None
+        query_mod: Callable[[Select], Select] | None = None
         if assigned_to_user is not None:
 
-            def query_mod(query):
+            def query_mod(query: Select) -> Select:
                 if assigned_to_user:
-                    return query.where(self.table.c.user_id is not None)
-                return query.where(self.table.c.user_id is None)
+                    return query.where(self.table.c.user_id.isnot(None))
+                return query.where(self.table.c.user_id.is_(None))
 
         return await super().get_multi(
             page=page, per_page=per_page, query_mod=query_mod, **kwargs

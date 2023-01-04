@@ -7,7 +7,7 @@ from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id
 from ..dependencies.auth import APIKeySecurity, get_user_id_from_api_key, user_required
 from ..dependencies.pages import PaginationParams, pagination_params
-from ..models.chore import Chore
+from ..models.chore import ChoreOutput
 from ..models.extras import Message
 
 router = APIRouter()
@@ -15,7 +15,7 @@ router = APIRouter()
 
 @router.get(
     "",
-    response_model=list[Chore],
+    response_model=list[ChoreOutput],
     operation_id="listChores",
     dependencies=[Depends(user_required)],
     responses={

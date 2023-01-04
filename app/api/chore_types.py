@@ -3,7 +3,8 @@ from fastapi import APIRouter, Body, Depends
 from .. import crud
 from ..core.params import LANG_HEADER
 from ..dependencies.auth import admin_required, user_required
-from ..models.chore_type import ChoreType
+from ..dependencies.pages import PaginationParams, pagination_params
+from ..models.chore_type import ChoreType, ChoreTypeIdentifier
 from ..models.extras import Message
 
 router = APIRouter()
@@ -11,7 +12,7 @@ router = APIRouter()
 
 @router.post(
     "",
-    response_model=ChoreType,
+    response_model=ChoreTypeIdentifier,
     dependencies=[Depends(admin_required)],
     operation_id="createChoreType",
     responses={
@@ -53,8 +54,10 @@ async def get_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
         403: {"model": Message, "description": "User access required"},
     },
 )
-async def get_chore_types():
-    return await crud.chore_types.get_multi()
+async def get_chore_types(pagination: PaginationParams = Depends(pagination_params)):
+    return await crud.chore_types.get_multi(
+        page=pagination.page, per_page=pagination.per_page
+    )
 
 
 @router.delete(
@@ -73,4 +76,13 @@ async def get_chore_types():
     },
 )
 async def delete_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
+    """Deletes a chore type. Note that the system setting `assignment_order` will
+    be reset after this operation.
+
+    This endpoint will throw a 400 error in the following cases:
+
+    * Chore type has active chores (not completed)
+    * Chore type has unbalanced tickets
+
+    """
     return await crud.chore_types.delete(id=chore_type_id, lang=lang)
