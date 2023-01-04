@@ -1,10 +1,11 @@
 import re
-from typing import Any, Generic, List, Optional, Type, TypeVar
+from typing import Any, Callable, Generic, Type, TypeVar
 
 import i18n
 from fastapi import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import Table
+from sqlalchemy.sql.selectable import Select
 
 from ..db.session import database
 
@@ -60,7 +61,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     def throw_not_found_exception(self, lang: str, id: IDType):
         raise HTTPException(404, self.get_not_found_detail(lang, id))
 
-    async def get(self, id: IDType) -> Optional[ModelType]:
+    async def get(self, id: IDType) -> ModelType | None:
         data = await database.fetch_one(query=self.select_query, values={"id": id})
         return self.model(**data) if data else None
 
@@ -71,8 +72,13 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         self.throw_not_found_exception(lang=lang, id=id)
 
     async def get_multi(
-        self, *, page: int = 1, per_page: int = 30, query_mod=None, **kwargs
-    ) -> List[ModelType]:
+        self,
+        *,
+        page: int = 1,
+        per_page: int = 30,
+        query_mod: Callable[[Select], Select] | None = None,
+        **kwargs,
+    ) -> list[ModelType]:
         query = self.table.select().offset((page - 1) * per_page).limit(per_page)
         if query_mod is not None:
             query = query_mod(query)

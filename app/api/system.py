@@ -4,6 +4,7 @@ from .. import crud
 from ..core.params import LANG_HEADER, WEEK_ID_PATH
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import admin_required, user_required
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
 from ..models.settings import SettingsIO, SettingsUpdateIO
@@ -104,7 +105,11 @@ async def reactivate_week(week_id: str = WEEK_ID_PATH, lang: str = LANG_HEADER):
     },
     summary="List deactivated weeks",
 )
-async def list_deactivated_weeks():
+async def list_deactivated_weeks(
+    pagination: PaginationParams = Depends(pagination_params),
+):
     """Lists the weeks that are deactivated for chore creation."""
-    result = await crud.deactivated_weeks.get_multi()
-    return [WeekId(week_id=week.week_id) for week in result if week.user_id is None]
+    result = await crud.deactivated_weeks.get_multi(
+        page=pagination.page, per_page=pagination.per_page, assigned_to_user=False
+    )
+    return [WeekId(week_id=week.week_id) for week in result]

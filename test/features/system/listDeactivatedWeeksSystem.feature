@@ -65,7 +65,7 @@ Feature: System API - listDeactivatedWeeksSystem
       """
 
 
-  Scenario: Get the list of deactivated weeks when there are somw
+  Scenario: Get the list of deactivated weeks when there are some
     Given I deactivate the chore creation for the week "2022.01"
     And I deactivate the chore creation for the week "2022.02"
     And I deactivate the chore creation for the week "2022.03"
@@ -74,6 +74,28 @@ Feature: System API - listDeactivatedWeeksSystem
     Then the response status code is "200"
     And the response status code is defined
     And the Api response contains the expected data
+
+
+  Scenario: Validate pagination
+    Given I deactivate the chore creation for the week "2022.01"
+    And I deactivate the chore creation for the week "2022.02"
+    And I deactivate the chore creation for the week "2022.03"
+    And I create a user and I use the user API key
+    And the parameters to filter the request
+      | param_name | param_value |
+      | page       | 2           |
+      | per_page   | 1           |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    And the Api response contains the expected data
+      """
+      [
+        {
+          "week_id": "2022.02"
+        }
+      ]
+      """
 
 
   @common
