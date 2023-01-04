@@ -172,7 +172,7 @@ async def get_all_weekly_chores(
                     get_user_name(chore.user_id) for chore in chore_list
                 ],
                 done=all([chore.done for chore in chore_list]),
-                type=chore_type,
+                chore_type_id=chore_type,
             )
             weekly_chores.append(weekly_chore)
         if missing_only is False:
@@ -207,7 +207,7 @@ async def get_weekly_chores_by_chores(
             assigned_ids=[chore.user_id for chore in chore_list],
             assigned_usernames=[get_user_name(chore.user_id) for chore in chore_list],
             done=all([chore.done for chore in chore_list]),
-            type=chore_type,
+            chore_type_id=chore_type,
         )
         weekly_chores.append(weekly_chore)
     return WeeklyChores(chores=weekly_chores, week_id=week_id)

@@ -13,7 +13,7 @@ class WeeklyChore(BaseModel):
         example=["username-1", "username-2"],
     )
     done: bool = Field(description="Whether the chore has been completed", example=True)
-    type: str = CHORE_TYPE_ID_FIELD
+    chore_type_id: str = CHORE_TYPE_ID_FIELD
 
 
 class WeeklyChores(BaseModel):
