@@ -5,6 +5,7 @@ from ..core.params import LANG_HEADER, USER_ID_PATH, WEEK_ID_PATH
 from ..core.users import expand_user_id
 from ..core.week_ids import expand_week_id, validate_week_id_age
 from ..dependencies.auth import APIKeySecurity, admin_required, user_required_me_path
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.deactivated_weeks import DeactivatedWeekCreate
 from ..models.extras import Message, WeekId
 from ..models.user import UserCreate, UserIdentifier, UserOutput, UserSimple
@@ -67,9 +68,9 @@ async def get_user(
         403: {"model": Message, "description": "Admin required"},
     },
 )
-async def list_users():
+async def list_users(pagination: PaginationParams = Depends(pagination_params)):
     """List all users."""
-    return await crud.user.get_multi()
+    return await crud.user.get_multi(page=pagination.page, per_page=pagination.per_page)
 
 
 @router.delete(

@@ -73,6 +73,34 @@ Feature: Users API - listUsers
       | api_key    |
 
 
+  Scenario: Validate pagination
+    Given there are 5 users
+    And I use the admin API key
+    And the parameters to filter the request
+      | param_name | param_value |
+      | per_page   | 2           |
+      | page       | 2           |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    And the response body is validated against the json-schema
+    And the Api response contains the expected data
+      | skip_param |
+      | api_key    |
+      """
+      [
+        {
+          "id": "user-3",
+          "username": "username-3"
+        },
+        {
+          "id": "user-4",
+          "username": "username-4"
+        }
+      ]
+      """
+
+
   @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header
