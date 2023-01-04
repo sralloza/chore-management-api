@@ -16,10 +16,9 @@ async def expand_user_id(user_id: str, x_token: str, lang: str) -> str:
         detail = i18n.t("auth.bad_request.keyword_me_admin", locale=lang)
         raise HTTPException(status_code=400, detail=detail)
 
-    users = await crud.user.get_multi()
-    for user in users:
-        if user.api_key == x_token:
-            return user.id
+    users = await crud.user.get_multi(api_key=x_token)
+    if users:
+        return users[0].id
 
     raise ValueError("Can't expand user_id (configuration error)")
 

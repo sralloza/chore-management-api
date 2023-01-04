@@ -2,9 +2,9 @@ import re
 from typing import Any, Callable, Generic, Type, TypeVar
 
 import i18n
+import sqlalchemy as sa
 from fastapi import HTTPException
 from pydantic import BaseModel
-from sqlalchemy import Table
 from sqlalchemy.sql.selectable import Select
 
 from ..db.session import database
@@ -20,7 +20,7 @@ SELECT_QUERY = "SELECT * FROM {table_name} WHERE {id} = :id"
 class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     spanish_model_fem = False
 
-    def __init__(self, model: Type[ModelType], table: Table, primary_key="id"):
+    def __init__(self, model: Type[ModelType], table: sa.Table, primary_key="id"):
         self.model = model
         self.table = table
 
@@ -128,3 +128,10 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
     async def delete(self, *, lang: str, id: IDType) -> None:
         await self.get_or_404(lang=lang, id=id)
         await database.execute(self.table.delete().where(self.table.c.id == id))
+
+    async def count(self)->int:
+        query = sa.select([sa.func.count(self.table.c.id)])
+        result = await database.fetch_one(query)
+        if result is None:
+            return 0
+        return int(result[0])

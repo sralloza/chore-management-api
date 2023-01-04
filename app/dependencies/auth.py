@@ -37,10 +37,10 @@ async def user_required(*, x_token: str = APIKeySecurity, lang: str = LANG_HEADE
     if x_token == settings.admin_api_key:
         return
 
-    users = await crud.user.get_multi()
-    for user in users:
-        if user.api_key == x_token:
-            return
+    nusers = await crud.user.count()
+    users = await crud.user.get_multi(api_key=x_token, per_page=nusers)
+    if users:
+        return
 
     raise_user_access_required(lang)
 
@@ -61,15 +61,14 @@ async def user_required_me_path(
             )
         return
 
-    users = await crud.user.get_multi()
+    users = await crud.user.get_multi(api_key=x_token)
     for user in users:
-        if user.api_key == x_token:
-            if user_id != "me" and user_id != user.id:
-                raise HTTPException(
-                    status_code=403,
-                    detail=i18n.t("auth.forbidden.other_user_data", locale=lang),
-                )
-            return
+        if user_id != "me" and user_id != user.id:
+            raise HTTPException(
+                status_code=403,
+                detail=i18n.t("auth.forbidden.other_user_data", locale=lang),
+            )
+        return
 
     raise_user_access_required(lang)
 
@@ -83,9 +82,8 @@ async def get_user_id_from_api_key(
     if x_token == settings.admin_api_key:
         return
 
-    users = await crud.user.get_multi()
-    for user in users:
-        if user.api_key == x_token:
-            return user.id
+    users = await crud.user.get_multi(api_key = x_token)
+    if users:
+        return users[0].id
 
     raise_user_access_required(lang)
