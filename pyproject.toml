@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "chore-management-api"
-version = "1.0.0-rc2"
+version = "1.0.0"
 description = "Chore Management API"
 authors = ["Diego Alloza González <diego.allozagonzalez@telefonica.com>"]
 packages = [
