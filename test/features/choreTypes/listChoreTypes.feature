@@ -73,6 +73,35 @@ Feature: Chore Types API - listChoreTypes
     And the Api response contains the expected data
 
 
+  Scenario: Validate pagination
+    Given I create a user
+    And there are 4 chore types
+    And I use the user API key
+    And the parameters to filter the request
+      | param_name | param_value |
+      | page       | 2           |
+      | per_page   | 2           |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the response status code is defined
+    And the response body is validated against the json-schema
+    And the Api response contains the expected data
+      """
+      [
+        {
+          "id": "ct-c",
+          "name": "ct-c",
+          "description": "description3"
+        },
+        {
+          "id": "ct-d",
+          "name": "ct-d",
+          "description": "description4"
+        }
+      ]
+      """
+
+
   @common
   Scenario Outline: Validate X-Correlator injection
     Given the <correlator> as X-Correlator header

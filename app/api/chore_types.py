@@ -3,6 +3,7 @@ from fastapi import APIRouter, Body, Depends
 from .. import crud
 from ..core.params import LANG_HEADER
 from ..dependencies.auth import admin_required, user_required
+from ..dependencies.pages import PaginationParams, pagination_params
 from ..models.chore_type import ChoreType, ChoreTypeIdentifier
 from ..models.extras import Message
 
@@ -53,8 +54,10 @@ async def get_chore_type(chore_type_id: str, lang: str = LANG_HEADER):
         403: {"model": Message, "description": "User access required"},
     },
 )
-async def get_chore_types():
-    return await crud.chore_types.get_multi()
+async def get_chore_types(pagination: PaginationParams = Depends(pagination_params)):
+    return await crud.chore_types.get_multi(
+        page=pagination.page, per_page=pagination.per_page
+    )
 
 
 @router.delete(
