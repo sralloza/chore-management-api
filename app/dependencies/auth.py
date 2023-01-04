@@ -82,7 +82,7 @@ async def get_user_id_from_api_key(
     if x_token == settings.admin_api_key:
         return
 
-    users = await crud.user.get_multi(api_key = x_token)
+    users = await crud.user.get_multi(api_key=x_token)
     if users:
         return users[0].id
 

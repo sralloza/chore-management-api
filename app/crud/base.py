@@ -129,7 +129,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType, IDType]):
         await self.get_or_404(lang=lang, id=id)
         await database.execute(self.table.delete().where(self.table.c.id == id))
 
-    async def count(self)->int:
+    async def count(self) -> int:
         query = sa.select([sa.func.count(self.table.c.id)])
         result = await database.fetch_one(query)
         if result is None:
