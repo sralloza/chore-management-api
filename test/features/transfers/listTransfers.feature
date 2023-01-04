@@ -70,6 +70,38 @@ Feature: Transfers API - listTransfers
       | completed_at |
 
 
+  Scenario: Validate pagination
+    Given there are 4 users, 4 chore types and weekly chores for the week "2022.01"
+    And the following transfers are created
+      | user_id_from | user_id_to | chore_type_id | week_id | accepted |
+      | user-1       | user-2     | ct-a          | 2022.01 | True     |
+      | user-3       | user-2     | ct-c          | 2022.01 | False    |
+      | user-4       | user-2     | ct-d          | 2022.01 | None     |
+    And I use the token of the user with id "user-1"
+    And the parameters to filter the request
+      | param_name | param_value |
+      | page       | 2           |
+      | per_page   | 1           |
+    When I send a request to the Api
+    Then the response status code is "200"
+    And the Api response contains the expected data
+      | skip_param   |
+      | id           |
+      | created_at   |
+      | completed_at |
+      """
+      [
+        {
+          "accepted": false,
+          "chore_type_id": "ct-c",
+          "completed": true,
+          "user_id_from": "user-3",
+          "user_id_to": "user-2",
+          "week_id": "2022.01"
+        }
+      ]
+      """
+
   Scenario: List transfers when database is empty
     Given there is 1 user
     And I use the token of the user with id "user-1"
