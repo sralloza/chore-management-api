@@ -30,6 +30,7 @@ app = FastAPI(
     description=Path(__file__).parent.with_name("API.md").read_text(),
     default_response_class=ORJSONResponse,
     redoc_url="/docs" if not settings.is_production else None,
+    version=version,
     docs_url=None,
     openapi_tags=TAGS_METADATA,
 )
